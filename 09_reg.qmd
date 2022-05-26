@@ -1,0 +1,32 @@
+# Regressionsmodelle 
+
+```{r reg01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+```
+
+
+
+## Annahmen checken
+
+
+```{r reg02}
+ # install.packages('see')
+library(performance)
+data(mtcars)
+mtcars$gear <- factor(mtcars$gear) # 
+m1 <- lm(mpg ~ qsec, mtcars)
+m2 <- lm(mpg ~ qsec + gear, mtcars)
+
+check_model(m2)
+
+```
+
+## Regressionsmodelle vergleichen
+
+Mit dem Paket `{performance}` können wir auch einen umfassenden Modellvergleich bekommen:
+```{r reg03}
+compare_performance(m1,m2)
+```
+
+
+

@@ -1,0 +1,26 @@
+project:
+  type: book
+
+book:
+  title: "R am BIBB"
+  author: "Andreas Filser"
+  date: "`r format(Sys.Date(), '%B %Y')`"
+  chapters:
+    - index.qmd
+    - 01_intro.qmd
+    - 02_desc.qmd
+    - 09_reg.qmd
+    - summary.qmd
+    - references.qmd
+  language: de
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: flatly
+  pdf:
+    documentclass: scrreprt
+
+
+

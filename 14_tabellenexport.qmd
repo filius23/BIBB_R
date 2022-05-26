@@ -1,0 +1,27 @@
+# Tabellenexport
+
+```{r reg01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+```
+
+## 
+
+## `flextable`
+
+## weitere Optionen
+
+https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/
+
+While **gt** is trying to do something different with its own interface, it may not suit your specific needs. Here is a listing of other leading table-making **R** packages, with links to their respective project pages:
+
+-   `{knitr}` [link](https://yihui.org/knitr/)
+
+-   `{kableExtra}` [link](https://haozhu233.github.io/kableExtra/)
+
+-   `{gt}` [link](https://gt.rstudio.com/)
+
+-   `{huxtable}` [link](https://hughjonesd.github.io/huxtable/)
+
+-   `{DT}` [link](https://rstudio.github.io/DT/)
+
+-   `{reactable}` [link](https://glin.github.io/reactable/)
