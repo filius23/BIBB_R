@@ -1,4 +1,20 @@
 # References {.unnumbered}
 
+```{r ref01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(kableExtra)
+```
+
+
+
+```{r,echo=F}
+data.frame(Function = "`read_delim()`",
+           Function = "[`read_delim()`](www.google.com)",
+           Formula = "$\\leftarrow\\alpha$",
+           Break = "this continues on a<br>new line",
+           Link = "[Google](www.google.com)") |>
+  kbl(format = "markdown") 
+```
+
 ::: {#refs}
 :::

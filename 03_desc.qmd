@@ -1,0 +1,744 @@
+# Überblick erhalten: Tabellen {#tab}
+
+```{r setup03, echo = F, include=FALSE}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+knitr::opts_chunk$set(collapse = F)
+path <- "D:/oCloud/RFS/" # wo liegt der Datensatz?
+a16 <- read.csv(paste0(path,"allbus2016_kompakt.csv"),sep = ";",header = T,stringsAsFactors = F) # einlesen
+```
+
+In der vorherigen Sitzung hatten wir gesehen, wie wir Datensätze importieren und damit arbeiten. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem Allbus 2016 arbeiten. Zunächst müssen wir dazu die Daten wieder wie vergangene Woche einlesen:
+```{r W04_1, eval=F, echo = T}
+setwd("...") # wo liegt der Datensatz?
+a16 <- read.table("allbus2016_kompakt.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
+```
+
+## Kategoriale Merkmale
+### Absolute Häufigkeiten
+Zentraler Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `german` (Details im Codebuch).
+```{r W04_2, include=T, echo = T}
+table(a16$german)
+```
+Wir bekommen hier also die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. Aus dem Codebuch erfahren wir, für welche inhaltlichen Kategorien die Zahlencodes jeweils stehen. Bspw. steht `1` dafür, dass der*die Befragte die deutsche Staatsbürgerschaft besitzt.
+Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später wieder aufrufen:
+```{r W04_3, include=T, echo = T}
+t1 <- table(a16$german)
+t1 
+```
+
+`r as.numeric(table(a16$german)[2])` Befragte haben also nur die deutsche Staatsbürgerschaft, `r as.numeric(table(a16$german)[3])` Befragte haben die deutsche und noch eine weitere Staatsbürgerschaft. Außerdem enthält der Datensatz `r as.numeric(table(a16$german)[4])` Befragte ohne deutsche Staatsbürgerschaft.   
+
+Etwas störend ist aber noch die `-32`. Aus dem Codebuch erfahren wir, dass `-32` für fehlende Angabe steht:
+
+```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
+knitr::include_graphics("D:/oCloud/RFS/images/103_german_codebuch.png")
+```
+
+### fehlende Werte mit NA überschreiben  {#NA_w103}
+
+Um die Werte mit `-32` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie auf `NA` setzen. Dazu rufen wir `a16$german` auf und filtern mit `[]` nur die Werte für `german` gleich `-32` heraus. Vergangene Woche haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
+```{r}
+a16$german[a16$german == -32] # nur german = -32 aufrufen
+```
+Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `german == -32` mit `NA`: 
+```{r W04_3miss, include=T, echo = T}
+a16$german[a16$german == -32] <- NA
+# Wir könnten auch einfach alle Werte kleiner 0 auswählen:
+a16$german[a16$german < 0] <- NA
+```
+
+`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `table()` nicht aufgeführt:
+```{r W04_3miss_tab, include=T, echo = T}
+table(a16$german)
+```
+Wir können aber mit der Option `exclude = NULL` die Auszählung von `NA` explizit anfordern:
+```{r}
+table(a16$german, exclude = NULL)
+```
+**Achtung!** Die vor dem Ausschluss von `-32` abgespeicherte Tabelle `t1` ändert sich dadurch nicht:
+```{r}
+t1
+```
+Das liegt daran, dass bei Aufruf von `t1` die abgelegten Werte, so wie sie gespeichert wurden, wieder aufgerufen werden. Es wird **keine neue Auszählung** vorgenommen! Möchten wir die aktualisierte Tabelle ohne die `NA` in `t1` ablegen, dann müssen wir `t1` mit den neuen Werten überschreiben:
+```{r}
+t1 <- table(a16$german)
+t1
+```
+
+
+
+### Kumulierte Häufigkeiten
+Mit `cumsum()` können wir uns die *kumulierten* Häufigkeiten ausgeben lassen. Dazu wenden wir `cumsum` auf die Häufigkeitstabelle an:
+```{r W04_4, include=T, echo = T}
+cumsum(table(a16$german))
+```
+*Was sagen die Zahlen jetzt aus? `r as.numeric(cumsum(table(a16$german))[2])` Befragte haben die deutsche und evtl. noch eine weitere Staatsbürgerschaft. Für `r as.numeric(cumsum(table(a16$german))[3])` Befragte liegt eine Angabe zur Staatsbürgerschaft vor.*
+
+Die Befehlsschachtel aus `table()` und `cumsum()` können wir durch ein schrittweises Vorgehen auflösen:
+```{r}
+t1 <- table(a16$german) # ablegen wie oben
+cumsum(t1)
+```
+
+
+### Relative Häufigkeiten (Anteile)
+Neben den absoluten Häufigkeiten können wir uns auch relative Häufigkeitstabellen anzeigen lassen. Dazu nutzen wir den `prop.table()` Befehl und wenden diesen wiederum entweder auf `table()` oder direkt auf `t1` an:
+```{r W04_5, include=T, echo = T}
+prop.table(table(a16$german)) 
+prop.table(t1) 
+```
+*Wir sehen hier also, dass `r sprintf("%2.3f",prop.table(t1)[1]*100)`% aller Befragten nur die deutsche Staatsbürgerschaft haben.*
+
+Auch die relativen Häufigkeiten können wir uns als kumulierte Werte ausgeben lassen, dazu kombinieren wir `prop.table()` mit `cumsum()`:
+```{r}
+cumsum(prop.table(table(a16$german)))
+```
+Diese Befehlsschachtel können wir wieder vermeiden indem wir die absoluten Häufigkeiten aus `t1` aufrufen und dann die relativen Häufigkeiten unter  `t2` ablegen:
+```{r}
+t2 <- prop.table(t1) # relative Häufigkeiten unter t2 ablegen
+cumsum(t2) # relative kumulierte Häufigkeiten 
+```
+*Wir sehen hier also, dass `r sprintf("%2.3f",cumsum(t2)[2]*100)`% aller Befragten die deutsche und evtl. eine weitere Staatsbürgerschaft haben.*
+
+
+
+### Übersichtstabelle mit allen Kennzahlen
+Dies alles lässt sich zu einer Gesamttabelle im Format eines Datensatzes zusammenfassen. Dazu legen wir zunächst die absoluten Häufigkeiten in einem `data.frame` unter `t3` ab:
+```{r W04_6, include=T, echo = T}
+t1 <- table(a16$german) # wie bereits oben
+t3 <- data.frame(t1) # t1 in einen Datensatz umformatieren
+t3
+class(t3) 
+```
+Diesem `data.frame` fügen wir dann mit `t3$...` neue Variablen/Spalten hinzu. Während wir uns oben jeweils auf `t1` für die absoluten Häufigkeiten bezogen hatten, finden wir diese jetzt innerhalb von  `t3` in der Spalte `Freq`:
+```{r}
+t3$H <- cumsum(t3$Freq) # kum. absolute Häufigkeiten
+t3 # kontrolle
+t3$f <- prop.table(t3$Freq) # rel. Häufigkeiten
+t3 # kontrolle
+t3$F <- cumsum(t3$f) # kum. rel. Häufigkeiten
+t3 # kontrolle
+```
+
+Zum Schluss können wir mit `colnames` die Spalten klar benennen. Dazu rufen wir mit `colnames(t3)` die Spaltennamen von `t3` auf und überschreiben diese dann mit einer Folge an Werten, die wir mit `c()` angeben:
+```{r W04_7, include=T, echo = T}
+colnames(t3) <- c("Werte", "h", "H", "f", "F")
+t3 
+```
+
+
+
+## Metrische Variablen
+
+Das bisherige Beispiel Staatsbürgerschaft (`german`) bezog sich auf ein kategoriales Merkmal. Für ein metrisches Merkmal, wie zum Beispiel das Geburtsjahr macht eine Häufigkeitstabelle wenig Sinn, da das Geburtsjahr sehr viele Ausprägungen hat und eine Tabelle  unübersichtlich wäre - hier nur als Beispiel die ersten 20 Ausprägungen (es gibt insgesamt 77!):
+```{r, eval=F}
+table(a16$age)
+```
+```{r, echo=F}
+head(table(a16$age), n = 20)
+```
+
+Um eine Häufigkeitstabelle zu erstellen müssen wir bei metrischen Merkmalen Klassen bilden. So könnten wir das Alter in Lebensjahrzehnte unterteilen. Zuvor müssen wir wieder die fehlenden Angaben[^1] überschreiben:
+```{r}
+a16$age[a16$age == -32] <- NA
+```
+Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable in `a16` ab: 
+```{r}
+a16$age_zehner <- cut(a16$age, breaks = c(10,20,30,40,50,60,70,80,90,100) )
+a16$age_zehner <- cut(a16$age, breaks = seq(10,100,10) ) # kürzer mit seq()
+```
+Für diese neue Variable können wir mit `table()` eine Häufigkeitstabelle anfordern:
+
+```{r}
+table(a16$age_zehner)
+```
+`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also 437 Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
+Wir haben also durch Klassierung aus dem metrischen Merkmal `age` ein kategoriales Merkmal `age_zehner` erstellt. Damit können wir dann genauso arbeiten wie oben - zB für die kumulierten relativen Häufigkeiten:
+```{r}
+age_tab <- table(a16$age_zehner) # abs Häufigkeiten
+age_tab2 <- prop.table(age_tab) # rel Häufigkeiten
+cumsum(age_tab2) # kumulieren
+```
+*Wir sehen hier so, dass `r sprintf("%2.3f",cumsum(age_tab2)[4]*100)`% aller Befragten 50 Jahre oder jünger sind.*
+
+Wir könnten alles auch in einem Befehl zusammen durchführen, das wird aber schnell unübersichtlich:
+```{r}
+cumsum(prop.table(table( cut(a16$age, breaks = seq(10,100,10) ) )))
+```
+
+
+
+[^1]: Die Werte für fehlende Angaben finden wir Codebuch: auch hier ist `-32` wieder ein Code für fehlende Werte.
+
+##  Lage- & Konzentrationsmaße 
+
+
+```{r sw5_einlesen1, eval=F, echo = T}
+ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
+```
+
+Im Unterschied zu den bisherigen Sitzungen werden wir heute mit einer kumulierten Version des Allbus arbeiten. In dieser Version sind die Antworten aus den Jahren `r min(ak$year)` bis `r max(ak$year)` enthalten. Den Datensatz finden Sie in StudIP. Wir können die Daten wie vergangene Woche einlesen:
+```{r sw5_einlesen1, eval=F, echo = T}
+setwd("...") # wo liegt der Datensatz?
+ak <- read.table("allbus_kumuliert.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
+```
+
+Da der Datensatz deutlich größer ist als die bisherige Version (`r nrow(ak)` Fälle und `r ncol(ak)` Variablen), können wir auch  `read_delim()` aus dem Paket `readr` verwenden, was deutlich schneller ist:
+```{r sw5_einlesen2,eval=F}
+install.packages("readr") # Paket installieren
+library(readr) # Paket laden
+setwd("...") # wo liegt der Datensatz?
+ak <- read_delim("allbus_kumuliert.csv", delim = ";", 
+                 col_types = cols(.default = col_double()))
+```
+
+Die Daten liegen im *long shape* vor, d.h. die Angaben aus den verschiedenen Jahren stehen untereinander. Wenn wir nur die Befragten mit der `respid` 1 auswählen bekommen wir mehrere Zeilen angezeigt - für jedes Befragungsjahr eine:[^1]  
+```{r, eval = F}
+ak[ak$respid == 1,]
+```
+
+[^1]: Die Darstellung zeigt nur eine Auswahl der Variablen
+
+<!-- mit fortgeschrittener Syntax, wird nicht erwartet - für Neugierige: \newline `ak[ak$respid == 1 & ak$year %in% c(1982,1996,2014,2018),c("year","respid","eastwest","german","age","inc","mstat","df05a","df06a","df07a","gkpol","gs01")]` -->
+```{r, echo=F}
+ak %>% 
+  select(year,respid, eastwest, german, age, inc, mstat, df05a,  df06a,df07a,gkpol,gs01) %>% 
+  filter(respid == 1, year %in% c(1982,1996,2014,2018)) %>% data.frame(.)
+```
+
+Die Beschreibung der Variablen finden Sie im entsprechenden Codebuch `Codebuch_Allbus_kumuliert.pdf` auf StudIP. Beispielsweise ist  unter `age` das Alter und unter `inc` das Einkommen der Befragten erfasst.
+
+Für die Beispiele verwenden wir die Angaben aus dem Jahr 2014. Diese Auswahl können wir mit `[]` treffen:
+```{r}
+a14 <- ak[ak$year == 2014,] # basis R
+```
+
+Jede statistische Auswertung eines Datensatzes startet mit einer Beschreibung der Variablen. Hierfür lernen wir heute die passenden Befehle in R kennen.
+
+
+# Lagemaße
+Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen. Wir sehen uns die Haushaltseinkommen der Befragten (`di05`) im Allbus 2014 mit Hilfe folgender Befehle an:
+
++ Minimum und Maximum: `min()`, `max()`
++ arithm. Mittel: `mean()`
++ Median: `median()`
+
+
+```{r sw5_1, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+min(a14$di05) # kleinster Wert
+```
+Natürlich gibt es keine Haushalte, die ein Einkommen von `-50` Euro pro Monat haben. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
+```{r sw5_2, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+a14$di05[a14$di05 < 0] <- NA # missings überschreiben
+```
+Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
+```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+min(a14$di05)
+```
+Deshalb müssen wir die Option `na.rm = T` angeben:
+```{r sw5_3b, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+min(a14$di05,na.rm = T)
+max(a14$di05,na.rm = T) #größter Wert
+mean(a14$di05, na.rm = T)
+median(a14$di05, na.rm = T)
+```
+
+# Streuungsmaße
+Lagemaße erfassen aber nur einen Aspekt der Verteilung einer Variable. Bspw. ergeben sich identische `median` und `mean`, auch wenn `x1` und `x2` sehr verschiedene Streuungen aufweisen:
+```{r sw5_bsp, include=T, echo = T, collapse=F}
+x1 <- c( 20 , 50 )
+x2 <- c(0.1 , 69.9 )
+mean( x1 )
+mean( x2 )
+median( x1 )
+median( x2 )
+```
+Daher werden Streuungsmaße verwendet, um auch die Verteilung der Werte über den Wertebereich zu erfassen.
+
+## Spannweite  
+Basierend auf den Minima und Maxima können wir die Spannweite berechnen:
+
+```{r}
+max(a14$di05, na.rm = T) - min(a14$di05, na.rm = T)
+```
+
+
+
+
+## Quantile   
+Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
+```{r sw5_quant1}
+quantile(a14$di05,na.rm = T)
+```
+Musterinterpretation: 
+
+  + *25% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[2]`€ oder weniger*
+  + *75% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[4]`€ oder weniger*
+  
+Daraus ergibt sich auch:
+
+  + *75% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[2]`€ oder mehr* 
+  
+  
+
+Wir können aber durch Angabe in den Optionen beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
+```{r sw5_quant2}
+quantile(a14$di05,probs = .4, na.rm = T)
+```
+In Kombination mit `seq()` können wir zB. auch die Dezilgrenzen (entlang der Vielfachen von 0,1) anfordern:
+```{r sw5_quant3}
+quantile(a14$di05,probs = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), na.rm = T) 
+quantile(a14$di05,probs = seq(0,1,0.1), na.rm = T) 
+```
+Einen Überblick bietet `summary()`:
+```{r sw5_quant_summary}
+summary(a14$di05)
+```
+
+## Interquartilsdistanz und Interdezilsdistanz  
+Aus den Quantilen leiten sich auch die Inter**quartil**sdistanz und Inter**dezil**sdistanz ab.   
+Die Interquartilsdistanz ist schlicht die Differenz zwischen dem ersten und dritten Quartil. Genauso ist die Interdezilsdistanz die Differenz zwischen dem neunten und ersten Dezil:
+```{r W07_4, include=T, echo = T}
+quantile(a14$di05, .75, na.rm = T) - quantile(a14$di05, .25, na.rm = T) # IQR
+quantile(a14$di05, .9, na.rm = T) - quantile(a14$di05, .1, na.rm = T) # IDR
+```
+\color{red}
+**Achtung**: R zeigt nach der Berechnung der Differenz trotzdem die Beschriftung des Minuenden / des ersten Argumentes an!   
+\color{black}
+
+## Varianz, Standardabweichung, Variationskoeffizient
+Die häufigste Kennzahl zur Beschreibung von Streuung ist aber die Varianz. Die Varianz ist definiert als die durchschnittliche quadrierte Abweichung vom arith. Mittel: $$var(x) = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})^2}{n}$$    
+Was bedeutet diese Formel?    
+Schauen wir erst in den Zähler des Bruchs: $(x_{i}-\bar{x})^2$
+Es geht also um die Abstände der einzelnen Datenpunkte ($x_{i}$) zum arithmetischen Mittel ($\bar{x}$) - mathematisch die Differenz zwischen den einzelnen Datenpunkten $x_{i}-\bar{x}$ - hier eingezeichnet als gestrichelte Linien:
+```{r dpi = 800, echo = F, out.height="55%", out.width="55%", fig.align="center"}
+
+eq <-  substitute(italic(bar(x))) # formel erstellen
+
+a14 %>% 
+  select(respid, di05) %>% 
+  na.omit() %>%  
+  sample_n(30) %>% 
+  mutate(mean = mean(a14$di05,na.rm = T), id = 1:n()) %>% 
+  filter(di05 < 40000) %>% 
+  ggplot(.,aes(x = id, y = di05)) +
+  geom_segment(aes(yend= mean, xend = id ),
+               size = .45, linetype = 2, color = "#1BB6AF") +
+  geom_point(size = 1.75, color = "#172869") +
+  geom_hline(aes(yintercept = mean), color = "#AF6125", size = .75) +
+  geom_label(aes(x = min(id)-.75, y = 10, label = as.character(as.expression(eq))), label.size = .01, hjust = 0.5, color = "#AF6125", parse = T, size = 4.5) +
+  geom_segment(aes(x = min(id)-.75, y = 300, xend = min(id)-.75, yend = mean - 100), arrow = arrow(length = unit(.0275,"npc"), type = "closed"), 
+               color = "#AF6125", size = .5) +
+  guides(color = "none") +
+  labs(y = "Haushaltseinkommen (di05)", x = "", caption = "Zufällige Auswahl von 30 Fällen des Allbus 2014") +
+  theme_minimal(base_size = 13) +
+  expand_limits(y = 0) +
+  theme(axis.text.x = element_blank(), plot.caption = element_text(size = rel(.75)), plot.caption.position = "plot")
+```
+Für Punkte, die über dem arith. Mittel liegen, erhalten wir für die Differenz einen positiven Wert (wir ziehen ja jeweils das arith. Mittel vom Wert für den Datenpunkt ab). Für Punkte mit Werten, die kleiner als das arith. Mittel sind, erhalten wir einen negativen Wert.     
+Würden wir die Abstände (gestrichelten Linien) einfach aufsummieren, erhielten wir als Ergebnis immer Null! Das arithmetische Mittel liegt ja per Definition immer genau "in der Mitte": die Abstände nach oben sind in der Summe genauso groß wie die Abstände nach unten. Daher wird zunächst jeder Abstand quadriert: $(\bar{x} - x_{i})^2$   
+Der Rest der Formel gibt dann an, dass alle quadrierten Differenzen aufsummiert ($\sum_{i=1}^{n}$) und dann durch die Anzahl der Beobachtungen geteilt werden ($\frac{}{n}$)- zusammengefasst hier nochmal die Formel:  $$var(x) = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})^2}{n}$$
+
+Wir können die Varianz mit `var()` berechnen:
+```{r W07_6, include=T, echo = T}
+var(a14$di05, na.rm = T) # Varianz
+```
+```{r, echo = F}
+var <- var(a14$di05, na.rm = T)
+```
+
+In unseren Datensatz beträgt der Varianz der Haushaltseinkommen also `r format(var,big.mark = ".",decimal.mark = ",")`€². Auf der Varianz beruhen noch zwei weitere Streuungsmaße. Die *Standardabweichung* entspricht der Wurzel der Varianz und hat somit die gleiche Messeinheit wie die Variable (hier EUR). Der *Variationskoeffizient*  entspricht `sd`/`mean` und dient dem Vergleich verschiedener Streuungen relativ zum jeweiligen Mittelwert:
+```{r W07_6std, include=T, echo = T}
+sqrt(var(a14$di05, na.rm = T))
+sd(a14$di05, na.rm = T) # Standardabweichung
+sd(a14$di05, na.rm = T) / mean(a14$di05, na.rm = T) # Variationskoeffizient
+```
+
+Für alle Streuungsmaße gilt: je größer, desto mehr Streuung (Unterschiede) gibt es in den Daten.
+
+
+### Gini-Koeffizient
+
+Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
+
+```{r gini_plot1, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+gdf2 <- 
+  data.frame(id = 1:5) %>% 
+  mutate(eq = 1, ineq = id/5*5/3, w = 6-id ) %>% 
+  mutate(across( matches("eq"), ~ cumsum(.x),.names = "{col}_{fn}")) %>% 
+  uncount(w,.id = "x") %>% 
+  mutate(eq2 = ifelse(lead(id)==id | id == 5,NA,eq_1))
+
+  gdf2 %>% 
+  ggplot(.,aes(x = 6-x,y = ineq)) +
+  geom_col(color = "grey25", aes(fill = factor(id,levels=5:1))) +
+  geom_line(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), color = "#EEDA9DFF", size = .5) +
+  geom_point(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), fill = "#EEDA9DFF", size = 3, shape= 21, color = "grey25", stroke = .25)+
+  geom_text(aes(label = id,y = ineq_1-ineq/2, color = factor(id,levels=5:1) )) + 
+    scale_x_continuous(breaks = 1:5, labels = c("kleinster","2.kleinster","3","zweitgrößter","größter")) +
+    scale_y_continuous(breaks = 0:5, labels = paste0(seq(0,100,20),"%") ) +
+    scale_fill_manual(values = paletteer::palettes_d$dutchmasters$pearl_earring[2:6]) +
+    scale_color_manual(values = c("grey25","grey25","grey98","grey25","grey25")) +
+    guides(fill = "none", color = "none") +
+    labs(y = "Anteil am Gesamtwert", x = "Sortierte Beobachtungen") +
+    theme_minimal(base_size = 11) +
+    theme(panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank())
+```
+
+```{r dpi = 900, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+gdf <- a14 %>% mutate_at(vars(di05),~ifelse(.<0,NA,.)) %>%  
+  select(respid, di05) %>% 
+  na.omit() %>% 
+  arrange(di05) %>% 
+  mutate(pct_id = 1:n()/n(),
+         pct_di05 = cumsum(di05/sum(di05)),
+         sampl = runif(n = nrow(.)))
+
+gini_ann_df <- gdf %>% 
+  filter(sampl<.0151, between(pct_id,.5,.6 ) ) %>% slice(1) %>%
+  mutate(lab_lo = "Lorenzkurve", 
+         labl = paste0("Lorenzkurve (aus Beobachtungen):\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_di05*100,0),"% des gesamten HH-Einkommens\""),
+         labl1 = paste0("(Theoretische) Diagonale:\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_id*100,0),"% des gesamten HH-Einkommens\""),
+         labl2 = "Gini Koeffizient:\nFläche zwischen Diagonale und Lorenzkurve\nim Verhältnis zu Fläche unter Lorenzkurve (weiß)\n(0=Gleichverteilung,1=Maximale Konzentration)")
+
+ggplot(gdf, aes(x = pct_id, y = pct_di05)) + 
+  geom_ribbon(aes(ymin = pct_di05, ymax = pct_id, xmin = pct_id, xmax = pct_id), fill = "#1BB6AF" ) +
+  geom_line(aes(y = pct_id), linetype = 2, size = .95, color = "#172869") + # Diagonale
+  geom_line(size = .5, color = "#9ED80B") + # Lorenzkurve
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
+  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 2.75, 
+             color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
+  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 2.75, 
+             color = "grey95", fill = "#172869") + # diagonale label
+  geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
+  geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
+  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 2.75, 
+             color = "grey15", fill = "#1BB6AF") + # Gini Label
+  geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
+  scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
+  scale_y_continuous("Kumulierter Einkommensanteil", labels = scales::percent_format(accuracy = 1L)) +
+  theme_minimal(base_size = 11) +
+  coord_cartesian(x =c(0,1),y =c(0,1),expand = F)
+```
+Den Gini-Koeffizienten können wir mit `Gini()` aus dem Paket `ineq` berechnen:
+```{r,eval=F}
+install.packages("ineq") # einmal installieren
+library(ineq) # ineq laden
+Gini(a14$di05)
+```
+```{r, echo=F}
+library(ineq) # ineq laden
+Gini(a14$di05)
+```
+
+# Lage- und Streuungsmaße vergleichen
+Häufig werden diese Kennzahlen erst im Vergleich richtig spannend. zB können wir die Einkommensangaben aus den alten und neuen Bundesländern vergleichen:
+```{r sw5_mean_vgl, include=T, echo = T}
+mean(a14$di05[a14$eastwest == 1], na.rm = T) # alte Bundesländer
+mean(a14$di05[a14$eastwest == 2], na.rm = T) # neue Bundesländer
+```
+In den neuen Bundesländern ist das durchschnittliche HH-Einkommen um `r 2921.727 - 2347.703`€ niedriger.
+```{r sw5_med_vgl, include=T, echo = T}
+median(a14$di05[a14$eastwest == 1], na.rm = T) # alte Bundesländer
+median(a14$di05[a14$eastwest == 2], na.rm = T) # neue Bundesländer
+```
+In den neuen Bundesländern ist das Median-HH-Einkommen um `r median(a14$di05[a14$eastwest == 1], na.rm = T)-median(a14$di05[a14$eastwest == 2], na.rm = T)`€ niedriger. Die Variationskoeffizienten zeigen eine größere Streuung im Osten als im Westen:
+```{r sw5_var_vgl, include=T, echo = T}
+sd(a14$di05[a14$eastwest == 1], na.rm = T) / 
+  mean(a14$di05[a14$eastwest == 1], na.rm = T)
+sd(a14$di05[a14$eastwest == 2], na.rm = T) / 
+  mean(a14$di05[a14$eastwest == 2], na.rm = T)
+```
+Wir können auch für das gesamte `summary` die Differenz zwischen Ost und West bilden:
+```{r sw5_su_vgl}
+summary(a14$di05[a14$eastwest == 1], na.rm = T) -
+  summary(a14$di05[a14$eastwest == 2], na.rm = T) 
+```
+In den neuen Ländern lag das Median-HH-Einkommen um 600€ niedriger als im Westen. Die 25\% bzw. 75\% Quartilsgrenze lag um 400€ bzw 800€ niedriger, das arith. Mittel war um 574€ niedriger als in den alten Bundesländern.
+
+```{r sw5_gini_vgl, include=T, echo = T}
+Gini(a14$di05[a14$eastwest == 1])
+Gini(a14$di05[a14$eastwest == 2])
+```
+Wo ist die Ungleichheit nun höher? In Ost oder West?
+
+
+## Visualisierung von Verteilungen: Boxplots
+
+Definition der Bestandteile eines Boxplots: 
+
++ ggf. Ausreißer
++ unterer Whisker: `q1 - 1.5* IQR`
++ untere Grenze: 1. Quartil 
++ mittlere Linie: Median 
++ obere Grenze: 3. Quartil 
++ oberer Whisker: `q3 + 1.5* IQR`
++ ggf. Ausreißer
+
+Die Box enthält also die zentralen 50% des Wertebereichs.
+```{r, sw05_boxplot1, echo = F, out.height="45%", out.width="50%", fig.align="center", warning=F,message=F}
+bp_ann_df <- 
+  filter(ak,hs16>0) %>% 
+  mutate_at(vars(hs16),~ifelse(.<0,NA,.)) %>% 
+  summarise(q25 = quantile(hs16,probs = .25),
+            q50 = quantile(hs16,probs = .5),
+            q75 = quantile(hs16,probs = .75),
+            whis1 = q25 - 1.5*(q75-q25) + .5 ,
+            whis2 = q75 + 1.5*(q75-q25) - .5) %>% 
+  mutate_all(~if_else(. < 0,0,.)) %>% 
+  pivot_longer(cols=everything(), values_to = "hs16") %>% 
+  mutate(xend1 = ifelse(grepl("whis",name),.015,.4),
+         name = case_when(name == "q25" ~ "1. Quartil (25% Grenze)",
+                          name == "q50" ~ "Median (50% Grenze)",
+                          name == "q75" ~ "3. Quartil (75% Grenze)",
+                          name == "whis1" ~ "unterer Whisker",
+                          name == "whis2" ~ "oberer Whisker"),
+         x = 1)
+
+bp_ann_ausr <- filter(ak,!between(hs16,146,197),hs16>0) %>% select(hs16) %>% mutate(name="Ausreißer",x=1) %>% 
+  distinct() %>% group_by(aus=hs16>146) %>% 
+  mutate(hs16m=mean(hs16) %>% if_else(.<144,140,.))
+
+  
+ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) + 
+  geom_boxplot() + 
+  geom_label(data = bp_ann_df, aes(x = x-.45, y = hs16, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_label(data = bp_ann_ausr, aes(x = x-.45, y = hs16m, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_segment(data = bp_ann_df, aes(x = x-.451, xend = xend1, yend = hs16, y = hs16), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.025,"npc"), type = "closed")) +
+  geom_segment(data = bp_ann_ausr, aes(x = x-.451, xend = .015, yend = hs16, y = hs16m), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.01,"npc"), type = "closed")) +
+  labs(color = "", # legenden-label auf leer
+       y = "", # y-Achse labeln
+       x="")+ # x-Achse labeln
+  theme_void() + 
+  theme(axis.text.x = element_blank()) +
+  expand_limits(x = c(0,1.1))
+
+```
+
+Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
+```{r, eval = F}
+library(ggplot2)
+ggplot(data = a14, aes(y = di05)) + geom_boxplot()
+```
+
+So können wir einen Boxplot erstellen, der die Werte nach neuen und alten Bundesländern getrennt darstellt: 
+```{r, eval = F}
+ggplot(data = a14, aes(y = di05)) + geom_boxplot() + 
+  facet_wrap(~eastwest) + # nach ost/west aufsplitten
+  theme_minimal()
+```
+Oben sehen wir die Ausprägungen von `eastwest`: (1 & 2). Da durch die Ausreißer die Box sehr klein ist, rechts ein Zoom auf den Bereich von 0-20.000€ Monatseinkommen (Syntax unter [**Hinweise**](#bp_hinweise))
+```{r sw05_boxplot, echo = F, out.height="80%", out.width="80%", fig.align="center", warning=F,message=F}
+library(ggplot2)
+library(patchwork)
+box_plot <- ggplot(a14, aes(x = "", y = di05)) + 
+  geom_boxplot(aes(color = as.character(eastwest))) + 
+  facet_wrap(~eastwest) +
+  theme_minimal() +
+  labs(color = "",
+       y = "HH- Einkommen",
+       x="")+
+  scale_color_manual(values = c("#8F92A1","#172869"),
+                     breaks = c(1,2),
+                     labels = c("west", "ost"), guide = F) 
+
+box_zoom <- ggplot(a14, aes(x = "", y = di05)) + 
+  geom_boxplot(aes(color = as.character(eastwest)), size = .35) + 
+  facet_wrap(~eastwest) +
+  theme_minimal() +
+  labs(color = "",
+       y = "",
+       x="")+
+  scale_color_manual(values = c("#8F92A1","#172869"),
+                     breaks = c(1,2),
+                     labels = c("west", "ost")) +
+  coord_cartesian(ylim = c(0,20000)) 
+
+box_plot + box_zoom
+```
+Befragte aus den neuen Bundesländern geben niedrigere Einkommen an: der Median sowie beide Quartilsgrenzen liegen im Osten niedriger als im Westen. 
+
+
+## Aufgaben 2: lage und Konzentrationsmaße
+
+Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 und 2010 entwickelt?
+
+(1) Laden Sie den **kumulierten** Allbusdatensatz in R (siehe [oben](#einlesen)).
+(2) Erstellen Sie jeweils einen Datensatz für das Befragungsjahr 1994 und 2010 - filtern Sie mit `[]` also den kumulierten Datensatz jeweils einmal nach einem Jahr und legen Sie das Ergebnis in `a94` bzw. `a10` ab
+
+(3) Betrachten Sie zunächst für 1994 die Haushaltseinkommensverteilung (Variable `di05`) 
++ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
++ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz - was sagen Ihnen die Werte jeweils?
++ Berechnen Sie die Interdezildistanz und die Spannweite!
++ Berechnen Sie den Gini-Koeffizenten! 
+
+(4) Betrachten Sie dann die Haushaltseinkommensverteilung für 2010 (Variable `di05`) 
++ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
++ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz und den Gini-Koeffizienten für alle Fälle im Datensatz für 2010 - was sagen Ihnen die Werte jeweils?
++ Berechnen Sie die Interdezildistanz und die Spannweite!
+
+(5) Berechnen Sie für 1994 getrennt nach Ost und West (Variable `eastwest`) - welche Werte erhalten Sie jeweils für folgende Kennzahlen in Ost und West? (Denken Sie an `summary()`):
++ arithm. Mittel, den Median, das 25%- und 75%-Quartil 
++ Variationskoeffizient 
++ Gini-Koeffizient
+
+(6) Vergleichen Sie diese Ost-West-Unterschiede im Jahr 1994 mit denen für das Jahr 2010. Welche Tendenz können Sie für die Ost-West-Unterschiede erkennen?
+
+(7) Erstellen Sie jeweils einen Boxplot für das HH-Einkommen für 1994 und 2010! 
+  + Welche Kennzahlen können Sie jeweils aus den horizontalen Linien ablesen?
+  + Was können Sie jeweils zu den HH-Einkommensverteilungen sagen?
+  + Durch Anhängen des Arguments `+  coord_cartesian(ylim = c(min,max))` können Sie "zoomen" indem Sie statt `min` und `max` die Limits einsetzen.
+
+
+# Profi-Aufgaben
+
+## Boxplots 
+
+(8) Erstellen Sie jeweils einen Boxplot für Ost und West!
+
+
+Erstellen Sie die Boxplots nach Ost-West für 1994 und 2010 Jahre in einer Grafik!
++ Erstellen Sie zunächst einen Datensatz, welcher nur Beobachtungen aus 1994 und 2010 enthält und legen diesen als `a9410` ab. Nutzen Sie dazu `|` für eine "Oder"-Auswahl:
+```{r, eval = F}
+a9410 <- ak[ak$year == jahr1 | ak$year == jahr2,]
+```
++ Denken Sie daran, auch in `a9410` die Missings für `di05` mit `NA` zu überschreiben (siehe oben)!  
+
+Indem wir zu `facet_wrap` neben `eastwest` auch `year` angeben, wird eine 4-teilige Grafik erstellt mit jeweils einem Boxplot für jedes Jahr und Ost/West. Mit `nrow = 1` können wir  die Boxplots in eine Reihe setzen:
+
+```{r, eval = F}
+ggplot(data = ..., aes(...) )+ 
+  geom_boxplot() +
+  facet_wrap(~year+eastwest, nrow = 1) + ...
+```
+
+Was können Sie bei den Unterschieden zwischen Ost und West im Zeitverlauf erkennen? Denken Sie auch hier wieder an die Möglichkeit, mit ` coord_cartesian(ylim = c(0,20000))` zu zoomen. 
+
++ Vergeben Sie unterschiedliche Farben für Ost und West (siehe Hinweise)
+
+# Hinweise {#bp_hinweise}
+Vollständige Syntax für farbigen Boxplot
+```{r, eval = F}
+library(ggplot2)
+ggplot(a14, aes(x = "", y = di05)) + 
+  geom_boxplot(aes(color = as.character(eastwest))) + 
+  facet_wrap(~eastwest) +
+  theme_minimal() +
+  labs(color = "",
+       y = "HH- Einkommen",
+       x="")+
+  scale_color_manual(values = c("lightblue3","navy"),
+                     breaks = c(1,2),
+                     labels = c("west", "ost")) 
+```
+
+
+## Aufgaben
+
+1) Laden Sie den Allbusdatensatz `allbus_kompakt.csv` mit dem csv-Import in R:
+```{r einls, eval=F, echo = T}
+setwd("...") # wo liegt der Datensatz?
+a16 <- read.table("allbus2016_kompakt.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
+```
+
+2) Wir interessieren uns für die Variable `gkpol`.
+  + Suchen Sie die Variable im Codebuch: welche Information können Sie dieser Variable entnehmen?
+  + Welches Skalenniveau hat die Variable?  (inhaltliche Frage, keine R-Frage) 
+  + Müssen Sie die Variable erst klassieren um eine sinnvoll interpretierbare Tabelle zu erhalten?
+  + Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen. Welche ist die häufigste Ausprägung, wofür steht die Kategorie? (Sehen Sie im Codebuch nach)
+  + Hat die Variable fehlende Werte, die Sie ausschließen sollten? Falls ja, ersetzen Sie diese Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben.
+  
+3) Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol`, welche folgende Informationen enthält:
+  + absolute Häufigkeiten 
+  + relative Häufigkeiten
+  + kumulierte absolute Häufigkeiten
+  + kumulierte relative Häufigkeiten 
+  + Wie viele Befragte leben in einem Ort mit höchstens 49.999 Einwohnern?
+  + Wie groß ist der Anteil der Befragten, die in einem Ort mit höchstens 99.999 Einwohnern leben?
+  + Wie groß ist der Anteil der Befragten, die in einem Ort mit *mindestens* 100.000 Einwohnern leben?
+  
+4) Erstellen Sie eine Häufigkeitstabelle für das Geburtsjahr der Befragten (`yborn`)!
+  + Welches Skalenniveau hat die Variable? (inhaltliche Frage, keine R-Frage) 
+  + Müssen Sie die Variable erst klassieren um eine sinnvoll interpretierbare Tabelle zu erhalten? Beachten Sie dazu auch die [Hinweise](#hinweis_cut_w103) am Ende dieses Dokuments. Verwenden Sie die Jahrzehntgrenzen ab 1910.
+  + Erstellen Sie eine Tabelle welche die absoluten Häufigkeiten anzeigt
+  + Gibt es fehlende Werte, die Sie mit `NA` überschreiben sollten?
+  + Erstellen Sie eine zweite Version dieser Tabelle mit relativen Häufigkeiten
+  + Wie groß ist der Anteil der Befragten, die bis 1970 geboren wurden?
+  + Wie groß ist der Anteil der Befragten, die nach 1980 geboren wurden?
+  
+  
+
+## Profi-Aufgaben
+
+Für alle, die noch etwas mehr machen möchten:  
+
++ Runden Sie die Angaben zur relativen Häufigkeit auf 3 Nachkommastellen!
++ Lassen Sie sich von R die häufigste Ausprägung für `yborn` ausgeben
++ Fügen Sie der vollständigen Häufigkeitstabelle für die Variable `gkpol` eine neue Spalte hinzu, welche die Bedeutung der Zahlencodes wiedergibt!
+
+Tipps dazu finden Sie in den Hinweisen am Ende!
+(Wissen aus diesen Aufgaben wird nicht vorausgesetzt in den kommenden Wochen, aber es hilft natürlich)
+
+
+
+
+## Hinweise 
+
+### cut wählt ein ungünstiges Zahlenformat {#hinweis_cut_w103}
+
+`cut` verwendet für Klassengrenzen mit mehr als 3 Stellen eine wenig intuitive Darstellung. Mit `dig.lab` können Labels mit mehr als 3 Stellen angefordert werden:
+```{r}
+x1 <- c(1212,2121,1212)
+table( cut(x1, breaks = c(0,1500,2500)) )
+table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) )
+```
+
+### Relative Häufigkeiten runden
+
+
+Erläuterung: Sie können mit `round(x , 3)` Werte auf eine gewisse Zahl von Ziffern runden. Die zweite Zahl in der Klammer (nach dem Komma) gibt an, wieviele Dezimalstellen wir möchten:
+```{r W04_9, include=T, echo = T}
+round(21.12121123,digits = 3)
+round(21.12121123,digits = 5)
+round(21.12121123,digits = 0)
+```
+
+Wir können also die relativen Häufigkeiten runden und so die Tabelle von oben übersichtlicher machen: 
+```{r W04_11, include=T, echo = T}
+t3
+t3$f <- round(t3$f,3)
+t3$F <- round(t3$F,3)
+t3
+```
+
+
+
+### Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?
+
+```{r}
+t1 <- table(a16$age)
+t1[which(t1 == max(t1))] # Modus
+```
+`age=48` ist mit `87` Befragten die häufigste Ausprägung.
+
+### Labels als neue Spalte hinzufügen
+
+Wir können die Übersichtstabelle auch noch beschriften, indem wir eine Textvariable hinzufügen:
+```{r}
+t3 
+t3$labels <- c("dt Staatsbürgerschaft","dt und andere Staatsbürgerschaft",
+               "andere Staatsbürgerschaft")
+t3
+```
+
+

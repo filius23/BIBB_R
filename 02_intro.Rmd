@@ -1,0 +1,346 @@
+# Arbeiten mit Datensätzen in R
+
+```{r setup02, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+library(kableExtra)
+```
+
+In der ersten Session haben wir ein paar erste Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - das lernen wir heute kennen.
+
+Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` abgelegt und mit den in `profs` abgelegten Professurenzahlen ins Verhältnis gesetzt. Das funktioniert soweit gut, allerdings ist es übersichtlicher, zusammengehörige Werte auch zusammen ablegen. Dafür gibt es in R `data.frame`. Wir können dazu die beiden Objekte in einem Datensatz ablegen, indem wir sie in `data.frame` eintragen und das neue Objekt unter `df` ablegen. Wenn wir `df` aufrufen sehen wir, dass die Werte zeilenweise zusammengefügt wurden:
+
+```{r , include=T, echo = T}
+studs <- c(19173,5333,15643)    ## Studierendenzahlen unter "studs" ablegen 
+profs       <- c(322,67,210)    ## Prof-Zahlen unter "profs" ablegen
+df <- data.frame(studs, profs)
+df    ## zeigt den kompletten Datensatz an
+```
+
+In der ersten Zeile stehen also die Werte der Uni Bremen, in der zweiten Zeile die Werte der Uni Vechta usw. Die Werte können wir dann mit `datensatzname$variablenname` aufrufen. So können wir die Spalte `profs` anzeigen lassen:
+
+```{r , include=T, echo = T}
+df$profs 
+```
+
+Mit `colnames()` können wir die Variablen-/Spaltennamen des Datensatzes anzeigen lassen, zudem können wir mit `nrow` und `ncol` die Zahl der Zeilen bzw. Spalten aufrufen:
+
+```{r , include=T, echo = T}
+colnames(df) ## Variablen-/Spaltennamen anzeigen
+ncol(df) ## Anzahl der Spalten/Variablen
+nrow(df) ## Anzahl der Zeilen/Fälle
+```
+
+Neue zusätzliche Variablen können durch `datensatzname$neuevariable` in den Datensatz eingefügt werden:
+
+```{r , include=T, echo = T}
+df$stu_prof <- df$studs/df$profs
+## df hat also nun eine Spalte mehr:
+ncol(df) 
+df
+```
+
+## Variablentypen
+
+Wir können auch ein oder mehrere Wörter in einer Variable ablegen, jedoch müssen Buchstaben/Wörter immer in `""` gesetzt werden.
+
+```{r , include=T, echo = T}
+df$uni <- c("Uni Bremen","Uni Vechta", "Uni Oldenburg")
+df
+```
+
+Damit haben wir einen neuen Variablentypen kennen gelernt. Grundsätzlich gibt es in R zwei Variablentypen: numeric (enthält Zahlen) und character (enthält Text oder Zahlen, die als Text verstanden werden sollen). Darüber hinaus gibt es noch weitere Typen, die besprechen wir wenn sie nötig sind, zB. gibt es "integer" für numerische Variablen mit ausschließlich ganzzahligen Ausprägungen. Mit `class()` kann die Art der Variable untersucht werden oder mit `is.numeric()` bzw. `is.character()` können wir abfragen ob eine Variable diesem Typ entspricht:
+
+```{r vecclass, include=T, echo = T}
+class(df$profs)
+class(df$uni)
+is.numeric(df$profs)
+is.numeric(df$uni)
+is.character(df$profs)
+```
+
+Mit `as.character()` bzw. `as.numeric()` können wir einen Typenwechsel erzwingen:
+
+```{r , include=T, echo = T,  error = TRUE}
+as.character(df$profs) ## die "" zeigen an, dass die Variable als character definiert ist
+```
+
+Das ändert erstmal nichts an der Ausgangsvariable `df$profs`:
+
+```{r}
+class(df$profs)
+```
+
+Wir können diese Umwandlung auch permanent machen, indem wir `df$profs` mit der umgewandelten Variante überschreiben:
+
+```{r , include=T, echo = T,  error = TRUE}
+df$profs <- as.character(df$profs)
+df$profs 
+class(df$profs)
+```
+
+Mit `character`-Variablen kann nicht gerechnet werden, auch wenn sie Zahlen enthalten:
+
+```{r , include=T, echo = T,  error = TRUE}
+df$profs / 2 
+```
+
+Wir können aber natürlich `df$profs` spontan in `numeric` umwandeln, um mit den Zahlenwerten zu rechnen:
+
+```{r , include=T, echo = T,  error = TRUE}
+as.numeric(df$profs) / 2
+```
+
+Wenn wir Textvariablen in numerische Variablen umwandeln, bekommen wir `NA`s ausgegeben. `NA` steht in R für fehlende Werte:
+
+```{r}
+as.numeric(df$uni)
+```
+
+R weiß (verständlicherweise) also nicht, wie die Uni-Namen in Zahlen umgewandelt werden sollen.
+
+## Zeilen oder Spalten auswählen
+
+Wir können Einträge aus einem Datensatz mit \[ \] auswählen:
+
+```{r , include=T, echo = T}
+df[1,1] ## erste Zeile, erste Spalte
+df[1,]  ## erste Zeile, alle Spalten
+df[,1]  ## alle Zeilen, erste Spalte (entspricht hier df$studs)
+df[,"studs"] ## alle Zeilen, Spalte mit Namen studs -> achtung: ""
+```
+
+Natürlich können wir auch mehrere Zeilen oder Spalten auswählen. Dafür müssen wir wieder auf `c( )` zurückgreifen:
+
+```{r}
+df[c(1,2),]  ## 1. & 2. Zeile, alle Spalten
+df[,c(1,3)]  ## alle Zeilen, 1. & 3. Spalte (entspricht df$studs & df$stu_prof)
+df[,c("studs","uni")] ## alle Zeilen, Spalten mit Namen studs und uni
+```
+
+## Zeilen auswählen mit Bedingungen
+
+In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus `df` zu treffen.
+
+```{r , include=T, echo = T}
+df ## vollständiger Datensatz
+df[df$uni == "Uni Oldenburg", ] ## Zeilen in denen uni gleich "Uni Oldenburg", alle Spalten
+df[df$studs > 10000, ] ## Zeilen mit studs > 10000, alle Spalten
+df[df$uni == "Uni Oldenburg" & df$studs > 10000, ] ## mehrere Bedingungen 
+df[df$uni == "Uni Oldenburg" & df$studs < 10000, ] ## Kombination gibt es nicht
+## Zeilen von uni auswählen:
+df$uni[ df$studs < 10000 ]## wichtig: kein Komma!
+```
+
+Wir können die Ausgaben dann auch in einem neuen `data.frame`-Objekt ablegen:
+
+```{r}
+ueber_10tsd <- df[df$studs > 10000, ] 
+ueber_10tsd
+class(ueber_10tsd)
+```
+
+## Datensätze einlesen
+
+In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten. Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^intro-1] bezeichnet ein verbreitetes Dateiformat zur Speicherung oder zum Austausch einfach strukturierter Daten. Wesentlich für unsere Zwecke hier ist, dass in csv-Dateien die Spalten eines Datensatzes mit einem Trennzeichen gekennzeichnet sind. Verbreitete Trennzeichen sind Komma, Doppelpunkt oder Semikolon. Für alle weiteren Dateien, die wir im Lauf dieser Veranstaltung verwenden werden, ist das Semikolon als Trennzeichen gesetzt. Unser Datensatz `df` sieht im csv-Format so aus:
+
+[^intro-1]: Abkürzung für comma-separated values
+
+```{r,echo = F, out.height="50%",out.width="50%", fig.align="center"}
+# knitr::include_graphics(paste0(path,"images/102_csvdatei.png"))
+```
+
+![](./pic/102_csvdatei.png)
+
+::: callout-warning
+Nun wollen wir also eine csv-Datei einlesen, konkret eine reduzierte Version des bereits in der Vorlesung erwähnten Allbus-Datensatzes für das Jahr 2016.[^intro-2] Sie finden die csv-Datei "allbus2016_kompakt.csv" auf StudIP:
+:::
+
+[^intro-2]: Allbus steht für "Allgemeine Bevölkerungsumfrage der Sozialwissenschaften" und ist eine zweijährlich durchgeführte allgemeine Umfrage, welche repräsentative viele Aspekte der politischen und sozialen Einstellungen in Deutschland abfragt. Als Studierende können Sie sich sowohl den Allbus 2016 als auch die Ausgaben für weitere Jahre hier unkompliziert herunterladen: <https://www.gesis.org/allbus/download/download-querschnitte/>
+
+Um den Datensatz nun in R zu importieren, sind zwei Schritte notwendig. Zuerst müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall *"C:/Users/Andreas/Dokumente/Statistik/"* lauten:
+
+```{r,echo = F, out.height="90%",out.width="90%", fig.align="center"}
+# knitr::include_graphics(paste0(path,"images/102_dateipfad.png"))
+```
+
+![](./pic/102_dateipfad.png)
+
+Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben. Um den Pfad des Ordners herauszufinden, klicken Sie bei Windows in die obere Adresszeile im Explorerfenster, bei Mac finden Sie den Pfad indem Sie einmal mit der rechten Maustaste auf die Datei und unter Informationen den Reiter "Ort" wählen.
+
+```{r,echo = F, out.height="90%",out.width="90%", fig.align="center"}
+# knitr::include_graphics(paste0(path,"images/102_Dateipfad_Win.png"))
+```
+
+![](./pic/102_Dateipfad_Win.png)
+
+Diesen Dateipfad müssen wir also R mitteilen. Dafür gibt es mehrere Varianten, die einfachste ist `setwd()`. Wir setzen in die Klammern den Pfad des Ordners ein, in dem der Allbus-Datensatz gespeichert ist. Wichtig dabei ist dass Sie ggf. alle `\` durch `/`ersetzen müssen:
+
+```{r, eval= F}
+setwd("C:/Users/Andreas/Dokumente/Statistik/")
+```
+
+Mit `getwd()` lässt sich überprüfen, ob das funktioniert hat:
+
+```{r, eval= F}
+getwd()
+```
+
+Hier sollte der mit `setwd()` gesetzte Pfad erscheinen.
+
+Ist das der Fall, können wir den eigentlichen Einlesebefehl `read.table` verwenden:
+
+```{r,eval=F}
+a16 <- read.table("allbus2016_kompakt.csv", sep = ";", header = T, stringsAsFactors = F)
+```
+
+```{r,echo=F}
+a16 <- read.table(paste0(path,"allbus2016_kompakt.csv"), sep = ";", header = T, stringsAsFactors = F)
+```
+
+Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `a16` den Namen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read.table()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. Darüber hinaus teilen wir R mit `sep` mit, dass ; als Trennzeichen gesetzt wurde und mit `header = T` teilen wir R zudem mit, dass die erste Zeile aus dem Datensatz als Spaltennamen verwendet werden soll. `stringsAsFactors = F` legt fest, dass Variablen mit Buchstaben (sog. strings) nicht in das Spezialformat `factor` überführt werden sollen (warum und was `factor`-Variablen sind, besprechen wir später).
+
+Würden hier jetzt einfach `a16` eintippen bekämen wir den kompletten Datensatz angezeigt. Für einen Überblick können wir `head` verwenden:
+
+```{r}
+head(a16)
+```
+
+Mit `nrow` und `ncol` können wir kontrollieren, ob das geklappt hat. Der Datensatz sollte `r nrow(a16)` Zeilen und `r ncol(a16)` Spalten haben:
+
+```{r}
+nrow(a16)
+ncol(a16)
+```
+
+Mit `View(a16)` öffnet sich zudem ein neues Fenster, in dem wir den gesamten Datensatz ansehen können.
+
+Natürlich können wir wie oben auch aus diesem, viel größeren, Datensatz Zeilen und Spalten auswählen. Zum Beispiel können wir die Befragten auswählen, die älter als 87 Jahre alt sind und diese unter `senior` ablegen:
+
+```{r}
+senior <- a16[a16$age > 87,]
+```
+
+Möchten wir die genauen Altersangaben der Befragten aus `senior` sehen, können wir die entsprechende Spalte mit `senior$age` aufrufen:
+
+```{r}
+senior$age
+```
+
+Außerdem hat `senior` natürlich deutlich weniger Zeilen als `a16`:
+
+```{r}
+nrow(senior)
+```
+
+Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen im Allbus als `age` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch. In ihm sind alle Variablennamen sowie die Ausprägungen erläutert. Laden Sie daher auch das Codebuch für den Allbus (Codebuch_allbus.pdf) herunter, wir werden es häufig brauchen!
+
+```{r,echo = F, out.height="100%",out.width="100%", fig.align="center"}
+# knitr::include_graphics("D:/oCloud/RFS/images/102_codebuch_comb.png")
+```
+
+![](./pic/102_codebuch_comb.png)
+
+## Überblick: wie lese ich welches Format ein?
+
+```{r,echo=F}
+options(knitr.kable.NA = '')
+readxl::read_xlsx(path = "02_readin.xlsx",sheet = 1) %>% 
+  kbl(caption = "Einlesebefehle", booktabs = T,escape = F,format = "html") %>% 
+  kable_material(html_font = "Roboto") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>% 
+  column_spec(2:3,monospace = TRUE)
+```
+
+```{r,eval =  F}
+df1 <- read.table(file = "Dateiname.csv",sep = ";")
+df1 <- read_dta(file = "Dateiname.dta")
+df1 <- read_sav(file = "Dateiname.sav")
+
+df1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "1")
+df1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "Tabellenblatt1")
+```
+
+
+## Datensätze exportieren
+
+Wir können Daten natürlich auch exportieren:
+
+```{r,echo=F}
+options(knitr.kable.NA = '')
+data.frame(Function = "`read_delim()`",
+           Formula = "$\\leftarrow$",
+           Break = "this continues on a<br>new line",
+           Link = "[Google](www.google.com)") |>
+  kbl(format = "markdown") 
+
+readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>% 
+  kbl(caption = "Exportbefehle", booktabs = T,escape = F,format = "html") %>% 
+  kable_material(html_font = "Roboto") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>% 
+  column_spec(2:3,monospace = TRUE)
+```
+
+
+```{r, eval = F}
+library(haven)
+write.table(df,file = "Dateiname.csv",sep = ";",row.names = F)
+write_dta(df,path = "Dateiname.dta")
+write_sav(df,path = "Dateiname.sav")
+library(xlsx)
+write.xlsx(df,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
+```
+
+
+
+## Pakete in R
+
+Datenvisualisierungen können wir mit Hilfe des `ggplot2` Pakets erstellen. Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
+```{r, eval=F}
+install.packages("ggplot2") # auf eurem PC nur einmal nötig
+library(ggplot2) # nach jedem Neustart nötig
+```
+Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `library()` betätigen wir den Lichtschalter, sodass wir die Befehle aus dem Paket auch verwenden können. Mit jedem Neustart geht die Glühbirne wieder aus und wir müssen sie mit `library()` wieder aktivieren. Das hat aber den Vorteil, dass wir nicht alle Glühbirnen auf einmal anknipsen müssen, wenn wir R starten.
+```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
+knitr::include_graphics("D:/oCloud/RFS/images/104_install-packages.jpg")
+```
+
+
+## Aufgaben
+
+-   Sie finden in StudIP im Ordner Übungsunterlagen den Allbus 2016 unter dem Namen `allbus2016_kompakt.csv`. Laden Sie die Datei herunter und speichern Sie sie ab. Öffnen Sie die Datei bitte **nicht** direkt mit Excel, auch wenn Ihnen dies wahrscheinlich vorgeschlagen wird.
+
+-   Laden Sie den Datensatz `allbus2016_kompakt.csv` in R und legen Sie den Datensatz unter `a16` ab.
+
+-   Nutzen Sie `head()` und `View()`, um sich einen Überblick über den Datensatz zu verschaffen.
+
+-   Wie viele Befagte (Zeilen) enthält der Datensatz?
+
+-   Lassen Sie sich die Variablennamen von `a16` anzeigen!
+
+-   Die Variable `sex` gibt das Geschlecht der Befragten an. Welcher Variablentyp ist für die Variable festgelegt, welches Skalenniveau hat die Variable?
+
+-   Was verbirgt sich hinter der Variable `gkpol`? Sehen Sie im Codebuch nach! Welche Bedeutung hat die Ausprägung 2 für diese Variable?
+
+-   Welches Skalenniveau hat `gkpol`?[^intro-3]
+
+-   Welcher Variablentyp ist in R für `gkpol` festgelegt? Ändern Sie den Variablentyp.
+
+-   Welche Information ist in der Variable `respid` abgelegt?
+
+-   Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte\*n mit der `respid` 3469 enthält?
+
+-   Wie alt ist der/die Befragte mit der `respid` 3469? Welches Geschlecht hat die Person?
+
+-   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2020!
+
+-   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
+
+-   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen? Nutzen Sie für Ihre Antwort die Befehle die wir kennen gelernt haben.
+
+[^intro-3]: Diese Frage ist eine inhaltliche, R hilft Ihnen hier nicht weiter.
+
+
+## Häufige Fehlermeldungen
+
+ <!-- https://nickch-k.github.io/DataCommSlides/Lecture_04_Common_R_Problems.html -->

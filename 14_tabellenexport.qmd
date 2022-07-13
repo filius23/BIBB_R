@@ -4,13 +4,25 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 ```
 
-## 
+## Layout-Tippps für Tabellen
+
+[Hier](https://clauswilke.com/dataviz/figure-titles-captions.html#tables)
+
++ Do not use vertical lines.
++ Do not use horizontal lines between data rows. (Horizontal lines as separator between the title row and the first data row or as frame for the entire table are fine.)
++ Text columns should be left aligned.
++ Number columns should be right aligned and should use the same number of decimal digits throughout.
++ Columns containing single characters are centered.
++ The header fields are aligned with their data, i.e., the heading for a text column will be left aligned and the heading for a number column will be right aligned.
+
 
 ## `flextable`
 
 ## weitere Optionen
 
 https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/
+
+
 
 While **gt** is trying to do something different with its own interface, it may not suit your specific needs. Here is a listing of other leading table-making **R** packages, with links to their respective project pages:
 

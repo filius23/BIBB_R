@@ -4,11 +4,13 @@ project:
 book:
   title: "R am BIBB"
   author: "Andreas Filser"
-  date: "`r format(Sys.Date(), '%B %Y')`"
+  date: Mai 2022""
   chapters:
     - index.qmd
     - 01_intro.qmd
-    - 02_desc.qmd
+    - 02_intro.Rmd
+    - 03_desc.qmd
+    - 04_viz.qmd
     - 09_reg.qmd
     - summary.qmd
     - references.qmd
@@ -19,6 +21,7 @@ bibliography: references.bib
 format:
   html:
     theme: flatly
+    page-layout: full
   pdf:
     documentclass: scrreprt
 
