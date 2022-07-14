@@ -263,9 +263,6 @@ Basierend auf den Minima und Maxima können wir die Spannweite berechnen:
 max(a14$di05, na.rm = T) - min(a14$di05, na.rm = T)
 ```
 
-
-
-
 ## Quantile   
 Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
 ```{r sw5_quant1}
