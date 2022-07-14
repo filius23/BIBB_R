@@ -22,8 +22,8 @@ format:
   html:
     theme: flatly
     page-layout: full
-  pdf:
-    documentclass: scrreprt
+  #pdf:
+   # documentclass: scrreprt
 
 
 

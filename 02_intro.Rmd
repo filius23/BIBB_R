@@ -246,7 +246,7 @@ Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen
 ```{r,echo=F}
 options(knitr.kable.NA = '')
 readxl::read_xlsx(path = "02_readin.xlsx",sheet = 1) %>% 
-  kbl(caption = "Einlesebefehle", booktabs = T,escape = F,format = "html") %>% 
+  kbl(caption = "Einlesebefehle", booktabs = T,escape = F) %>% 
   kable_material(html_font = "Roboto") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>% 
   column_spec(2:3,monospace = TRUE)
@@ -340,7 +340,3 @@ knitr::include_graphics("D:/oCloud/RFS/images/104_install-packages.jpg")
 
 [^intro-3]: Diese Frage ist eine inhaltliche, R hilft Ihnen hier nicht weiter.
 
-
-## Häufige Fehlermeldungen
-
- <!-- https://nickch-k.github.io/DataCommSlides/Lecture_04_Common_R_Problems.html -->

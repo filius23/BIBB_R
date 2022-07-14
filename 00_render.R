@@ -24,4 +24,5 @@ dir.create(here::here("pic"))
 
 
 quarto::quarto_render("01_intro.qmd")
-quarto::quarto_preview("references.qmd")
+quarto::quarto_render("03_desc.qmd")
+quarto::quarto_preview("03_desc.qmd")

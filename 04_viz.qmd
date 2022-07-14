@@ -7,6 +7,9 @@ library(tidyverse)
 library(patchwork)
 knitr::opts_chunk$set(collapse = F)
 a16 <- read.csv(paste0(path,"allbus2016.csv"),sep = ";",header = T,stringsAsFactors = F) ## einlesen
+library(readr)
+ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
+a14 <- ak[ak$year == 2014,] # basis R
 ```
 
 
@@ -277,6 +280,104 @@ ggplot(data = tab_df , aes(x = mstat, y = Freq, fill = sex )) +
 ```
 
 
+### Visualisierung von Verteilungen: Boxplots, Histogramme
+
+Definition der Bestandteile eines Boxplots: 
+
++ ggf. Ausreißer
++ unterer Whisker: `q1 - 1.5* IQR`
++ untere Grenze: 1. Quartil 
++ mittlere Linie: Median 
++ obere Grenze: 3. Quartil 
++ oberer Whisker: `q3 + 1.5* IQR`
++ ggf. Ausreißer
+
+Die Box enthält also die zentralen 50% des Wertebereichs.
+```{r, sw05_boxplot1, echo = F, out.height="45%", out.width="50%", fig.align="center", warning=F,message=F}
+bp_ann_df <- 
+  filter(ak,hs16>0) %>% 
+  mutate_at(vars(hs16),~ifelse(.<0,NA,.)) %>% 
+  summarise(q25 = quantile(hs16,probs = .25),
+            q50 = quantile(hs16,probs = .5),
+            q75 = quantile(hs16,probs = .75),
+            whis1 = q25 - 1.5*(q75-q25) + .5 ,
+            whis2 = q75 + 1.5*(q75-q25) - .5) %>% 
+  mutate_all(~if_else(. < 0,0,.)) %>% 
+  pivot_longer(cols=everything(), values_to = "hs16") %>% 
+  mutate(xend1 = ifelse(grepl("whis",name),.015,.4),
+         name = case_when(name == "q25" ~ "1. Quartil (25% Grenze)",
+                          name == "q50" ~ "Median (50% Grenze)",
+                          name == "q75" ~ "3. Quartil (75% Grenze)",
+                          name == "whis1" ~ "unterer Whisker",
+                          name == "whis2" ~ "oberer Whisker"),
+         x = 1)
+
+bp_ann_ausr <- filter(ak,!between(hs16,146,197),hs16>0) %>% select(hs16) %>% mutate(name="Ausreißer",x=1) %>% 
+  distinct() %>% group_by(aus=hs16>146) %>% 
+  mutate(hs16m=mean(hs16) %>% if_else(.<144,140,.))
+
+  
+ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) + 
+  geom_boxplot() + 
+  geom_label(data = bp_ann_df, aes(x = x-.45, y = hs16, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_label(data = bp_ann_ausr, aes(x = x-.45, y = hs16m, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_segment(data = bp_ann_df, aes(x = x-.451, xend = xend1, yend = hs16, y = hs16), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.025,"npc"), type = "closed")) +
+  geom_segment(data = bp_ann_ausr, aes(x = x-.451, xend = .015, yend = hs16, y = hs16m), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.01,"npc"), type = "closed")) +
+  labs(color = "", # legenden-label auf leer
+       y = "", # y-Achse labeln
+       x="")+ # x-Achse labeln
+  theme_void() + 
+  theme(axis.text.x = element_blank()) +
+  expand_limits(x = c(0,1.1))
+
+```
+
+Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
+```{r, eval = F}
+library(ggplot2)
+ggplot(data = a14, aes(y = di05)) + geom_boxplot()
+```
+
+So können wir einen Boxplot erstellen, der die Werte nach neuen und alten Bundesländern getrennt darstellt: 
+```{r, eval = F}
+ggplot(data = a14, aes(y = di05)) + geom_boxplot() + 
+  facet_wrap(~eastwest) + # nach ost/west aufsplitten
+  theme_minimal()
+```
+Oben sehen wir die Ausprägungen von `eastwest`: (1 & 2). Da durch die Ausreißer die Box sehr klein ist, rechts ein Zoom auf den Bereich von 0-20.000€ Monatseinkommen (Syntax unter [**Hinweise**](#bp_hinweise))
+```{r sw05_boxplot, echo = F, out.height="80%", out.width="80%", fig.align="center", warning=F,message=F}
+library(ggplot2)
+library(patchwork)
+box_plot <- ggplot(a14, aes(x = "", y = di05)) + 
+  geom_boxplot(aes(color = as.character(eastwest))) + 
+  facet_wrap(~eastwest) +
+  theme_minimal() +
+  labs(color = "",
+       y = "HH- Einkommen",
+       x="")+
+  scale_color_manual(values = c("#8F92A1","#172869"),
+                     breaks = c(1,2),
+                     labels = c("west", "ost"), guide = F) 
+
+box_zoom <- ggplot(a14, aes(x = "", y = di05)) + 
+  geom_boxplot(aes(color = as.character(eastwest)), size = .35) + 
+  facet_wrap(~eastwest) +
+  theme_minimal() +
+  labs(color = "",
+       y = "",
+       x="")+
+  scale_color_manual(values = c("#8F92A1","#172869"),
+                     breaks = c(1,2),
+                     labels = c("west", "ost")) +
+  coord_cartesian(ylim = c(0,20000)) 
+
+box_plot + box_zoom
+```
+Befragte aus den neuen Bundesländern geben niedrigere Einkommen an: der Median sowie beide Quartilsgrenzen liegen im Osten niedriger als im Westen. 
+
+
 
 ## Aufgaben
 
@@ -308,6 +409,54 @@ ggplot(data = tab_df , aes(x = mstat, y = Freq, fill = sex )) +
 + Sie können mit `size = 2` die Göße und mit `shape = ` auch die Formen der Punkte verändern, siehe [hier](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
 
 
+
+## Aufgaben zu Verteilungen
+
+(@) Erstellen Sie jeweils einen Boxplot für das HH-Einkommen für 1994 und 2010! 
+  + Welche Kennzahlen können Sie jeweils aus den horizontalen Linien ablesen?
+  + Was können Sie jeweils zu den HH-Einkommensverteilungen sagen?
+  + Durch Anhängen des Arguments `+  coord_cartesian(ylim = c(min,max))` können Sie "zoomen" indem Sie statt `min` und `max` die Limits einsetzen.
+
+(@) Erstellen Sie jeweils einen Boxplot für Ost und West!
+
+
+Erstellen Sie die Boxplots nach Ost-West für 1994 und 2010 Jahre in einer Grafik!
++ Erstellen Sie zunächst einen Datensatz, welcher nur Beobachtungen aus 1994 und 2010 enthält und legen diesen als `a9410` ab. Nutzen Sie dazu `|` für eine "Oder"-Auswahl:
+```{r, eval = F}
+a9410 <- ak[ak$year == jahr1 | ak$year == jahr2,]
+```
++ Denken Sie daran, auch in `a9410` die Missings für `di05` mit `NA` zu überschreiben (siehe oben)!  
+
+Indem wir zu `facet_wrap` neben `eastwest` auch `year` angeben, wird eine 4-teilige Grafik erstellt mit jeweils einem Boxplot für jedes Jahr und Ost/West. Mit `nrow = 1` können wir  die Boxplots in eine Reihe setzen:
+
+```{r, eval = F}
+ggplot(data = ..., aes(...) )+ 
+  geom_boxplot() +
+  facet_wrap(~year+eastwest, nrow = 1) + ...
+```
+
+Was können Sie bei den Unterschieden zwischen Ost und West im Zeitverlauf erkennen? Denken Sie auch hier wieder an die Möglichkeit, mit ` coord_cartesian(ylim = c(0,20000))` zu zoomen. 
+
++ Vergeben Sie unterschiedliche Farben für Ost und West (siehe Hinweise)
+
+# Hinweise {#bp_hinweise}
+Vollständige Syntax für farbigen Boxplot
+```{r, eval = F}
+library(ggplot2)
+ggplot(a14, aes(x = "", y = di05)) + 
+  geom_boxplot(aes(color = as.character(eastwest))) + 
+  facet_wrap(~eastwest) +
+  theme_minimal() +
+  labs(color = "",
+       y = "HH- Einkommen",
+       x="")+
+  scale_color_manual(values = c("lightblue3","navy"),
+                     breaks = c(1,2),
+                     labels = c("west", "ost")) 
+```
+
+
+
 ## Weitere Optionen für ggplot2 
 ### Farben {#farben}
 Neben den im Beispiel verwendeten Farben für `fill` können natürlich auch noch unzählige weitere Farben in `scale_fill_manual` verwendet werden. *[Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)* findet sich eine Übersicht. 
@@ -337,7 +486,7 @@ ggplot(data = tab_df, aes(x = mstat, y = Freq, fill = sex)) +
 ```
 
 ### Weitere themes {#themes}
-Neben `theme_minimal()` gibt es noch weitere Designs: eine Liste findet sich *[hier](https://ggplot2.tidyverse.org/reference/ggtheme.html)*. Hier ein Beispiel mit `theme_dark()`:
+Neben `theme_minimal()` gibt es noch weitere Designs: eine Liste findet sich [hier](https://ggplot2.tidyverse.org/reference/ggtheme.html). Hier ein Beispiel mit `theme_dark()`:
 
 ```{r,  out.height= "40%", out.width= "40%", fig.align="center"}
 ggplot(data = tab_df, aes(x = mstat, y = Freq, fill = sex)) + 
@@ -351,3 +500,15 @@ ggplot(data = tab_df, aes(x = mstat, y = Freq, fill = sex)) +
 ```
 Es muss also lediglich das letzte Argument (`theme_..`) angepasst werden. Weitere Themes sind zB: `theme_light()`, `theme_classic()`, `theme_void()` oder `theme_bw()`
 
+
+## Linksammlung
+
++ Schriftgröße und -farbe anpassen: [Hier](https://cmdlinetips.com/2021/05/tips-to-customize-text-color-font-size-in-ggplot2-with-element_text/) findet sich eine gute Übersicht, wie die Schriftgröße und -farbe in `{ggplot2}` angepasst werden kann.
+
++ Das [Graph Kapitel des R Cookbooks](www.cookbook-r.com/Graphs/) ist eine hervorragende Quelle für alle möglichen Optionen und eine grundlegende Übersicht - bspw. zur Anpassung der [Legende](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)), [Linien- und Punktvarianten](http://www.cookbook-r.com/Graphs/Shapes_and_line_types) oder den [Achsen](http://www.cookbook-r.com/Graphs/Axes_(ggplot2))
+
++ [From Data to Viz ](https://www.data-to-viz.com/#explore) bietet einen Entscheidungsbaum für verschiedene Zusammenhänge und Deskriptionen mit Beispiel-Syntax
+
++ Die [R Graph Gallery](https://r-graph-gallery.com/) ist noch etwas umfangreicher und bietet noch weitere Visualisierungsideen
+
++ Für alle, die mehr zu gelungenen (und schönen) Datenvisualisierungen mit `{ggplot2}` erfahren möchten, ist das [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) ein hervorragender Einstieg.

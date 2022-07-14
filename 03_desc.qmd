@@ -4,11 +4,14 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 knitr::opts_chunk$set(collapse = F)
+library(tidyverse)
 path <- "D:/oCloud/RFS/" # wo liegt der Datensatz?
 a16 <- read.csv(paste0(path,"allbus2016_kompakt.csv"),sep = ";",header = T,stringsAsFactors = F) # einlesen
+library(readr)
+ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
 ```
 
-In der vorherigen Sitzung hatten wir gesehen, wie wir Datensätze importieren und damit arbeiten. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem Allbus 2016 arbeiten. Zunächst müssen wir dazu die Daten wieder wie vergangene Woche einlesen:
+In der vorherigen Sitzung hatten wir gesehen, wie wir Datensätze importieren und damit arbeiten. Jede statistische Auswertung eines Datensatzes startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem Allbus 2016 arbeiten. Zunächst müssen wir dazu die Daten wieder wie vergangene Woche einlesen:
 ```{r W04_1, eval=F, echo = T}
 setwd("...") # wo liegt der Datensatz?
 a16 <- read.table("allbus2016_kompakt.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
@@ -174,56 +177,22 @@ cumsum(prop.table(table( cut(a16$age, breaks = seq(10,100,10) ) )))
 ##  Lage- & Konzentrationsmaße 
 
 
-```{r sw5_einlesen1, eval=F, echo = T}
-ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
-```
-
-Im Unterschied zu den bisherigen Sitzungen werden wir heute mit einer kumulierten Version des Allbus arbeiten. In dieser Version sind die Antworten aus den Jahren `r min(ak$year)` bis `r max(ak$year)` enthalten. Den Datensatz finden Sie in StudIP. Wir können die Daten wie vergangene Woche einlesen:
-```{r sw5_einlesen1, eval=F, echo = T}
-setwd("...") # wo liegt der Datensatz?
-ak <- read.table("allbus_kumuliert.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
-```
-
-Da der Datensatz deutlich größer ist als die bisherige Version (`r nrow(ak)` Fälle und `r ncol(ak)` Variablen), können wir auch  `read_delim()` aus dem Paket `readr` verwenden, was deutlich schneller ist:
-```{r sw5_einlesen2,eval=F}
-install.packages("readr") # Paket installieren
-library(readr) # Paket laden
-setwd("...") # wo liegt der Datensatz?
-ak <- read_delim("allbus_kumuliert.csv", delim = ";", 
-                 col_types = cols(.default = col_double()))
-```
-
-Die Daten liegen im *long shape* vor, d.h. die Angaben aus den verschiedenen Jahren stehen untereinander. Wenn wir nur die Befragten mit der `respid` 1 auswählen bekommen wir mehrere Zeilen angezeigt - für jedes Befragungsjahr eine:[^1]  
-```{r, eval = F}
-ak[ak$respid == 1,]
-```
-
-[^1]: Die Darstellung zeigt nur eine Auswahl der Variablen
-
-<!-- mit fortgeschrittener Syntax, wird nicht erwartet - für Neugierige: \newline `ak[ak$respid == 1 & ak$year %in% c(1982,1996,2014,2018),c("year","respid","eastwest","german","age","inc","mstat","df05a","df06a","df07a","gkpol","gs01")]` -->
-```{r, echo=F}
-ak %>% 
-  select(year,respid, eastwest, german, age, inc, mstat, df05a,  df06a,df07a,gkpol,gs01) %>% 
-  filter(respid == 1, year %in% c(1982,1996,2014,2018)) %>% data.frame(.)
-```
-
-Die Beschreibung der Variablen finden Sie im entsprechenden Codebuch `Codebuch_Allbus_kumuliert.pdf` auf StudIP. Beispielsweise ist  unter `age` das Alter und unter `inc` das Einkommen der Befragten erfasst.
-
 Für die Beispiele verwenden wir die Angaben aus dem Jahr 2014. Diese Auswahl können wir mit `[]` treffen:
 ```{r}
 a14 <- ak[ak$year == 2014,] # basis R
 ```
 
-Jede statistische Auswertung eines Datensatzes startet mit einer Beschreibung der Variablen. Hierfür lernen wir heute die passenden Befehle in R kennen.
+### Lagemaße
 
+Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen. Einen Überblick bietet `summary()`:
+```{r sw5_quant_summary}
+summary(a14$di05)
+```
 
-# Lagemaße
-Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen. Wir sehen uns die Haushaltseinkommen der Befragten (`di05`) im Allbus 2014 mit Hilfe folgender Befehle an:
-
+Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Haushaltseinkommen der Befragten (`di05`) im Allbus 2014 mit Hilfe folgender Befehle an:
 + Minimum und Maximum: `min()`, `max()`
 + arithm. Mittel: `mean()`
 + Median: `median()`
-
 
 ```{r sw5_1, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
 min(a14$di05) # kleinster Wert
@@ -244,26 +213,8 @@ mean(a14$di05, na.rm = T)
 median(a14$di05, na.rm = T)
 ```
 
-# Streuungsmaße
-Lagemaße erfassen aber nur einen Aspekt der Verteilung einer Variable. Bspw. ergeben sich identische `median` und `mean`, auch wenn `x1` und `x2` sehr verschiedene Streuungen aufweisen:
-```{r sw5_bsp, include=T, echo = T, collapse=F}
-x1 <- c( 20 , 50 )
-x2 <- c(0.1 , 69.9 )
-mean( x1 )
-mean( x2 )
-median( x1 )
-median( x2 )
-```
-Daher werden Streuungsmaße verwendet, um auch die Verteilung der Werte über den Wertebereich zu erfassen.
-
-## Spannweite  
-Basierend auf den Minima und Maxima können wir die Spannweite berechnen:
-
-```{r}
-max(a14$di05, na.rm = T) - min(a14$di05, na.rm = T)
-```
-
-## Quantile   
+### Streuungsmaße
+#### Quantile   
 Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
 ```{r sw5_quant1}
 quantile(a14$di05,na.rm = T)
@@ -277,8 +228,6 @@ Daraus ergibt sich auch:
 
   + *75% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[2]`€ oder mehr* 
   
-  
-
 Wir können aber durch Angabe in den Optionen beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
 ```{r sw5_quant2}
 quantile(a14$di05,probs = .4, na.rm = T)
@@ -288,12 +237,10 @@ In Kombination mit `seq()` können wir zB. auch die Dezilgrenzen (entlang der Vi
 quantile(a14$di05,probs = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), na.rm = T) 
 quantile(a14$di05,probs = seq(0,1,0.1), na.rm = T) 
 ```
-Einen Überblick bietet `summary()`:
-```{r sw5_quant_summary}
-summary(a14$di05)
-```
 
-## Interquartilsdistanz und Interdezilsdistanz  
+
+#### Interquartilsdistanz und Interdezilsdistanz  
+
 Aus den Quantilen leiten sich auch die Inter**quartil**sdistanz und Inter**dezil**sdistanz ab.   
 Die Interquartilsdistanz ist schlicht die Differenz zwischen dem ersten und dritten Quartil. Genauso ist die Interdezilsdistanz die Differenz zwischen dem neunten und ersten Dezil:
 ```{r W07_4, include=T, echo = T}
@@ -304,7 +251,7 @@ quantile(a14$di05, .9, na.rm = T) - quantile(a14$di05, .1, na.rm = T) # IDR
 **Achtung**: R zeigt nach der Berechnung der Differenz trotzdem die Beschriftung des Minuenden / des ersten Argumentes an!   
 \color{black}
 
-## Varianz, Standardabweichung, Variationskoeffizient
+#### Varianz, Standardabweichung, Variationskoeffizient
 Die häufigste Kennzahl zur Beschreibung von Streuung ist aber die Varianz. Die Varianz ist definiert als die durchschnittliche quadrierte Abweichung vom arith. Mittel: $$var(x) = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})^2}{n}$$    
 Was bedeutet diese Formel?    
 Schauen wir erst in den Zähler des Bruchs: $(x_{i}-\bar{x})^2$
@@ -355,7 +302,7 @@ sd(a14$di05, na.rm = T) / mean(a14$di05, na.rm = T) # Variationskoeffizient
 Für alle Streuungsmaße gilt: je größer, desto mehr Streuung (Unterschiede) gibt es in den Daten.
 
 
-### Gini-Koeffizient
+#### Gini-Koeffizient
 
 Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
 
@@ -436,7 +383,7 @@ library(ineq) # ineq laden
 Gini(a14$di05)
 ```
 
-# Lage- und Streuungsmaße vergleichen
+### Lage- und Streuungsmaße vergleichen
 Häufig werden diese Kennzahlen erst im Vergleich richtig spannend. zB können wir die Einkommensangaben aus den alten und neuen Bundesländern vergleichen:
 ```{r sw5_mean_vgl, include=T, echo = T}
 mean(a14$di05[a14$eastwest == 1], na.rm = T) # alte Bundesländer
@@ -468,105 +415,8 @@ Gini(a14$di05[a14$eastwest == 2])
 Wo ist die Ungleichheit nun höher? In Ost oder West?
 
 
-## Visualisierung von Verteilungen: Boxplots
 
-Definition der Bestandteile eines Boxplots: 
-
-+ ggf. Ausreißer
-+ unterer Whisker: `q1 - 1.5* IQR`
-+ untere Grenze: 1. Quartil 
-+ mittlere Linie: Median 
-+ obere Grenze: 3. Quartil 
-+ oberer Whisker: `q3 + 1.5* IQR`
-+ ggf. Ausreißer
-
-Die Box enthält also die zentralen 50% des Wertebereichs.
-```{r, sw05_boxplot1, echo = F, out.height="45%", out.width="50%", fig.align="center", warning=F,message=F}
-bp_ann_df <- 
-  filter(ak,hs16>0) %>% 
-  mutate_at(vars(hs16),~ifelse(.<0,NA,.)) %>% 
-  summarise(q25 = quantile(hs16,probs = .25),
-            q50 = quantile(hs16,probs = .5),
-            q75 = quantile(hs16,probs = .75),
-            whis1 = q25 - 1.5*(q75-q25) + .5 ,
-            whis2 = q75 + 1.5*(q75-q25) - .5) %>% 
-  mutate_all(~if_else(. < 0,0,.)) %>% 
-  pivot_longer(cols=everything(), values_to = "hs16") %>% 
-  mutate(xend1 = ifelse(grepl("whis",name),.015,.4),
-         name = case_when(name == "q25" ~ "1. Quartil (25% Grenze)",
-                          name == "q50" ~ "Median (50% Grenze)",
-                          name == "q75" ~ "3. Quartil (75% Grenze)",
-                          name == "whis1" ~ "unterer Whisker",
-                          name == "whis2" ~ "oberer Whisker"),
-         x = 1)
-
-bp_ann_ausr <- filter(ak,!between(hs16,146,197),hs16>0) %>% select(hs16) %>% mutate(name="Ausreißer",x=1) %>% 
-  distinct() %>% group_by(aus=hs16>146) %>% 
-  mutate(hs16m=mean(hs16) %>% if_else(.<144,140,.))
-
-  
-ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) + 
-  geom_boxplot() + 
-  geom_label(data = bp_ann_df, aes(x = x-.45, y = hs16, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
-  geom_label(data = bp_ann_ausr, aes(x = x-.45, y = hs16m, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
-  geom_segment(data = bp_ann_df, aes(x = x-.451, xend = xend1, yend = hs16, y = hs16), color = "#172869",
-               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.025,"npc"), type = "closed")) +
-  geom_segment(data = bp_ann_ausr, aes(x = x-.451, xend = .015, yend = hs16, y = hs16m), color = "#172869",
-               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.01,"npc"), type = "closed")) +
-  labs(color = "", # legenden-label auf leer
-       y = "", # y-Achse labeln
-       x="")+ # x-Achse labeln
-  theme_void() + 
-  theme(axis.text.x = element_blank()) +
-  expand_limits(x = c(0,1.1))
-
-```
-
-Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
-```{r, eval = F}
-library(ggplot2)
-ggplot(data = a14, aes(y = di05)) + geom_boxplot()
-```
-
-So können wir einen Boxplot erstellen, der die Werte nach neuen und alten Bundesländern getrennt darstellt: 
-```{r, eval = F}
-ggplot(data = a14, aes(y = di05)) + geom_boxplot() + 
-  facet_wrap(~eastwest) + # nach ost/west aufsplitten
-  theme_minimal()
-```
-Oben sehen wir die Ausprägungen von `eastwest`: (1 & 2). Da durch die Ausreißer die Box sehr klein ist, rechts ein Zoom auf den Bereich von 0-20.000€ Monatseinkommen (Syntax unter [**Hinweise**](#bp_hinweise))
-```{r sw05_boxplot, echo = F, out.height="80%", out.width="80%", fig.align="center", warning=F,message=F}
-library(ggplot2)
-library(patchwork)
-box_plot <- ggplot(a14, aes(x = "", y = di05)) + 
-  geom_boxplot(aes(color = as.character(eastwest))) + 
-  facet_wrap(~eastwest) +
-  theme_minimal() +
-  labs(color = "",
-       y = "HH- Einkommen",
-       x="")+
-  scale_color_manual(values = c("#8F92A1","#172869"),
-                     breaks = c(1,2),
-                     labels = c("west", "ost"), guide = F) 
-
-box_zoom <- ggplot(a14, aes(x = "", y = di05)) + 
-  geom_boxplot(aes(color = as.character(eastwest)), size = .35) + 
-  facet_wrap(~eastwest) +
-  theme_minimal() +
-  labs(color = "",
-       y = "",
-       x="")+
-  scale_color_manual(values = c("#8F92A1","#172869"),
-                     breaks = c(1,2),
-                     labels = c("west", "ost")) +
-  coord_cartesian(ylim = c(0,20000)) 
-
-box_plot + box_zoom
-```
-Befragte aus den neuen Bundesländern geben niedrigere Einkommen an: der Median sowie beide Quartilsgrenzen liegen im Osten niedriger als im Westen. 
-
-
-## Aufgaben 2: lage und Konzentrationsmaße
+## Aufgaben 2: Lage- & Konzentrationsmaße
 
 Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 und 2010 entwickelt?
 
@@ -590,54 +440,6 @@ Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 un
 + Gini-Koeffizient
 
 (6) Vergleichen Sie diese Ost-West-Unterschiede im Jahr 1994 mit denen für das Jahr 2010. Welche Tendenz können Sie für die Ost-West-Unterschiede erkennen?
-
-(7) Erstellen Sie jeweils einen Boxplot für das HH-Einkommen für 1994 und 2010! 
-  + Welche Kennzahlen können Sie jeweils aus den horizontalen Linien ablesen?
-  + Was können Sie jeweils zu den HH-Einkommensverteilungen sagen?
-  + Durch Anhängen des Arguments `+  coord_cartesian(ylim = c(min,max))` können Sie "zoomen" indem Sie statt `min` und `max` die Limits einsetzen.
-
-
-# Profi-Aufgaben
-
-## Boxplots 
-
-(8) Erstellen Sie jeweils einen Boxplot für Ost und West!
-
-
-Erstellen Sie die Boxplots nach Ost-West für 1994 und 2010 Jahre in einer Grafik!
-+ Erstellen Sie zunächst einen Datensatz, welcher nur Beobachtungen aus 1994 und 2010 enthält und legen diesen als `a9410` ab. Nutzen Sie dazu `|` für eine "Oder"-Auswahl:
-```{r, eval = F}
-a9410 <- ak[ak$year == jahr1 | ak$year == jahr2,]
-```
-+ Denken Sie daran, auch in `a9410` die Missings für `di05` mit `NA` zu überschreiben (siehe oben)!  
-
-Indem wir zu `facet_wrap` neben `eastwest` auch `year` angeben, wird eine 4-teilige Grafik erstellt mit jeweils einem Boxplot für jedes Jahr und Ost/West. Mit `nrow = 1` können wir  die Boxplots in eine Reihe setzen:
-
-```{r, eval = F}
-ggplot(data = ..., aes(...) )+ 
-  geom_boxplot() +
-  facet_wrap(~year+eastwest, nrow = 1) + ...
-```
-
-Was können Sie bei den Unterschieden zwischen Ost und West im Zeitverlauf erkennen? Denken Sie auch hier wieder an die Möglichkeit, mit ` coord_cartesian(ylim = c(0,20000))` zu zoomen. 
-
-+ Vergeben Sie unterschiedliche Farben für Ost und West (siehe Hinweise)
-
-# Hinweise {#bp_hinweise}
-Vollständige Syntax für farbigen Boxplot
-```{r, eval = F}
-library(ggplot2)
-ggplot(a14, aes(x = "", y = di05)) + 
-  geom_boxplot(aes(color = as.character(eastwest))) + 
-  facet_wrap(~eastwest) +
-  theme_minimal() +
-  labs(color = "",
-       y = "HH- Einkommen",
-       x="")+
-  scale_color_manual(values = c("lightblue3","navy"),
-                     breaks = c(1,2),
-                     labels = c("west", "ost")) 
-```
 
 
 ## Aufgaben
@@ -685,6 +487,176 @@ Für alle, die noch etwas mehr machen möchten:
 
 Tipps dazu finden Sie in den Hinweisen am Ende!
 (Wissen aus diesen Aufgaben wird nicht vorausgesetzt in den kommenden Wochen, aber es hilft natürlich)
+
+
+## Häufige Fehlermeldungen
+
+Die Arbeit in R ist - wie in jedem Datenanalyseprogramm - ein Hangeln von Fehlermeldung zu Fehlermeldung. 
+Das kann gerade zu Beginn frustrierend sein, bis die tiefere Bedeutung von Fehlermeldungen und deren Ursachen etwas deutlicher werden. 
+Die folgende Auflistung enthält einige der häufigsten Fehlermeldungen und ihre (wahrscheinlichsten) Ursachen. 
+Die Liste lehnt sich stark an die die großartige Zusammenstellung von [Nick C. Huntington-Klein](https://nickch-k.github.io/DataCommSlides/Lecture_04_Common_R_Problems.html) an.
+
+
+### There is no package called
+
+Die Fehlermeldung `there is no package called 'XXXX'` erscheint, wenn Sie ein Paket bspw. mit `library()` laden, diese Paket allerdings nicht installiert ist.
+
+The Fix:
+
+1. Did you spell the package name correctly? Maybe you do have the package, but you made a typo
+1. If you spelled it correctly, you may not have installed it. Install it (usually) with `install.packages('packagename')` where `'packagename'` is replaced with the name of the package you actually want.
+
+### Could not find function
+
+If you get an error like `could not find function "functionname"`, that means it's trying to look for that function, but cannot find it. 
+
+The Fix:
+
+1. Did you spell the function name correctly? Maybe you made a typo.
+1. If the function is in a package, did you load the package? Remember, the package must be re-loaded every time you restart R. If you're working in RMarkdown, you must load the package inside of your RMarkdown script, since RMarkdown starts from a blank slate.
+
+### Object not found
+
+If you get an error like `object 'objectname' not found`, that means that you've made a reference to an object called `objectname`, but there is no such object to refer to.
+
+The Fix:
+
+1. Did you spell the object's name correctly? Maybe you made a typo.
+1. Did you remember to create the object before referring to it? For example, the code `mean(x); x <- 1:10` would not work, because you try to take the mean of `x` before it's been created. If you're working in RMarkdown, remember that it will start from a blank slate, so you must create all objects inside of your Rmarkdown script.
+
+### Object of type 'closure' is not subsettable
+
+This is the most aggravating and least-informative R error. "Subsettable" is a hint though - you're trying to take a subset of something (such as picking an element from a vector, or picking a column from a data set), but the thing you're doing it to is a "closure" that you can't do that to.
+
+Most commonly, this is a case of accidentally giving the name of a function where you mean to give the name of a vector or data frame. For example:
+
+```{r, eval = FALSE}
+mean_data <- tibble(person = c('Me','You'), meanness = c(1000,999))
+# Now let's look at that meanness variable, but oops, I'm referring to the function mean() instead of my data mean_data
+mean$meanness
+# Error in mean$meanness : object of type 'closure' is not subsettable
+```
+
+The Fix:
+
+1. See where it says the error is "in" - that's the place where you've referred to the wrong thing. fix it!
+
+
+### Column doesn't exist
+
+If you get an error like `column 'columnname' doesn't exist`, that means it's trying to refer to a column name that is not actually in your data.
+
+The Fix:
+
+1. Did you spell the column's name correctly? Maybe you made a typo.
+1. Are you referring to the proper dataset? Maybe you created the variable in `my_data2` but you're trying to access it in `my_data`. 
+1. Does your column name have spaces or other strange characters in it like dashes? If so, in many applications (anywhere you're not treating the column name as a string) you have to surround the column name in backticks (`r "\u0060"`) so it knows where the column name starts and ends.
+1. Did you perhaps drop the column before trying to refer to it? For example, in the below code, the `group_by() %>% summarize()` will only keep columns named in the `group_by()` or in the `summarize()`. So even though the `mpg` column was there at the start, it no longer is by the time we refer to it.
+
+```{r, eval = FALSE}
+mtcars %>%
+  group_by(am) %>%
+  summarize(mean_hp = mean(hp)) %>%
+  mutate(hp_by_mpg = mean_hp/mpg)
+```
+
+### Warning: Package was compiled with R version
+
+If you load a package and get a warning that looks like `Warning: packagename was compiled with R version...`, that just means that the package was compiled using a slightly newer version of R than yours. It's generally not a problem as long as you have a somewhat-recent version of R.
+
+The Fix:
+
+1. Ignore it
+1. If you want it to go away, update your R installation.
+
+### Rtools is required to build packages from source
+
+If you are installing packages, you may be asked whether you'd like to build packages from source. If you say "Yes", but you do not have Rtools installed, you will get an error, and the package won't install properly.
+
+The Fix:
+
+1. When asked whether you want to install packages from source, say "No."
+1. Install Rtools before installing packages. The easiest way to do this is to install the **installr** package, and then run `installr::install.rtools()`.
+
+### File does not exist, or No such file or directory
+
+If you get an error like `'filename.csv' does not exist`, that means that you're trying to load a file, but the file is not in the location you're telling R to look.
+
+The Fix:
+
+1. Did you spell the filename correctly? Maybe you made a typo. Or, perhaps, you're trying to open an Excel fie (`.xlsx`) but telling R to look for a CSV (`.csv`). Or you wrote "file.csv" but the file is "file (1).csv". 
+1. Is the file perhaps open in Excel? Sometimes, Microsoft Office will hold files hostage and not let them be opened in other programs while they're open in Office. Close the Excel window that has the file open.
+1. **Most often**, this is a working directory issue. If you tell R to look for `'filename.csv'`, it will look for that file in the *working directory*. Or, if you tell it to look for `'data/filename.csv'`, it will look for a folder called "data" in the working directory, and for filename.csv inside of that. In recent versions of RStudio, the current working directory is listed right on top of the Console. Did you check whether the file is actually in that folder? If you're running RMarkdown, it will set the working directory to the folder where the .RMD file is located. Did you put the file in the right spot relative to where the RMD is stored? See my [video on filepaths](https://www.youtube.com/watch?v=NG7Y0kkGR8g) for more help.
+
+### Klammern, Kommata, Punkte
+
+Just in general, a very large percentage of errors students come to me with occur simply because they made a typo, or didn't balance their parentheses (pairing each ( with a )).
+
+The Fix:
+
+1. If you get an error message of any kind, read the relevant part of the code carefully to make sure you didn't make a typo
+1. Avoid coding where you have lots and lots of nested parentheses (this is something that **tidyverse** piping we learn is intended to avoid). Then, for whatever parentheses you do have, click on each one in RStudio - it will highlight its "partner" or show where there is a missing partner.
+
+### Ergebnis `NA`
+
+Fehlende Werte sind Teil eines jeden Datensatzes. Wir haben oben kennengelernt, dass in R `NA` für fehlende Angaben steht.
+R geht mit `NA` etwas anders um als bspw. Stata;
+Sobald ein Wert `NA` ist, gibt R als Ergebnis `NA` aus:
+```{r 03NAdemo}
+werte <- c(1,2,NA)
+mean(werte)
+min(werte)
+```
+
+*Lösung*
+Mit der Option `na.rm = TRUE` werden alle `NA` Werte vor der Berechnung ignoriert;
+
+```{r 03NAdemo2}
+mean(werte,na.rm=TRUE)
+min(werte,na.rm=TRUE)
+```
+
+
+### Numerische Variablen und strings
+
+When you put something in quotes, like '1', it will treat it as a *string variable* - a set of characters to be read as text.
+
+If you want a variable to be treated as a number, **do not put it in quotes.** This way lies madness.
+
+R is pretty loose, and will allow you to do things like ask whether `'2' > 1`, and will answer yes. This *feels* like it's okay to put the 2 in quotes. But it's not. What R is doing is saying "oof... I can't compare a number to a letter, but you're asking me to. I'll just convert this number to a string as well, so I'm really doing `'2' > '1'`, and since '2' is alphabetically after '1', that's true, which is the desired result. Great! Except it also means that `'02' > 1` is false, since '02' is alphabetically before '1'. Same with `'120'>'20'` being false. Oops.
+
+The Fix:
+
+1. If it's a number, and you want it treated like a numeric value, don't put quotes around it.
+
+
+### `<-`, `=` und `==`
+
+`<-` is for assigning objects. You can say `a <- 1`, and that will create an object `a` with the value `1` inside.
+
+`=` *can also* be for assigning objects, just like `<-`, but is also for assigning arguments and options in functions. In the function `mean()`, which takes the argument `x`, I can say `mean(x = 1:10)` but not `mean(x <- 1:10)`.
+
+`==` is for *checking* whether two things are equal. `a == 1` will check whether the object `a` is equal to `1`, and will return `TRUE` if it is, or `FALSE` otherwise.
+
+Commonly, this will cause problems in cases like this:
+
+```{r, eval = FALSE}
+data %>%
+  filter(state = "WA")
+```
+
+which we might expect to filter our data to rows that are in the state of Washington, but instead will try to assign a new object `state` to be equal to `"WA"`.
+
+### Einige generelle Tipps zur Fehlervermeidung 
+
+1. Führen Sie Ihren Code Zeile für Zeile aus. Prüfen Sie zwischen den einzelnen Zeilen die Ausgabe und stellen Sie sicher, dass sie so aussieht, wie Sie es erwarten. Oft treten Fehler auf, weil eine frühere Codezeile nicht das getan hat, was wir beabsichtigt haben. Wenn Sie dort keine Probleme feststellen, machen Sie weiter, bis Sie auf die Fehlermeldung stoßen.
+1. Lesen Sie die Fehlermeldung und schauen Sie, ob Sie sich einen Reim darauf machen können
+1. Selbst wenn du die Meldung nicht verstehst, gibt sie dir oft einen Hinweis auf die Ursache des Problems, so dass du weißt, wo du nachschauen musst, um deinen Code zu überprüfen
+1. Google: oftmals hilft es eine Fehlermeldung oder ein Problem ("How to .... in R") zu googeln. Neben stackoverflow gibt es unzählige Blogs, Tutorials und andere Hilfeseiten für R in hervorragender Qualität - und sie sind (fast) immer kostenlos!
+
+
+
+
 
 
 
