@@ -1,6 +1,6 @@
 # Einstieg in R
 
-```{r setup01}
+```{r setup01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 ```

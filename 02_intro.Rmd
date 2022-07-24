@@ -6,7 +6,7 @@ if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 library(kableExtra)
 ```
 
-In der ersten Session haben wir ein paar erste Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - das lernen wir heute kennen.
+In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los gehts.
 
 Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` abgelegt und mit den in `profs` abgelegten Professurenzahlen ins Verhältnis gesetzt. Das funktioniert soweit gut, allerdings ist es übersichtlicher, zusammengehörige Werte auch zusammen ablegen. Dafür gibt es in R `data.frame`. Wir können dazu die beiden Objekte in einem Datensatz ablegen, indem wir sie in `data.frame` eintragen und das neue Objekt unter `df` ablegen. Wenn wir `df` aufrufen sehen wir, dass die Werte zeilenweise zusammengefügt wurden:
 
@@ -71,7 +71,7 @@ Das ändert erstmal nichts an der Ausgangsvariable `df$profs`:
 class(df$profs)
 ```
 
-Wir können diese Umwandlung auch permanent machen, indem wir `df$profs` mit der umgewandelten Variante überschreiben:
+Wenn wir diese Umwandlung für `df$profs` behalten wollen, dann müssen wir die Variable überschreiben:
 
 ```{r , include=T, echo = T,  error = TRUE}
 df$profs <- as.character(df$profs)
@@ -88,6 +88,8 @@ df$profs / 2
 Wir können aber natürlich `df$profs` spontan in `numeric` umwandeln, um mit den Zahlenwerten zu rechnen:
 
 ```{r , include=T, echo = T,  error = TRUE}
+as.numeric(df$profs)
+
 as.numeric(df$profs) / 2
 ```
 
@@ -98,6 +100,21 @@ as.numeric(df$uni)
 ```
 
 R weiß (verständlicherweise) also nicht, wie die Uni-Namen in Zahlen umgewandelt werden sollen.
+
+### logical 
+
+Ein dritter Variablentyp ist 'logical', also logische Werte mit `TRUE` oder `FALSE`. 
+Diese können wir beispielsweise erzeugen, wenn wir eine `<` oder `<` "Frage" an die Daten stellen:
+
+```{r}
+df$studs > 10000 # ist die Studi-Zahl größer 10000?
+df$more10k <-  df$studs > 10000 # ist die Studi-Zahl größer 10000?
+```
+
+```{r}
+df
+```
+
 
 ## Zeilen oder Spalten auswählen
 
@@ -139,6 +156,12 @@ ueber_10tsd <- df[df$studs > 10000, ]
 ueber_10tsd
 class(ueber_10tsd)
 ```
+
+
+
+### [Übung](#data1) {#ue1}
+
+
 
 ## Datensätze einlesen
 
@@ -241,74 +264,120 @@ Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen
 
 ![](./pic/102_codebuch_comb.png)
 
-## Überblick: wie lese ich welches Format ein?
 
-```{r,echo=F}
+
+## Überblick: Einlesen und Exportieren
+
+::: {.panel-tabset}
+
+## Datensätze einlesen
+
+```{r,echo=F,warning=F}
+df_link2 <- 
+  data.frame(cmd= c("read.table()","vroom()"),
+             link = c("https://stat.ethz.ch/R-manual/R-devel/library/utils/html/read.table.html",
+                      "https://www.tidyverse.org/blog/2020/01/vroom-1-1-0/"))
 options(knitr.kable.NA = '')
 readxl::read_xlsx(path = "02_readin.xlsx",sheet = 1) %>% 
-  kbl(caption = "Einlesebefehle", booktabs = T,escape = F) %>% 
+  kbl(format = "html", booktabs = T,escape = F) %>% 
   kable_material(html_font = "Roboto") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>% 
   column_spec(2:3,monospace = TRUE)
 ```
+## Code
+```{r, include=FALSE}
+####| column: margin
+```
+
 
 ```{r,eval =  F}
+# csv Datei
 df1 <- read.table(file = "Dateiname.csv",sep = ";")
+# große csv
+library(vroom)
+df1 <- vroom(file = "Dateiname.csv",delim = ";")
+# Stata dta
 df1 <- read_dta(file = "Dateiname.dta")
+# SPSS sav
 df1 <- read_sav(file = "Dateiname.sav")
-
+# Excel
 df1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "1")
 df1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "Tabellenblatt1")
 ```
 
+:::
+
+::: {.panel-tabset}
 
 ## Datensätze exportieren
 
-Wir können Daten natürlich auch exportieren:
-
-```{r,echo=F}
+```{r,echo=F,warning=F}
+#### | column: margin
 options(knitr.kable.NA = '')
-data.frame(Function = "`read_delim()`",
-           Formula = "$\\leftarrow$",
-           Break = "this continues on a<br>new line",
-           Link = "[Google](www.google.com)") |>
-  kbl(format = "markdown") 
+# data.frame(Function = "`read_delim()`",
+#            Formula = "$\\leftarrow$",
+#            Break = "this continues on a new line",
+#            Link = "[Google](www.google.com)") |>
+#   kbl(format = "markdown") 
 
-readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>% 
-  kbl(caption = "Exportbefehle", booktabs = T,escape = F,format = "html") %>% 
+link_df <- 
+  data.frame(link = c("https://www.geeksforgeeks.org/how-to-use-write-table-in-r/"))
+
+readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>%
+  kbl(format = "html", booktabs = T,escape = F) %>% 
   kable_material(html_font = "Roboto") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>% 
   column_spec(2:3,monospace = TRUE)
 ```
+## Code
 
-
-```{r, eval = F}
-library(haven)
+```{r, eval = F,warning=F}
+# csv
 write.table(df,file = "Dateiname.csv",sep = ";",row.names = F)
+# dta
+library(haven)
 write_dta(df,path = "Dateiname.dta")
+# sav
+library(haven)
 write_sav(df,path = "Dateiname.sav")
+# xlsx
 library(xlsx)
 write.xlsx(df,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 ```
 
-
+:::
 
 ## Pakete in R
 
-Datenvisualisierungen können wir mit Hilfe des `ggplot2` Pakets erstellen. Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
+Stata- oder SPSS-Dateien können wir mit Hilfe des Pakets `haven` einlesen und erstellen. Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
 ```{r, eval=F}
-install.packages("ggplot2") # auf eurem PC nur einmal nötig
-library(ggplot2) # nach jedem Neustart nötig
+install.packages("Paket") # auf eurem PC nur einmal nötig
+library(Paket) # nach jedem Neustart nötig
 ```
 Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `library()` betätigen wir den Lichtschalter, sodass wir die Befehle aus dem Paket auch verwenden können. Mit jedem Neustart geht die Glühbirne wieder aus und wir müssen sie mit `library()` wieder aktivieren. Das hat aber den Vorteil, dass wir nicht alle Glühbirnen auf einmal anknipsen müssen, wenn wir R starten.
 ```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
-knitr::include_graphics("D:/oCloud/RFS/images/104_install-packages.jpg")
+knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
 
 
-## Aufgaben
+::: callout-note
 
--   Sie finden in StudIP im Ordner Übungsunterlagen den Allbus 2016 unter dem Namen `allbus2016_kompakt.csv`. Laden Sie die Datei herunter und speichern Sie sie ab. Öffnen Sie die Datei bitte **nicht** direkt mit Excel, auch wenn Ihnen dies wahrscheinlich vorgeschlagen wird.
+Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? 
+Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - innerhalb R in einem Objekt hinterlegen)
+
+:::
+
+
+## Übungen 1 {#data1}
+
+- Erstellen Sie den Datensatz mit den Studierenden- & Prof-Zahlen wie oben gezeigt.
+
+
+[Zurück](#ue1)
+
+## Aufgaben 2 {#data2}
+
+-   Lesen Sie die Erwerbstätigenbefragung in R ein und legen Sie die Daten unter 
 
 -   Laden Sie den Datensatz `allbus2016_kompakt.csv` in R und legen Sie den Datensatz unter `a16` ab.
 

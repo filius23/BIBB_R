@@ -22,7 +22,8 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 
 https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/
 
-
+ 
+ 
 
 While **gt** is trying to do something different with its own interface, it may not suit your specific needs. Here is a listing of other leading table-making **R** packages, with links to their respective project pages:
 

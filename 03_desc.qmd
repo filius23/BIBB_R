@@ -1,4 +1,4 @@
-# Überblick erhalten: Tabellen {#tab}
+# Einen Überblick erhalten {#tab}
 
 ```{r setup03, echo = F, include=FALSE}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
@@ -38,7 +38,7 @@ Etwas störend ist aber noch die `-32`. Aus dem Codebuch erfahren wir, dass `-32
 knitr::include_graphics("D:/oCloud/RFS/images/103_german_codebuch.png")
 ```
 
-### fehlende Werte mit NA überschreiben  {#NA_w103}
+## Fehlende Werte in R: `NA` {#NA_w103}
 
 Um die Werte mit `-32` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie auf `NA` setzen. Dazu rufen wir `a16$german` auf und filtern mit `[]` nur die Werte für `german` gleich `-32` heraus. Vergangene Woche haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
 ```{r}
@@ -496,6 +496,12 @@ Das kann gerade zu Beginn frustrierend sein, bis die tiefere Bedeutung von Fehle
 Die folgende Auflistung enthält einige der häufigsten Fehlermeldungen und ihre (wahrscheinlichsten) Ursachen. 
 Die Liste lehnt sich stark an die die großartige Zusammenstellung von [Nick C. Huntington-Klein](https://nickch-k.github.io/DataCommSlides/Lecture_04_Common_R_Problems.html) an.
 
+:::{.callout-note}
+
+[Fehlerliste](https://twitter.com/emilynordmann/status/1548942198246440962?s=11&t=vemXPmcotIqs4hP5J__XvQ) als Lernhilfe
+
+:::
+
 
 ### There is no package called
 
@@ -508,7 +514,7 @@ The Fix:
 
 ### Could not find function
 
-If you get an error like `could not find function "functionname"`, that means it's trying to look for that function, but cannot find it. 
+Die Fehlermeldung `could not find function "XXX"` weist darauf hin, dass R die genannte Funktion nicht finden kann. 
 
 The Fix:
 
