@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "R am BIBB",
+    "section": "",
+    "text": "Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022"
+  },
+  {
     "objectID": "01_intro.html",
     "href": "01_intro.html",
     "title": "1  Einstieg in R",

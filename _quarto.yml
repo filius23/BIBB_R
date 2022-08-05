@@ -29,5 +29,6 @@ format:
   # pdf:
   #   documentclass: scrreprt # kapitel02 kable
 
-
+execute:
+  freeze: auto
 
