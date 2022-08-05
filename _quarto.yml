@@ -14,7 +14,7 @@ book:
     - 09_reg.qmd
     - summary.qmd
     - references.qmd
-  language: de
+  language: de-DE
   always_allow_html: true
 
 bibliography: references.bib

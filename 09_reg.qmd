@@ -9,7 +9,7 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 ## Annahmen checken
 
 
-```{r reg02}
+```{r reg02, fig.height=5}
  # install.packages('see')
 library(performance)
 data(mtcars)
@@ -17,7 +17,7 @@ mtcars$gear <- factor(mtcars$gear) #
 m1 <- lm(mpg ~ qsec, mtcars)
 m2 <- lm(mpg ~ qsec + gear, mtcars)
 
-check_model(m2)
+check_model(m2,panel = F)
 
 ```
 

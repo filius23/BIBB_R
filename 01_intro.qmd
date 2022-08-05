@@ -121,13 +121,18 @@ R beherrscht natürlich auch längere Berechnungen, zum Beispiel wird auch Punkt
 
 Auch weitere Operationen sind möglich:
 
-```{r W02_3, include=T, echo = T}
+```{r W02_3, eval=F}
 4^2 ## 4²
 sqrt(4) ## Wurzel 
 exp(1) ## Exponentialfunktion (Eulersche Zahl)
 log(5) ## Natürlicher Logarithmus
 log(exp(5)) ## log und exp heben sich gegenseitig auf
 ```
+
+### Objekte erstellen
+
+Bisher haben wir uns unsere Berechnungen immer direkt ausgeben lassen.
+Für umfangreichere Berechnungen - wir wollen ja ab dem nächsten Kapitel mit Datensätzen arbeiten - wollen wir aber die Zwischenschritte speichern.
 
 Ergebnisse lassen sich mit einem `<-` unter einem beliebigen Namen als Objekt speichern. Dann wird R uns nicht das Ergebnis anzeigen, sondern den Befehl in der Konsole wiederholen:
 
@@ -162,6 +167,8 @@ y
 
 ![](./pic/101_RStudio_Environment.png)
 
+### Mehrere Werte ablegen
+
 Mit `c()` lassen sich mehrere Werte unter einem Objekt ablegen und auch mit diesen lässt sich rechnen:
 
 ```{r W02_8, include=T, echo = T}
@@ -174,6 +181,9 @@ y1
 y1/x1
 ```
 
+
+### Werte löschen
+
 Natürlich können wir Objekte auch wieder löschen und zwar mit `rm()`. Wenn wir ein nicht existierendes Objekt aufrufen bekommen wir eine Fehlermeldung:
 
 ```{r error_test,error=TRUE}
@@ -183,6 +193,8 @@ x1
 
 Mit `rm(list = ls())` können alle Objekte aus dem Environment gelöscht werden.
 
+### Scripte speichern
+
 Das Script können wir speichern, um es später wieder aufzurufen.
 
 ```{r save1,echo = F, out.height="80%",out.width="80%", fig.align="center"}
@@ -191,48 +203,50 @@ Das Script können wir speichern, um es später wieder aufzurufen.
 
 ![](./pic/101_RStudio_script3.png){width="342"}
 
-Wichtig ist dabei, der gespeicherten Datei die Endung ".R" zu geben, also zum Beispiel "R_Script1.R".
+Wichtig ist dabei, der gespeicherten Datei die Endung ".R" zu geben, also zum Beispiel "01_Script.R".
 
 ```{r save2,echo = F, out.height="50%",out.width="50%", fig.align="center"}
 # knitr::include_graphics(paste0(path1,"101_RStudio_script4.png"))
 ```
 
-![](./pic/101_RStudio_script4.png){width="310"}
 
-**Tipp:** Erstellen Sie sich am besten sofort einen Ordner, in dem Sie alle R Scripte und Datensätze[^intro-1] aus dieser Veranstaltung gesammelt ablegen.
+### Kommentare
 
-[^intro-1]: Was das ist, werden wir in der kommenden Session lernen.
+Neben den eigentlichen Befehlen sind Kommentare ein zentraler Bestandteil einer Datenanalyse-Syntax.
+Nur so können künftige Nutzende (insbesondere wir selbst in 3 Wochen oder 2 Jahren) nachvollziehen was passiert. 
+Kommentare in R können mit `#` eingefügt werden:
+```{r}
+2+ 5 # hier steht ein Kommentar
 
-## Aufgaben
+2+ # auch hier kann ein Kommentar stehen
+  5
+```
 
--   Berechnen Sie das aktuelle Alter einer Person, die im Jahr 1977 geboren wurde!
 
--   Legen Sie das Ergebnis unter `age` ab.
+```{r}
+( 2 + # ein
+    3) * # kommentar
+  2 # über mehrere Zeilen
+```
 
--   Wie können Sie `age` aufrufen, um zu sehen welcher Wert abgelegt wurde?
+
+
+**Tipp:** Erstellen Sie sich am besten sofort einen Ordner, in dem Sie alle R Scripte und Datensätze aus dieser Veranstaltung gesammelt ablegen.
+
+
+## Übungen
 
 -   Legen Sie die Anzahl der Studierenden an der Uni Oldenburg (15643) unter `stud` ab.
-
 -   Legen Sie die Anzahl der Professuren an der Uni Oldenburg (210) unter `prof` ab.
-
 -   Berechnen Sie die Anzahl der Studierenden pro Professur an der Uni Oldenburg indem Sie die Objekte `stud` und `prof` verwenden.
-
 -   Legen Sie das Ergebnis unter `studprof` ab und rufen Sie das das Objekt noch einmal auf!
-
 -   Sehen Sie die erstellten Variablen im Environment-Fenster?
-
--   Löschen Sie das Objekt `stud`. Woran erkennen Sie, dass das funktioniert hat?
-
 -   Legen Sie die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` ab.
-
 -   Legen Sie die Zahl der Profs der Uni Bremen (322), Uni Vechta (67) und Uni Oldenburg (210) zusammen unter `profs` ab.
-
 -   Berechnen die Anzahl der Studierenden pro Professur für alle drei Universitäten.
-
 -   Sie möchten zusätzlich die Zahl der Studierenden (14000) und Professuren (217) der Uni Osnabrück in `studs` und `profs` ablegen. Wie gehen Sie vor?
-
 -   Berechnen Sie für alle vier Universitäten das Verhältnis von Studierenden und Professuren!
-
--   Löschen Sie alle Objekte aus dem Environment.
+-   Löschen Sie das Objekt `stud`. Woran erkennen Sie, dass das funktioniert hat?
+-   Löschen Sie alle Objekte aus dem Environment. Woran erkennen Sie, dass das funktioniert hat?
 
 

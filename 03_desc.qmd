@@ -9,6 +9,10 @@ path <- "D:/oCloud/RFS/" # wo liegt der Datensatz?
 a16 <- read.csv(paste0(path,"allbus2016_kompakt.csv"),sep = ";",header = T,stringsAsFactors = F) # einlesen
 library(readr)
 ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
+library(readr)
+ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
+a14 <- ak[ak$year == 2014,] # basis R
+
 ```
 
 In der vorherigen Sitzung hatten wir gesehen, wie wir Datensätze importieren und damit arbeiten. Jede statistische Auswertung eines Datensatzes startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem Allbus 2016 arbeiten. Zunächst müssen wir dazu die Daten wieder wie vergangene Woche einlesen:
@@ -69,7 +73,7 @@ t1 <- table(a16$german)
 t1
 ```
 
-
+[*The missing book*](https://tmb.njtierney.com/)
 
 ### Kumulierte Häufigkeiten
 Mit `cumsum()` können wir uns die *kumulierten* Häufigkeiten ausgeben lassen. Dazu wenden wir `cumsum` auf die Häufigkeitstabelle an:
@@ -130,6 +134,94 @@ colnames(t3) <- c("Werte", "h", "H", "f", "F")
 t3 
 ```
 
+## Kontingenztabellen
+
+In dieser Session beschäftigten wir uns mit den Familienstandsangaben aus der Variable `mstat`. Wie vergangene Woche müssen wir vorab die negativen Werte (`-9`, siehe Codebuch) mit `NA` überschreiben: 
+```{r sw4_2}
+table(a16$mstat)
+a16$mstat[a16$mstat < 0] <- NA
+table(a16$mstat)
+```
+
+
+Aus Kontingenztabellen erfahren wir, wie häufig Merkmalskombinationen auftreten. Auch für Kontingenztabellen können wir `table()` verwenden. Zum Beispiel können wir uns eine Tabelle anzeigen lassen, die uns die Häufigkeiten des Familienstatus getrennt nach Geschlechtern zeigt:
+```{r, include=T, echo = T}
+table(a16$sex, a16$mstat)
+```
+
+Wir erkennen aus dieser Tabelle beispielsweise, dass 415 Befragte weiblich (`sex=2`) und ledig (`mstat = 5`) sind.
+
+<!-- [^5]: Hier ist das Geschlechts als binäres Merkmal codiert. Die Einführung der dritten Option im Dez 2018 wird aber in künftigen Erhebungen auch im Allbus berücksichtigt werden. Bis dahin müssen wir mit den Kategorien arbeiten, die uns hier vorgegeben sind.  -->
+
+
+
+Eine Alternative zu `table()` ist `xtabs()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwenden wir diese Darstellung, alle Operationen sind aber genauso auch mit `table` möglich. Da wir mit dieser Kontingenztabelle noch etwas weiter arbeiten werden, legen wir sie unter `kt` ab:
+```{r, include=T, echo = T}
+xtabs(~sex+mstat, data = a16)
+kt <- xtabs(~sex+mstat, data = a16) 
+kt
+```
+### Relative Häufigkeiten
+
+Auch hier können wir uns die relativen Häufigkeiten anzeigen lassen, indem wir `prop.table()` anwenden:
+```{r, echo = T}
+prop.table(kt) 
+```
+Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`sex=2`) und ledig (`mstat = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $\frac{Anzahl\,lediger\,Frauen}{Gesamtzahl\,der\,Befragten}$ - Wir können also aus dieser Tabelle ablesen dass `11,9%` der Befragten *weiblich und ledig* sind. 
+
+
+
+### Zeilen- und Spaltenprozente
+Wir können diese Tabelle auch mit *Zeilen- und Spaltenprozenten* anzeigen lassen, indem wir die Option `margin` verwenden. `margin=1` liefert die **Zeilenprozente**, `margin=2` die **Spaltenprozente**.[^1]  
+
+[^1]: Der Übersichtlichkeit halber wurden die Darstellungen hier gerundet - siehe [Hinweise](#hinweise_w04).
+```{r, eval = F}
+prop.table(kt,margin = 1)
+```
+```{r, echo = F}
+round(prop.table(kt,margin = 1), 4)
+```
+```{r, eval = F}
+prop.table(kt,margin = 2) 
+```
+```{r, echo = F}
+round(prop.table(kt,margin = 2) ,4)
+```
+*Achtung!* Damit ändert sich jeweils die Interpretation der Tabelle! Wir ändern durch `margin` die Bezugsgröße oder formal ausgedrückt den Nenner:  
+
++ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der ledigen Frauen ins Verhältnis zur Zahl der befragten Frauen gesetzt: $\frac{Anzahl\,lediger\,Frauen}{Gesamtzahl\,der\,befragten\,Frauen}$ - Interpretation: "`24,14%` der befragten Frauen sind ledig"  
++ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der ledigen Frauen ins Verhältnis zur Zahl der ledigen Befragten gesetzt: $\frac{Anzahl\,lediger\,Frauen}{Gesamtzahl\,der\,ledigen\,Befragten}$ - Interpretation: "`43,73%` der ledigen Befragten sind Frauen" 
+
+
+ 
+
+## Arbeiten mit der Pipe
+
+Unter `kt` hatten wir das Ergebnis des `xtabs`-Befehls abgelegt: `xtabs(~sex+mstat, data = a16)`.
+Wenn wir also alles "ausschreiben", dann ergibt sich folgender, verschachtelter Befehl:
+```{r W201_9_schachtel, echo = T}
+round(   prop.table( xtabs(~sex+mstat, data = a16), margin = 1)   ,2) 
+```
+
+Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen und besser darstellen. `%>%` steht dabei einfach für "und dann". Die Pipe ist unter anderem Teil des Pakets `dplyr`, welches wir in Zukunft häufiger verwenden werden:
+```{r dplyr_install, eval = F}
+install.packages("dplyr")
+```
+```{r dplyr_load, echo = T}
+library(dplyr)
+```
+
+Mit der Pipe sieht die Befehlsschachtel dann so aus und wir können sie von links nach rechts lesen:
+```{r W201_9_pipe, echo = T}
+ xtabs(~sex+mstat, data = a16) %>% prop.table(., margin = 1) %>% round(.,2) 
+```
+Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
+
+   1. erstelle die Kontingenztabelle *und dann (`%>%`)*
+   2. berechne daraus die relativen Häufigkeiten mit `margin = 1` *und dann (`%>%`)*
+   3. runde das Ergebnis auf 2 Nachkommastellen
+
+> Tipp:` %>%` kann mit STRG+SHIFT+m (cmd+shift+m für Mac) eingefügt werden.
 
 
 ## Metrische Variablen
@@ -189,17 +281,24 @@ Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen. E
 summary(a14$di05)
 ```
 
+Natürlich gibt es keine Haushalte, die ein Einkommen von `-50` Euro pro Monat haben. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
+```{r sw5_2, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+a14$di05[a14$di05 < 0] <- NA # missings überschreiben
+```
+
+```{r sw5_quant_summary2}
+summary(a14$di05)
+```
+
+
 Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Haushaltseinkommen der Befragten (`di05`) im Allbus 2014 mit Hilfe folgender Befehle an:
+
 + Minimum und Maximum: `min()`, `max()`
 + arithm. Mittel: `mean()`
 + Median: `median()`
 
 ```{r sw5_1, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
 min(a14$di05) # kleinster Wert
-```
-Natürlich gibt es keine Haushalte, die ein Einkommen von `-50` Euro pro Monat haben. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
-```{r sw5_2, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-a14$di05[a14$di05 < 0] <- NA # missings überschreiben
 ```
 Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
 ```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}

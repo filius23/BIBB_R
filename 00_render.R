@@ -1,4 +1,5 @@
 
+# knitr::purl(input = "09_reg.qmd",output= "09_reg.R",documentation = 0)
 
 
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
@@ -19,7 +20,13 @@ myimages2 <- c(paste0(path1,"/101_engine_R.png"),paste0(path1,"/101_cockpit_rstu
 myimages3 <- c(paste0(path2,"/101_engine_R.png"),paste0(path2,"/101_cockpit_rstudio2.png"))
 
 
-file.copy(from = myimages2[[1]],to = myimages3[[1]])
+
+
+file.copy(from = "D:/oCloud/Home-Cloud/Lehre/BIBB/StataBIBB1/pics/01_Dateipfad_WIN.png",
+          to = paste0(path2,"01_Dateipfad_WIN.png"))
+
+
+
 dir.create(here::here("pic"))
 
 

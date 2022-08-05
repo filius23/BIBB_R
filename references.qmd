@@ -2,19 +2,67 @@
 
 ```{r ref01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
-library(kableExtra)
 ```
 
+# Link Sammlung
 
+## Einführungen in R
 
-```{r,echo=F}
-data.frame(Function = "`read_delim()`",
-           Function = "[`read_delim()`](www.google.com)",
-           Formula = "$\\leftarrow\\alpha$",
-           Break = "this continues on a<br>new line",
-           Link = "[Google](www.google.com)") |>
-  kbl(format = "markdown") 
-```
+Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:
+
+[`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an.
+
+## Cheatsheets
+
+Eine Sammlung an Cheatsheets für eine breite Palette an Anwendungen gibt es [hier](https://www.rstudio.com/resources/cheatsheets/).
+
++ Datenvisualisierung mit [`{ggplot2}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
++ Datensätze bearbeiten mit [`{dplyr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf)
++ Datensätze erstellen/reshapen mit [`{tidyr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf)
+
+## `{ggplot2}`
+
+Eine große Stärke von `ggplot2` sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen
+
++ mehrere Grafiken zu kombinieren mit [`{patchwork}`](https://github.com/thomasp85/patchwork#patchwork)
++ Karten zu erstellen mit [sf](https://oliviergimenez.github.io/intro_spatialR/#1), weitere [Link](https://ourcodingclub.github.io/tutorials/dataviz-beautification-synthesis/)
++ fortgeschrittene Textformatierungen zu verwenden mit [`{ggtext}`](https://wilkelab.org/ggtext/)
++ Grafiken als Animation zu erstellen [`{gganimate}`](https://gganimate.com/)
+
+Eine Übersicht zu Erweiterungspakteten für `{ggplot2}` findet sich [hier](https://exts.ggplot2.tidyverse.org/gallery/)
+
+Auch [The R Graph Gallery](https://r-graph-gallery.com/) bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für `{ggplot2}`.
+
+## regex
+
+Für die Arbeit mit Textvariablen sind *regular expressions* (regex) eine große Hilfe. 
+Damit lassen sich beispielsweise Textabschnitte nach bestimmten Zeichenfolgen durchsuchen, diese ersetzen usw.
+Der [Blog von Joshua C. Fjelstul](https://jfjelstul.github.io/regular-expressions-tutorial/) ist ein guter Einstieg.
+Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf) und das *regex* -Paket [`{stringr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf)
+
+## Twitter Accounts
+
++ [R Question a day]
++ []
++ [Daily R Sheets](https://twitter.com/daily_r_sheets) twittert jeden Tag ein zufälliges R-Cheatsheet
+
+<details>
+<summary> Appendix </summary>
+
+## Appendix 
+I can fill this with regular Markdown. This is **bold**. This is *italic*.
+
+Also, code chunks work. 
+
+```{r}
+library(ggplot2)
+mpg |>
+  ggplot(aes(hwy, cty)) +
+  geom_jitter()
+``` 
+
+</details>
+
 
 ::: {#refs}
 :::
