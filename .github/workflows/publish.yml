@@ -20,5 +20,6 @@ uses: quarto-dev/quarto-actions/setup@v2
 uses: quarto-dev/quarto-actions/publish@v2
 with:
   target: gh-pages
+  render: false
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
