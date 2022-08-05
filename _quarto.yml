@@ -10,8 +10,8 @@ book:
   chapters:
     - index.qmd
     - 01_intro.qmd
-    - 02_intro.Rmd
-    - 03_desc.qmd
+    # - 02_intro.Rmd
+    # - 03_desc.qmd
     # - 04_viz.qmd
     # - 09_reg.qmd
     # - summary.qmd

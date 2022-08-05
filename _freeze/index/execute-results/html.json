@@ -1,7 +1,7 @@
 {
-  "hash": "763052c2dd15115f1b155935ca171bdd",
+  "hash": "786cddd6d65023c08edb7ba63abeca9f",
   "result": {
-    "markdown": "# Herzlich Willkommen {.unnumbered}\n\n\n\n\n\nHier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022\n\n![](./pic/00_frontpage.png)\n\n\nMelden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de!\n\n<!-- :::{.callout-note} -->\n<!-- Note that there are five types of callouts, including:  -->\n<!-- `note`, `tip`, `warning`, `caution`, and `important`. -->\n<!-- ::: -->",
+    "markdown": "# Herzlich Willkommen {.unnumbered}\n\n\n\n\n\nHier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022\n\n![](./pic/00_frontpage.png)\n\n\nMelden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de\n\n<!-- :::{.callout-note} -->\n<!-- Note that there are five types of callouts, including:  -->\n<!-- `note`, `tip`, `warning`, `caution`, and `important`. -->\n<!-- ::: -->",
     "supporting": [
       "index_files"
     ],
