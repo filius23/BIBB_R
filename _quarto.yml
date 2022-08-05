@@ -1,21 +1,24 @@
 project:
   type: book
-
+  output-dir: docs
+  output-file: "my-book"
+  
 book:
   title: "R am BIBB"
   author: "Andreas Filser"
-  date: Mai 2022""
+  date: last-modified
   chapters:
     - index.qmd
     - 01_intro.qmd
-    - 02_intro.Rmd
-    - 03_desc.qmd
-    - 04_viz.qmd
-    - 09_reg.qmd
-    - summary.qmd
-    - references.qmd
+    # - 02_intro.Rmd
+    # - 03_desc.qmd
+    # - 04_viz.qmd
+    # - 09_reg.qmd
+    # - summary.qmd
+    # - references.qmd
   language: de-DE
   always_allow_html: true
+  downloads: [pdf]
 
 bibliography: references.bib
 
