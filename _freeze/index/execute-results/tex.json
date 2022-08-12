@@ -1,0 +1,20 @@
+{
+  "hash": "e0e792e5052af8921c47f2bc81cd316c",
+  "result": {
+    "markdown": "# Einführung in R am BIBB {.unnumbered}\n\n\n\n\n\n\n\nHerzlich Willkommen! Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022\n\n![](./pic/00_frontpage.png)\n\n\nMelden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de\n\n<!-- :::{.callout-note} -->\n<!-- Note that there are five types of callouts, including:  -->\n<!-- `note`, `tip`, `warning`, `caution`, and `important`. -->\n<!-- ::: -->",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

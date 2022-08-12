@@ -12,6 +12,7 @@ ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_ty
   mutate(across(everything(),~ifelse(.x<0,NA,.x)))
 a14 <- ak[ak$year == 2014,] # basis R
 kt <- xtabs(~sex+mstat, data = a16) 
+# https://wtoivo.github.io/SGSSS-data-viz-workshop/bar-plots.html
 
 ```
 

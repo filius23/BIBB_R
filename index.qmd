@@ -1,10 +1,10 @@
-# Herzlich Willkommen {.unnumbered}
+# Einführung in R am BIBB {.unnumbered}
 
 ```{r indx, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 ```
 
-Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022
+Herzlich Willkommen! Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022
 
 ![](./pic/00_frontpage.png)
 

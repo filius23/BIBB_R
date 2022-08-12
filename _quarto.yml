@@ -26,8 +26,8 @@ format:
   html:
     theme: flatly
     page-layout: full
-  # pdf:
-  #   documentclass: scrreprt # kapitel02 kable
+  pdf:
+    documentclass: scrreprt # kapitel02 kable
 
 execute:
   freeze: auto

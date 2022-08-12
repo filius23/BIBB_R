@@ -1,0 +1,7 @@
+# Regressionsmodelle 
+
+```{r reg01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+```
+
+[Ableitungen grafisch erstellt](https://twitter.com/allison_horst/status/1554921698742468625?s=11&t=Ac_YizlsYkOfUIkuWmaaWQ)
