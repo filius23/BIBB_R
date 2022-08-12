@@ -1,17 +1,40 @@
-# Einführung in R am BIBB {.unnumbered}
+# Willkommen {#index .unnumbered}
 
 ```{r indx, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(kableExtra)
+library(tidyverse)
 ```
 
-Herzlich Willkommen! Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022
+Eine Einführung in R für Mitarbeitende am BIBB.
 
-![](./pic/00_frontpage.png)
+```{r main, echo = F, out.height="70%",out.width="70%", fig.align="center"}
+knitr::include_graphics("./pic/00_frontpage.png")
+```
 
-
+Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022
 Melden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de
 
 <!-- :::{.callout-note} -->
 <!-- Note that there are five types of callouts, including:  -->
 <!-- `note`, `tip`, `warning`, `caution`, and `important`. -->
 <!-- ::: -->
+
+**Kurszeiten**
+```{r, echo=F}
+tribble(~Tag, ~Start, ~Ende,
+"29.09.2022",	"08:30" ,	"15:15",
+"30.09.2022",	"08:30" ,	"15:30",
+"06.10.2022",	"08:30" ,	"15:30",
+"07.10.2022",	"08:30" ,	"15:30",
+) %>% 
+  kable(.) %>% 
+  kable_material(html_font = "Roboto") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>% 
+  row_spec(0, bold = T, color = "white",font_size = 0)
+```
+
+
+
+
+
