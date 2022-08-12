@@ -12,7 +12,8 @@ Eine Einführung in R für Mitarbeitende am BIBB.
 knitr::include_graphics("./pic/00_frontpage.png")
 ```
 
-Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022
+Hier entsteht das Begleitskript für die R-Kurse am BIBB 29.-30.09. und 06.-07.10.2022.
+
 Melden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de
 
 <!-- :::{.callout-note} -->
