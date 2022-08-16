@@ -295,14 +295,24 @@ box_plot + box_zoom
 Befragte aus den neuen Bundesländern geben niedrigere Einkommen an: der Median sowie beide Quartilsgrenzen liegen im Osten niedriger als im Westen. 
 
 ```{r}
-ggplot(data = etb18, aes(y = az)) + geom_histogram() + 
+ggplot(data = etb18, aes(x = az, fill = as.character(S1))) + 
+  geom_histogram() + 
   facet_wrap(~S1) + # nach geschlecht aufsplitten
   theme_minimal()
 ```
 ```{r}
 ggplot(data = etb18, aes(x = az)) + 
+  geom_histogram(aes(fill = factor(S1)), alpha = .5, color = "grey50") + 
+  theme_minimal()
+
+ggplot(data = etb18, aes(x = az)) + 
+  geom_histogram(aes(fill = factor(S1)), color = "grey50",position = position_dodge()) + 
+  scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen")) +
+  theme_minimal()
+
+ggplot(data = etb18, aes(x = az)) + 
   geom_density(aes(fill = factor(S1)), alpha = .5) + 
-  scale_fill_viridis_d(option = "mako",labels = c("Männer","Frauen")) +
+  scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen")) +
   labs(fill = "") +
   theme_minimal()
 ```
