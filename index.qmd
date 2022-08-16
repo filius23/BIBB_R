@@ -21,8 +21,10 @@ Melden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de
 <!-- `note`, `tip`, `warning`, `caution`, and `important`. -->
 <!-- ::: -->
 
-**Kurszeiten**
-```{r, echo=F}
+**Kursinformationen**
+
+
+```{r, eval=F, echo=F}
 tribble(~Tag, ~Start, ~Ende,
 "29.09.2022",	"08:30" ,	"15:15",
 "30.09.2022",	"08:30" ,	"15:30",
@@ -32,10 +34,22 @@ tribble(~Tag, ~Start, ~Ende,
   kable(.) %>% 
   kable_material(html_font = "Roboto") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>% 
-  row_spec(0, bold = T, color = "white",font_size = 0)
+  row_spec(0, color = "white",font_size = 0)
 ```
 
 
 
+::: {.g-col-12 .g-col-sm-6 .g-col-md-4}
+
+
+{{< fa calendar >}} &nbsp; Donnerstags und Freitags
+
+{{< fa calendar-alt >}} &nbsp; 29.-30.09. und 06.-07.10.2022
+
+{{< fa clock >}} &nbsp; 8:30 - 15:30 Uhr
+
+{{< fa location-dot >}} &nbsp; Webex
+
+:::
 
 

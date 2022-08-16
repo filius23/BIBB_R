@@ -1,0 +1,16 @@
+{
+  "hash": "032fadb610be202f1f6d148027c53055",
+  "result": {
+    "markdown": "# Tabellenexport\n\n\n\n\n\n\n\n\n\n## Layout-Tipps für Tabellen\n\n[Hier](https://clauswilke.com/dataviz/figure-titles-captions.html#tables)\n\n+ Do not use vertical lines.\n+ Do not use horizontal lines between data rows. (Horizontal lines as separator between the title row and the first data row or as frame for the entire table are fine.)\n+ Text columns should be left aligned.\n+ Number columns should be right aligned and should use the same number of decimal digits throughout.\n+ Columns containing single characters are centered.\n+ The header fields are aligned with their data, i.e., the heading for a text column will be left aligned and the heading for a number column will be right aligned.\n\n\n## `flextable`\n\n## weitere Optionen\n\n[link](https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/)\n\n \n \n\nWhile **gt** is trying to do something different with its own interface, it may not suit your specific needs. Here is a listing of other leading table-making **R** packages, with links to their respective project pages:\n\n-   `{knitr}` [link](https://yihui.org/knitr/)\n\n-   `{kableExtra}` [link](https://haozhu233.github.io/kableExtra/)\n\n-   `{gt}` [link](https://gt.rstudio.com/)\n\n-   `{huxtable}` [link](https://hughjonesd.github.io/huxtable/)\n\n-   `{DT}` [link](https://rstudio.github.io/DT/)\n\n-   `{reactable}` [link](https://glin.github.io/reactable/)\n",
+    "supporting": [
+      "14_tabellenexport_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
