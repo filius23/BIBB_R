@@ -129,6 +129,13 @@ log(5) ## Natürlicher Logarithmus
 log(exp(5)) ## log und exp heben sich gegenseitig auf
 ```
 
+Zahlenreihen können wir mit `seq()` oder `:` erstellen:
+```{r}
+2:6
+seq(2,11,3)
+```
+
+
 ### Objekte erstellen
 
 Bisher haben wir uns unsere Berechnungen immer direkt ausgeben lassen.

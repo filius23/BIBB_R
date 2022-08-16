@@ -5,397 +5,316 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 knitr::opts_chunk$set(collapse = F)
 library(tidyverse)
-path <- "D:/oCloud/RFS/" # wo liegt der Datensatz?
-a16 <- read.csv(paste0(path,"allbus2016_kompakt.csv"),sep = ";",header = T,stringsAsFactors = F) # einlesen
-library(readr)
-ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
-library(readr)
-ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
-a14 <- ak[ak$year == 2014,] # basis R
-
+ a14 <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double())) %>% 
+   filter(year == 2014)
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 ```
 
-In der vorherigen Sitzung hatten wir gesehen, wie wir Datensätze importieren und damit arbeiten. Jede statistische Auswertung eines Datensatzes startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem Allbus 2016 arbeiten. Zunächst müssen wir dazu die Daten wieder wie vergangene Woche einlesen:
+Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:
 ```{r W04_1, eval=F, echo = T}
-setwd("...") # wo liegt der Datensatz?
-a16 <- read.table("allbus2016_kompakt.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
+library(haven)
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 ```
 
 ## Kategoriale Merkmale
-### Absolute Häufigkeiten
-Zentraler Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `german` (Details im Codebuch).
+
+Uns stehen (mindestens) drei Befehle zur Verfügung, um eine Häufigkeitsauszählung zu erstellen:
+
++ `table()`
++ `xtabs()`
+<!-- + `count()` aus `{dplyr}`  -->
+
+
+## Absolute Häufigkeiten
+Zentraler Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `m1202` zur Ausbildung der Befragten.
 ```{r W04_2, include=T, echo = T}
-table(a16$german)
+table(etb18$m1202)
 ```
-Wir bekommen hier also die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. Aus dem Codebuch erfahren wir, für welche inhaltlichen Kategorien die Zahlencodes jeweils stehen. Bspw. steht `1` dafür, dass der*die Befragte die deutsche Staatsbürgerschaft besitzt.
+Die Syntax für `xtabs()` ist etwas anders, aber hier bekommen wir die Variablennamen nochmal angezeigt - der wesentliche Output ist aber der gleiche:
+```{r}
+xtabs(~m1202,data=etb18)
+```
+Wir bekommen hier die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. 
+Allerdings werden sowohl für `table()` als auch `xabs()` die labels in der Ausgabe erstmal ignoriert. 
+Mit `val_labels()` aus dem Paket `{labelled}` können wir die Labels aus dem Datensatz abrufen. - bspw. steht `1` dafür, dass der*die Befragte die keine Berufsabschluss besitzt:
+```{r, eval=F}
+install.packages("labelled")
+```
+
+```{r}
+library(labelled)
+val_labels(etb18$m1202)
+```
+```{r,echo=FALSE}
+t2 <- xtabs(~m1202,data=etb18)
+```
+
+`r as.numeric(t2[2])` Befragte haben keinen Berufsabschluss, `r as.numeric(t2[4])` Befragte haben Aufstiegsfortbildung usw. (Zu labels und die Arbeit mit value labels in R später mehr)
+
 Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später wieder aufrufen:
 ```{r W04_3, include=T, echo = T}
-t1 <- table(a16$german)
-t1 
+t2 <- xtabs(~m1202,data=etb18)
+t2
+class(t2)
+attributes(t2)
 ```
 
-`r as.numeric(table(a16$german)[2])` Befragte haben also nur die deutsche Staatsbürgerschaft, `r as.numeric(table(a16$german)[3])` Befragte haben die deutsche und noch eine weitere Staatsbürgerschaft. Außerdem enthält der Datensatz `r as.numeric(table(a16$german)[4])` Befragte ohne deutsche Staatsbürgerschaft.   
-
-Etwas störend ist aber noch die `-32`. Aus dem Codebuch erfahren wir, dass `-32` für fehlende Angabe steht:
-
-```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
-knitr::include_graphics("D:/oCloud/RFS/images/103_german_codebuch.png")
-```
+Etwas störend ist aber noch die `-1`. Aus den Labels wissen wir, dass `-1` für fehlende Angabe steht.
 
 ## Fehlende Werte in R: `NA` {#NA_w103}
 
-Um die Werte mit `-32` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie auf `NA` setzen. Dazu rufen wir `a16$german` auf und filtern mit `[]` nur die Werte für `german` gleich `-32` heraus. Vergangene Woche haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
+Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
 ```{r}
-a16$german[a16$german == -32] # nur german = -32 aufrufen
+etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
 ```
-Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `german == -32` mit `NA`: 
+Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
 ```{r W04_3miss, include=T, echo = T}
-a16$german[a16$german == -32] <- NA
-# Wir könnten auch einfach alle Werte kleiner 0 auswählen:
-a16$german[a16$german < 0] <- NA
+etb18$m1202[etb18$m1202 == -1]  <- NA
 ```
 
-`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `table()` nicht aufgeführt:
+`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `xtabs()` nicht aufgeführt:
 ```{r W04_3miss_tab, include=T, echo = T}
-table(a16$german)
+xtabs(~m1202,data=etb18)
 ```
-Wir können aber mit der Option `exclude = NULL` die Auszählung von `NA` explizit anfordern:
+Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
 ```{r}
-table(a16$german, exclude = NULL)
+xtabs(~m1202,data=etb18,addNA = T)
 ```
-**Achtung!** Die vor dem Ausschluss von `-32` abgespeicherte Tabelle `t1` ändert sich dadurch nicht:
+**Achtung!** Die vor dem Ausschluss von `-1` abgespeicherte Tabelle `t2` ändert sich dadurch nicht:
 ```{r}
-t1
+t2
 ```
-Das liegt daran, dass bei Aufruf von `t1` die abgelegten Werte, so wie sie gespeichert wurden, wieder aufgerufen werden. Es wird **keine neue Auszählung** vorgenommen! Möchten wir die aktualisierte Tabelle ohne die `NA` in `t1` ablegen, dann müssen wir `t1` mit den neuen Werten überschreiben:
+Das liegt daran, dass bei Aufruf von `t2` die abgelegten Werte, so wie sie gespeichert wurden, wieder aufgerufen werden. Es wird **keine neue Auszählung** vorgenommen! Möchten wir die aktualisierte Tabelle ohne die `NA` in `t2` ablegen, dann müssen wir `t2` mit den neuen Werten überschreiben:
 ```{r}
-t1 <- table(a16$german)
-t1
+t2 <- xtabs(~m1202,data=etb18)
+t2
 ```
 
-[*The missing book*](https://tmb.njtierney.com/)
+Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/).
+
+## [Übung 1](#ue1)
+
+## Andere Tabellenwerte
+
+Mit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpassen:
+
++ `cumsum()`: kumulierte Werte
++ `prop.table()`: relative Werte/Anteile
 
 ### Kumulierte Häufigkeiten
 Mit `cumsum()` können wir uns die *kumulierten* Häufigkeiten ausgeben lassen. Dazu wenden wir `cumsum` auf die Häufigkeitstabelle an:
 ```{r W04_4, include=T, echo = T}
-cumsum(table(a16$german))
+cumsum(xtabs(~m1202,data=etb18))
 ```
-*Was sagen die Zahlen jetzt aus? `r as.numeric(cumsum(table(a16$german))[2])` Befragte haben die deutsche und evtl. noch eine weitere Staatsbürgerschaft. Für `r as.numeric(cumsum(table(a16$german))[3])` Befragte liegt eine Angabe zur Staatsbürgerschaft vor.*
-
-Die Befehlsschachtel aus `table()` und `cumsum()` können wir durch ein schrittweises Vorgehen auflösen:
-```{r}
-t1 <- table(a16$german) # ablegen wie oben
-cumsum(t1)
+```{r, echo = F}
+ct2 <- xtabs(~m1202,data=etb18) %>% cumsum(.)
 ```
 
+Also: `r ct2[2]` Befragte haben eine duale Berufsausbildung oder keine Berufsausbildung.
 
 ### Relative Häufigkeiten (Anteile)
-Neben den absoluten Häufigkeiten können wir uns auch relative Häufigkeitstabellen anzeigen lassen. Dazu nutzen wir den `prop.table()` Befehl und wenden diesen wiederum entweder auf `table()` oder direkt auf `t1` an:
+
+Neben den absoluten Häufigkeiten können wir uns auch relative Häufigkeitstabellen anzeigen lassen. Dazu nutzen wir den `prop.table()` Befehl und wenden diesen wiederum auf `xtabs()` an:
 ```{r W04_5, include=T, echo = T}
-prop.table(table(a16$german)) 
-prop.table(t1) 
+prop.table(xtabs(~m1202,data=etb18)) 
 ```
-*Wir sehen hier also, dass `r sprintf("%2.3f",prop.table(t1)[1]*100)`% aller Befragten nur die deutsche Staatsbürgerschaft haben.*
+`r sprintf("%2.3f",prop.table(xtabs(~m1202,data=etb18)) [1]*100)`% aller Befragten haben keine Berufsausbildung haben.
+
+### kumulierte relative Häufigkeiten
 
 Auch die relativen Häufigkeiten können wir uns als kumulierte Werte ausgeben lassen, dazu kombinieren wir `prop.table()` mit `cumsum()`:
 ```{r}
-cumsum(prop.table(table(a16$german)))
+cumsum(prop.table(xtabs(~m1202,data=etb18)))
 ```
-Diese Befehlsschachtel können wir wieder vermeiden indem wir die absoluten Häufigkeiten aus `t1` aufrufen und dann die relativen Häufigkeiten unter  `t2` ablegen:
-```{r}
-t2 <- prop.table(t1) # relative Häufigkeiten unter t2 ablegen
-cumsum(t2) # relative kumulierte Häufigkeiten 
-```
-*Wir sehen hier also, dass `r sprintf("%2.3f",cumsum(t2)[2]*100)`% aller Befragten die deutsche und evtl. eine weitere Staatsbürgerschaft haben.*
-
-
-
-### Übersichtstabelle mit allen Kennzahlen
-Dies alles lässt sich zu einer Gesamttabelle im Format eines Datensatzes zusammenfassen. Dazu legen wir zunächst die absoluten Häufigkeiten in einem `data.frame` unter `t3` ab:
-```{r W04_6, include=T, echo = T}
-t1 <- table(a16$german) # wie bereits oben
-t3 <- data.frame(t1) # t1 in einen Datensatz umformatieren
-t3
-class(t3) 
-```
-Diesem `data.frame` fügen wir dann mit `t3$...` neue Variablen/Spalten hinzu. Während wir uns oben jeweils auf `t1` für die absoluten Häufigkeiten bezogen hatten, finden wir diese jetzt innerhalb von  `t3` in der Spalte `Freq`:
-```{r}
-t3$H <- cumsum(t3$Freq) # kum. absolute Häufigkeiten
-t3 # kontrolle
-t3$f <- prop.table(t3$Freq) # rel. Häufigkeiten
-t3 # kontrolle
-t3$F <- cumsum(t3$f) # kum. rel. Häufigkeiten
-t3 # kontrolle
-```
-
-Zum Schluss können wir mit `colnames` die Spalten klar benennen. Dazu rufen wir mit `colnames(t3)` die Spaltennamen von `t3` auf und überschreiben diese dann mit einer Folge an Werten, die wir mit `c()` angeben:
-```{r W04_7, include=T, echo = T}
-colnames(t3) <- c("Werte", "h", "H", "f", "F")
-t3 
-```
-
-## Kontingenztabellen
-
-In dieser Session beschäftigten wir uns mit den Familienstandsangaben aus der Variable `mstat`. Wie vergangene Woche müssen wir vorab die negativen Werte (`-9`, siehe Codebuch) mit `NA` überschreiben: 
-```{r sw4_2}
-table(a16$mstat)
-a16$mstat[a16$mstat < 0] <- NA
-table(a16$mstat)
+```{r,echo=FALSE}
+t2x <- cumsum(prop.table(xtabs(~m1202,data=etb18)))
 ```
 
 
-Aus Kontingenztabellen erfahren wir, wie häufig Merkmalskombinationen auftreten. Auch für Kontingenztabellen können wir `table()` verwenden. Zum Beispiel können wir uns eine Tabelle anzeigen lassen, die uns die Häufigkeiten des Familienstatus getrennt nach Geschlechtern zeigt:
-```{r, include=T, echo = T}
-table(a16$sex, a16$mstat)
-```
+`r sprintf("%2.3f",round(t2x[2]*100,3))`% aller Befragten haben eine duale Berufsausbildung oder keine Berufsausbildung.
 
-Wir erkennen aus dieser Tabelle beispielsweise, dass 415 Befragte weiblich (`sex=2`) und ledig (`mstat = 5`) sind.
-
-<!-- [^5]: Hier ist das Geschlechts als binäres Merkmal codiert. Die Einführung der dritten Option im Dez 2018 wird aber in künftigen Erhebungen auch im Allbus berücksichtigt werden. Bis dahin müssen wir mit den Kategorien arbeiten, die uns hier vorgegeben sind.  -->
-
-
-
-Eine Alternative zu `table()` ist `xtabs()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwenden wir diese Darstellung, alle Operationen sind aber genauso auch mit `table` möglich. Da wir mit dieser Kontingenztabelle noch etwas weiter arbeiten werden, legen wir sie unter `kt` ab:
-```{r, include=T, echo = T}
-xtabs(~sex+mstat, data = a16)
-kt <- xtabs(~sex+mstat, data = a16) 
-kt
-```
-### Relative Häufigkeiten
-
-Auch hier können wir uns die relativen Häufigkeiten anzeigen lassen, indem wir `prop.table()` anwenden:
-```{r, echo = T}
-prop.table(kt) 
-```
-Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`sex=2`) und ledig (`mstat = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $\frac{Anzahl\,lediger\,Frauen}{Gesamtzahl\,der\,Befragten}$ - Wir können also aus dieser Tabelle ablesen dass `11,9%` der Befragten *weiblich und ledig* sind. 
-
-
-
-### Zeilen- und Spaltenprozente
-Wir können diese Tabelle auch mit *Zeilen- und Spaltenprozenten* anzeigen lassen, indem wir die Option `margin` verwenden. `margin=1` liefert die **Zeilenprozente**, `margin=2` die **Spaltenprozente**.[^1]  
-
-[^1]: Der Übersichtlichkeit halber wurden die Darstellungen hier gerundet - siehe [Hinweise](#hinweise_w04).
-```{r, eval = F}
-prop.table(kt,margin = 1)
-```
-```{r, echo = F}
-round(prop.table(kt,margin = 1), 4)
-```
-```{r, eval = F}
-prop.table(kt,margin = 2) 
-```
-```{r, echo = F}
-round(prop.table(kt,margin = 2) ,4)
-```
-*Achtung!* Damit ändert sich jeweils die Interpretation der Tabelle! Wir ändern durch `margin` die Bezugsgröße oder formal ausgedrückt den Nenner:  
-
-+ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der ledigen Frauen ins Verhältnis zur Zahl der befragten Frauen gesetzt: $\frac{Anzahl\,lediger\,Frauen}{Gesamtzahl\,der\,befragten\,Frauen}$ - Interpretation: "`24,14%` der befragten Frauen sind ledig"  
-+ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der ledigen Frauen ins Verhältnis zur Zahl der ledigen Befragten gesetzt: $\frac{Anzahl\,lediger\,Frauen}{Gesamtzahl\,der\,ledigen\,Befragten}$ - Interpretation: "`43,73%` der ledigen Befragten sind Frauen" 
-
-
- 
+Diese Befehlsschachtel ist aber etwas unübersichtlich und lässt sich relativ leicht mit einem zentralen Tool des *tidyverse* vermeiden - indem wir die Pipe verwenden.
 
 ## Arbeiten mit der Pipe
 
-Unter `kt` hatten wir das Ergebnis des `xtabs`-Befehls abgelegt: `xtabs(~sex+mstat, data = a16)`.
-Wenn wir also alles "ausschreiben", dann ergibt sich folgender, verschachtelter Befehl:
+Für die kumulierten relativen Häufigkeiten hatten wir den Befehl `cumsum(prop.table(xtabs(~m1202,data=etb18)))` verwendet. 
+Wenn wir das auch noch mit [`round()`](#round) runden möchten, dann bekommen wir eine ziemlich große Befehlsschachtel:
 ```{r W201_9_schachtel, echo = T}
-round(   prop.table( xtabs(~sex+mstat, data = a16), margin = 1)   ,2) 
+round(   cumsum(prop.table(xtabs(~m1202,data=etb18)))   ,3) 
 ```
 
-Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen und besser darstellen. `%>%` steht dabei einfach für "und dann". Die Pipe ist unter anderem Teil des Pakets `dplyr`, welches wir in Zukunft häufiger verwenden werden:
-```{r dplyr_install, eval = F}
-install.packages("dplyr")
-```
+Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen. `%>%` steht einfach für "und dann". Die Pipe ist unter anderem Teil des Pakets `{dplyr}`, das wir schon kennen gelernt haben:
 ```{r dplyr_load, echo = T}
 library(dplyr)
 ```
 
 Mit der Pipe sieht die Befehlsschachtel dann so aus und wir können sie von links nach rechts lesen:
 ```{r W201_9_pipe, echo = T}
- xtabs(~sex+mstat, data = a16) %>% prop.table(., margin = 1) %>% round(.,2) 
+xtabs(~m1202,data=etb18) %>% 
+  prop.table(.) %>% 
+  cumsum(.) %>% 
+  round(.,3) 
 ```
 Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
 
-   1. erstelle die Kontingenztabelle *und dann (`%>%`)*
-   2. berechne daraus die relativen Häufigkeiten mit `margin = 1` *und dann (`%>%`)*
-   3. runde das Ergebnis auf 2 Nachkommastellen
+   1. Erstelle die Häufigkeitstablle für `m1202` *und dann (`%>%`)*
+   2. Berechne daraus die relativen Häufigkeiten *und dann (`%>%`)*
+   3. Berechne dafür die kumulierten Werte *und dann (`%>%`)*
+   4. Runde das Ergebnis auf 3 Nachkommastellen
 
-> Tipp:` %>%` kann mit STRG+SHIFT+m (cmd+shift+m für Mac) eingefügt werden.
 
-
-## Metrische Variablen
-
-Das bisherige Beispiel Staatsbürgerschaft (`german`) bezog sich auf ein kategoriales Merkmal. Für ein metrisches Merkmal, wie zum Beispiel das Geburtsjahr macht eine Häufigkeitstabelle wenig Sinn, da das Geburtsjahr sehr viele Ausprägungen hat und eine Tabelle  unübersichtlich wäre - hier nur als Beispiel die ersten 20 Ausprägungen (es gibt insgesamt 77!):
-```{r, eval=F}
-table(a16$age)
-```
-```{r, echo=F}
-head(table(a16$age), n = 20)
+Dieses Prinzip der Pipe funktioniert nicht nur für Tabellen, sondern für alle Objekte in R - wir werden im Verlauf des Kurses einige Anwendungsmöglichkeiten für Datensätze sehen. Hier schon mal ein Beispiel für den `filter()`-Befehl aus der vorherigen Session:
+```{r,eval=F}
+filter(df,studs > 1000)
+df %>% filter(studs > 1000)
 ```
 
-Um eine Häufigkeitstabelle zu erstellen müssen wir bei metrischen Merkmalen Klassen bilden. So könnten wir das Alter in Lebensjahrzehnte unterteilen. Zuvor müssen wir wieder die fehlenden Angaben[^1] überschreiben:
-```{r}
-a16$age[a16$age == -32] <- NA
-```
-Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable in `a16` ab: 
-```{r}
-a16$age_zehner <- cut(a16$age, breaks = c(10,20,30,40,50,60,70,80,90,100) )
-a16$age_zehner <- cut(a16$age, breaks = seq(10,100,10) ) # kürzer mit seq()
-```
-Für diese neue Variable können wir mit `table()` eine Häufigkeitstabelle anfordern:
+:::{.callout-tip}
 
-```{r}
-table(a16$age_zehner)
-```
-`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also 437 Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
-Wir haben also durch Klassierung aus dem metrischen Merkmal `age` ein kategoriales Merkmal `age_zehner` erstellt. Damit können wir dann genauso arbeiten wie oben - zB für die kumulierten relativen Häufigkeiten:
-```{r}
-age_tab <- table(a16$age_zehner) # abs Häufigkeiten
-age_tab2 <- prop.table(age_tab) # rel Häufigkeiten
-cumsum(age_tab2) # kumulieren
-```
-*Wir sehen hier so, dass `r sprintf("%2.3f",cumsum(age_tab2)[4]*100)`% aller Befragten 50 Jahre oder jünger sind.*
+`%>%` kann mit STRG+SHIFT+m (cmd+shift+m für Mac) eingefügt werden.
 
-Wir könnten alles auch in einem Befehl zusammen durchführen, das wird aber schnell unübersichtlich:
-```{r}
-cumsum(prop.table(table( cut(a16$age, breaks = seq(10,100,10) ) )))
+:::
+
+## Kontingenztabellen
+
+Aus Kontingenztabellen erfahren wir, wie häufig Merkmalskombinationen auftreten. Auch für Kontingenztabellen können wir `table()` verwenden. Zum Beispiel können wir uns eine Tabelle anzeigen lassen, die uns die Häufigkeiten des Familienstatus getrennt nach Geschlechtern zeigt:
+```{r, include=T, echo = T}
+table(etb18$S1, etb18$m1202)
+```
+```{r, echo = T}
+xtabs(~S1+m1202, data = etb18)
 ```
 
+Wir erkennen aus dieser Tabelle beispielsweise, dass 4926 Befragte weiblich (`S1=2`) und ohne Berufsabschluss (`m1202 = 5`) sind.
+
+Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwenden wir `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
+
+### Zeilen- und Spaltenprozente
+
+Auch für Kontingenztabellen können wir uns die relativen Häufigkeiten anzeigen lassen, indem wir `prop.table()` anwenden:
+```{r, echo = T}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.) 
+```
+Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`S1=2`) und ledig (`m1202 = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung }}{\text{Gesamtzahl der Befragten}}$$ 
+
+- Wir können also aus dieser Tabelle ablesen dass `3,27%` *aller Befragten* Frauen mit Aufstiegsfortbildung sind. 
+
+Wir können diese Tabelle auch mit *Zeilen- und Spaltenprozenten* anzeigen lassen, indem wir die Option `margin` verwenden. `margin=1` liefert die **Zeilenprozente**, `margin=2` die **Spaltenprozente**.[^1]  
+
+[^1]: Der Übersichtlichkeit halber wurden die Darstellungen hier gerundet - siehe [Hinweise](#hinweise_w04).
+```{r, eval = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 1)
+```
+```{r, echo = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 1) %>% 
+  round(., 4)
+```
+```{r, eval = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 2)
+```
+```{r, echo = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 2) %>% 
+  round(., 4)
+```
+
++ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}$$
+
+- `6,58%` der befragten Frauen haben eine Aufstiegsfortbildung
+
++ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}$$ 
+
+- `37,8%` der Befragten mit Aufstiegsfortbildung sind Frauen
 
 
-[^1]: Die Werte für fehlende Angaben finden wir Codebuch: auch hier ist `-32` wieder ein Code für fehlende Werte.
+## [Übung 2](#ue2)
 
 ##  Lage- & Konzentrationsmaße 
 
-
-Für die Beispiele verwenden wir die Angaben aus dem Jahr 2014. Diese Auswahl können wir mit `[]` treffen:
-```{r}
-a14 <- ak[ak$year == 2014,] # basis R
+###  Lagemaße 
+```{r, echo =F}
+etb18$F518_SUF <- as.numeric(etb18$F518_SUF)
 ```
 
-### Lagemaße
-
-Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen. Einen Überblick bietet `summary()`:
+Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen, wie beispielsweise das . Einen Überblick bietet `summary()`:
 ```{r sw5_quant_summary}
-summary(a14$di05)
+summary(etb18$F518_SUF)
 ```
 
-Natürlich gibt es keine Haushalte, die ein Einkommen von `-50` Euro pro Monat haben. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
+Allerdings gibt es im Datensatz keine Befragten mit einem Bruttoverdienst von 99999 EUR. 
+99999 ist der Zahlencode *keine Angabe* , 99998 für *weiß nicht*. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
 ```{r sw5_2, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-a14$di05[a14$di05 < 0] <- NA # missings überschreiben
+etb18$F518_SUF[etb18$F518_SUF %in% 99998:99999] <- NA # missings überschreiben
 ```
 
 ```{r sw5_quant_summary2}
-summary(a14$di05)
+summary(etb18$F518_SUF)
 ```
 
 
-Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Haushaltseinkommen der Befragten (`di05`) im Allbus 2014 mit Hilfe folgender Befehle an:
+Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Bruttoverdienste der Befragten zu beschreiben:
 
 + Minimum und Maximum: `min()`, `max()`
 + arithm. Mittel: `mean()`
 + Median: `median()`
 
-```{r sw5_1, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-min(a14$di05) # kleinster Wert
-```
 Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
 ```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-min(a14$di05)
+min(etb18$F518_SUF)
 ```
 Deshalb müssen wir die Option `na.rm = T` angeben:
 ```{r sw5_3b, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-min(a14$di05,na.rm = T)
-max(a14$di05,na.rm = T) #größter Wert
-mean(a14$di05, na.rm = T)
-median(a14$di05, na.rm = T)
+min(etb18$F518_SUF,na.rm = T)
+max(etb18$F518_SUF,na.rm = T) #größter Wert
+mean(etb18$F518_SUF, na.rm = T)
+median(etb18$F518_SUF, na.rm = T)
 ```
 
 ### Streuungsmaße
 #### Quantile   
 Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
 ```{r sw5_quant1}
-quantile(a14$di05,na.rm = T)
+quantile(etb18$F518_SUF,na.rm = T)
 ```
 Musterinterpretation: 
 
-  + *25% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[2]`€ oder weniger*
-  + *75% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[4]`€ oder weniger*
-  
-Daraus ergibt sich auch:
-
-  + *75% der Befragten haben ein HH-Einkommen von `r quantile(a14$di05,na.rm = T)[2]`€ oder mehr* 
+  + *25% der Befragten haben einen Bruttoverdienst von `r quantile(etb18$F518_SUF,na.rm = T)[2]`€ oder weniger*
+  + *75% der Befragten haben einen Bruttoverdienst von `r quantile(etb18$F518_SUF,na.rm = T)[4]`€ oder weniger*
   
 Wir können aber durch Angabe in den Optionen beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
 ```{r sw5_quant2}
-quantile(a14$di05,probs = .4, na.rm = T)
+quantile(etb18$F518_SUF,probs = .4, na.rm = T)
 ```
 In Kombination mit `seq()` können wir zB. auch die Dezilgrenzen (entlang der Vielfachen von 0,1) anfordern:
 ```{r sw5_quant3}
-quantile(a14$di05,probs = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), na.rm = T) 
-quantile(a14$di05,probs = seq(0,1,0.1), na.rm = T) 
+quantile(etb18$F518_SUF,probs = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), na.rm = T) 
+quantile(etb18$F518_SUF,probs = seq(0,1,0.1), na.rm = T) 
 ```
 
 
-#### Interquartilsdistanz und Interdezilsdistanz  
-
-Aus den Quantilen leiten sich auch die Inter**quartil**sdistanz und Inter**dezil**sdistanz ab.   
-Die Interquartilsdistanz ist schlicht die Differenz zwischen dem ersten und dritten Quartil. Genauso ist die Interdezilsdistanz die Differenz zwischen dem neunten und ersten Dezil:
-```{r W07_4, include=T, echo = T}
-quantile(a14$di05, .75, na.rm = T) - quantile(a14$di05, .25, na.rm = T) # IQR
-quantile(a14$di05, .9, na.rm = T) - quantile(a14$di05, .1, na.rm = T) # IDR
-```
-\color{red}
-**Achtung**: R zeigt nach der Berechnung der Differenz trotzdem die Beschriftung des Minuenden / des ersten Argumentes an!   
-\color{black}
 
 #### Varianz, Standardabweichung, Variationskoeffizient
 Die häufigste Kennzahl zur Beschreibung von Streuung ist aber die Varianz. Die Varianz ist definiert als die durchschnittliche quadrierte Abweichung vom arith. Mittel: $$var(x) = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})^2}{n}$$    
-Was bedeutet diese Formel?    
-Schauen wir erst in den Zähler des Bruchs: $(x_{i}-\bar{x})^2$
-Es geht also um die Abstände der einzelnen Datenpunkte ($x_{i}$) zum arithmetischen Mittel ($\bar{x}$) - mathematisch die Differenz zwischen den einzelnen Datenpunkten $x_{i}-\bar{x}$ - hier eingezeichnet als gestrichelte Linien:
-```{r dpi = 800, echo = F, out.height="55%", out.width="55%", fig.align="center"}
-
-eq <-  substitute(italic(bar(x))) # formel erstellen
-
-a14 %>% 
-  select(respid, di05) %>% 
-  na.omit() %>%  
-  sample_n(30) %>% 
-  mutate(mean = mean(a14$di05,na.rm = T), id = 1:n()) %>% 
-  filter(di05 < 40000) %>% 
-  ggplot(.,aes(x = id, y = di05)) +
-  geom_segment(aes(yend= mean, xend = id ),
-               size = .45, linetype = 2, color = "#1BB6AF") +
-  geom_point(size = 1.75, color = "#172869") +
-  geom_hline(aes(yintercept = mean), color = "#AF6125", size = .75) +
-  geom_label(aes(x = min(id)-.75, y = 10, label = as.character(as.expression(eq))), label.size = .01, hjust = 0.5, color = "#AF6125", parse = T, size = 4.5) +
-  geom_segment(aes(x = min(id)-.75, y = 300, xend = min(id)-.75, yend = mean - 100), arrow = arrow(length = unit(.0275,"npc"), type = "closed"), 
-               color = "#AF6125", size = .5) +
-  guides(color = "none") +
-  labs(y = "Haushaltseinkommen (di05)", x = "", caption = "Zufällige Auswahl von 30 Fällen des Allbus 2014") +
-  theme_minimal(base_size = 13) +
-  expand_limits(y = 0) +
-  theme(axis.text.x = element_blank(), plot.caption = element_text(size = rel(.75)), plot.caption.position = "plot")
-```
-Für Punkte, die über dem arith. Mittel liegen, erhalten wir für die Differenz einen positiven Wert (wir ziehen ja jeweils das arith. Mittel vom Wert für den Datenpunkt ab). Für Punkte mit Werten, die kleiner als das arith. Mittel sind, erhalten wir einen negativen Wert.     
-Würden wir die Abstände (gestrichelten Linien) einfach aufsummieren, erhielten wir als Ergebnis immer Null! Das arithmetische Mittel liegt ja per Definition immer genau "in der Mitte": die Abstände nach oben sind in der Summe genauso groß wie die Abstände nach unten. Daher wird zunächst jeder Abstand quadriert: $(\bar{x} - x_{i})^2$   
-Der Rest der Formel gibt dann an, dass alle quadrierten Differenzen aufsummiert ($\sum_{i=1}^{n}$) und dann durch die Anzahl der Beobachtungen geteilt werden ($\frac{}{n}$)- zusammengefasst hier nochmal die Formel:  $$var(x) = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})^2}{n}$$
-
 Wir können die Varianz mit `var()` berechnen:
 ```{r W07_6, include=T, echo = T}
-var(a14$di05, na.rm = T) # Varianz
+var(etb18$F518_SUF, na.rm = T) # Varianz
 ```
-```{r, echo = F}
-var <- var(a14$di05, na.rm = T)
+```{r, echo=F}
+var1 <- var(etb18$F518_SUF, na.rm = T)
 ```
 
-In unseren Datensatz beträgt der Varianz der Haushaltseinkommen also `r format(var,big.mark = ".",decimal.mark = ",")`€². Auf der Varianz beruhen noch zwei weitere Streuungsmaße. Die *Standardabweichung* entspricht der Wurzel der Varianz und hat somit die gleiche Messeinheit wie die Variable (hier EUR). Der *Variationskoeffizient*  entspricht `sd`/`mean` und dient dem Vergleich verschiedener Streuungen relativ zum jeweiligen Mittelwert:
+In unseren Datensatz beträgt der Varianz der Haushaltseinkommen also `r format(var1,big.mark = ".",decimal.mark = ",")`€². Auf der Varianz beruhen noch zwei weitere Streuungsmaße. 
+Die *Standardabweichung* entspricht der Wurzel der Varianz und hat somit die gleiche Messeinheit wie die Variable (hier EUR) - mit `sd()` bekommen wir die Standardabweichung:
+```{r}
+sd(etb18$F518_SUF, na.rm = T) # Standardabweichung
+```
+Der *Variationskoeffizient*  entspricht `sd`/`mean` und dient dem Vergleich verschiedener Streuungen relativ zum jeweiligen Mittelwert:
 ```{r W07_6std, include=T, echo = T}
-sqrt(var(a14$di05, na.rm = T))
-sd(a14$di05, na.rm = T) # Standardabweichung
-sd(a14$di05, na.rm = T) / mean(a14$di05, na.rm = T) # Variationskoeffizient
+sd(etb18$F518_SUF, na.rm = T) / mean(etb18$F518_SUF, na.rm = T) # Variationskoeffizient
 ```
 
 Für alle Streuungsmaße gilt: je größer, desto mehr Streuung (Unterschiede) gibt es in den Daten.
@@ -456,14 +375,14 @@ ggplot(gdf, aes(x = pct_id, y = pct_di05)) +
   geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
   geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
   geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
-  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 2.75, 
+  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 3, 
              color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
   geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
-  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 2.75, 
+  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 3, 
              color = "grey95", fill = "#172869") + # diagonale label
   geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
   geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
-  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 2.75, 
+  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 3, 
              color = "grey15", fill = "#1BB6AF") + # Gini Label
   geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
   scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
@@ -474,71 +393,42 @@ ggplot(gdf, aes(x = pct_id, y = pct_di05)) +
 Den Gini-Koeffizienten können wir mit `Gini()` aus dem Paket `ineq` berechnen:
 ```{r,eval=F}
 install.packages("ineq") # einmal installieren
+```
+
+```{r,eval=F}
 library(ineq) # ineq laden
-Gini(a14$di05)
+Gini(etb18$F518_SUF)
 ```
 ```{r, echo=F}
 library(ineq) # ineq laden
-Gini(a14$di05)
+Gini(etb18$F518_SUF)
 ```
 
 ### Lage- und Streuungsmaße vergleichen
-Häufig werden diese Kennzahlen erst im Vergleich richtig spannend. zB können wir die Einkommensangaben aus den alten und neuen Bundesländern vergleichen:
+Häufig werden diese Kennzahlen erst im Vergleich richtig spannend. zB können wir die Einkommensangaben aus verschiedenen Bundesländern vergleichen:
 ```{r sw5_mean_vgl, include=T, echo = T}
-mean(a14$di05[a14$eastwest == 1], na.rm = T) # alte Bundesländer
-mean(a14$di05[a14$eastwest == 2], na.rm = T) # neue Bundesländer
+mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) # NRW
+mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
 ```
-In den neuen Bundesländern ist das durchschnittliche HH-Einkommen um `r 2921.727 - 2347.703`€ niedriger.
+```{r, echo=F}
+nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
+  mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
+```
+
+
+In Niedersachsen ist das durchschnittliche HH-Einkommen um `r round(nrw_nds,2)`€ niedriger.
 ```{r sw5_med_vgl, include=T, echo = T}
-median(a14$di05[a14$eastwest == 1], na.rm = T) # alte Bundesländer
-median(a14$di05[a14$eastwest == 2], na.rm = T) # neue Bundesländer
+median(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) # NRW
+median(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
 ```
-In den neuen Bundesländern ist das Median-HH-Einkommen um `r median(a14$di05[a14$eastwest == 1], na.rm = T)-median(a14$di05[a14$eastwest == 2], na.rm = T)`€ niedriger. Die Variationskoeffizienten zeigen eine größere Streuung im Osten als im Westen:
-```{r sw5_var_vgl, include=T, echo = T}
-sd(a14$di05[a14$eastwest == 1], na.rm = T) / 
-  mean(a14$di05[a14$eastwest == 1], na.rm = T)
-sd(a14$di05[a14$eastwest == 2], na.rm = T) / 
-  mean(a14$di05[a14$eastwest == 2], na.rm = T)
-```
-Wir können auch für das gesamte `summary` die Differenz zwischen Ost und West bilden:
+Wir können auch für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden:
 ```{r sw5_su_vgl}
-summary(a14$di05[a14$eastwest == 1], na.rm = T) -
-  summary(a14$di05[a14$eastwest == 2], na.rm = T) 
+summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
+  summary(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) 
 ```
-In den neuen Ländern lag das Median-HH-Einkommen um 600€ niedriger als im Westen. Die 25\% bzw. 75\% Quartilsgrenze lag um 400€ bzw 800€ niedriger, das arith. Mittel war um 574€ niedriger als in den alten Bundesländern.
-
-```{r sw5_gini_vgl, include=T, echo = T}
-Gini(a14$di05[a14$eastwest == 1])
-Gini(a14$di05[a14$eastwest == 2])
-```
-Wo ist die Ungleichheit nun höher? In Ost oder West?
+In Niedersachsen lag das Median-HH-Einkommen um 200€ niedriger als in NRW. Die 25\% bzw. 75\% Quartilsgrenze lag um 200€ bzw. 500€ niedriger, das arith. Mittel war um 1621€ niedriger als in den alten Bundesländern.
 
 
-
-## Aufgaben 2: Lage- & Konzentrationsmaße
-
-Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 und 2010 entwickelt?
-
-(1) Laden Sie den **kumulierten** Allbusdatensatz in R (siehe [oben](#einlesen)).
-(2) Erstellen Sie jeweils einen Datensatz für das Befragungsjahr 1994 und 2010 - filtern Sie mit `[]` also den kumulierten Datensatz jeweils einmal nach einem Jahr und legen Sie das Ergebnis in `a94` bzw. `a10` ab
-
-(3) Betrachten Sie zunächst für 1994 die Haushaltseinkommensverteilung (Variable `di05`) 
-+ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
-+ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz - was sagen Ihnen die Werte jeweils?
-+ Berechnen Sie die Interdezildistanz und die Spannweite!
-+ Berechnen Sie den Gini-Koeffizenten! 
-
-(4) Betrachten Sie dann die Haushaltseinkommensverteilung für 2010 (Variable `di05`) 
-+ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
-+ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz und den Gini-Koeffizienten für alle Fälle im Datensatz für 2010 - was sagen Ihnen die Werte jeweils?
-+ Berechnen Sie die Interdezildistanz und die Spannweite!
-
-(5) Berechnen Sie für 1994 getrennt nach Ost und West (Variable `eastwest`) - welche Werte erhalten Sie jeweils für folgende Kennzahlen in Ost und West? (Denken Sie an `summary()`):
-+ arithm. Mittel, den Median, das 25%- und 75%-Quartil 
-+ Variationskoeffizient 
-+ Gini-Koeffizient
-
-(6) Vergleichen Sie diese Ost-West-Unterschiede im Jahr 1994 mit denen für das Jahr 2010. Welche Tendenz können Sie für die Ost-West-Unterschiede erkennen?
 
 
 ## Aufgaben
@@ -576,6 +466,7 @@ a16 <- read.table("allbus2016_kompakt.csv",sep = ";",header = T,stringsAsFactors
   
   
 
+
 ## Profi-Aufgaben
 
 Für alle, die noch etwas mehr machen möchten:  
@@ -587,184 +478,38 @@ Für alle, die noch etwas mehr machen möchten:
 Tipps dazu finden Sie in den Hinweisen am Ende!
 (Wissen aus diesen Aufgaben wird nicht vorausgesetzt in den kommenden Wochen, aber es hilft natürlich)
 
+## Aufgaben 2: Lage- & Konzentrationsmaße
 
-## Häufige Fehlermeldungen
+Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 und 2010 entwickelt?
 
-Die Arbeit in R ist - wie in jedem Datenanalyseprogramm - ein Hangeln von Fehlermeldung zu Fehlermeldung. 
-Das kann gerade zu Beginn frustrierend sein, bis die tiefere Bedeutung von Fehlermeldungen und deren Ursachen etwas deutlicher werden. 
-Die folgende Auflistung enthält einige der häufigsten Fehlermeldungen und ihre (wahrscheinlichsten) Ursachen. 
-Die Liste lehnt sich stark an die die großartige Zusammenstellung von [Nick C. Huntington-Klein](https://nickch-k.github.io/DataCommSlides/Lecture_04_Common_R_Problems.html) an.
+(1) Laden Sie den **kumulierten** Allbusdatensatz in R (siehe [oben](#einlesen)).
+(2) Erstellen Sie jeweils einen Datensatz für das Befragungsjahr 1994 und 2010 - filtern Sie mit `[]` also den kumulierten Datensatz jeweils einmal nach einem Jahr und legen Sie das Ergebnis in `a94` bzw. `a10` ab
 
-:::{.callout-note}
+(3) Betrachten Sie zunächst für 1994 die Haushaltseinkommensverteilung (Variable `di05`) 
++ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
++ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz - was sagen Ihnen die Werte jeweils?
++ Berechnen Sie die Interdezildistanz und die Spannweite!
++ Berechnen Sie den Gini-Koeffizenten! 
 
-[Fehlerliste](https://twitter.com/emilynordmann/status/1548942198246440962?s=11&t=vemXPmcotIqs4hP5J__XvQ) als Lernhilfe
+(4) Betrachten Sie dann die Haushaltseinkommensverteilung für 2010 (Variable `di05`) 
++ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
++ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz und den Gini-Koeffizienten für alle Fälle im Datensatz für 2010 - was sagen Ihnen die Werte jeweils?
++ Berechnen Sie die Interdezildistanz und die Spannweite!
+
+(5) Berechnen Sie für 1994 getrennt nach Ost und West (Variable `eastwest`) - welche Werte erhalten Sie jeweils für folgende Kennzahlen in Ost und West? (Denken Sie an `summary()`):
++ arithm. Mittel, den Median, das 25%- und 75%-Quartil 
++ Variationskoeffizient 
++ Gini-Koeffizient
+
+(6) Vergleichen Sie diese Ost-West-Unterschiede im Jahr 1994 mit denen für das Jahr 2010. Welche Tendenz können Sie für die Ost-West-Unterschiede erkennen?
+
+
+
+::: note
+
+[**Häufige Fehlermeldungen**](#rerror)
 
 :::
-
-
-### There is no package called
-
-Die Fehlermeldung `there is no package called 'XXXX'` erscheint, wenn Sie ein Paket bspw. mit `library()` laden, diese Paket allerdings nicht installiert ist.
-
-The Fix:
-
-1. Did you spell the package name correctly? Maybe you do have the package, but you made a typo
-1. If you spelled it correctly, you may not have installed it. Install it (usually) with `install.packages('packagename')` where `'packagename'` is replaced with the name of the package you actually want.
-
-### Could not find function
-
-Die Fehlermeldung `could not find function "XXX"` weist darauf hin, dass R die genannte Funktion nicht finden kann. 
-
-The Fix:
-
-1. Did you spell the function name correctly? Maybe you made a typo.
-1. If the function is in a package, did you load the package? Remember, the package must be re-loaded every time you restart R. If you're working in RMarkdown, you must load the package inside of your RMarkdown script, since RMarkdown starts from a blank slate.
-
-### Object not found
-
-If you get an error like `object 'objectname' not found`, that means that you've made a reference to an object called `objectname`, but there is no such object to refer to.
-
-The Fix:
-
-1. Did you spell the object's name correctly? Maybe you made a typo.
-1. Did you remember to create the object before referring to it? For example, the code `mean(x); x <- 1:10` would not work, because you try to take the mean of `x` before it's been created. If you're working in RMarkdown, remember that it will start from a blank slate, so you must create all objects inside of your Rmarkdown script.
-
-### Object of type 'closure' is not subsettable
-
-This is the most aggravating and least-informative R error. "Subsettable" is a hint though - you're trying to take a subset of something (such as picking an element from a vector, or picking a column from a data set), but the thing you're doing it to is a "closure" that you can't do that to.
-
-Most commonly, this is a case of accidentally giving the name of a function where you mean to give the name of a vector or data frame. For example:
-
-```{r, eval = FALSE}
-mean_data <- tibble(person = c('Me','You'), meanness = c(1000,999))
-# Now let's look at that meanness variable, but oops, I'm referring to the function mean() instead of my data mean_data
-mean$meanness
-# Error in mean$meanness : object of type 'closure' is not subsettable
-```
-
-The Fix:
-
-1. See where it says the error is "in" - that's the place where you've referred to the wrong thing. fix it!
-
-
-### Column doesn't exist
-
-If you get an error like `column 'columnname' doesn't exist`, that means it's trying to refer to a column name that is not actually in your data.
-
-The Fix:
-
-1. Did you spell the column's name correctly? Maybe you made a typo.
-1. Are you referring to the proper dataset? Maybe you created the variable in `my_data2` but you're trying to access it in `my_data`. 
-1. Does your column name have spaces or other strange characters in it like dashes? If so, in many applications (anywhere you're not treating the column name as a string) you have to surround the column name in backticks (`r "\u0060"`) so it knows where the column name starts and ends.
-1. Did you perhaps drop the column before trying to refer to it? For example, in the below code, the `group_by() %>% summarize()` will only keep columns named in the `group_by()` or in the `summarize()`. So even though the `mpg` column was there at the start, it no longer is by the time we refer to it.
-
-```{r, eval = FALSE}
-mtcars %>%
-  group_by(am) %>%
-  summarize(mean_hp = mean(hp)) %>%
-  mutate(hp_by_mpg = mean_hp/mpg)
-```
-
-### Warning: Package was compiled with R version
-
-If you load a package and get a warning that looks like `Warning: packagename was compiled with R version...`, that just means that the package was compiled using a slightly newer version of R than yours. It's generally not a problem as long as you have a somewhat-recent version of R.
-
-The Fix:
-
-1. Ignore it
-1. If you want it to go away, update your R installation.
-
-### Rtools is required to build packages from source
-
-If you are installing packages, you may be asked whether you'd like to build packages from source. If you say "Yes", but you do not have Rtools installed, you will get an error, and the package won't install properly.
-
-The Fix:
-
-1. When asked whether you want to install packages from source, say "No."
-1. Install Rtools before installing packages. The easiest way to do this is to install the **installr** package, and then run `installr::install.rtools()`.
-
-### File does not exist, or No such file or directory
-
-If you get an error like `'filename.csv' does not exist`, that means that you're trying to load a file, but the file is not in the location you're telling R to look.
-
-The Fix:
-
-1. Did you spell the filename correctly? Maybe you made a typo. Or, perhaps, you're trying to open an Excel fie (`.xlsx`) but telling R to look for a CSV (`.csv`). Or you wrote "file.csv" but the file is "file (1).csv". 
-1. Is the file perhaps open in Excel? Sometimes, Microsoft Office will hold files hostage and not let them be opened in other programs while they're open in Office. Close the Excel window that has the file open.
-1. **Most often**, this is a working directory issue. If you tell R to look for `'filename.csv'`, it will look for that file in the *working directory*. Or, if you tell it to look for `'data/filename.csv'`, it will look for a folder called "data" in the working directory, and for filename.csv inside of that. In recent versions of RStudio, the current working directory is listed right on top of the Console. Did you check whether the file is actually in that folder? If you're running RMarkdown, it will set the working directory to the folder where the .RMD file is located. Did you put the file in the right spot relative to where the RMD is stored? See my [video on filepaths](https://www.youtube.com/watch?v=NG7Y0kkGR8g) for more help.
-
-### Klammern, Kommata, Punkte
-
-Just in general, a very large percentage of errors students come to me with occur simply because they made a typo, or didn't balance their parentheses (pairing each ( with a )).
-
-The Fix:
-
-1. If you get an error message of any kind, read the relevant part of the code carefully to make sure you didn't make a typo
-1. Avoid coding where you have lots and lots of nested parentheses (this is something that **tidyverse** piping we learn is intended to avoid). Then, for whatever parentheses you do have, click on each one in RStudio - it will highlight its "partner" or show where there is a missing partner.
-
-### Ergebnis `NA`
-
-Fehlende Werte sind Teil eines jeden Datensatzes. Wir haben oben kennengelernt, dass in R `NA` für fehlende Angaben steht.
-R geht mit `NA` etwas anders um als bspw. Stata;
-Sobald ein Wert `NA` ist, gibt R als Ergebnis `NA` aus:
-```{r 03NAdemo}
-werte <- c(1,2,NA)
-mean(werte)
-min(werte)
-```
-
-*Lösung*
-Mit der Option `na.rm = TRUE` werden alle `NA` Werte vor der Berechnung ignoriert;
-
-```{r 03NAdemo2}
-mean(werte,na.rm=TRUE)
-min(werte,na.rm=TRUE)
-```
-
-
-### Numerische Variablen und strings
-
-When you put something in quotes, like '1', it will treat it as a *string variable* - a set of characters to be read as text.
-
-If you want a variable to be treated as a number, **do not put it in quotes.** This way lies madness.
-
-R is pretty loose, and will allow you to do things like ask whether `'2' > 1`, and will answer yes. This *feels* like it's okay to put the 2 in quotes. But it's not. What R is doing is saying "oof... I can't compare a number to a letter, but you're asking me to. I'll just convert this number to a string as well, so I'm really doing `'2' > '1'`, and since '2' is alphabetically after '1', that's true, which is the desired result. Great! Except it also means that `'02' > 1` is false, since '02' is alphabetically before '1'. Same with `'120'>'20'` being false. Oops.
-
-The Fix:
-
-1. If it's a number, and you want it treated like a numeric value, don't put quotes around it.
-
-
-### `<-`, `=` und `==`
-
-`<-` is for assigning objects. You can say `a <- 1`, and that will create an object `a` with the value `1` inside.
-
-`=` *can also* be for assigning objects, just like `<-`, but is also for assigning arguments and options in functions. In the function `mean()`, which takes the argument `x`, I can say `mean(x = 1:10)` but not `mean(x <- 1:10)`.
-
-`==` is for *checking* whether two things are equal. `a == 1` will check whether the object `a` is equal to `1`, and will return `TRUE` if it is, or `FALSE` otherwise.
-
-Commonly, this will cause problems in cases like this:
-
-```{r, eval = FALSE}
-data %>%
-  filter(state = "WA")
-```
-
-which we might expect to filter our data to rows that are in the state of Washington, but instead will try to assign a new object `state` to be equal to `"WA"`.
-
-### Einige generelle Tipps zur Fehlervermeidung 
-
-1. Führen Sie Ihren Code Zeile für Zeile aus. Prüfen Sie zwischen den einzelnen Zeilen die Ausgabe und stellen Sie sicher, dass sie so aussieht, wie Sie es erwarten. Oft treten Fehler auf, weil eine frühere Codezeile nicht das getan hat, was wir beabsichtigt haben. Wenn Sie dort keine Probleme feststellen, machen Sie weiter, bis Sie auf die Fehlermeldung stoßen.
-1. Lesen Sie die Fehlermeldung und schauen Sie, ob Sie sich einen Reim darauf machen können
-1. Selbst wenn du die Meldung nicht verstehst, gibt sie dir oft einen Hinweis auf die Ursache des Problems, so dass du weißt, wo du nachschauen musst, um deinen Code zu überprüfen
-1. Google: oftmals hilft es eine Fehlermeldung oder ein Problem ("How to .... in R") zu googeln. Neben stackoverflow gibt es unzählige Blogs, Tutorials und andere Hilfeseiten für R in hervorragender Qualität - und sie sind (fast) immer kostenlos!
-
-
-
-
-
-
-
 
 ## Hinweise 
 
@@ -777,7 +522,7 @@ table( cut(x1, breaks = c(0,1500,2500)) )
 table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) )
 ```
 
-### Relative Häufigkeiten runden
+### Runden mit `round()` {#round}
 
 
 Erläuterung: Sie können mit `round(x , 3)` Werte auf eine gewisse Zahl von Ziffern runden. Die zweite Zahl in der Klammer (nach dem Komma) gibt an, wieviele Dezimalstellen wir möchten:
@@ -788,8 +533,8 @@ round(21.12121123,digits = 0)
 ```
 
 Wir können also die relativen Häufigkeiten runden und so die Tabelle von oben übersichtlicher machen: 
-```{r W04_11, include=T, echo = T}
-t3
+```{r W04_11, eval=F, echo = T}
+t2
 t3$f <- round(t3$f,3)
 t3$F <- round(t3$F,3)
 t3
@@ -800,19 +545,28 @@ t3
 ### Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?
 
 ```{r}
-t1 <- table(a16$age)
-t1[which(t1 == max(t1))] # Modus
+t4 <- table(etb18$zpalter)
+t4[which(t4 == max(t4))] # Modus
 ```
-`age=48` ist mit `87` Befragten die häufigste Ausprägung.
+`r names(t4[which(t4 == max(t4))])` ist mit `r t4[which(t4 == max(t4))]` Befragten die häufigste Ausprägung.
 
 ### Labels als neue Spalte hinzufügen
 
 Wir können die Übersichtstabelle auch noch beschriften, indem wir eine Textvariable hinzufügen:
-```{r}
+```{r, eval = F}
 t3 
 t3$labels <- c("dt Staatsbürgerschaft","dt und andere Staatsbürgerschaft",
                "andere Staatsbürgerschaft")
 t3
 ```
+
+
+
+
+
+
+
+
+
 
 

@@ -14,7 +14,7 @@ Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), U
 ```{r , include=T, echo = T}
 studs <- c(19173,5333,15643)    # Studierendenzahlen unter "studs" ablegen 
 profs       <- c(322,67,210)    # Prof-Zahlen unter "profs" ablegen
-df <- data.frame(studs, profs)
+df_orig <- data.frame(studs, profs)
 ```
 
 ```{r , include=T, echo = T}
@@ -55,15 +55,14 @@ df
 ```
 
 Mit `View(df)` öffnet sich zudem ein neues Fenster, in dem wir den gesamten Datensatz ansehen können:
+
 ```{r, eval = F}
 View(df)
 ```
 
-
 ```{r,echo = F, out.height="35%",out.width="45%", fig.align="center"}
 knitr::include_graphics("./pic/102_View.png")
 ```
-
 
 ## Variablentypen
 
@@ -117,7 +116,7 @@ as.numeric(df$uni)
 
 R weiß (verständlicherweise) also nicht, wie die Uni-Namen in Zahlen umgewandelt werden sollen.
 
-::: callout-important
+::: callout-tip
 Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentypen zurückzuführen.
 :::
 
@@ -149,15 +148,49 @@ df$studs[df$uni == "Uni Oldenburg" ] # Nur Studi-Zahl nachsehen: kein Komma
 ```
 
 Das funktioniert soweit wie gewünscht und wir können das Ganze jetzt erweitern:
+
 ```{r, eval=F}
 df[df$uni == "Uni Oldenburg" & df$studs > 10000, ] # & bedeutet UND
 ```
 
-## Einfacher filtern und auswählen mit `{dplyr}` {#filter}
+Allerdings wird der Befehl hier schon sehr lang: wir müssen drei Mal `df` aufrufen und außerdem immer darauf achten, das Komma an der richtigen Stelle zu setzen. Eine kürzere und komfortablere Variante ist der Befehl `filter()` aus dem Paket `{dplyr}` [^04_intro-1]
 
-Allerdings wird der Befehl hier schon sehr lang: wir müssen drei Mal `df` aufrufen und außerdem immer darauf achten, das Komma an der richtigen Stelle zu setzen. Eine kürzere und komfortablere Variante ist der Befehl `filter()` aus dem Paket `{dplyr}`[^intro-1]:
+```{r}
+filter(df,uni == "Uni Oldenburg", studs > 1000)
+```
 
-[^intro-1]: In der R-Community hat sich etabliert Pakete immer in `{}` anzugeben, um sie von den Befehlen abzugrenzen. Mehr zu Paketen am Ende des [Kapitels](#packages)
+[^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention.
+
+## Pakete in R {#packages}
+
+Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. <!-- Wir haben in diesem Kapitel schon einige Beispiele kennen gelernt: mit `{dplyr}` steht uns ein komfortablerer [`filter()`](#filter) zur Verfügung und Stata- oder SPSS-Dateien können wir mit Hilfe des Pakets `haven` einlesen und erstellen.  --> Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
+
+```{r, eval=F}
+install.packages("Paket") # auf eurem PC nur einmal nötig
+library(Paket) # nach jedem Neustart nötig
+```
+
+Häufig werden bei `install.packages()` nicht nur das angegebene Paket, sondern auch eine Reihe weiterer Pakete heruntergeladen, die sog. "dependencies". Das sind Pakete, welche im Hintergrund verwendet werden, um die Funktionen des eigentlich gewünschten Pakets zu ermöglichen. Also nicht erschrecken, wenn die Installation etwas umfangreicher ausfällt.
+
+Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `library()` betätigen wir den Lichtschalter, sodass wir die Befehle aus dem Paket auch verwenden können. Mit jedem Neustart geht die Glühbirne wieder aus und wir müssen sie mit `library()` wieder aktivieren. Das hat aber den Vorteil, dass wir nicht alle Glühbirnen auf einmal anknipsen müssen, wenn wir R starten.
+
+```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
+knitr::include_graphics("./pic/104_install-packages.jpg")
+```
+
+Wir werden in diesem Kurs vor allem mit Paketen aus dem [tidyverse](tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
+```{r,eval =FALSE}
+install.packages("tidyverse")
+```
+werden folgende Pakete installiert:
+
+`r tidyverse::tidyverse_packages() %>% paste(.,collapse=", ")`
+
+Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist `{dplyr}`, welches unter anderem die Auswahl von Fällen und Variablen erleichtert. 
+
+## Beobachtungen auswählen mit `filter()` {#filter}
+
+Nachdem wir zunächst das Paket für `filter()` installiert haben (das ist `{dplyr}`) müssen wir das Paket noch mit `library()` laden:
 
 ```{r,eval = F}
 install.packages("dplyr") # nur einmal nötig
@@ -165,10 +198,19 @@ install.packages("dplyr") # nur einmal nötig
 
 ```{r}
 library(dplyr) # nach einmaligem install.packages("dplyr")
+```
+
+```{r}
 filter(df,uni == "Uni Oldenburg", studs > 1000)
 ```
 
-Wir können die Ausgaben dann auch in einem neuen `data.frame`-Objekt ablegen:
+Die Auswahl ändert das Ausgangsobjekt `df` aber nicht:
+
+```{r}
+df
+```
+
+Möchten wir das Ergebnis unserer Auswahl mit `filter()` für weitere Schritte behalten, können wir unser Ergebnis in einem neuen `data.frame`-Objekt ablegen:
 
 ```{r}
 ueber_10tsd <- filter(df, studs > 10000)
@@ -176,16 +218,14 @@ ueber_10tsd
 class(ueber_10tsd)
 ```
 
-Weitere Operatoren zur Auswahl von Zeilen:
+In R stehen uns einige weitere Operatoren zur Auswahl von Zeilen zu Verfügung:
 
-+ `<=` und `>=`: kleiner gleich/ größer gleich
-+ `|` oder: `filter(df,studs > 10000 | prof < 200)` $\Rightarrow$ mehr als 10.000 Studierende *oder* weniger als 200 Professuren
-+ `between()` für Wertebereiche: `filter(df,between(studs,10000,20000)` $\Rightarrow$ zwischen 10.000 und 20.000 Studierenden *oder* (jeweils eingeschlossen)
-+ `%in%` "eines von": `filter(df, gegr %in% c(1971,1973,2004))` $\Rightarrow$ gegründet 1971 oder 1973 oder 2004
-+ `:` für Zahlenreihen: `filter(df, gegr %in% c(1971:1973))` $\Rightarrow$ gegründet 1971 *bis* 1973
+-   `<=` und `>=`: kleiner gleich/ größer gleich
+-   `|` oder: `filter(df,studs > 10000 | prof < 200)`: mehr als 10.000 Studierende *oder* weniger als 200 Professuren
+-   `%in%` "eines von": `filter(df, gegr %in% c(1971,1973,2004))`: gegründet 1971 oder 1973 oder 2004
+-   `between()` ist eine Hilfsfunktion aus `{dplyr}` für Wertebereiche: `filter(df,between(studs,10000,20000)`: zwischen 10.000 und 20.000 Studierenden *oder* (jeweils eingeschlossen)
 
-
-## Variablentypen Teil 2: logical
+## Variablentypen II: logical
 
 Diese Auswahl basiert auf einem dritten Variablentyp: 'logical', also logische Werte mit `TRUE` oder `FALSE`. Wenn wir mit `==`, `>` oder `<` eine Bedingung formulieren, dann erstellen wir eigentlich einen logischen Vektor in der selben Länge wie die Daten:
 
@@ -204,15 +244,50 @@ Wir könnten dann auch auf Basis dieser Variable filtern:
 filter(df,more10k)
 ```
 
-### [Übung](#data1) {#ue1}
+## Variablen auswählen mit `select()` {#select}
+
+Mit `select()` enthält `{dplyr}` auch einen Befehl zu Auswahl von Spalten/Variablen:
+
+```{r}
+df
+select(df, studs,profs)
+```
+
+Wir können auch hier einige Operatoren verwenden: `:` um einen Bereich auszuwählen oder `!` als "nicht"-Operator:
+
+```{r}
+select(df, 1:3) # Spalte 1-3
+select(df, !profs) # alles außer profs
+```
+
+`select()` hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.
+
+-   `starts_with()`: Variablenname beginnt mit ..., bspw. `select(df,starts_with("p"))`
+-   `ends_with()`: Variablenname endet mit ..., bspw. `select(df,ends_with("p"))`
+-   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(df,matches("_")`: alle Variablen mit `_` im Namen.
+-   `num_range()`: Variablen mit Zahlenbereiche: `select(etb,num_range("F",1:220))`
+-   `last_col()`: Letzte Variable, für die 4.letzte Variable bspw. `last_col(4)`
+-   `any_of()` um eine Auswahl auf Basis eines `character`-Vektors zu treffen
+
+Wenn wir beispielsweise die Spalten eines `data.frame`s auf Basis der `colnames` eines anderen `data.frame` Objekts auswählen möchten:
+
+```{r}
+col_auswahl <- colnames(df_orig)
+col_auswahl
+select(df, any_of(col_auswahl) )
+```
+
+Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
+
+## [Übung](#data1) {#ue1}
 
 ## Datensätze einlesen
 
 In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.
 
-Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^intro-2] bezeichnet ein verbreitetes Dateiformat zur Speicherung oder zum Austausch einfach strukturierter Daten. Wesentlich für unsere Zwecke hier ist, dass in csv-Dateien die Spalten eines Datensatzes mit einem Trennzeichen gekennzeichnet sind. Verbreitete Trennzeichen sind Komma, Doppelpunkt oder Semikolon. Für alle weiteren Dateien, die wir im Lauf dieser Veranstaltung verwenden werden, ist das Semikolon als Trennzeichen gesetzt. Unser Datensatz `df` sieht im csv-Format so aus:
+Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^02_intro-1] bezeichnet ein verbreitetes Dateiformat zur Speicherung oder zum Austausch einfach strukturierter Daten. Wesentlich für unsere Zwecke hier ist, dass in csv-Dateien die Spalten eines Datensatzes mit einem Trennzeichen gekennzeichnet sind. Verbreitete Trennzeichen sind Komma, Doppelpunkt oder Semikolon. Für alle weiteren Dateien, die wir im Lauf dieser Veranstaltung verwenden werden, ist das Semikolon als Trennzeichen gesetzt. Unser Datensatz `df` sieht im csv-Format so aus:
 
-[^intro-2]: Abkürzung für comma-separated values
+[^02_intro-1]: Abkürzung für comma-separated values
 
 ```{r,echo = F, out.height="50%",out.width="50%", fig.align="center"}
 # knitr::include_graphics(paste0(path,"images/102_csvdatei.png"))
@@ -220,11 +295,9 @@ Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^intro-2] b
 
 ![](./pic/102_csvdatei.png)
 
-In diesem Seminar werden wir mit Daten aus BIBB/BAuA-Erwerbstätigenbefragung 2018 arbeiten. Die BIBB/BAuA ist eine Repräsentativbefragung von in Deutschland zu Arbeit und Beruf im Wandel und Erwerb und Verwertung beruflicher Qualifikation.
-Nun wollen wir also eine csv-Datei einlesen, zunächst eine reduzierte Version der ETB 2018.
+In diesem Seminar werden wir mit Daten aus BIBB/BAuA-Erwerbstätigenbefragung 2018 arbeiten. Die BIBB/BAuA ist eine Repräsentativbefragung von in Deutschland zu Arbeit und Beruf im Wandel und Erwerb und Verwertung beruflicher Qualifikation. Nun wollen wir also eine csv-Datei einlesen, zunächst eine reduzierte Version der ETB 2018.
 
-Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. 
-Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurse/" lauten:
+Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurse/" lauten:
 
 Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:
 
@@ -232,44 +305,46 @@ Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeic
 knitr::include_graphics("./pic/102_dateipfad_datei.png")
 ```
 
-
-
 Um den Pfad des Ordners herauszufinden, klicken Sie bei Windows in die obere Adresszeile im Explorerfenster.
+
 ```{r,echo = F, out.height="40%",out.width="40%", fig.align="center"}
 knitr::include_graphics("./pic/101_Dateipfad_WIN.png")
 ```
 
-
-
-:::note
+::: note
 In iOS (Mac) finden Sie den Pfad, indem Sie einmal mit der rechten Maustaste auf die Datei klicken und dann die ALT-Taste gedrückt halten. Dann sollte die Option "...als Pfadname kopieren" erscheinen. [**Youtube Anleitung**](https://www.youtube.com/watch?v=zcb3D6Xdv4s)
 :::
 
-Diesen Dateipfad müssen wir also R mitteilen. 
-
+Diesen Dateipfad müssen wir also R mitteilen.
 
 ### Projekt einrichten {#rproj}
 
-
-`?rstudioapi::initializeProject()`
-
+Grundsätzlich lohnt es sich, in RStudio Projekte einzurichten. Die Projekte setzen automatisch Arbeitsverzeichnis auf den Ort, an dem sie gespeichert sind. Das erleichtert das kollaborative Arbeiten: egal wer und auf welchem Gerät gerade an einem Projekt arbeitet - durch die Projektdatei sind alle Pfade immer relativ zum Projektverzeichnis. Im weiteren können auch Versionkontrolle via git, bspw. [github](www.github.com) und weitere Funktionen in der Projektdatei hinterlegt werden und so für alle Nutzenden gleich gesetzt werden. 
+Außerdem bleiben die zuletzt geöffneten Scripte geöffnet, was ein Arbeiten an mehreren Projekten erleichtert.
 
 ```{r,echo = F, out.height="55%",out.width="65%", fig.align="center"}
 knitr::include_graphics("./pic/102_Rproj.png")
 ```
 
 Mit `getwd()` lässt sich überprüfen, ob das funktioniert hat:
+
 ```{r, eval= F}
 getwd()
 ```
+
 ```{r, echo = F}
 "D:/Kurse/R-Kurs"
 ```
 
-
-```{r,echo = F, out.height="55%",out.width="65%", fig.align="center"}
+```{r,echo = F, out.height="70%",out.width="75%", fig.align="center"}
 knitr::include_graphics("./pic/102_Rproj2.png")
 ```
+
+Alternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen:
+```{r, eval = F, echo=T}
+rstudioapi::initializeProject(path = "D:/Kurse/R-Kurs")
+```
+
 
 ```{r,echo = F, out.height="55%",out.width="65%", fig.align="center"}
 # knitr::include_graphics("./pic/102_dateipfad_neu.png")
@@ -277,16 +352,19 @@ knitr::include_graphics("./pic/102_Rproj2.png")
 
 ### Der Einlesebefehl
 
-Jetzt können wir den eigentlichen Einlesebefehl `read.table` verwenden. 
-Für den Pfad können wir nach `file = ` lediglich die Anführungszeichen angeben und innerhalb dieser die Tab-Taste drücken. Dann bekommen wir alle Unterverzeichnisse und Tabellen im Projektordner angezeigt.
+Jetzt können wir den eigentlichen Einlesebefehl `read.table` verwenden. Für den Pfad können wir nach `file =` lediglich die Anführungszeichen angeben und innerhalb dieser die Tab-Taste drücken. Dann bekommen wir alle Unterverzeichnisse und Tabellen im Projektordner angezeigt.[^2]
 
+[^2]: Manchmal kann der Datensatz aber nicht im Unterordner des Projekts liegen, dann kann natürlich auch der gesamte Pfad in `read.table()` angegeben werden: `etb <- read.table(file = "D:/Kurse/R-Kurs/data/BIBBBAuA_2018_small.csv", sep = ";", header = T)`
 
 ```{r}
 etb <- read.table(file = "./data/BIBBBAuA_2018_small.csv", sep = ";", header = T)
 ```
 
+Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `etb` den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read.table()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. Darüber hinaus teilen wir R mit `sep` mit, dass ; als Trennzeichen gesetzt wurde und mit `header = T` (`T` steht für `TRUE`) teilen wir R zudem mit, dass die erste Zeile aus dem Datensatz als Spaltennamen verwendet werden soll.
 
-Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `etb` den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read.table()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. Darüber hinaus teilen wir R mit `sep` mit, dass ; als Trennzeichen gesetzt wurde und mit `header = T` (`T` steht für `TRUE`) teilen wir R zudem mit, dass die erste Zeile aus dem Datensatz als Spaltennamen verwendet werden soll. 
+::: important
+Leider nutzen Windows-Systeme `\` in den Dateipfaden - das führt in R zu Problemen. Daher müssen Dateipfade immer mit `/` oder alternativ mit `\\` angegeben werden. RStudio kann zumindest etwas unterstützen, dem mit der *STRG + F* die Suchen & Ersetzen Funktion verwendet wird.
+:::
 
 Würden hier jetzt einfach `etb` eintippen bekämen wir den kompletten Datensatz angezeigt. Für einen Überblick können wir `head` verwenden:
 
@@ -300,7 +378,6 @@ Mit `nrow` und `ncol` können wir kontrollieren, ob das geklappt hat. Der Datens
 nrow(etb)
 ncol(etb)
 ```
-
 
 Natürlich können wir wie oben auch aus diesem, viel größeren, Datensatz Zeilen und Spalten auswählen. Zum Beispiel können wir die Befragten auswählen, die vor 1940 geboren sind und diese unter `senior` ablegen:
 
@@ -325,7 +402,6 @@ Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen
 ```{r,echo = F, out.height="100%",out.width="100%", fig.align="center"}
 # knitr::include_graphics("D:/oCloud/RFS/images/102_codebuch_comb.png")
 ```
-
 
 ### Überblick: Einlesen und Exportieren
 
@@ -410,38 +486,31 @@ write.xlsx(df,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 ```
 :::
 
-## Pakete in R {#packages}
-
-Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. Wir haben in diesem Kapitel schon einige Beispiele kennen gelernt: mit `{dplyr}` steht uns ein komfortablerer [`filter()`](#filter) zur Verfügung und Stata- oder SPSS-Dateien können wir mit Hilfe des Pakets `haven` einlesen und erstellen. Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
-
-```{r, eval=F}
-install.packages("Paket") # auf eurem PC nur einmal nötig
-library(Paket) # nach jedem Neustart nötig
-```
-
-Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `library()` betätigen wir den Lichtschalter, sodass wir die Befehle aus dem Paket auch verwenden können. Mit jedem Neustart geht die Glühbirne wieder aus und wir müssen sie mit `library()` wieder aktivieren. Das hat aber den Vorteil, dass wir nicht alle Glühbirnen auf einmal anknipsen müssen, wenn wir R starten.
-
-```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
-knitr::include_graphics("./pic/104_install-packages.jpg")
-```
-
 ::: callout-note
-Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - innerhalb R in einem Objekt hinterlegen)
+Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - innerhalb von R in einem Objekt hinterlegen)
 :::
+
+## Befehlsstruktur
+
+-   Funktionen sind (fast) immer Verben gefolgt von einer Klammer `()`, in welcher das zu bearbeitende Objekt sowie ggf. Optionen angegeben wird.
+-   soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert.
+-   Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
 
 ## Übungen 1 {#data1}
 
 -   Erstellen Sie den Datensatz mit den Studierenden- & Prof-Zahlen wie oben gezeigt:
+
 ```{r,eval= F}
 df <- data.frame(studs = c(19173,5333,15643), 
                  profs = c(322,67,210),
                  gegr  = c(1971,1830,1973))
 ```
 
-- Sehen Sie den `df` in Ihrem Enviroment?
-- Lassen Sie sich nur die dritte Zeile von `df` anzeigen.
-- Lassen Sie sich nur die Spalte `gegr` anzeigen.
-- Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{dplyr}` zu installieren und mit `library()` zu laden)
+-   Sehen Sie den `df` in Ihrem Enviroment?
+-   Lassen Sie sich nur die dritte Zeile von `df` anzeigen.
+-   Lassen Sie sich nur die Spalte `gegr` anzeigen.
+-   Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`
+-   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{dplyr}` zu installieren und mit `library()` zu laden)
 
 [Zurück](#ue1)
 
@@ -455,17 +524,14 @@ df <- data.frame(studs = c(19173,5333,15643),
 -   Lassen Sie sich die Variablennamen von `etb` anzeigen!
 -   Die Variable `S1` gibt das Geschlecht der Befragten an. Welcher Variablentyp ist für die Variable festgelegt? Ändern Sie den Variablentyp auf `character`.
 -   Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte\*n mit der `intnr` 2781 enthält?
--   Wie alt ist der/die Befragte mit der `respid` 2781? 
+-   Wie alt ist der/die Befragte mit der `respid` 2781?
 -   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable `S2_j` abgelegt.)
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
 -   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen? Nutzen Sie für Ihre Antwort die Befehle die wir kennen gelernt haben.
 
-
-
 ## Alternativen zu R-Projekten
 
-Neben dem Einrichten eines Projekts können wir den Pfad auch mit `setwd()` setzen oder direkt in `read.table()` angeben. 
-Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die `.Rproj`-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.
+Neben dem Einrichten eines Projekts können wir den Pfad auch mit `setwd()` setzen oder direkt in `read.table()` angeben. Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die `.Rproj`-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.
 
 Zum Setzen des Arbeitsverzeichnis mit `setwd()` setzen wir in die Klammern den Pfad des Ordners ein. Wichtig dabei ist dass Sie ggf. alle `\` durch `/`ersetzen müssen:
 
@@ -482,8 +548,7 @@ getwd()
 Hier sollte der mit `setwd()` gesetzte Pfad erscheinen.
 
 Alternativ können wir auch in `read.table()` den vollen Pfad angeben:
+
 ```{r,eval= F}
 etb <- read.table("C:/Kurse/R_BIBB/data/BIBBBAuA_2018_small.csv", sep = ";", header = T, stringsAsFactors = F)
 ```
-
-

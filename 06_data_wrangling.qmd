@@ -1,6 +1,51 @@
-
+## Variablen erstellen {#var}
 
 [`{janitor}`](https://appsilon.com/data-cleaning-in-r/)
 
 
 [`across()` und `c_across()`](https://twitter.com/tmfmnk/status/1525840447419162625)
+
+https://mgimond.github.io/ES218/Week03ab_groupby.html
+https://datacarpentry.org/r-socialsci/
+data science in a box
+
+## Metrische Variablen
+
+Das bisherige Beispiel Staatsbürgerschaft (`m1202`) bezog sich auf ein kategoriales Merkmal. Für ein metrisches Merkmal, wie zum Beispiel das Geburtsjahr macht eine Häufigkeitstabelle wenig Sinn, da das Geburtsjahr sehr viele Ausprägungen hat und eine Tabelle  unübersichtlich wäre - hier nur als Beispiel die ersten 20 Ausprägungen (es gibt insgesamt 77!):
+```{r, eval=F}
+xtabs(~zpalter,etb18)
+```
+```{r, echo=F}
+head(xtabs(~zpalter,etb18), n = 20)
+```
+
+Um eine Häufigkeitstabelle zu erstellen müssen wir bei metrischen Merkmalen Klassen bilden. So könnten wir das Alter in Lebensjahrzehnte unterteilen. Zuvor müssen wir wieder die fehlenden Angaben[^1] überschreiben:
+```{r}
+etb18$zpalter[etb18$zpalter == 9999] <- NA
+```
+Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab: 
+```{r}
+etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) )
+etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq()
+```
+Für diese neue Variable können wir mit `table()` eine Häufigkeitstabelle anfordern:
+
+```{r}
+xtabs(~age_zehner,etb18)
+```
+`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also 437 Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
+Wir haben also durch Klassierung aus dem metrischen Merkmal `age` ein kategoriales Merkmal `age_zehner` erstellt. Damit können wir dann genauso arbeiten wie oben - zB für die kumulierten relativen Häufigkeiten:
+```{r}
+age_tab <- xtabs(~age_zehner,etb18) # abs Häufigkeiten
+age_tab2 <- prop.table(age_tab) # rel Häufigkeiten
+cumsum(age_tab2) # kumulieren
+```
+*Wir sehen hier so, dass `r sprintf("%2.3f",cumsum(age_tab2)[4]*100)`% aller Befragten 50 Jahre oder jünger sind.*
+
+Wir könnten alles auch in einem Befehl zusammen durchführen, das wird aber schnell unübersichtlich:
+```{r}
+cumsum(prop.table(table( cut(a16$age, breaks = seq(10,100,10) ) )))
+```
+
+[^1]: Die Werte für fehlende Angaben finden wir Codebuch: auch hier ist `-32` wieder ein Code für fehlende Werte.
+

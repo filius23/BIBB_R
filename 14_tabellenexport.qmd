@@ -1,10 +1,15 @@
 # Tabellenexport
 
+
 ```{r reg01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
 ```
 
-## Layout-Tippps für Tabellen
+
+
+
+## Layout-Tipps für Tabellen
 
 [Hier](https://clauswilke.com/dataviz/figure-titles-captions.html#tables)
 
@@ -20,7 +25,7 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 
 ## weitere Optionen
 
-https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/
+[link](https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/)
 
  
  
