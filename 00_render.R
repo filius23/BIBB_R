@@ -9,8 +9,7 @@ library(tidyverse)
 # https://datasciencebook.ca/
 # https://towardsdatascience.com/r-programming-a-study-guide-for-beginners-732de9542aa8?gi=dce1e602d5ab 
 # https://datacarpentry.org/r-socialsci/
-
-
+# https://sta-112-f22.github.io/website/schedule.html
 
 path1 <- "D:/oCloud/RFS/images/"
 path2 <- here::here("pic") %>% paste0(.,"/")
