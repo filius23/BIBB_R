@@ -414,6 +414,17 @@ mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
 nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
   mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
 ```
+```{r}
+etb18 %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+
+etb18 %>% 
+  filter(Bula %in% c(3,5)) %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+
+```
 
 
 In Niedersachsen ist das durchschnittliche HH-Einkommen um `r round(nrw_nds,2)`€ niedriger.
