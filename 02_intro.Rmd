@@ -9,11 +9,6 @@ library(kableExtra)
 
 In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los gehts.
 
-```{r dplyr, echo = F, out.height="70%",out.width="70%", fig.align="center"}
-knitr::include_graphics("./pic/103_dplyr.png")
-```
-
-
 Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` abgelegt und mit den in `profs` abgelegten Professurenzahlen ins Verhältnis gesetzt. Das funktioniert soweit gut, allerdings ist es übersichtlicher, zusammengehörige Werte auch zusammen ablegen. Dafür gibt es in R `data.frame`. Wir können dazu die beiden Objekte in einem Datensatz ablegen, indem wir sie in `data.frame` eintragen und das neue Objekt unter `df` ablegen. Wenn wir `df` aufrufen sehen wir, dass die Werte zeilenweise zusammengefügt wurden:
 
 ```{r , include=T, echo = T}
@@ -191,7 +186,11 @@ werden folgende Pakete installiert:
 
 `r tidyverse::tidyverse_packages() %>% paste(.,collapse=", ")`
 
-Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist `{dplyr}`, welches unter anderem die Auswahl von Fällen und Variablen erleichtert. 
+Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist `{dplyr}`, welches unter anderem die Auswahl von Fällen und Variablen erleichtert:
+
+```{r dplyr, echo = F, out.height="70%",out.width="70%", fig.align="center"}
+knitr::include_graphics("./pic/103_dplyr.png")
+```
 
 ## Beobachtungen auswählen mit `filter()` {#filter}
 
