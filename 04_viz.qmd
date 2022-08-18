@@ -5,7 +5,7 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 library(tidyverse)
 library(patchwork)
-knitr::opts_chunk$set(collapse = F)
+knitr::opts_chunk$set(message = F)
 # https://wtoivo.github.io/SGSSS-data-viz-workshop/bar-plots.html
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 etb18$m1202[etb18$m1202<0] <- NA
@@ -25,16 +25,18 @@ xtabs(~S1+m1202, data = etb18)
 ```{r, out.height= "70%", out.width= "70%", fig.align="center", echo = F}
 tab_df <- data.frame( kt ) %>% 
   left_join(enframe(labelled::val_labels(etb18$m1202)) %>% mutate(value =factor(value)),
-            by = c("m1202"="value"))
+            by = c("m1202"="value")) %>% 
+  mutate(name = fct_reorder(name,as.numeric(as.character(m1202))))
  
 
-ggplot(data = tab_df , aes(x = str_wrap(name,20), y = Freq, fill = S1 )) + 
+ggplot(data = tab_df , 
+       aes(x = str_wrap(name,20), y = Freq, fill = S1 )) + 
   geom_col(  position=position_dodge()) + 
   theme_minimal() + 
   scale_fill_manual(values = c("navajowhite","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  labs(title = "Familienstand",
-       subtitle = "Absolute Häufigkeiten pro Geschlecht",
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Absolute Häufigkeiten",
        caption = "Quelle: ETB 2018",
        x = "Ausbildung",
        y = "Absolute Häufigkeit",
@@ -148,7 +150,7 @@ step5 + step6
 ## cowplot::plot_grid(step5, step6, nrow = 1)
 ```
 
-Abschließend passen wir dann noch mit `labs` die Beschriftungen an, folgende Optionen haben wir:
+Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben wir folgende Optionen:
 
 + `title`: Überschrift für die Graphik
 + `subtitle`:  Unterzeile zur Überschrift
@@ -423,6 +425,13 @@ ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) +
        y = "Absolute Häufigkeit",fill = "Geschlecht" ) + theme_minimal()
 ```
 
+
+MetBrewer
+DutchMasters
+scico
+
+
+
 ### Weitere themes {#themes}
 Neben `theme_minimal()` gibt es noch weitere Designs: eine Liste findet sich [hier](https://ggplot2.tidyverse.org/reference/ggtheme.html). Hier ein Beispiel mit `theme_dark()`:
 
@@ -450,6 +459,8 @@ Es muss also lediglich das letzte Argument (`theme_..`) angepasst werden. Weiter
 + Die [R Graph Gallery](https://r-graph-gallery.com/) ist noch etwas umfangreicher und bietet noch weitere Visualisierungsideen
 
 + Für alle, die mehr zu gelungenen (und schönen) Datenvisualisierungen mit `{ggplot2}` erfahren möchten, ist das [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) ein hervorragender Einstieg.
+
++ [Dieser Workshop](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/) bietet weitere Einblicke wie Datenvisualisierungen mit `{ggplot2}` schöner gestaltet werden können.
 
 + [Eine Liste von Erweiterungen für ggplot2](https://albert-rapp.de/posts/ggplot2-tips/12_a_few_gg_packages/12_a_few_gg_packages.html)
 
