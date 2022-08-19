@@ -188,7 +188,8 @@ werden folgende Pakete installiert:
 
 Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist `{dplyr}`, welches unter anderem die Auswahl von Fällen und Variablen erleichtert:
 
-```{r dplyr, echo = F, out.height="70%",out.width="70%", fig.align="center"}
+```{r dplyr, echo = F, out.height="80%",out.width="80%", fig.align="center"}
+#| fig-cap: Darstellung nach [Andrew Heiss](https://talks.andrewheiss.com/2021-seacen/01_welcome-tidyverse/slides/01_tidyverse-dplyr.html#22) und dem [`{dplyr}` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf) 
 knitr::include_graphics("./pic/103_dplyr.png")
 ```
 
