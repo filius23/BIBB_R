@@ -178,7 +178,7 @@ Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `libra
 knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
 
-Wir werden in diesem Kurs vor allem mit Paketen aus dem [tidyverse](tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
+Wir werden in diesem Kurs vor allem mit Paketen aus dem [tidyverse](www.tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
 ```{r,eval =FALSE}
 install.packages("tidyverse")
 ```
