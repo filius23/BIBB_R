@@ -8,8 +8,12 @@
 https://mgimond.github.io/ES218/Week03ab_groupby.html
 https://datacarpentry.org/r-socialsci/
 data science in a box
+https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f
 
-## Metrische Variablen
+https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb
+ 
+
+## `cut()`
 
 Das bisherige Beispiel Staatsbürgerschaft (`m1202`) bezog sich auf ein kategoriales Merkmal. Für ein metrisches Merkmal, wie zum Beispiel das Geburtsjahr macht eine Häufigkeitstabelle wenig Sinn, da das Geburtsjahr sehr viele Ausprägungen hat und eine Tabelle  unübersichtlich wäre - hier nur als Beispiel die ersten 20 Ausprägungen (es gibt insgesamt 77!):
 ```{r, eval=F}
@@ -49,3 +53,12 @@ cumsum(prop.table(table( cut(a16$age, breaks = seq(10,100,10) ) )))
 
 [^1]: Die Werte für fehlende Angaben finden wir Codebuch: auch hier ist `-32` wieder ein Code für fehlende Werte.
 
+## Eigene Funktionen
+
+
+```{r}
+mode <- function(x) { names(which.max(table(x))) }
+
+```
+
+## `lapply()` und `map()`

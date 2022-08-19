@@ -10,6 +10,35 @@ library(tidyverse)
 # https://towardsdatascience.com/r-programming-a-study-guide-for-beginners-732de9542aa8?gi=dce1e602d5ab 
 # https://datacarpentry.org/r-socialsci/
 # https://sta-112-f22.github.io/website/schedule.html
+# https://github.com/mattansb/Practical-Applications-in-R-for-Psychologists/
+
+# https://github.com/andrewheiss/2021-seacen
+
+
+# count() als Haupt table-funktion (die andern nur kurz zeigen)
+# [] am Ende zeigen -> "übrigens"
+# summarise auf Grafik einbauen?
+# slice()/pull() einbauen ?
+# Kennzahlenkapitel eindampfen -> Lagemaße usw nicht groß unterscheiden
+# summarise -funktionen aus SMART-Syntax verwenden -> summary selbst bauen
+# Variationskoeffizient function selber bauen als Beispiel
+
+
+
+# - export vs save
+# - factor Beispiel (as.character…)
+# - ersetzen durch [ ]
+# - Bedingungen Hintergrund: Auswahl mit T/F, dann logische Vektoren, zusammen führen
+# - file_path
+# <-
+#   readClipboard()
+# #
+# - Histogramm, Boxplot aus https://modernstatisticswithr.com/thebasics.html#plotting-numerical-data
+# - Fehlermeldungen aus https://modernstatisticswithr.com/thebasics.html#troubleshooting
+# 
+
+
+
 
 path1 <- "D:/oCloud/RFS/images/"
 path2 <- here::here("pic") %>% paste0(.,"/")

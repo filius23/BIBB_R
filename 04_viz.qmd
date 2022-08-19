@@ -318,6 +318,7 @@ ggplot(data = etb18, aes(x = az)) +
   labs(fill = "") +
   theme_minimal()
 ```
+## Scatterplot
 
 ## Aufgaben
 

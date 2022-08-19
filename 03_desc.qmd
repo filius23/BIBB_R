@@ -416,6 +416,9 @@ nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
 ```
 ```{r}
 etb18 %>% 
+  summarise(mean_inc = summary(F518_SUF, na.rm = T) )
+
+etb18 %>% 
   group_by(Bula) %>% 
   summarise(mean_inc = mean(F518_SUF, na.rm = T) )
 
