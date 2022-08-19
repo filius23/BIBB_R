@@ -120,46 +120,15 @@ R weiß (verständlicherweise) also nicht, wie die Uni-Namen in Zahlen umgewande
 Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentypen zurückzuführen.
 :::
 
-## Zeilen oder Spalten auswählen
 
-Wir können Einträge aus einem Datensatz mit \[ \] auswählen:
 
-```{r , include=T, echo = T}
-df[1,1] # erste Zeile, erste Spalte
-df[1,]  # erste Zeile, alle Spalten
-df[,1]  # alle Zeilen, erste Spalte (entspricht hier df$studs)
-df[,"studs"] # alle Zeilen, Spalte mit Namen studs -> achtung: ""
-```
+## Zeilen und/oder Spalten auswählen
 
-Natürlich können wir auch mehrere Zeilen oder Spalten auswählen. Dafür müssen wir wieder auf `c( )` zurückgreifen:
+Im nächsten Schritt möchten wir jetzt nur einige Zeilen (Fälle) und/oder Spalten (Variablen) auswählen. 
+Dazu verwenden wir das Paket `{dplyr}`[^04_intro-1] mit den Befehlen `filter()` und `select()`. 
 
-```{r, eval = F}
-df[c(1,2),]  ## 1. & 2. Zeile, alle Spalten
-df[,c(1,3)]  ## alle Zeilen, 1. & 3. Spalte (entspricht df$studs & df$stu_prof)
-df[,c("studs","uni")] ## alle Zeilen, Spalten mit Namen studs und uni
-```
+[^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention. 
 
-In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus `df` zu treffen.
-
-```{r , include=T, echo = T}
-df # vollständiger Datensatz
-df[df$uni == "Uni Oldenburg", ] # Zeilen in denen uni gleich "Uni Oldenburg", alle Spalten
-df$studs[df$uni == "Uni Oldenburg" ] # Nur Studi-Zahl nachsehen: kein Komma 
-```
-
-Das funktioniert soweit wie gewünscht und wir können das Ganze jetzt erweitern:
-
-```{r, eval=F}
-df[df$uni == "Uni Oldenburg" & df$studs > 10000, ] # & bedeutet UND
-```
-
-Allerdings wird der Befehl hier schon sehr lang: wir müssen drei Mal `df` aufrufen und außerdem immer darauf achten, das Komma an der richtigen Stelle zu setzen. Eine kürzere und komfortablere Variante ist der Befehl `filter()` aus dem Paket `{dplyr}` [^04_intro-1]
-
-```{r}
-filter(df,uni == "Uni Oldenburg", studs > 1000)
-```
-
-[^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention.
 
 ## Pakete in R {#packages}
 
@@ -282,7 +251,53 @@ col_auswahl
 select(df, any_of(col_auswahl) )
 ```
 
+Oder wir wollen alle Variablen, die mit "s" beginnen:
+```{r}
+select(df,starts_with("s"))
+select(df,matches("^s")) # gleiches Ergebnis mit regex
+```
+
+
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
+
+## `filter()` und `select()` kombinieren mit der Pipe
+
+
+Wenn wir jetzt aber einige Zeilen **und** einige Spalten auswählen möchten, dann können wir `filter()` und `select()` kombinieren:
+```{r}
+select(filter(df,studs < 10000),uni)
+```
+Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen. `%>%` steht einfach für "und dann". Die Pipe kommt aus dem Paket `{magrittr}`, welches wiederum Teil des tidyverse ist und automatisch mit `{dplyr}` geladen wird. 
+
+```{r}
+filter(df,studs < 10000) %>% select(uni)
+```
+
+Häufig wird die Pipe dann so verwendet, dass zu Beginn lediglich der zu bearbeitende Datensatz steht und sich dann die Schritte anschließen:
+```{r}
+df %>% filter(.,studs < 10000) %>% select(.,uni)
+```
+
+
+Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
+
+   1. Rufe `df` auf *und dann (`%>%`)*
+   2. Wähle nur Zeilen aus in denen `studs` < 10000 *und dann (`%>%`)*
+   3. Behalte nur die Spalte `uni`
+
+Dan Punkt können wir auch weglassen:
+```{r}
+df %>% filter(studs < 10000) %>% select(uni)
+```
+
+
+:::{.callout-tip}
+
+`%>%` kann mit STRG+SHIFT+m (cmd+shift+m für Mac) eingefügt werden.
+
+:::
+
+
 
 ## [Übung](#data1) {#ue1}
 
@@ -534,7 +549,9 @@ df <- data.frame(studs = c(19173,5333,15643),
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
 -   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen? Nutzen Sie für Ihre Antwort die Befehle die wir kennen gelernt haben.
 
-## Alternativen zu R-Projekten
+## Anhang
+
+### Alternativen zu R-Projekten {#setwd}
 
 Neben dem Einrichten eines Projekts können wir den Pfad auch mit `setwd()` setzen oder direkt in `read.table()` angeben. Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die `.Rproj`-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.
 
@@ -556,4 +573,43 @@ Alternativ können wir auch in `read.table()` den vollen Pfad angeben:
 
 ```{r,eval= F}
 etb <- read.table("C:/Kurse/R_BIBB/data/BIBBBAuA_2018_small.csv", sep = ";", header = T, stringsAsFactors = F)
+```
+
+
+### Zeilen & Spaltenauswahl ohne `{dplyr}` {#selfiltbase}
+
+Natürlich kann auch base R (also R ohne Erweiterungen wie `{dplyr}` Datensätze filtern usw.), dazu wird  \[ \] verwendet:
+
+```{r , include=T, echo = T}
+df[1,1] # erste Zeile, erste Spalte
+df[1,]  # erste Zeile, alle Spalten
+df[,1]  # alle Zeilen, erste Spalte (entspricht hier df$studs)
+df[,"studs"] # alle Zeilen, Spalte mit Namen studs -> achtung: ""
+```
+
+Natürlich können wir auch mehrere Zeilen oder Spalten auswählen. Dafür müssen wir wieder auf `c( )` zurückgreifen:
+
+```{r, eval = F}
+df[c(1,2),]  ## 1. & 2. Zeile, alle Spalten
+df[,c(1,3)]  ## alle Zeilen, 1. & 3. Spalte (entspricht df$studs & df$stu_prof)
+df[,c("studs","uni")] ## alle Zeilen, Spalten mit Namen studs und uni
+```
+
+In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus `df` zu treffen.
+
+```{r , include=T, echo = T}
+df # vollständiger Datensatz
+df[df$uni == "Uni Oldenburg", ] # Zeilen in denen uni gleich "Uni Oldenburg", alle Spalten
+df$studs[df$uni == "Uni Oldenburg" ] # Nur Studi-Zahl nachsehen: kein Komma 
+```
+
+Das funktioniert soweit wie gewünscht und wir können das Ganze jetzt erweitern:
+
+```{r, eval=F}
+df[df$uni == "Uni Oldenburg" & df$studs > 10000, ] # & bedeutet UND
+```
+
+Wir können auch hier einen ODER-Operator verwenden:
+```{r, eval=F}
+df[df$uni == "Uni Oldenburg" | df$studs > 10000, ]
 ```
