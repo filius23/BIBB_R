@@ -402,7 +402,7 @@ ncol(etb)
 Natürlich können wir wie oben auch aus diesem, viel größeren, Datensatz Zeilen und Spalten auswählen. Zum Beispiel können wir die Befragten auswählen, die vor 1940 geboren sind und diese unter `senior` ablegen:
 
 ```{r}
-senior <- etb[etb$S2_j < 1940,]
+senior <- etb %>% filter(S2_j < 1940)
 ```
 
 Möchten wir die genauen Altersangaben der Befragten aus `senior` sehen, können wir die entsprechende Spalte mit `senior$age` aufrufen:
@@ -417,11 +417,8 @@ Außerdem hat `senior` natürlich deutlich weniger Zeilen als `etb`:
 nrow(senior)
 ```
 
-Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als `age` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch. In ihm sind alle Variablennamen sowie die Ausprägungen erläutert. Laden Sie daher auch das Codebuch für den Allbus (Codebuch_allbus.pdf) herunter, wir werden es häufig brauchen!
-
-```{r,echo = F, out.height="100%",out.width="100%", fig.align="center"}
-# knitr::include_graphics("D:/oCloud/RFS/images/102_codebuch_comb.png")
-```
+Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als `age` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
+Außerdem können wir auf die `attributes()` einer Variable zurückgreifen - mehr zu labels später.
 
 ### Überblick: Einlesen und Exportieren
 
