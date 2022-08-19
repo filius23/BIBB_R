@@ -22,11 +22,12 @@ Uns stehen (mindestens) drei Befehle zur Verfügung, um eine Häufigkeitsauszäh
 
 + `table()`
 + `xtabs()`
-<!-- + `count()` aus `{dplyr}`  -->
++ `count()` aus `{dplyr}`
 
 
 ## Absolute Häufigkeiten
-Zentraler Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `m1202` zur Ausbildung der Befragten.
+
+Einfachster Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `m1202` zur Ausbildung der Befragten.
 ```{r W04_2, include=T, echo = T}
 table(etb18$m1202)
 ```
@@ -51,12 +52,17 @@ t2 <- xtabs(~m1202,data=etb18)
 
 `r as.numeric(t2[2])` Befragte haben keinen Berufsabschluss, `r as.numeric(t2[4])` Befragte haben Aufstiegsfortbildung usw. (Zu labels und die Arbeit mit value labels in R später mehr)
 
+Mit `count()` aus `{dplyr}` bekommen wir die labels direkt angezeigt, auch hier verwenden wir wieder die Schreibweise mit der Pipe `%>%`:
+```{r}
+etb18 %>% count(m1202)
+```
+
+
 Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später wieder aufrufen:
 ```{r W04_3, include=T, echo = T}
-t2 <- xtabs(~m1202,data=etb18)
+t2 <- etb18 %>% count(m1202)
 t2
 class(t2)
-attributes(t2)
 ```
 
 Etwas störend ist aber noch die `-1`. Aus den Labels wissen wir, dass `-1` für fehlende Angabe steht.
@@ -143,10 +149,7 @@ Wenn wir das auch noch mit [`round()`](#round) runden möchten, dann bekommen wi
 round(   cumsum(prop.table(xtabs(~m1202,data=etb18)))   ,3) 
 ```
 
-Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen. `%>%` steht einfach für "und dann". Die Pipe ist unter anderem Teil des Pakets `{dplyr}`, das wir schon kennen gelernt haben:
-```{r dplyr_load, echo = T}
-library(dplyr)
-```
+Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen.
 
 Mit der Pipe sieht die Befehlsschachtel dann so aus und wir können sie von links nach rechts lesen:
 ```{r W201_9_pipe, echo = T}
@@ -162,18 +165,6 @@ Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also
    3. Berechne dafür die kumulierten Werte *und dann (`%>%`)*
    4. Runde das Ergebnis auf 3 Nachkommastellen
 
-
-Dieses Prinzip der Pipe funktioniert nicht nur für Tabellen, sondern für alle Objekte in R - wir werden im Verlauf des Kurses einige Anwendungsmöglichkeiten für Datensätze sehen. Hier schon mal ein Beispiel für den `filter()`-Befehl aus der vorherigen Session:
-```{r,eval=F}
-filter(df,studs > 1000)
-df %>% filter(studs > 1000)
-```
-
-:::{.callout-tip}
-
-`%>%` kann mit STRG+SHIFT+m (cmd+shift+m für Mac) eingefügt werden.
-
-:::
 
 ## Kontingenztabellen
 

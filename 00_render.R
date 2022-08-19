@@ -25,6 +25,8 @@ library(tidyverse)
 
 
 
+
+
 # - export vs save
 # - factor Beispiel (as.character…)
 # - ersetzen durch [ ]
@@ -37,28 +39,27 @@ library(tidyverse)
 # - Fehlermeldungen aus https://modernstatisticswithr.com/thebasics.html#troubleshooting
 # 
 
+ndis <- 
+  etb18 %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
+  t(.) %>% data.frame(ndis = .) %>% rownames_to_column(.,var = "var") %>% janitor::clean_names() %>% tibble() %>% 
+  left_join(
+            map_dfr(etb18,~attributes(.x)$label) %>% 
+              t(.) %>% data.frame() %>% 
+              rownames_to_column(.,var = "var") )
+  
+ndis %>% filter(ndis %in% 4) %>% print(n=Inf)
+ 
 
+table(etb18$F230_02)
+etb18 %>% count(F100_kldb2010_BOF) %>% add_tally()
+attributes(etb18$F230_02)
 
-
-path1 <- "D:/oCloud/RFS/images/"
-path2 <- here::here("pic") %>% paste0(.,"/")
-
-file.copy(from = paste0(path1,"102_Dateipfad_Win.png"),to = paste0(path2,"102_Dateipfad_Win.png"))
-file.copy(from = "D:/oCloud/RFS/images/rstudio-icon.png",to = paste0(path2,"rstudio-icon.png"))
-
-
-myimages2 <- c(paste0(path1,"/101_engine_R.png"),paste0(path1,"/101_cockpit_rstudio2.png"))
-myimages3 <- c(paste0(path2,"/101_engine_R.png"),paste0(path2,"/101_cockpit_rstudio2.png"))
-
-
-
-
-file.copy(from = "D:/oCloud/Home-Cloud/Lehre/BIBB/StataBIBB1/pics/01_Dateipfad_WIN.png",
-          to = paste0(path2,"01_Dateipfad_WIN.png"))
-
-
-
-dir.create(here::here("pic"))
+# 
+# path1 <- "D:/oCloud/RFS/images/"
+# path2 <- here::here("pic") %>% paste0(.,"/")
+# 
+# file.copy(from = paste0(path1,"102_Dateipfad_Win.png"),to = paste0(path2,"102_Dateipfad_Win.png"))
+# file.copy(from = "D:/oCloud/RFS/images/rstudio-icon.png",to = paste0(path2,"rstudio-icon.png"))
 
 
 quarto::quarto_render("01_intro.qmd")

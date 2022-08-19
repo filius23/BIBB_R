@@ -122,15 +122,14 @@ Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentype
 
 
 
-## Zeilen und/oder Spalten auswählen
+
+
+## Pakete in R {#packages}
 
 Im nächsten Schritt möchten wir jetzt nur einige Zeilen (Fälle) und/oder Spalten (Variablen) auswählen. 
 Dazu verwenden wir das Paket `{dplyr}`[^04_intro-1] mit den Befehlen `filter()` und `select()`. 
 
 [^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention. 
-
-
-## Pakete in R {#packages}
 
 Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. <!-- Wir haben in diesem Kapitel schon einige Beispiele kennen gelernt: mit `{dplyr}` steht uns ein komfortablerer [`filter()`](#filter) zur Verfügung und Stata- oder SPSS-Dateien können wir mit Hilfe des Pakets `haven` einlesen und erstellen.  --> Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
 
@@ -167,11 +166,12 @@ knitr::include_graphics("./pic/103_dplyr.png")
 Nachdem wir zunächst das Paket für `filter()` installiert haben (das ist `{dplyr}`) müssen wir das Paket noch mit `library()` laden:
 
 ```{r,eval = F}
-install.packages("dplyr") # nur einmal nötig
+install.packages("tidyverse") # nur einmal nötig
+install.packages("dplyr") # wenn nur dplyr installiert werden soll
 ```
 
 ```{r}
-library(dplyr) # nach einmaligem install.packages("dplyr")
+library(dplyr) # nach einmaligem install.packages("tidyverse")
 ```
 
 ```{r}
@@ -515,6 +515,7 @@ Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist 
 -   Funktionen sind (fast) immer Verben gefolgt von einer Klammer `()`, in welcher das zu bearbeitende Objekt sowie ggf. Optionen angegeben wird.
 -   soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert.
 -   Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
+- Mit `?funktion()` ist die Hilfe aufrufbar
 
 ## Übungen 1 {#data1}
 
