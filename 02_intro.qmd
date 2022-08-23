@@ -9,55 +9,66 @@ library(kableExtra)
 
 In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los gehts.
 
-Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` abgelegt und mit den in `profs` abgelegten Professurenzahlen ins Verhältnis gesetzt. Das funktioniert soweit gut, allerdings ist es übersichtlicher, zusammengehörige Werte auch zusammen ablegen. Dafür gibt es in R `data.frame`. Wir können dazu die beiden Objekte in einem Datensatz ablegen, indem wir sie in `data.frame` eintragen und das neue Objekt unter `df` ablegen. Wenn wir `df` aufrufen sehen wir, dass die Werte zeilenweise zusammengefügt wurden:
+## Befehlsstruktur
+
+-   Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. `colnames()`, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable sein 
+-  Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: `read.csv(datei.csv, header = T, sep = ",")`
+-  Wenn wir eine Funktion durchführen mit `funktion(objektname, option1 = TRUE, option2 = FALSE)` bekommen wir das Ergebnis in der Konsole ausgegeben.
+-  Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit `name <- funktion(name)`
+- Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
+- Mit `?funktion()` ist die Hilfe aufrufbar, bspw. `?colnames()`
+
+## Datenstrukturen in R: `data.frame`
+
+Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` abgelegt und mit den in `profs` abgelegten Professurenzahlen ins Verhältnis gesetzt. Das funktioniert soweit gut, allerdings ist es übersichtlicher, zusammengehörige Werte auch zusammen ablegen. Dafür gibt es in R `data.frame`. Wir können dazu die beiden Objekte in einem Datensatz ablegen, indem wir sie in `data.frame` eintragen und das neue Objekt unter `dat1` ablegen. Wenn wir `dat1` aufrufen sehen wir, dass die Werte zeilenweise zusammengefügt wurden:
 
 ```{r , include=T, echo = T}
 studs <- c(19173,5333,15643)    # Studierendenzahlen unter "studs" ablegen 
 profs       <- c(322,67,210)    # Prof-Zahlen unter "profs" ablegen
-df_orig <- data.frame(studs, profs)
+dat1_orig <- data.frame(studs, profs)
 ```
 
 ```{r , include=T, echo = T}
-df <- data.frame(studs = c(19173,5333,15643), 
+dat1 <- data.frame(studs = c(19173,5333,15643), 
                  profs = c(322,67,210),
                  gegr  = c(1971,1830,1973)) # ohne zwischen-Objekte
-df    # zeigt den kompletten Datensatz an
+dat1    # zeigt den kompletten Datensatz an
 ```
 
 In der ersten Zeile stehen also die Werte der Uni Bremen, in der zweiten Zeile die Werte der Uni Vechta usw. Die Werte können wir dann mit `datensatzname$variablenname` aufrufen. So können wir die Spalte `profs` anzeigen lassen:
 
 ```{r , include=T, echo = T}
-df$profs 
+dat1$profs 
 ```
 
 Mit `colnames()` können wir die Variablen-/Spaltennamen des Datensatzes anzeigen lassen, zudem können wir mit `nrow` und `ncol` die Zahl der Zeilen bzw. Spalten aufrufen:
 
 ```{r , include=T, echo = T}
-colnames(df) ## Variablen-/Spaltennamen anzeigen
-ncol(df) ## Anzahl der Spalten/Variablen
-nrow(df) ## Anzahl der Zeilen/Fälle
+colnames(dat1) ## Variablen-/Spaltennamen anzeigen
+ncol(dat1) ## Anzahl der Spalten/Variablen
+nrow(dat1) ## Anzahl der Zeilen/Fälle
 ```
 
 Neue zusätzliche Variablen können durch `datensatzname$neuevariable` in den Datensatz eingefügt werden:
 
 ```{r , include=T, echo = T}
-df$stu_prof <- df$studs/df$profs
-## df hat also nun eine Spalte mehr:
-ncol(df) 
-df
+dat1$stu_prof <- dat1$studs/dat1$profs
+## dat1 hat also nun eine Spalte mehr:
+ncol(dat1) 
+dat1
 ```
 
 Wir können auch ein oder mehrere Wörter in einer Variable ablegen, jedoch müssen Buchstaben/Wörter immer in `""` gesetzt werden.
 
 ```{r , include=T, echo = T}
-df$uni <- c("Uni Bremen","Uni Vechta", "Uni Oldenburg")
-df
+dat1$uni <- c("Uni Bremen","Uni Vechta", "Uni Oldenburg")
+dat1
 ```
 
-Mit `View(df)` öffnet sich zudem ein neues Fenster, in dem wir den gesamten Datensatz ansehen können:
+Mit `View(dat1)` öffnet sich zudem ein neues Fenster, in dem wir den gesamten Datensatz ansehen können:
 
 ```{r, eval = F}
-View(df)
+View(dat1)
 ```
 
 ```{r,echo = F, out.height="35%",out.width="45%", fig.align="center"}
@@ -69,49 +80,49 @@ knitr::include_graphics("./pic/102_View.png")
 Damit haben wir bisher zwei Variablentypen kennen gelernt: numeric (enthält Zahlen) und character (enthält Text oder Zahlen, die als Text verstanden werden sollen). Darüber hinaus gibt es noch weitere Typen, die besprechen wir wenn sie nötig sind, zB. gibt es factor-Variablen, die eine vorgegebene Sortierung und Werteuniversum umfassen oder logische Variablen. Vorerst fokussieren wir uns auf character und numeric Variablen. Mit `class()` kann die Art der Variable untersucht werden oder mit `is.numeric()` bzw. `is.character()` können wir abfragen ob eine Variable diesem Typ entspricht:
 
 ```{r vecclass, include=T, echo = T}
-class(df$profs)
-class(df$uni)
-is.numeric(df$profs)
-is.character(df$profs)
+class(dat1$profs)
+class(dat1$uni)
+is.numeric(dat1$profs)
+is.character(dat1$profs)
 ```
 
 Mit `as.character()` bzw. `as.numeric()` können wir einen Typenwechsel erzwingen:
 
 ```{r , include=T, echo = T,  error = TRUE}
-as.character(df$profs) ## die "" zeigen an, dass die Variable als character definiert ist
+as.character(dat1$profs) ## die "" zeigen an, dass die Variable als character definiert ist
 ```
 
-Das ändert erstmal nichts an der Ausgangsvariable `df$profs`:
+Das ändert erstmal nichts an der Ausgangsvariable `dat1$profs`:
 
 ```{r}
-class(df$profs)
+class(dat1$profs)
 ```
 
-Wenn wir diese Umwandlung für `df$profs` behalten wollen, dann müssen wir die Variable überschreiben:
+Wenn wir diese Umwandlung für `dat1$profs` behalten wollen, dann müssen wir die Variable überschreiben:
 
 ```{r , include=T, echo = T,  error = TRUE}
-df$profs <- as.character(df$profs)
-df$profs 
-class(df$profs)
+dat1$profs <- as.character(dat1$profs)
+dat1$profs 
+class(dat1$profs)
 ```
 
 Mit `character`-Variablen kann nicht gerechnet werden, auch wenn sie Zahlen enthalten:
 
 ```{r , include=T, echo = T,  error = TRUE}
-df$profs / 2 
+dat1$profs / 2 
 ```
 
-Wir können aber natürlich `df$profs` spontan mit `as.numeric` umwandeln, um mit den Zahlenwerten zu rechnen:
+Wir können aber natürlich `dat1$profs` spontan mit `as.numeric` umwandeln, um mit den Zahlenwerten zu rechnen:
 
 ```{r , include=T, echo = T,  error = TRUE}
-as.numeric(df$profs)
-as.numeric(df$profs) / 2
+as.numeric(dat1$profs)
+as.numeric(dat1$profs) / 2
 ```
 
 Wenn wir Textvariablen in numerische Variablen umwandeln, bekommen wir `NA`s ausgegeben. `NA` steht in R für fehlende Werte:
 
 ```{r}
-as.numeric(df$uni)
+as.numeric(dat1$uni)
 ```
 
 R weiß (verständlicherweise) also nicht, wie die Uni-Namen in Zahlen umgewandelt werden sollen.
@@ -122,6 +133,7 @@ Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentype
 
 
 
+## [Übung](#data1) {#ue1}
 
 
 ## Pakete in R {#packages}
@@ -157,7 +169,7 @@ werden folgende Pakete installiert:
 Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist `{dplyr}`, welches unter anderem die Auswahl von Fällen und Variablen erleichtert:
 
 ```{r dplyr, echo = F, out.height="80%",out.width="80%", fig.align="center"}
-#| fig-cap: Darstellung nach [Andrew Heiss](https://talks.andrewheiss.com/2021-seacen/01_welcome-tidyverse/slides/01_tidyverse-dplyr.html#22) und dem [`{dplyr}` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf) 
+#| fig-cap: Darstellung nach [Andrew Heiss](https://talks.andrewheiss.com/2021-seacen/01_welcome-tidyverse/slides/01_tidyverse-dplyr.html#22) und dem [`{dplyr}` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdat1) 
 knitr::include_graphics("./pic/103_dplyr.png")
 ```
 
@@ -175,19 +187,19 @@ library(dplyr) # nach einmaligem install.packages("tidyverse")
 ```
 
 ```{r}
-filter(df,uni == "Uni Oldenburg", studs > 1000)
+filter(dat1,uni == "Uni Oldenburg", studs > 1000)
 ```
 
-Die Auswahl ändert das Ausgangsobjekt `df` aber nicht:
+Die Auswahl ändert das Ausgangsobjekt `dat1` aber nicht:
 
 ```{r}
-df
+dat1
 ```
 
 Möchten wir das Ergebnis unserer Auswahl mit `filter()` für weitere Schritte behalten, können wir unser Ergebnis in einem neuen `data.frame`-Objekt ablegen:
 
 ```{r}
-ueber_10tsd <- filter(df, studs > 10000)
+ueber_10tsd <- filter(dat1, studs > 10000)
 ueber_10tsd
 class(ueber_10tsd)
 ```
@@ -195,27 +207,35 @@ class(ueber_10tsd)
 In R stehen uns einige weitere Operatoren zur Auswahl von Zeilen zu Verfügung:
 
 -   `<=` und `>=`: kleiner gleich/ größer gleich
--   `|` oder: `filter(df,studs > 10000 | prof < 200)`: mehr als 10.000 Studierende *oder* weniger als 200 Professuren
--   `%in%` "eines von": `filter(df, gegr %in% c(1971,1973,2004))`: gegründet 1971 oder 1973 oder 2004
--   `between()` ist eine Hilfsfunktion aus `{dplyr}` für Wertebereiche: `filter(df,between(studs,10000,20000)`: zwischen 10.000 und 20.000 Studierenden *oder* (jeweils eingeschlossen)
+-   `|` oder: `filter(dat1,studs > 10000 | prof < 200)`: mehr als 10.000 Studierende *oder* weniger als 200 Professuren
+-   `%in%` "eines von": `filter(dat1, gegr %in% c(1971,1973,2004))`: gegründet 1971 oder 1973 oder 2004
+-   `between()` ist eine Hilfsfunktion aus `{dplyr}` für Wertebereiche: `filter(dat1,between(studs,10000,20000)`: zwischen 10.000 und 20.000 Studierenden *oder* (jeweils eingeschlossen)
+
+Erweiterte Hilfsfunktionen für `filter()`:  `if_any()` or `if_all()`
+
+```{r, eval =F }
+etb18 %>% filter(if_any(matches("^F"), ~ .x < 10))
+```
+
+
 
 ## Variablentypen II: logical
 
 Diese Auswahl basiert auf einem dritten Variablentyp: 'logical', also logische Werte mit `TRUE` oder `FALSE`. Wenn wir mit `==`, `>` oder `<` eine Bedingung formulieren, dann erstellen wir eigentlich einen logischen Vektor in der selben Länge wie die Daten:
 
 ```{r}
-df$studs > 10000 # ist die Studi-Zahl größer 10000?
-df$more10k <-  df$studs > 10000 # ist die Studi-Zahl größer 10000?
+dat1$studs > 10000 # ist die Studi-Zahl größer 10000?
+dat1$more10k <-  dat1$studs > 10000 # ist die Studi-Zahl größer 10000?
 ```
 
 ```{r}
-df
+dat1
 ```
 
 Wir könnten dann auch auf Basis dieser Variable filtern:
 
 ```{r}
-filter(df,more10k)
+filter(dat1,more10k)
 ```
 
 ## Variablen auswählen mit `select()` {#select}
@@ -223,22 +243,22 @@ filter(df,more10k)
 Mit `select()` enthält `{dplyr}` auch einen Befehl zu Auswahl von Spalten/Variablen:
 
 ```{r}
-df
-select(df, studs,profs)
+dat1
+select(dat1, studs,profs)
 ```
 
 Wir können auch hier einige Operatoren verwenden: `:` um einen Bereich auszuwählen oder `!` als "nicht"-Operator:
 
 ```{r}
-select(df, 1:3) # Spalte 1-3
-select(df, !profs) # alles außer profs
+select(dat1, 1:3) # Spalte 1-3
+select(dat1, !profs) # alles außer profs
 ```
 
 `select()` hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.
 
--   `starts_with()`: Variablenname beginnt mit ..., bspw. `select(df,starts_with("p"))`
--   `ends_with()`: Variablenname endet mit ..., bspw. `select(df,ends_with("p"))`
--   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(df,matches("_")`: alle Variablen mit `_` im Namen.
+-   `starts_with()`: Variablenname beginnt mit ..., bspw. `select(dat1,starts_with("p"))`
+-   `ends_with()`: Variablenname endet mit ..., bspw. `select(dat1,ends_with("p"))`
+-   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(dat1,matches("_")`: alle Variablen mit `_` im Namen.
 -   `num_range()`: Variablen mit Zahlenbereiche: `select(etb,num_range("F",1:220))`
 -   `last_col()`: Letzte Variable, für die 4.letzte Variable bspw. `last_col(4)`
 -   `any_of()` um eine Auswahl auf Basis eines `character`-Vektors zu treffen
@@ -246,48 +266,48 @@ select(df, !profs) # alles außer profs
 Wenn wir beispielsweise die Spalten eines `data.frame`s auf Basis der `colnames` eines anderen `data.frame` Objekts auswählen möchten:
 
 ```{r}
-col_auswahl <- colnames(df_orig)
+col_auswahl <- colnames(dat1_orig)
 col_auswahl
-select(df, any_of(col_auswahl) )
+select(dat1, any_of(col_auswahl) )
 ```
 
 Oder wir wollen alle Variablen, die mit "s" beginnen:
 ```{r}
-select(df,starts_with("s"))
-select(df,matches("^s")) # gleiches Ergebnis mit regex
+select(dat1,starts_with("s"))
+select(dat1,matches("^s")) # gleiches Ergebnis mit regex
 ```
 
 
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
 
-## `filter()` und `select()` kombinieren mit der Pipe
+## Arbeiten mit der Pipe: `filter()` und `select()` kombinieren  {#pipe}
 
 
 Wenn wir jetzt aber einige Zeilen **und** einige Spalten auswählen möchten, dann können wir `filter()` und `select()` kombinieren:
 ```{r}
-select(filter(df,studs < 10000),uni)
+select(filter(dat1,studs < 10000),uni)
 ```
 Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen. `%>%` steht einfach für "und dann". Die Pipe kommt aus dem Paket `{magrittr}`, welches wiederum Teil des tidyverse ist und automatisch mit `{dplyr}` geladen wird. 
 
 ```{r}
-filter(df,studs < 10000) %>% select(uni)
+filter(dat1,studs < 10000) %>% select(uni)
 ```
 
 Häufig wird die Pipe dann so verwendet, dass zu Beginn lediglich der zu bearbeitende Datensatz steht und sich dann die Schritte anschließen:
 ```{r}
-df %>% filter(.,studs < 10000) %>% select(.,uni)
+dat1 %>% filter(.,studs < 10000) %>% select(.,uni)
 ```
 
 
 Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
 
-   1. Rufe `df` auf *und dann (`%>%`)*
+   1. Rufe `dat1` auf *und dann (`%>%`)*
    2. Wähle nur Zeilen aus in denen `studs` < 10000 *und dann (`%>%`)*
    3. Behalte nur die Spalte `uni`
 
 Dan Punkt können wir auch weglassen:
 ```{r}
-df %>% filter(studs < 10000) %>% select(uni)
+dat1 %>% filter(studs < 10000) %>% select(uni)
 ```
 
 
@@ -297,15 +317,30 @@ df %>% filter(studs < 10000) %>% select(uni)
 
 :::
 
+ 
+Achtung: die Auswahl mit `select()` erhält die Datenstruktur als `data.frame()`, während die Auswahl `dat1$variablenname` die Spalte als Vektor (also Wertereihe) ausgibt:
 
+```{r}
+dat1$studs
+class(dat1$studs)
+dat1$studs/ 20
+```
 
-## [Übung](#data1) {#ue1}
+`select()` erhält die Wert als Spalte eines `data.frame`:
+```{r}
+dat1 %>% select(uni)
+dat1 %>% select(uni) %>% class()
+dat1 %>% select(studs)/20 
+```
+
+## [Übung](#data2) {#ue2}
+
 
 ## Datensätze einlesen
 
 In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.
 
-Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^02_intro-1] bezeichnet ein verbreitetes Dateiformat zur Speicherung oder zum Austausch einfach strukturierter Daten. Wesentlich für unsere Zwecke hier ist, dass in csv-Dateien die Spalten eines Datensatzes mit einem Trennzeichen gekennzeichnet sind. Verbreitete Trennzeichen sind Komma, Doppelpunkt oder Semikolon. Für alle weiteren Dateien, die wir im Lauf dieser Veranstaltung verwenden werden, ist das Semikolon als Trennzeichen gesetzt. Unser Datensatz `df` sieht im csv-Format so aus:
+Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^02_intro-1] bezeichnet ein verbreitetes Dateiformat zur Speicherung oder zum Austausch einfach strukturierter Daten. Wesentlich für unsere Zwecke hier ist, dass in csv-Dateien die Spalten eines Datensatzes mit einem Trennzeichen gekennzeichnet sind. Verbreitete Trennzeichen sind Komma, Doppelpunkt oder Semikolon. Für alle weiteren Dateien, die wir im Lauf dieser Veranstaltung verwenden werden, ist das Semikolon als Trennzeichen gesetzt. Unser Datensatz `dat1` sieht im csv-Format so aus:
 
 [^02_intro-1]: Abkürzung für comma-separated values
 
@@ -426,7 +461,7 @@ Außerdem können wir auf die `attributes()` einer Variable zurückgreifen - meh
 ## Datensätze einlesen
 
 ```{r,echo=F,warning=F}
-df_link2 <- 
+dat1_link2 <- 
   data.frame(cmd= c("read.table()","vroom()"),
              link = c("https://stat.ethz.ch/R-manual/R-devel/library/utils/html/read.table.html",
                       "https://www.tidyverse.org/blog/2020/01/vroom-1-1-0/"))
@@ -446,19 +481,19 @@ readxl::read_xlsx(path = "02_readin.xlsx",sheet = 1) %>%
 
 ```{r,eval =  F}
 # csv Datei
-df1 <- read.table(file = "Dateiname.csv",sep = ";")
+dat1 <- read.table(file = "Dateiname.csv",sep = ";")
 # Rdata
-df1 <- readRDS(file = "Dateiname.Rdata")
+dat1 <- readRDS(file = "Dateiname.Rdata")
 # große csv
 library(vroom)
-df1 <- vroom(file = "Dateiname.csv",delim = ";")
+dat1 <- vroom(file = "Dateiname.csv",delim = ";")
 # Stata dta
-df1 <- read_dta(file = "Dateiname.dta")
+dat1 <- read_dta(file = "Dateiname.dta")
 # SPSS sav
-df1 <- read_sav(file = "Dateiname.sav")
+dat1 <- read_sav(file = "Dateiname.sav")
 # Excel
-df1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "1")
-df1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "Tabellenblatt1")
+dat1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "1")
+dat1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "Tabellenblatt1")
 ```
 :::
 
@@ -474,7 +509,7 @@ options(knitr.kable.NA = '')
 #            Link = "[Google](www.google.com)") |>
 #   kbl(format = "markdown") 
 
-link_df <- 
+link_dat1 <- 
   data.frame(link = c("https://www.geeksforgeeks.org/how-to-use-write-table-in-r/"))
 
 readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>%
@@ -488,18 +523,18 @@ readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>%
 
 ```{r, eval = F,warning=F}
 # csv
-write.table(df,file = "Dateiname.csv",sep = ";",row.names = F)
+write.table(dat1,file = "Dateiname.csv",sep = ";",row.names = F)
 # Rdata
-saveRDS(df,file = "Dateiname.Rdata")
+saveRDS(dat1,file = "Dateiname.Rdata")
 # dta
 library(haven)
-write_dta(df,path = "Dateiname.dta")
+write_dta(dat1,path = "Dateiname.dta")
 # sav
 library(haven)
-write_sav(df,path = "Dateiname.sav")
+write_sav(dat1,path = "Dateiname.sav")
 # xlsx
 library(xlsx)
-write.xlsx(df,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
+write.xlsx(dat1,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 ```
 :::
 
@@ -507,25 +542,19 @@ write.xlsx(df,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - innerhalb von R in einem Objekt hinterlegen)
 :::
 
-## Befehlsstruktur
-
--   Funktionen sind (fast) immer Verben gefolgt von einer Klammer `()`, in welcher das zu bearbeitende Objekt sowie ggf. Optionen angegeben wird.
--   soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert.
--   Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
-- Mit `?funktion()` ist die Hilfe aufrufbar
 
 ## Übungen 1 {#data1}
 
 -   Erstellen Sie den Datensatz mit den Studierenden- & Prof-Zahlen wie oben gezeigt:
 
 ```{r,eval= F}
-df <- data.frame(studs = c(19173,5333,15643), 
+dat1 <- data.frame(studs = c(19173,5333,15643), 
                  profs = c(322,67,210),
                  gegr  = c(1971,1830,1973))
 ```
 
--   Sehen Sie den `df` in Ihrem Enviroment?
--   Lassen Sie sich nur die dritte Zeile von `df` anzeigen.
+-   Sehen Sie den `dat1` in Ihrem Enviroment?
+-   Lassen Sie sich nur die dritte Zeile von `dat1` anzeigen.
 -   Lassen Sie sich nur die Spalte `gegr` anzeigen.
 -   Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`
 -   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{dplyr}` zu installieren und mit `library()` zu laden)
@@ -546,6 +575,8 @@ df <- data.frame(studs = c(19173,5333,15643),
 -   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable `S2_j` abgelegt.)
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
 -   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen? Nutzen Sie für Ihre Antwort die Befehle die wir kennen gelernt haben.
+
+[Zurück](#ue2)
 
 ## Anhang
 
@@ -579,35 +610,35 @@ etb <- read.table("C:/Kurse/R_BIBB/data/BIBBBAuA_2018_small.csv", sep = ";", hea
 Natürlich kann auch base R (also R ohne Erweiterungen wie `{dplyr}` Datensätze filtern usw.), dazu wird  \[ \] verwendet:
 
 ```{r , include=T, echo = T}
-df[1,1] # erste Zeile, erste Spalte
-df[1,]  # erste Zeile, alle Spalten
-df[,1]  # alle Zeilen, erste Spalte (entspricht hier df$studs)
-df[,"studs"] # alle Zeilen, Spalte mit Namen studs -> achtung: ""
+dat1[1,1] # erste Zeile, erste Spalte
+dat1[1,]  # erste Zeile, alle Spalten
+dat1[,1]  # alle Zeilen, erste Spalte (entspricht hier dat1$studs)
+dat1[,"studs"] # alle Zeilen, Spalte mit Namen studs -> achtung: ""
 ```
 
 Natürlich können wir auch mehrere Zeilen oder Spalten auswählen. Dafür müssen wir wieder auf `c( )` zurückgreifen:
 
 ```{r, eval = F}
-df[c(1,2),]  ## 1. & 2. Zeile, alle Spalten
-df[,c(1,3)]  ## alle Zeilen, 1. & 3. Spalte (entspricht df$studs & df$stu_prof)
-df[,c("studs","uni")] ## alle Zeilen, Spalten mit Namen studs und uni
+dat1[c(1,2),]  ## 1. & 2. Zeile, alle Spalten
+dat1[,c(1,3)]  ## alle Zeilen, 1. & 3. Spalte (entspricht dat1$studs & dat1$stu_prof)
+dat1[,c("studs","uni")] ## alle Zeilen, Spalten mit Namen studs und uni
 ```
 
-In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus `df` zu treffen.
+In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus `dat1` zu treffen.
 
 ```{r , include=T, echo = T}
-df # vollständiger Datensatz
-df[df$uni == "Uni Oldenburg", ] # Zeilen in denen uni gleich "Uni Oldenburg", alle Spalten
-df$studs[df$uni == "Uni Oldenburg" ] # Nur Studi-Zahl nachsehen: kein Komma 
+dat1 # vollständiger Datensatz
+dat1[dat1$uni == "Uni Oldenburg", ] # Zeilen in denen uni gleich "Uni Oldenburg", alle Spalten
+dat1$studs[dat1$uni == "Uni Oldenburg" ] # Nur Studi-Zahl nachsehen: kein Komma 
 ```
 
 Das funktioniert soweit wie gewünscht und wir können das Ganze jetzt erweitern:
 
 ```{r, eval=F}
-df[df$uni == "Uni Oldenburg" & df$studs > 10000, ] # & bedeutet UND
+dat1[dat1$uni == "Uni Oldenburg" & dat1$studs > 10000, ] # & bedeutet UND
 ```
 
 Wir können auch hier einen ODER-Operator verwenden:
 ```{r, eval=F}
-df[df$uni == "Uni Oldenburg" | df$studs > 10000, ]
+dat1[dat1$uni == "Uni Oldenburg" | dat1$studs > 10000, ]
 ```

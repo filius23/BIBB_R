@@ -10,7 +10,10 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 
 Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:
 
-[`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an.
+[R for Data Science](r4ds.had.co.nz/) *das* Standardwerk für Datenanalysen mit `{tidyverse}` - sehr intuitive Einführung, Fokus auf Data Science
+
+für base R
+
 
 ## Cheatsheets
 
@@ -45,6 +48,9 @@ Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw
 + [R Question a day]
 + []
 + [Daily R Sheets](https://twitter.com/daily_r_sheets) twittert jeden Tag ein zufälliges R-Cheatsheet
+
+
+[`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an.
 
 <details>
 <summary> Appendix </summary>

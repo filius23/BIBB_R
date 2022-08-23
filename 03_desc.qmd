@@ -6,8 +6,9 @@ if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 knitr::opts_chunk$set(collapse = F)
 library(tidyverse)
  a14 <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double())) %>% 
-   filter(year == 2014)
+   filter(year == 2014) # für Gini Illustration
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+library(Statamarkdown)
 ```
 
 Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:
@@ -16,7 +17,7 @@ library(haven)
 etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 ```
 
-## Kategoriale Merkmale
+## Häufigkeitsauszählungen
 
 Uns stehen (mindestens) drei Befehle zur Verfügung, um eine Häufigkeitsauszählung zu erstellen:
 
@@ -24,8 +25,6 @@ Uns stehen (mindestens) drei Befehle zur Verfügung, um eine Häufigkeitsauszäh
 + `xtabs()`
 + `count()` aus `{dplyr}`
 
-
-## Absolute Häufigkeiten
 
 Einfachster Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `m1202` zur Ausbildung der Befragten.
 ```{r W04_2, include=T, echo = T}
@@ -36,13 +35,21 @@ Die Syntax für `xtabs()` ist etwas anders, aber hier bekommen wir die Variablen
 xtabs(~m1202,data=etb18)
 ```
 Wir bekommen hier die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. 
+
+
+
+
 Allerdings werden sowohl für `table()` als auch `xabs()` die labels in der Ausgabe erstmal ignoriert. 
 Mit `val_labels()` aus dem Paket `{labelled}` können wir die Labels aus dem Datensatz abrufen. - bspw. steht `1` dafür, dass der*die Befragte die keine Berufsabschluss besitzt:
 ```{r, eval=F}
-install.packages("labelled")
+#| code-fold: true
+install.packages("labelled") # nur einmal nötig
+library(labelled)
+val_labels(etb18$m1202)
 ```
 
 ```{r}
+#| echo: false
 library(labelled)
 val_labels(etb18$m1202)
 ```
@@ -52,7 +59,7 @@ t2 <- xtabs(~m1202,data=etb18)
 
 `r as.numeric(t2[2])` Befragte haben keinen Berufsabschluss, `r as.numeric(t2[4])` Befragte haben Aufstiegsfortbildung usw. (Zu labels und die Arbeit mit value labels in R später mehr)
 
-Mit `count()` aus `{dplyr}` bekommen wir die labels direkt angezeigt, auch hier verwenden wir wieder die Schreibweise mit der Pipe `%>%`:
+Mit `count()` aus `{dplyr}` bekommen wir die labels direkt angezeigt, auch hier verwenden wir wieder die Schreibweise [mit der Pipe `%>%`](#pipe):
 ```{r}
 etb18 %>% count(m1202)
 ```
@@ -66,6 +73,89 @@ class(t2)
 ```
 
 Etwas störend ist aber noch die `-1`. Aus den Labels wissen wir, dass `-1` für fehlende Angabe steht.
+
+## [Übung 1](#ue1)
+
+## Andere Tabellenwerte
+
+Mit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpassen:
+
++ `prop.table()`: relative Werte/Anteile
+
+```{r W04_5, include=T, echo = T}
+xtabs(~m1202,data=etb18) %>% prop.table(.) 
+```
+`r sprintf("%2.3f",prop.table(xtabs(~m1202,data=etb18)) [1]*100)`% aller Befragten haben keine Berufsausbildung haben.
+
++ `cumsum()`: kumulierte Werte
+
+```{r W04_4, include=T, echo = T}
+xtabs(~m1202,data=etb18) %>% cumsum(.)
+```
+```{r, echo = F}
+ct2 <- xtabs(~m1202,data=etb18) %>% cumsum(.)
+```
+
+Also: `r ct2[2]` Befragte haben eine duale Berufsausbildung oder keine Berufsausbildung.
+
+
++ Kumulierte, relative Häufigkeiten
+
+Auch die relativen Häufigkeiten können wir uns als kumulierte Werte ausgeben lassen, dazu kombinieren wir `prop.table()` mit `cumsum()`:
+```{r}
+xtabs(~m1202,data=etb18) %>% prop.table() %>% cumsum()
+```
+```{r,echo=FALSE}
+t2x <- cumsum(prop.table(xtabs(~m1202,data=etb18)))
+```
+
+
+`r sprintf("%2.3f",round(t2x[2]*100,3))`% aller Befragten haben eine duale Berufsausbildung oder keine Berufsausbildung.
+
+
+
+## Mehrere Kennzahlen in einer Tabelle
+
+Stata kennen viele sicherlich folgende Ansicht mit `tab m1202`:
+```{stata miss5b, echo = F, collectcode=F}
+set linesize 80
+qui use "D:\Datenspeicher\BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta", clear
+qui mvdecode m1202 F100_kldb2010_BOF F1609_kldb2010_BOF F1610_kldb2010_BOF, mv(-1)
+qui mvdecode F100_wib1, mv(-4/-1)
+tab m1202
+```
+In R habt ein `table()` oder `xtabs()` immer nur eine Art von Kennzahlen. 
+Da wir aber mit `count()` die Auszählungen als `data.frame()` erhalteb können wir die relativen und kumulierten Häufigkeiten einfach als neuen Variablen anfügen. Dabei hilft uns `mutate()`: mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
+```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
+#| echo: false
+knitr::include_graphics("./pic/103_mutate.png")
+
+```
+Um also eine neue Spalte `pct`in unseren `data.frame` mit den Auszählungen einzufügen gehen wir wie folgt vor:
+
+```{r W201_9_pipe, echo = T}
+etb18 %>% 
+   count(m1202) # ausgangsbefehl
+
+etb18 %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100) # erweitert um pct
+```
+
+```{r}
+etb18 %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100,
+          Cum = cumsum(n)) 
+```
+
+Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
+
+   1. Erstelle die Häufigkeitstablle für `m1202` *und dann (`%>%`)*
+   2. Berechne daraus die relativen Häufigkeiten *und dann (`%>%`)*
+   3. Berechne dafür die kumulierten Werte *und dann (`%>%`)*
+   4. Runde das Ergebnis auf 3 Nachkommastellen
+
 
 ## Fehlende Werte in R: `NA` {#NA_w103}
 
@@ -97,73 +187,6 @@ t2
 ```
 
 Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/).
-
-## [Übung 1](#ue1)
-
-## Andere Tabellenwerte
-
-Mit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpassen:
-
-+ `cumsum()`: kumulierte Werte
-+ `prop.table()`: relative Werte/Anteile
-
-### Kumulierte Häufigkeiten
-Mit `cumsum()` können wir uns die *kumulierten* Häufigkeiten ausgeben lassen. Dazu wenden wir `cumsum` auf die Häufigkeitstabelle an:
-```{r W04_4, include=T, echo = T}
-cumsum(xtabs(~m1202,data=etb18))
-```
-```{r, echo = F}
-ct2 <- xtabs(~m1202,data=etb18) %>% cumsum(.)
-```
-
-Also: `r ct2[2]` Befragte haben eine duale Berufsausbildung oder keine Berufsausbildung.
-
-### Relative Häufigkeiten (Anteile)
-
-Neben den absoluten Häufigkeiten können wir uns auch relative Häufigkeitstabellen anzeigen lassen. Dazu nutzen wir den `prop.table()` Befehl und wenden diesen wiederum auf `xtabs()` an:
-```{r W04_5, include=T, echo = T}
-prop.table(xtabs(~m1202,data=etb18)) 
-```
-`r sprintf("%2.3f",prop.table(xtabs(~m1202,data=etb18)) [1]*100)`% aller Befragten haben keine Berufsausbildung haben.
-
-### kumulierte relative Häufigkeiten
-
-Auch die relativen Häufigkeiten können wir uns als kumulierte Werte ausgeben lassen, dazu kombinieren wir `prop.table()` mit `cumsum()`:
-```{r}
-cumsum(prop.table(xtabs(~m1202,data=etb18)))
-```
-```{r,echo=FALSE}
-t2x <- cumsum(prop.table(xtabs(~m1202,data=etb18)))
-```
-
-
-`r sprintf("%2.3f",round(t2x[2]*100,3))`% aller Befragten haben eine duale Berufsausbildung oder keine Berufsausbildung.
-
-Diese Befehlsschachtel ist aber etwas unübersichtlich und lässt sich relativ leicht mit einem zentralen Tool des *tidyverse* vermeiden - indem wir die Pipe verwenden.
-
-## Arbeiten mit der Pipe
-
-Für die kumulierten relativen Häufigkeiten hatten wir den Befehl `cumsum(prop.table(xtabs(~m1202,data=etb18)))` verwendet. 
-Wenn wir das auch noch mit [`round()`](#round) runden möchten, dann bekommen wir eine ziemlich große Befehlsschachtel:
-```{r W201_9_schachtel, echo = T}
-round(   cumsum(prop.table(xtabs(~m1202,data=etb18)))   ,3) 
-```
-
-Diese Befehlsschachtel können wir mit der sog. Pipe `%>%` auflösen.
-
-Mit der Pipe sieht die Befehlsschachtel dann so aus und wir können sie von links nach rechts lesen:
-```{r W201_9_pipe, echo = T}
-xtabs(~m1202,data=etb18) %>% 
-  prop.table(.) %>% 
-  cumsum(.) %>% 
-  round(.,3) 
-```
-Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
-
-   1. Erstelle die Häufigkeitstablle für `m1202` *und dann (`%>%`)*
-   2. Berechne daraus die relativen Häufigkeiten *und dann (`%>%`)*
-   3. Berechne dafür die kumulierten Werte *und dann (`%>%`)*
-   4. Runde das Ergebnis auf 3 Nachkommastellen
 
 
 ## Kontingenztabellen
@@ -288,8 +311,8 @@ quantile(etb18$F518_SUF,probs = seq(0,1,0.1), na.rm = T)
 
 
 
-#### Varianz, Standardabweichung, Variationskoeffizient
-Die häufigste Kennzahl zur Beschreibung von Streuung ist aber die Varianz. Die Varianz ist definiert als die durchschnittliche quadrierte Abweichung vom arith. Mittel: $$var(x) = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})^2}{n}$$    
+#### Varianz & Standardabweichung
+
 Wir können die Varianz mit `var()` berechnen:
 ```{r W07_6, include=T, echo = T}
 var(etb18$F518_SUF, na.rm = T) # Varianz
@@ -298,90 +321,14 @@ var(etb18$F518_SUF, na.rm = T) # Varianz
 var1 <- var(etb18$F518_SUF, na.rm = T)
 ```
 
-In unseren Datensatz beträgt der Varianz der Haushaltseinkommen also `r format(var1,big.mark = ".",decimal.mark = ",")`€². Auf der Varianz beruhen noch zwei weitere Streuungsmaße. 
+In unseren Datensatz beträgt der Varianz der Haushaltseinkommen also `r format(var1,big.mark = ".",decimal.mark = ",")`€². 
+
 Die *Standardabweichung* entspricht der Wurzel der Varianz und hat somit die gleiche Messeinheit wie die Variable (hier EUR) - mit `sd()` bekommen wir die Standardabweichung:
 ```{r}
 sd(etb18$F518_SUF, na.rm = T) # Standardabweichung
 ```
-Der *Variationskoeffizient*  entspricht `sd`/`mean` und dient dem Vergleich verschiedener Streuungen relativ zum jeweiligen Mittelwert:
-```{r W07_6std, include=T, echo = T}
-sd(etb18$F518_SUF, na.rm = T) / mean(etb18$F518_SUF, na.rm = T) # Variationskoeffizient
-```
 
-Für alle Streuungsmaße gilt: je größer, desto mehr Streuung (Unterschiede) gibt es in den Daten.
-
-
-#### Gini-Koeffizient
-
-Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
-
-```{r gini_plot1, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
-gdf2 <- 
-  data.frame(id = 1:5) %>% 
-  mutate(eq = 1, ineq = id/5*5/3, w = 6-id ) %>% 
-  mutate(across( matches("eq"), ~ cumsum(.x),.names = "{col}_{fn}")) %>% 
-  uncount(w,.id = "x") %>% 
-  mutate(eq2 = ifelse(lead(id)==id | id == 5,NA,eq_1))
-
-  gdf2 %>% 
-  ggplot(.,aes(x = 6-x,y = ineq)) +
-  geom_col(color = "grey25", aes(fill = factor(id,levels=5:1))) +
-  geom_line(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), color = "#EEDA9DFF", size = .5) +
-  geom_point(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), fill = "#EEDA9DFF", size = 3, shape= 21, color = "grey25", stroke = .25)+
-  geom_text(aes(label = id,y = ineq_1-ineq/2, color = factor(id,levels=5:1) )) + 
-    scale_x_continuous(breaks = 1:5, labels = c("kleinster","2.kleinster","3","zweitgrößter","größter")) +
-    scale_y_continuous(breaks = 0:5, labels = paste0(seq(0,100,20),"%") ) +
-    scale_fill_manual(values = paletteer::palettes_d$dutchmasters$pearl_earring[2:6]) +
-    scale_color_manual(values = c("grey25","grey25","grey98","grey25","grey25")) +
-    guides(fill = "none", color = "none") +
-    labs(y = "Anteil am Gesamtwert", x = "Sortierte Beobachtungen") +
-    theme_minimal(base_size = 11) +
-    theme(panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank())
-```
-
-```{r dpi = 900, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
-gdf <- a14 %>% mutate_at(vars(di05),~ifelse(.<0,NA,.)) %>%  
-  select(respid, di05) %>% 
-  na.omit() %>% 
-  arrange(di05) %>% 
-  mutate(pct_id = 1:n()/n(),
-         pct_di05 = cumsum(di05/sum(di05)),
-         sampl = runif(n = nrow(.)))
-
-gini_ann_df <- gdf %>% 
-  filter(sampl<.0151, between(pct_id,.5,.6 ) ) %>% slice(1) %>%
-  mutate(lab_lo = "Lorenzkurve", 
-         labl = paste0("Lorenzkurve (aus Beobachtungen):\n\"",
-                       round(pct_id*100,0),"% der Befragten verfügen über\n",
-                       round(pct_di05*100,0),"% des gesamten HH-Einkommens\""),
-         labl1 = paste0("(Theoretische) Diagonale:\n\"",
-                       round(pct_id*100,0),"% der Befragten verfügen über\n",
-                       round(pct_id*100,0),"% des gesamten HH-Einkommens\""),
-         labl2 = "Gini Koeffizient:\nFläche zwischen Diagonale und Lorenzkurve\nim Verhältnis zu Fläche unter Lorenzkurve (weiß)\n(0=Gleichverteilung,1=Maximale Konzentration)")
-
-ggplot(gdf, aes(x = pct_id, y = pct_di05)) + 
-  geom_ribbon(aes(ymin = pct_di05, ymax = pct_id, xmin = pct_id, xmax = pct_id), fill = "#1BB6AF" ) +
-  geom_line(aes(y = pct_id), linetype = 2, size = .95, color = "#172869") + # Diagonale
-  geom_line(size = .5, color = "#9ED80B") + # Lorenzkurve
-  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
-  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
-  geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
-  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 3, 
-             color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
-  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
-  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 3, 
-             color = "grey95", fill = "#172869") + # diagonale label
-  geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
-  geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
-  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 3, 
-             color = "grey15", fill = "#1BB6AF") + # Gini Label
-  geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
-  scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
-  scale_y_continuous("Kumulierter Einkommensanteil", labels = scales::percent_format(accuracy = 1L)) +
-  theme_minimal(base_size = 11) +
-  coord_cartesian(x =c(0,1),y =c(0,1),expand = F)
-```
-Den Gini-Koeffizienten können wir mit `Gini()` aus dem Paket `ineq` berechnen:
+Den [Gini-Koeffizienten](#gini_graph) können wir mit `Gini()` aus dem Paket `ineq` berechnen:
 ```{r,eval=F}
 install.packages("ineq") # einmal installieren
 ```
@@ -396,19 +343,14 @@ Gini(etb18$F518_SUF)
 ```
 
 ### Lage- und Streuungsmaße vergleichen
-Häufig werden diese Kennzahlen erst im Vergleich richtig spannend. zB können wir die Einkommensangaben aus verschiedenen Bundesländern vergleichen:
-```{r sw5_mean_vgl, include=T, echo = T}
-mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) # NRW
-mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
-```
+Häufig werden diese Kennzahlen erst im Vergleich richtig spannend, dafür hilft uns das `group_by()` Argument und `summarise()`:
 ```{r, echo=F}
 nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
   mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
 ```
-```{r}
-etb18 %>% 
-  summarise(mean_inc = summary(F518_SUF, na.rm = T) )
 
+
+```{r}
 etb18 %>% 
   group_by(Bula) %>% 
   summarise(mean_inc = mean(F518_SUF, na.rm = T) )
@@ -417,23 +359,19 @@ etb18 %>%
   filter(Bula %in% c(3,5)) %>% 
   group_by(Bula) %>% 
   summarise(mean_inc = mean(F518_SUF, na.rm = T) )
-
 ```
 
 
-In Niedersachsen ist das durchschnittliche HH-Einkommen um `r round(nrw_nds,2)`€ niedriger.
-```{r sw5_med_vgl, include=T, echo = T}
-median(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) # NRW
-median(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
-```
-Wir können auch für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden:
+
+::: callout-tip
+
+Für den Kennzahlenvergleich können wir auch die Schreibweise mit `[]` verwenden, beispielsweise können wir für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden:
 ```{r sw5_su_vgl}
 summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
   summary(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) 
 ```
-In Niedersachsen lag das Median-HH-Einkommen um 200€ niedriger als in NRW. Die 25\% bzw. 75\% Quartilsgrenze lag um 200€ bzw. 500€ niedriger, das arith. Mittel war um 1621€ niedriger als in den alten Bundesländern.
 
-
+:::
 
 
 ## Aufgaben
@@ -565,6 +503,76 @@ t3$labels <- c("dt Staatsbürgerschaft","dt und andere Staatsbürgerschaft",
 t3
 ```
 
+### Gini-Koeffizient {#gini_graph}
+
+Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
+
+```{r gini_plot1, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+gdf2 <- 
+  data.frame(id = 1:5) %>% 
+  mutate(eq = 1, ineq = id/5*5/3, w = 6-id ) %>% 
+  mutate(across( matches("eq"), ~ cumsum(.x),.names = "{col}_{fn}")) %>% 
+  uncount(w,.id = "x") %>% 
+  mutate(eq2 = ifelse(lead(id)==id | id == 5,NA,eq_1))
+
+  gdf2 %>% 
+  ggplot(.,aes(x = 6-x,y = ineq)) +
+  geom_col(color = "grey25", aes(fill = factor(id,levels=5:1))) +
+  geom_line(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), color = "#EEDA9DFF", size = .5) +
+  geom_point(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), fill = "#EEDA9DFF", size = 3, shape= 21, color = "grey25", stroke = .25)+
+  geom_text(aes(label = id,y = ineq_1-ineq/2, color = factor(id,levels=5:1) )) + 
+    scale_x_continuous(breaks = 1:5, labels = c("kleinster","2.kleinster","3","zweitgrößter","größter")) +
+    scale_y_continuous(breaks = 0:5, labels = paste0(seq(0,100,20),"%") ) +
+    scale_fill_manual(values = paletteer::palettes_d$dutchmasters$pearl_earring[2:6]) +
+    scale_color_manual(values = c("grey25","grey25","grey98","grey25","grey25")) +
+    guides(fill = "none", color = "none") +
+    labs(y = "Anteil am Gesamtwert", x = "Sortierte Beobachtungen") +
+    theme_minimal(base_size = 11) +
+    theme(panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank())
+```
+
+```{r dpi = 900, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+gdf <- a14 %>% mutate_at(vars(di05),~ifelse(.<0,NA,.)) %>%  
+  select(respid, di05) %>% 
+  na.omit() %>% 
+  arrange(di05) %>% 
+  mutate(pct_id = 1:n()/n(),
+         pct_di05 = cumsum(di05/sum(di05)),
+         sampl = runif(n = nrow(.)))
+
+gini_ann_df <- gdf %>% 
+  filter(sampl<.0151, between(pct_id,.5,.6 ) ) %>% slice(1) %>%
+  mutate(lab_lo = "Lorenzkurve", 
+         labl = paste0("Lorenzkurve (aus Beobachtungen):\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_di05*100,0),"% des gesamten HH-Einkommens\""),
+         labl1 = paste0("(Theoretische) Diagonale:\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_id*100,0),"% des gesamten HH-Einkommens\""),
+         labl2 = "Gini Koeffizient:\nFläche zwischen Diagonale und Lorenzkurve\nim Verhältnis zu Fläche unter Lorenzkurve (weiß)\n(0=Gleichverteilung,1=Maximale Konzentration)")
+
+ggplot(gdf, aes(x = pct_id, y = pct_di05)) + 
+  geom_ribbon(aes(ymin = pct_di05, ymax = pct_id, xmin = pct_id, xmax = pct_id), fill = "#1BB6AF" ) +
+  geom_line(aes(y = pct_id), linetype = 2, size = .95, color = "#172869") + # Diagonale
+  geom_line(size = .5, color = "#9ED80B") + # Lorenzkurve
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
+  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 3, 
+             color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
+  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 3, 
+             color = "grey95", fill = "#172869") + # diagonale label
+  geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
+  geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
+  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 3, 
+             color = "grey15", fill = "#1BB6AF") + # Gini Label
+  geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
+  scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
+  scale_y_continuous("Kumulierter Einkommensanteil", labels = scales::percent_format(accuracy = 1L)) +
+  theme_minimal(base_size = 11) +
+  coord_cartesian(x =c(0,1),y =c(0,1),expand = F)
+```
 
 
 
