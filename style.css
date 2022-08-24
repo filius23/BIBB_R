@@ -35,3 +35,10 @@ div.note {
   background-color: #68E0E8;
   border: solid 1px #D6FFFF;
 }
+
+div.inter {
+  padding: 1em;
+  margin: 1em 0;
+  background-color: #94BFE0;
+  border: solid 1px #000000;
+}
