@@ -254,6 +254,8 @@ select(dat1, 1:3) # Spalte 1-3
 select(dat1, !profs) # alles außer profs
 ```
 
+### Hilfsfunktionen
+
 `select()` hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.
 
 -   `starts_with()`: Variablenname beginnt mit ..., bspw. `select(dat1,starts_with("p"))`
@@ -279,6 +281,25 @@ select(dat1,matches("^s")) # gleiches Ergebnis mit regex
 
 
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
+
+
+### `select()` vs `$`
+
+ 
+Wenn wir mit `select()` eine spezifische Variable auswählen, wird trotzdem die Datenstruktur als `data.frame()` erhalten, während die Auswahl `dat1$variablenname` die Spalte als Vektor (also Wertereihe) ausgibt:
+
+```{r}
+dat1$studs
+class(dat1$studs)
+dat1$studs/ 20
+```
+
+`select()` erhält die Werte als Spalte eines `data.frame`:
+```{r}
+dat1 %>% select(uni)
+dat1 %>% select(uni) %>% class()
+dat1 %>% select(studs)/20 
+```
 
 ## Arbeiten mit der Pipe: `filter()` und `select()` kombinieren  {#pipe}
 
@@ -317,21 +338,6 @@ dat1 %>% filter(studs < 10000) %>% select(uni)
 
 :::
 
- 
-Achtung: die Auswahl mit `select()` erhält die Datenstruktur als `data.frame()`, während die Auswahl `dat1$variablenname` die Spalte als Vektor (also Wertereihe) ausgibt:
-
-```{r}
-dat1$studs
-class(dat1$studs)
-dat1$studs/ 20
-```
-
-`select()` erhält die Wert als Spalte eines `data.frame`:
-```{r}
-dat1 %>% select(uni)
-dat1 %>% select(uni) %>% class()
-dat1 %>% select(studs)/20 
-```
 
 ## [Übung](#data2) {#ue2}
 
@@ -352,7 +358,7 @@ Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^02_intro-1
 
 In diesem Seminar werden wir mit Daten aus BIBB/BAuA-Erwerbstätigenbefragung 2018 arbeiten. Die BIBB/BAuA ist eine Repräsentativbefragung von in Deutschland zu Arbeit und Beruf im Wandel und Erwerb und Verwertung beruflicher Qualifikation. Nun wollen wir also eine csv-Datei einlesen, zunächst eine reduzierte Version der ETB 2018.
 
-Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurse/" lauten:
+Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurs/" lauten:
 
 Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:
 

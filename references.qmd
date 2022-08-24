@@ -2,7 +2,14 @@
 
 ```{r ref01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(gt)
+library(paletteer)
+library(kableExtra)
+library(rmdHelpers)
+library(latex2exp)
 ```
+
 
 # Link Sammlung
 
@@ -52,22 +59,6 @@ Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw
 
 [`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an.
 
-<details>
-<summary> Appendix </summary>
-
-## Appendix 
-I can fill this with regular Markdown. This is **bold**. This is *italic*.
-
-Also, code chunks work. 
-
-```{r}
-library(ggplot2)
-mpg |>
-  ggplot(aes(hwy, cty)) +
-  geom_jitter()
-``` 
-
-</details>
 
 
 ::: {#refs}

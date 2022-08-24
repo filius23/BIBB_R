@@ -4,9 +4,8 @@
 ```{r reg01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 library(tidyverse)
+library(gt)
 ```
-
-
 
 
 ## Layout-Tipps für Tabellen
