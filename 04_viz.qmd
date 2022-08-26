@@ -320,6 +320,9 @@ ggplot(data = etb18, aes(x = az)) +
 ```
 ## Scatterplot
 
++ jitter
+
+
 ## Aufgaben
 
 (@) Laden Sie den Allbusdatensatz mit dem csv-Import in R.
