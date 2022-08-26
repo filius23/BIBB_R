@@ -39,20 +39,6 @@ library(tidyverse)
 # - Fehlermeldungen aus https://modernstatisticswithr.com/thebasics.html#troubleshooting
 # 
 
-ndis <- 
-  etb18 %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
-  t(.) %>% data.frame(ndis = .) %>% rownames_to_column(.,var = "var") %>% janitor::clean_names() %>% tibble() %>% 
-  left_join(
-            map_dfr(etb18,~attributes(.x)$label) %>% 
-              t(.) %>% data.frame() %>% 
-              rownames_to_column(.,var = "var") )
-  
-ndis %>% filter(ndis %in% 4) %>% print(n=Inf)
- 
-
-table(etb18$F230_02)
-etb18 %>% count(F100_kldb2010_BOF) %>% add_tally()
-attributes(etb18$F230_02)
 
 # 
 # path1 <- "D:/oCloud/RFS/images/"
