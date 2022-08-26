@@ -10,12 +10,15 @@ library(gt)
 library(paletteer)
 library(kableExtra)
 library(extrafont)
+library(marginaleffects)
+
 windowsFonts(Nunito=windowsFont("Nunito Sans"))
 mark_color <- "grey25"
 color1x =  "#00519E" # uol farbe
 colorhex <- "#FCFCFC" #"#FCF9F0FF"7
+colorhex <- NA #"#FCF9F0FF"7
 
-etb18 <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta",col_select = c("S1","F605","F518_SUF")) 
+m_etb18 <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta",col_select = c("S1","F605","F518_SUF","m1202","zpalter")) 
 
 theme_x <- 
   theme_minimal(base_family = "Nunito",base_size = 10) +
@@ -37,52 +40,49 @@ theme_x <-
     plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
     plot.margin = unit(c(1, 1, 1, 1), "lines"))
 
+theme_set(theme_x)
 
 ```
 
-[Ableitungen grafisch erstellt](https://twitter.com/allison_horst/status/1554921698742468625?s=11&t=Ac_YizlsYkOfUIkuWmaaWQ)
 
-[Intro von A Heiss](https://www.andrewheiss.com/blog/2022/05/20/marginalia/)
-
-```{r, eval = F}
-glm()
-marginaleffects::marginaleffects()
-```
-
-[`{marginaleffects}`](https://vincentarelbundock.github.io/marginaleffects/)
+In diesem Kapitel widmen wir uns dem Fall einer binären abhängigen Variable/Dummyvariable. Für solche Fälle sind logistische Regressionsmodelle gebräuchlich, die sich in Ihrer Anwendung etwas von 'normalen', linearen Regressionsmodellen unterscheiden. Kern dieses Unterschieds ist die Link-Funktion, welche die Koeffizienten etwas schwerer interpretierbar macht - daher haben sich sog. marginal effects als Darstellungsform für Ergebnisse logistischer Regressionen etabliert. 
+In R steht uns dafür das Paket [`{marginaleffects}`](https://vincentarelbundock.github.io/marginaleffects/), welches sich in der Anwendung sehr dem `margins`-Befehl in Stata ähnelt.
 
 
 Bisher hatten wir immer Regressionsmodelle betrachtet, die eine metrisch skalierte abhängige Variable hatten.[^1]
 Aber gerade Individualmerkmale sind nur selten metrisch skaliert, z.B. Erwerbstatus, Familienstand, Geschlecht, Elternstand, ... Ein lineares OLS-Regressionsmodell wie wir es bisher kennen gelernt haben, hilft uns hier nicht weiter. 
 Schauen wir uns beispielsweise die Arbeitsplatzsituation der männlichen Befragten in der ETB 2018 an (`F605`)[^3] :
 
-[^1]: Leseempfehlung: ["Handbuch der sozialwissenschaftlichen Datenanalyse" zu logist. Regression](https://link.springer.com/chapter/10.1007/978-3-531-92038-2_24)
+[^1]: Leseempfehlung: [Logistische Regression von Henning Best & Christof Wolf, S. 827-854 in "Handbuch der sozialwissenschaftlichen Datenanalyse"](www.doi.org/10.1007/978-3-531-92038-2_31)
 [^3]: Die Einschränkung auf männliche Befragte hat hier den einfachen Grund, dass so der Koeffizient größer ist 
 
-`r attributes(etb18$F605)$label`
+
+**`r attributes(m_etb18$F605)$label`**
    
-Die 1 steht dabei jeweils für "ja", die `2` für "nein". Wir verändern die Codierung aber so, dass die "nein"-Antworten mit \texttt{0} versehen werden. Die neue Variable nennen wir `outside`. Außerdem teilen wir `F518_SUF` durch 100 und legen die so erstellte Variable "Einkommen in 100EUR" in `inc100` ab, um die Nachkommastellen des Koeffizienten zu reduzieren:
+Die 1 steht dabei jeweils für "ja", die `2` für "nein". Wir verändern die Codierung aber so, dass die "nein"-Antworten mit `0` versehen werden. Die neue Variable nennen wir `outside`. Außerdem teilen wir `F518_SUF` durch 100 und legen die so erstellte Variable "Einkommen in 100EUR" in `inc100` ab, um die Nachkommastellen des Koeffizienten zu reduzieren:
 
 ```{r}
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",col_select = c("S1","F605","F518_SUF")) %>% 
-  filter(F605 < 9, F518_SUF < 99998, S1==1) %>% 
+m_etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                           col_select = c("S1","F605","F518_SUF","m1202","zpalter")) %>% 
+  filter(F605 < 9, F518_SUF < 99998, zpalter < 100, S1==1) %>% 
   mutate(inc100 = F518_SUF/100,
          outside = 2-F605)
 
-etb18 %>% count(outside,F605)
-summary(etb18$inc100)
+m_etb18 %>% count(outside,F605)
+summary(m_etb18$inc100)
 ```
 
 
 Wenn wir uns jetzt fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die "Punktewolke" zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:
 
-```{r,echo=F, fig.align="center", fig.width=3.5, fig.height=2.625, warning=FALSE, message=F}
-ggplot(etb18, aes(x = inc100, y = outside)) +
-  geom_point(color = lacroix_palette("PeachPear",6)[6]) +
-  theme_x +
+
+```{r, fig.align="center", fig.width=3.5, fig.height=2.625, warning=FALSE, message=F}
+#| code-fold: true
+ggplot(m_etb18, aes(x = inc100, y = outside)) +
+  geom_point(color = "#172869") +
   theme(aspect.ratio = .75)
 ```
-Um in R trotzdem ein \texttt{lm}-Modell zu berechnen, könnten wir die abhängige Variable uminterpretieren. $\hat{y}$ wird dann nicht mehr dichotom, sondern als metrische Wahrscheinlichkeit interpretiert, dass der Befragte mehr als die Hälfte der Arbeitszeit im Freien arbeitet (also die Wahrscheinlichkeit für outside = 1). Das können wir dann wie gehabt in eine Regressionsgleichung aufnehmen, zB. mit dem Einkommen als unabhängiger Variable:   
+Um trotzdem ein Regressionsmodell zu berechnen, könnten wir die abhängige Variable uminterpretieren. $\hat{y}$ wird dann nicht mehr dichotom, sondern als metrische Wahrscheinlichkeit interpretiert, dass der Befragte mehr als die Hälfte der Arbeitszeit im Freien arbeitet (also die Wahrscheinlichkeit für outside = 1). Das können wir dann wie gehabt in eine Regressionsgleichung aufnehmen, zB. mit dem Einkommen als unabhängiger Variable:   
 
 \begin{equation*}
 \widehat{y_i} = P(outside\texttt{\small{=}}1) = \hat\beta0 + \hat\beta1 * \texttt{inc100}_i
@@ -91,24 +91,18 @@ Um in R trotzdem ein \texttt{lm}-Modell zu berechnen, könnten wir die abhängig
 Allerdings führt das zwangsläufig zu Verstößen gegen die Annahmen bzgl. der Residuen - die Fehler werden immer heteroskedastisch und nicht normalverteilt sein. Zudem wird es vorhergesagte Werte geben, die nicht sinnvoll interpretiert werden können, weil es mit 0 und 1 Grenzen gibt, jenseits derer Wahrscheinlichkeiten nicht existieren (zB gibt es keine negativen Wahrscheinlichkeiten).
 
 ```{r,include=F}
-m1 <- lm(outside ~ inc100, data = etb18)
+m1 <- lm(outside ~ inc100, data = m_etb18)
 summary(m1)
 ```
 
-```{r,echo=F, fig.align="center", fig.width=4.2, fig.height=3, warning=FALSE, message=F}
-ggplot(etb18, aes(x = inc100, y = outside)) +
-  geom_point(color = lacroix_palette("PeachPear",6)[6], size = .75) +
+```{r, fig.align="center", fig.width=5, fig.height=3.5, warning=FALSE, message=F}
+#| code-fold: true
+ggplot(m_etb18, aes(x = inc100, y = outside)) +
+  geom_point(color = "#172869", size = .75) +
   geom_smooth(method = "lm", color = lacroix_palette("PeachPear",6)[2],se = F ) + 
-  ylab("P(outside = 1)") + 
-  xlab("Einkommen (in 100 EUR)") + 
-  theme_x +
-  ggtitle("lineares Wahrscheinlichkeitsmodell")
-  # theme(aspect.ratio = 1 + 
-  #       axis.title.x = element_text(size=7),
-  #         axis.text.x  = element_text(size=6),
-  #         axis.title.y = element_text(size=7),
-  #         axis.text.y  = element_text(size=6),
-  #       plot.title = element_text(size=9, hjust = .5)) + 
+  labs(y = "P(outside = 1)", x = "Einkommen (in 100 EUR)",
+       title = "lineares Wahrscheinlichkeitsmodell")
+  
 ```
 ```{r, eval = F}
 library(ggfortify)
@@ -155,22 +149,25 @@ df <-
 
 gt(df[,2:5]) %>% 
   cols_width(p~px(120),
+             odds1 ~ px(200),
              logodds ~ px(200),
              everything()  ~ px(100)) %>% 
+  opt_align_table_header(align = c("right")) %>% 
+  cols_align(align = "right",columns = everything()) %>% 
+  cols_align(align = c("right"),columns = logodds) %>% 
     cols_label(
       p = md('$$P$$'), 
       odds1 = md('$$Odds = \\frac{P}{1-P}$$'),
       odds2 = '',
       logodds= md('$$Logits = log(Odds)$$')) %>% 
-  opt_align_table_header(align = c("left")) %>% 
-  cols_align(align = c("left"),columns = everything()) %>% 
   fmt_markdown(columns = everything()) %>% 
   tab_options(heading.title.font.size = "small",
               table.border.top.style = "hidden",
               table.border.bottom.style = "hidden") %>% 
   tab_style(
     style = "vertical-align:top",
-    locations = cells_title(groups = "title")) 
+    locations = cells_title(groups = "title")) %>% 
+  tab_options(data_row.padding = px(1))
   
   
 ```
@@ -187,7 +184,7 @@ Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise
 In R können wir ein solches Modell mit `glm()` und der Option `family="binomial"` berechnen:
 
 ```{r}
-m2 <- glm(outside ~ inc100, family = "binomial", data = etb18)
+m2 <- glm(outside ~ inc100, family = "binomial", data = m_etb18)
 summary(m2)
 ```
 
@@ -212,11 +209,12 @@ Logits sind aber sehr unhandlich - wie verändert sich jetzt aber die *Wahrschei
 Diesen Ausdruck müssten wir nach `inc100` ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für $\texttt{outside} = 1$ mit einem um einen Euro höheren Befragteneinkommen verändert. Durch die Tatsache dass inc hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor ("oben und unten") steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen `lm()`-Modellen der Fall war. Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket `{marginaleffects}` brauchen. Darin findet sich der Befehl , welcher uns erlaubt ein $\beta$ zwischen dem Einkommen und der Wahrscheinlichkeit, dass der\*die Befragte sich outside fühlt, zu berechnen. Dieses wird auch als average marginal effect bezeichnet, da sie den *durchschnittlichen marginalen Effekt* der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben. 
 
 ```{r,eval=F}
-install.packages("marginaleffects")
+install.packages("marginaleffects") # nur einmal nötig
+library(marginaleffects)
 ```
 
 ```{r}
-mfx <- marginaleffects::marginaleffects(m2)
+mfx <- marginaleffects(m2)
 summary(mfx)
 ```
     
@@ -226,9 +224,144 @@ mx <- summary(mfx) %>% data.frame(.) %>% pull(estimate)
 
 ::: inter
 
-Mit einem um 100 Euro (`inc100` ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um `r sprintf("%2.4f",abs(mx))` (`r sprintf("%2.2f",abs(mx*100))` Prozentpunkte)  geringere Wahrscheinlichkeit einher,  mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.
+Mit einem um 100 Euro (inc100 ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um `r sprintf("%2.4f",abs(mx))` (`r sprintf("%2.2f",abs(mx*100))` Prozentpunkte)  geringere Wahrscheinlichkeit einher,  mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.
 
 :::
+
+
+## [Übung 1](#ame1)
+
+
+## Kategoriale unabhängige Variablen
+
+Natürlich können wir auch kategoriale unabhängige Variablen in ein logistisches Regressionsmodell aufnehmen. 
+Wichtig ist nur, dass wir die Variable als `factor` definieren:
+
+```{r}
+m_etb18 <- 
+  m_etb18 %>% 
+  mutate(m1202_fct = factor(m1202,levels = c(-1,1:4), 
+                            labels = names(attributes(m1202)$labels) %>% 
+                              substr(.,1,5) %>% str_squish()),
+         m1202_fct = fct_relevel(m1202_fct,"Ohne"))
+
+m_etb18 %>% count(m1202,m1202_fct)
+m3 <- glm(outside ~ m1202_fct + inc100, family = "binomial", data = m_etb18)
+summary(m3)
+```
+
+```{r, warning=F}
+mfx3 <- marginaleffects(m3)
+summary(mfx3)
+```
+
+```{r}
+tidy(mfx3) %>% 
+  mutate(lab = paste0(term,"\n",contrast)) %>% 
+  ggplot(.,aes(x= estimate,y=lab)) +
+  geom_vline(aes(xintercept = 0), linetype = 2) +
+  geom_point(color = "navy",size = 2) + 
+  geom_errorbarh(aes(xmin=conf.low,xmax = conf.high), color = "navy",height = .2,size=.65) + 
+  labs(y="")
+```
+
+## Marginal Effect at Specified Values 
+
+Wie groß ist der Unterschied zwischen Befragten ohne Berufsabschluss und Befragten mit Fachhochschul- oder Uni-Abschluss bei einem gewissen Alter?
+
+```{r}
+#| echo: false
+m4 <- glm(outside ~ m1202_fct*zpalter, family = "binomial", data = m_etb18)
+mfx4 <- marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
+                                              zpalter = seq(20,60,2))) 
+
+mfx4 %>% 
+  filter(term == "m1202_fct", !grepl("kein",contrast)) %>% 
+  ggplot(.,aes(x= zpalter, y= dydx,color = contrast)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low,ymax=conf.high)) +
+  labs(title = "Wahrscheinlichkeitsdifferenz für outside = 1 vs. ohne Ausb.",
+       y = "Marginaler Effekt", x =  "Alter", color = "") +
+  scale_color_manual(values = lacroix_palette("PeachPear")[c(1,5,6)])
+```
+
+
+```{r}
+m4 <- glm(outside ~ m1202_fct*zpalter, family = "binomial", data = m_etb18)
+summary(m4)
+```
+`marginaleffects()` bietet die Möglichkeit, bestimmte Werte einzusetzen und dafür jeweils den marginalen Effekt zu berechnen. 
+Dementsprechend können 
+
+
+```{r headmer, eval = F}
+marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
+                                      zpalter = seq(20,60,2) ))  %>% 
+  head(.) 
+```
+```{r, echo = F}
+marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
+                                      zpalter = seq(20,60,2) ))  %>% 
+  head(.) %>% 
+  rmarkdown::paged_table()
+```
+```{r}
+mfx4 <- marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
+                                              zpalter = seq(20,60,2)
+                                              )) 
+
+mfx4 %>% 
+  filter(term == "m1202_fct", !grepl("keine",contrast)) %>% 
+  ggplot(.,aes(x= zpalter, y= dydx,color = contrast)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low,ymax=conf.high)) +
+  labs(title = "Wahrscheinlichkeitsdifferenz für outside = 1 vs. ohne Ausb.",
+       y = "Marginaler Effekt", x =  "Alter", color = "") +
+  scale_color_manual(values = lacroix_palette("PeachPear")[c(1,5,6)])
+```
+
+## Adjusted Predictions
+
+
+Wie groß ist die vorhergesagte Wahrscheinlichkeit, mehr als die Häfte der Arbeitszeit im Freien zu arbeiten für 
+
++ 20 Jahre Alte Befragte ohne Berufsabschluss 
++ 20 Jahre Alte mit Fachhochschul- oder Uni-Abschluss
+
++ 50 Jahre Alte Befragte ohne Berufsabschluss 
++ 50 Jahre Alte mit Fachhochschul- oder Uni-Abschluss
+
+```{r}
+pred4 <- predictions(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
+                                           zpalter = seq(20,60,2))) 
+
+
+pred4 %>% 
+  filter(!grepl("keine",m1202_fct)) %>% 
+  ggplot(.,aes(x= zpalter, y= predicted,color = m1202_fct)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low,ymax=conf.high)) +
+  scale_color_manual(values = lacroix_palette("PeachPear")[c(2,1,5,6)]) +
+  labs(title = "Vorhergesagte Wahrscheinlichkeit für outside = 1",
+       y = "Wahrscheinlichkeit", x =  "Alter", color = "") 
+```
+
+## Übungen 
+
+### Übung 1
+
+
++ 
++ 
++ 
+
+
+### Übung 2
+
++ 
++ 
++ 
+
 
 
 ## Hintergrund zu average marginal effects
@@ -308,7 +441,7 @@ Hier werden die Differenzen mit zunehmendem `inc100` immer kleiner:
 
 
 ```{r AME1, echo=F, fig.align='center', fig.height=4.15, fig.show='hold', fig.caption=T}
-df3 <- tibble(x1 = etb18$inc100,
+df3 <- tibble(x1 = m_etb18$inc100,
               y.logit = m2$fitted.values,
               me = margins::margins(m2)$dydx_inc, # steigung
               ) %>%
@@ -411,3 +544,13 @@ p.a16 <- ggplot(df3 %>% distinct(x1,.keep_all = T), aes(x = x1 , y = pred.p)) +
 pa16_zoom + inset_element(p.a16, left = 0.6, bottom = 0.6, right = 1, top = 1)
 ```
 Diese Steigungen werden für alle Beobachtungen aus dem zu Grunde liegenden Datensatz aufsummiert und dann der Durchschnitt gebildet ($\rightarrow$ *average* marginal effects)
+
+
+## Links
+
++ [Die Seite zu `{marginaleffects}`](https://vincentarelbundock.github.io/marginaleffects/articles/marginaleffects.html) bietet sehr ausführliche und anschauliche Beispiele zu den verschiedenen Varianten marginaler Effekte
+
++ [Ausführliche Einführung zu marginalen Effekten von Andrew Heiss](https://www.andrewheiss.com/blog/2022/05/20/marginalia/)
+
+
+[Ableitungen grafisch erstellt](https://twitter.com/allison_horst/status/1554921698742468625?s=11&t=Ac_YizlsYkOfUIkuWmaaWQ)
