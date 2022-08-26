@@ -29,6 +29,9 @@ theme_x <-
     plot.subtitle = element_text(hjust=0),
     plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
     plot.margin = unit(c(1, 1, 1, 1), "lines"))
+
+theme_set(theme_x)
+
 ```
 
 ## Beispieldatensatz
@@ -63,7 +66,6 @@ ggplot(df, aes(x = var1, y = var2)) + geom_point(size = 2) +
                color = "red", size = .65, linetype = "dotted")  +
   geom_smooth(method = "lm", color = "darkblue" , se = FALSE, size = .65) 
 ```
-\newpage
 
 ## Vorhergesagte Werte {#pred}
 
