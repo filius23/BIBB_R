@@ -1,41 +1,136 @@
 # Tabellenexport
 
 
-```{r reg01, include=F}
+```{r tab01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 library(tidyverse)
 library(gt)
 ```
 
+## `{flextable}`
+
 
 ## Layout-Tipps für Tabellen
 
-[Hier](https://clauswilke.com/dataviz/figure-titles-captions.html#tables)
+[Hier](https://clauswilke.com/dataviz/figure-titles-captions.html#tables) finden sich einige Hinweise von Claus Wilke für ein gelungenes Tabellen-Layout:
 
 + Do not use vertical lines.
-+ Do not use horizontal lines between data rows. (Horizontal lines as separator between the title row and the first data row or as frame for the entire table are fine.)
++ Do not use horizontal lines between data rows. Horizontal lines as separator between the title row and the first data row or as frame for the entire table are fine.
 + Text columns should be left aligned.
 + Number columns should be right aligned and should use the same number of decimal digits throughout.
 + Columns containing single characters are centered.
 + The header fields are aligned with their data, i.e., the heading for a text column will be left aligned and the heading for a number column will be right aligned.
 
 
-## `flextable`
-
 ## weitere Optionen
 
-[link](https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/)
+Neben `{flextable}` gibt es noch eine ganze Reihe an weiteren Paketen - allerdings sind alle vor allem für pdf und HTML-Formate geeignet. [Hier](https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/) findet sich eine gelungene Übersicht.
+Hier eine Übersicht mit meiner persönlichen Einschätzung:
 
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: "Adaptiert von [D Sjoberg](https://github.com/ddsjoberg/gtsummary/blob/5c2bcbc6d96959266f99a7e88630a0a2dd2a9031/vignettes/rmarkdown.Rmd)"
+
+
+# create table-table with gt
+pkg_tabl <- 
+list(
+  printer = c("gt", "flextable", "kableExtra"),
+  output = c("HTML", "PDF", "Word")
+) %>%
+  purrr::cross_df() %>%
+  dplyr::mutate(
+    rating = dplyr::case_when(
+      printer == "gt" & output == "HTML" ~ 1, # good output
+      printer == "gt" & output %in% c("Word") ~ 5, # under construction
+      printer == "gt" & output %in% c("PDF") ~ 3, # under construction
+      
+      
+      printer == "flextable" & output == "Word" ~ 1, # bester
+      printer == "flextable" & output %in% c("HTML","PDF") ~ 2, # okay
+      
+      printer == "kableExtra" & output %in% c("PDF", "HTML") ~ 1, # good output
+      printer == "kableExtra" & output %in% c("Word") ~ 4, # not supported
+      
+      
+    ) %>%
+      factor()
+  ) %>%
+  tidyr::pivot_wider(id_cols = printer, names_from = output, values_from = rating) %>%
+  dplyr::mutate(
+    link = dplyr::case_when(
+      printer == "gt" ~ 
+        "[gt](https://gt.rstudio.com/index.html)",
+      printer == "kable" ~ 
+        "[kable](https://bookdown.org/yihui/rmarkdown-cookbook/kable.html)",
+      printer == "flextable" ~
+        "[flextable](https://davidgohel.github.io/flextable/articles/overview.html)",
+      printer == "kableExtra" ~ 
+        "[kableExtra](http://haozhu233.github.io/kableExtra/)",
+      printer == "huxtable" ~
+        "[huxtable](https://hughjonesd.github.io/huxtable/)",
+      printer == "tibble" ~ 
+        "[tibble](https://tibble.tidyverse.org/)"
+    )
+  ) %>%
+  gt() %>%
+  cols_move_to_start(columns = c(link)) %>%
+  cols_hide(columns = c(printer)) %>%
+  cols_label(link = md("**Paket**"), 
+             
+             HTML = md("**HTML**"), PDF = md("**PDF**"), 
+             Word = md("**Word**")) %>%
+  fmt_markdown(columns = c(link)) %>%
+  fmt_markdown(columns = everything()) %>%
+  data_color(
+    columns = c(HTML, PDF, Word),
+    colors = scales::col_factor(
+      palette = c("#bae1ff", "#ffb3ba", "#ffdfba", "#ffffba", "#baffc9"),
+      domain = NULL,
+      reverse = TRUE
+    ),
+    alpha = 0.8
+  ) %>%
+  cols_width(c(HTML, PDF, Word) ~ px(60),
+             c(link) ~ px(110),
+             c(link) ~ px(140))
+  
+# Emoji library: https://gist.github.com/rxaviers/7360908
+
+pkg_tabl %>% 
+  text_transform(
+    locations = cells_body(columns = c(HTML, PDF,  Word)),
+    fn = function(x) {
+      dplyr::case_when(
+          x == 1 ~ as.character(emo::ji("star")),
+          x == 2 ~ as.character(emo::ji("heavy_check_mark")),
+          x == 3 ~ as.character(emo::ji("grey_question")),
+          x == 4 ~ as.character(emo::ji("o2")),
+          x == 5 ~ as.character(emo::ji("wrench")),
+          TRUE   ~ as.character(emo::ji("o2"))
+      )
+    }
+  )
+
+
+```
+
+
+
+-   [`{kableExtra}`](https://haozhu233.github.io/kableExtra/) - mein Favorit für Tabellen in [html](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html) und [pdf](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf) Outputs.
  
- 
+-   [`{gt}`](https://gt.rstudio.com/) Großes Projekt mit sehr vielen Möglichkeiten, Tabellen auch interaktiv zu gestalten - daher vor allem für HTML-Outputs geeignet.
 
-While **gt** is trying to do something different with its own interface, it may not suit your specific needs. Here is a listing of other leading table-making **R** packages, with links to their respective project pages:
+-   [`{gtsummary}`](https://www.danieldsjoberg.com/gtsummary/) - `{gt}` speziell für Deskriptionen eines Treatment/Control Vergleich, [hier](https://www.danieldsjoberg.com/clinical-reporting-gtsummary-rmed/material.html) eine aktuelle Einführung
 
--   `{knitr}` [link](https://yihui.org/knitr/)
+```{r}
+#| echo: false
+tweetrmd::include_tweet("https://twitter.com/statistishdan/status/1562975951859830785?s=11&t=2WoUgCchuRUQ_4h29nMsAg")
+```
 
--   `{kableExtra}` [link](https://haozhu233.github.io/kableExtra/)
-
--   `{gt}` [link](https://gt.rstudio.com/)
+Weitere Tabellenpakete:
 
 -   `{huxtable}` [link](https://hughjonesd.github.io/huxtable/)
 
