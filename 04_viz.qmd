@@ -17,7 +17,7 @@ etb18$zpalter[etb18$zpalter>100] <- NA
 
 Neben Kennzahlen/Tabellen sollten Daten auch immer visualisiert werden. 
 Dafür bietet `{ggplot2}` eine riesige Auswahl an Möglichkeiten. 
-Um die Grundlagen kennen zulernen, visualisieren wir die gerade erstellte Kontingenztabelle:
+Um die Grundlagen kennenzulernen, visualisieren wir die gerade erstellte Kontingenztabelle:
 ```{r}
 xtabs(~S1+m1202, data = etb18)
 ```
@@ -41,9 +41,32 @@ ggplot(data = tab_df ,
        x = "Ausbildung",
        y = "Absolute Häufigkeit",
        fill = "Geschlecht" ) 
+
+
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1) )) + 
+  geom_bar(  position=position_dodge()) + 
+  theme_minimal() + 
+  scale_fill_manual(values = c("navajowhite","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
+  scale_x_continuous(breaks = 1:4 , labels = c("ohne", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  # str_wrap(name,20)
+  
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Absolute Häufigkeiten",
+       caption = "Quelle: ETB 2018",
+       x = "Ausbildung",
+       y = "Absolute Häufigkeit",
+       fill = "Geschlecht" ) 
+
+
+ggplot(data = etb18, aes(x = zpalter, y = az)) + geom_point() + facet_grid(~S1) + 
+  geom_text(data = etb18 %>% filter(az >100), 
+            aes(label = intnr,y = az + 2), size = 3)
 ```
 
-### ggplot2 und die grammar of graphics 
+## ggplot2 und die grammar of graphics 
+
 Nach der Installation und der Aktivierung von `ggplot2` können wir uns der Logik dieses Pakets widmen. 
 `ggplot2` ist die Umsetzung des Konzepts der "layered grammar of graphics" in R. Die Idee dieses Visualisierungssystems ist es, Datenvisualisierung in Parameter zu unterteilen: der zugrundeliegende Datensatz, die darzustellenden Variablen, die Wahl der darzustellenden Formen, das Koordinatensystem, Skalen und statistische Transformationen. Ein Standardbefehl in `ggplot2` sieht ungefähr so aus:
 
@@ -65,15 +88,16 @@ Wir arbeiten uns also jetzt durch die einzelnen *layer*/Schichten der Grafik:
 
 `data = ` : Datengrundlage für unsere Graphik ist die Tabelle mit Familienstandsangaben nach Geschlecht.
 ```{r}
-kt
+etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
 ```
 Zunächst müssen wir diese Kontingenztabelle in einen `data.frame` umwandeln:
 ```{r}
+tab_df <- etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
 tab_df <- data.frame( kt )
 class(tab_df)
 head(tab_df, n=3) ## zur Kontrolle
 ```
-`aes`: Diese Werte wollen wir also in einem Säulendiagramm darstellen, sodass die Familienstandausprägungen auf der x-Achse abgetragen sind und auf der y-Achse die jeweiligen Häufigkeiten (`Freq`):
+`aes`: Diese Werte wollen wir also in einem Säulendiagramm darstellen, sodass die Ausbildungsabschlüsse auf der x-Achse abgetragen sind und auf der y-Achse die jeweiligen Häufigkeiten (`Freq`):
 ```{r, eval=F}
 ggplot(data = tab_df, aes(x = m1202, y = Freq))
 ```
@@ -125,6 +149,8 @@ ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) +
   scale_fill_manual(values = c("navajowhite","navy"))
 ```
 
+### Beschriftungen: Legende anpassen
+
 Wir können mit den Optionen `breaks` und `labels` zudem auch die Beschriftung der Legende bearbeiten. Dazu geben wir zunächst in `breaks`  die Ausprägungen der Variable Geschlecht an und dann in der gleichen Reihenfolge die zu vergebenden Labels:
 ```{r, out.height= "50%", out.width = "50%", fig.align="center", eval=F}
 ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
@@ -150,6 +176,8 @@ step5 + step6
 ## cowplot::plot_grid(step5, step6, nrow = 1)
 ```
 
+### Beschriftungen: Titel
+
 Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben wir folgende Optionen:
 
 + `title`: Überschrift für die Graphik
@@ -162,14 +190,17 @@ Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben
 
 Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme_minimal()` einen weißen Hintergrund mit grauen Markierungslinien (weitere Beispiele in den Hinweisen unter [Themes](#themes))
 ```{r, out.height= "66%", out.width= "66%", fig.align="center"}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) +
+ggplot(data = etb18, aes(x = m1202, fill = factor(S1))) + 
+  geom_bar(position=position_dodge()) +
   scale_fill_manual(values = c("navajowhite","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  labs(title = "Familienstand",
-       subtitle = "Absolute Häufigkeiten pro Geschlecht",
-       caption = "Quelle: Allbus 2016",
-       x = "Familienstand",
+  scale_x_continuous(breaks = 1:4,
+                     labels = names(labelled::val_labels(etb18$m1202)[-1]),10
+                     ) +
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Absolute Häufigkeiten",
+       caption = "Quelle: ETB 2018",
+       x = "Ausbildung",
        y = "Absolute Häufigkeit",
        fill = "Geschlecht" ) +
   theme_minimal()
@@ -204,7 +235,7 @@ ggplot(data = tab_df , aes(x = m1202, y = Freq, fill = S1 )) +
 ```
 
 
-### Verteilungen visualisieren: Boxplots, Histogramme
+## Verteilungen visualisieren: Boxplots, Histogramme
 
 Definition der Bestandteile eines Boxplots: 
 
@@ -459,6 +490,13 @@ Es muss also lediglich das letzte Argument (`theme_..`) angepasst werden. Weiter
 + Das [Graph Kapitel des R Cookbooks](www.cookbook-r.com/Graphs/) ist eine hervorragende Quelle für alle möglichen Optionen und eine grundlegende Übersicht - bspw. zur Anpassung der [Legende](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)), [Linien- und Punktvarianten](http://www.cookbook-r.com/Graphs/Shapes_and_line_types) oder den [Achsen](http://www.cookbook-r.com/Graphs/Axes_(ggplot2))
 
 + [From Data to Viz ](https://www.data-to-viz.com/#explore) bietet einen Entscheidungsbaum für verschiedene Zusammenhänge und Deskriptionen mit Beispiel-Syntax
+
+
+```{r,echo=FALSE}
+#| out-width: 80%
+#| out-height: 80%
+knitr::include_graphics("./pic/104_decision.png")
+```
 
 + Die [R Graph Gallery](https://r-graph-gallery.com/) ist noch etwas umfangreicher und bietet noch weitere Visualisierungsideen
 
