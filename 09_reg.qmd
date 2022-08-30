@@ -41,7 +41,7 @@ theme_set(theme_x)
 Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich vier Fällen. Mit dem `data.frame` Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2 
 ```{r}
 dat1 <- data.frame(var1 = c(1,2,7,8),
-                 var2 = c(2,4,7,6))
+                   var2 = c(2,4,7,6))
 dat1
 ```
 
@@ -177,6 +177,12 @@ library(performance)
 performance(m1)
 ```
 
+
+## Interaktionen
+
+## Quadratische Terme & Polynome
+
+## Kategoriale unabhängige Variablen
 
 
 
