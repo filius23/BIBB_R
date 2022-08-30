@@ -67,3 +67,4 @@ mode <- function(x) { names(which.max(table(x))) }
 ```
 
 ## `lapply()` und `map()`
+
