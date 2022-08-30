@@ -9,11 +9,13 @@ library(tidyverse)
 # https://datasciencebook.ca/
 # https://towardsdatascience.com/r-programming-a-study-guide-for-beginners-732de9542aa8?gi=dce1e602d5ab 
 # https://datacarpentry.org/r-socialsci/
-# https://sta-112-f22.github.io/website/schedule.html
+
+# https://sta199-f22-1.github.io/
 # https://github.com/mattansb/Practical-Applications-in-R-for-Psychologists/
 
 # https://github.com/andrewheiss/2021-seacen
 # https://crimebythenumbers.com/
+
 
 # count() als Haupt table-funktion (die andern nur kurz zeigen)
 # [] am Ende zeigen -> "übrigens"
