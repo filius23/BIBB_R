@@ -13,6 +13,15 @@ In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion i
 
 -   Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. `colnames()`, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable sein 
 -  Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: `read.csv(datei.csv, header = T, sep = ",")`
+-  Zeilenumbrüche werden von R ignoriert, d.h. wir können einen Befehl über mehre Zeilen schreiben - bspw. um es etwas übersichtlicher zu halten:
+```{r}
+#| eval: false
+
+funktion(objektname1,
+         option1 = sehr_lange_Auswahl_die_sehr_lang_ist,
+         option2 = noch_eine_Auswahl_Option2)
+```
+
 -  Wenn wir eine Funktion durchführen mit `funktion(objektname, option1 = TRUE, option2 = FALSE)` bekommen wir das Ergebnis in der Konsole ausgegeben.
 -  Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit `name <- funktion(name)`
 - Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
@@ -26,12 +35,13 @@ Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), U
 studs <- c(19173,5333,15643)    # Studierendenzahlen unter "studs" ablegen 
 profs       <- c(322,67,210)    # Prof-Zahlen unter "profs" ablegen
 dat1_orig <- data.frame(studs, profs)
+dat1_orig
 ```
 
 ```{r , include=T, echo = T}
 dat1 <- data.frame(studs = c(19173,5333,15643), 
-                 profs = c(322,67,210),
-                 gegr  = c(1971,1830,1973)) # ohne zwischen-Objekte
+                   profs = c(322,67,210),
+                   gegr  = c(1971,1830,1973)) # ohne zwischen-Objekte
 dat1    # zeigt den kompletten Datensatz an
 ```
 
@@ -139,7 +149,7 @@ Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentype
 ## Pakete in R {#packages}
 
 Im nächsten Schritt möchten wir jetzt nur einige Zeilen (Fälle) und/oder Spalten (Variablen) auswählen. 
-Dazu verwenden wir das Paket `{dplyr}`[^04_intro-1] mit den Befehlen `filter()` und `select()`. 
+Dazu verwenden wir das Paket `{dplyr}`[^04_intro-1]. 
 
 [^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention. 
 
@@ -158,7 +168,7 @@ Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `libra
 knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
 
-Wir werden in diesem Kurs vor allem mit Paketen aus dem [tidyverse](www.tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
+Wir werden in diesem Kurs vor allem mit Paketen aus dem [`{tidyverse}`](www.tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
 ```{r,eval =FALSE}
 install.packages("tidyverse")
 ```
@@ -173,18 +183,33 @@ Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste is
 knitr::include_graphics("./pic/103_dplyr.png")
 ```
 
+```{r,eval = F}
+install.packages("tidyverse") 
+# installiert die komplette Paketsammlung des tidyverse
+```
+
+## Zeilen auswählen mit `slice()`
+
+```{r}
+library(tidyverse) # nach einmaligem install.packages("tidyverse")
+```
+
+Eine erste Funktion aus dem `{tidyverse}` ist `slice()`, mit welcher wir Zeilen auswählen können:
+
+```{r}
+slice(dat1,1)
+2:3 # ergibt eine Zahlenfolge
+slice(dat1,2:3)
+c(1,3) # Vektor mit Werten
+slice(dat1,c(1,3))
+```
+
+
 ## Beobachtungen auswählen mit `filter()` {#filter}
 
 Nachdem wir zunächst das Paket für `filter()` installiert haben (das ist `{dplyr}`) müssen wir das Paket noch mit `library()` laden:
 
-```{r,eval = F}
-install.packages("tidyverse") # nur einmal nötig
-install.packages("dplyr") # wenn nur dplyr installiert werden soll
-```
 
-```{r}
-library(dplyr) # nach einmaligem install.packages("tidyverse")
-```
 
 ```{r}
 filter(dat1,uni == "Uni Oldenburg", studs > 1000)
@@ -211,11 +236,11 @@ In R stehen uns einige weitere Operatoren zur Auswahl von Zeilen zu Verfügung:
 -   `%in%` "eines von": `filter(dat1, gegr %in% c(1971,1973,2004))`: gegründet 1971 oder 1973 oder 2004
 -   `between()` ist eine Hilfsfunktion aus `{dplyr}` für Wertebereiche: `filter(dat1,between(studs,10000,20000)`: zwischen 10.000 und 20.000 Studierenden *oder* (jeweils eingeschlossen)
 
-Erweiterte Hilfsfunktionen für `filter()`:  `if_any()` or `if_all()`
+<!-- Erweiterte Hilfsfunktionen für `filter()`:  `if_any()` or `if_all()` -->
 
-```{r, eval =F }
-etb18 %>% filter(if_any(matches("^F"), ~ .x < 10))
-```
+<!-- ```{r, eval =F } -->
+<!-- etb18 %>% filter(if_any(matches("^F"), ~ .x < 10)) -->
+<!-- ``` -->
 
 
 
@@ -265,41 +290,27 @@ select(dat1, !profs) # alles außer profs
 -   `last_col()`: Letzte Variable, für die 4.letzte Variable bspw. `last_col(4)`
 -   `any_of()` um eine Auswahl auf Basis eines `character`-Vektors zu treffen
 
-Wenn wir beispielsweise die Spalten eines `data.frame`s auf Basis der `colnames` eines anderen `data.frame` Objekts auswählen möchten:
+
 
 ```{r}
+#| code-fold: true
+#| eval: false
+# Spalten eines `data.frame`s auf Basis der `colnames` eines data.frames auswählen möchten:
 col_auswahl <- colnames(dat1_orig)
 col_auswahl
 select(dat1, any_of(col_auswahl) )
-```
 
-Oder wir wollen alle Variablen, die mit "s" beginnen:
-```{r}
+
+# Oder wir wollen alle Variablen, die mit "s" beginnen:
 select(dat1,starts_with("s"))
 select(dat1,matches("^s")) # gleiches Ergebnis mit regex
+select(dat1,matches("s$")) # alle Spalten, die mit s enden
 ```
 
 
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
 
 
-### `select()` vs `$`
-
- 
-Wenn wir mit `select()` eine spezifische Variable auswählen, wird trotzdem die Datenstruktur als `data.frame()` erhalten, während die Auswahl `dat1$variablenname` die Spalte als Vektor (also Wertereihe) ausgibt:
-
-```{r}
-dat1$studs
-class(dat1$studs)
-dat1$studs/ 20
-```
-
-`select()` erhält die Werte als Spalte eines `data.frame`:
-```{r}
-dat1 %>% select(uni)
-dat1 %>% select(uni) %>% class()
-dat1 %>% select(studs)/20 
-```
 
 ## Arbeiten mit der Pipe: `filter()` und `select()` kombinieren  {#pipe}
 
@@ -339,8 +350,45 @@ dat1 %>% filter(studs < 10000) %>% select(uni)
 :::
 
 
-## [Übung](#data2) {#ue2}
 
+
+## Variablentyp III: `factor` - eigene Reihenfolgen festlegen
+
+
+Ein weitere häufige Aufgabe in der Datenanalyse ist das Sortieren von Datensätzen. Dazu haben wir `arrange()` zur Verfügung:
+
+```{r}
+dat1 %>% arrange(studs)
+```
+
+Das funktioniert auch für `string`-Variablen:
+```{r}
+dat1 %>% arrange(uni)
+```
+
+Was aber, wenn wir eine fixe Ordnung vergeben möchten, die nicht der numerischen oder alphabetischen Ordnung entspricht?
+Hier bspw. wenn wir die Unis in folgende Ordnung bringen möchten: 1) Uni Oldenburg, 2) Uni Bremen und 3) Uni Vechta.
+Dabei hilft uns ein dritter Variablentyp: `factor`. 
+
+Mit dem Argument `levels =` können wir eine Reihenfolge festlegen:
+
+```{r}
+factor(dat1$uni, levels = c("Uni Oldenburg", "Uni Bremen", "Uni Vechta"))
+
+dat1$uni_fct <- factor(dat1$uni, 
+                       levels = c("Uni Oldenburg", "Uni Bremen", "Uni Vechta"))
+```
+
+Wenn wir nun nach `uni_fct` sortieren, dann wird die Reihenfolge der `levels` berücksichtigt:
+```{r}
+dat1 %>% arrange(uni_fct)
+class(dat1$uni_fct)
+```
+
+Das mag für den Moment relativ trivial erscheinen, ist aber später sehr praktisch um in Grafiken Variablen in eine gewisse Ordnung zu bringen oder in Regressionsmodellen die Referenzkategorie festzulegen.
+
+
+## [Übung](#data2) {#ue2}
 
 ## Datensätze einlesen
 
@@ -551,23 +599,49 @@ Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist 
 
 ## Übungen 1 {#data1}
 
--   Erstellen Sie den Datensatz mit den Studierenden- & Prof-Zahlen wie oben gezeigt:
+-   Erstellen Sie den Datensatz mit den Studierenden- & Prof-Zahlen wie gezeigt:
 
 ```{r,eval= F}
-dat1 <- data.frame(studs = c(19173,5333,15643), 
-                 profs = c(322,67,210),
-                 gegr  = c(1971,1830,1973))
+dat2 <- data.frame(studs = c(14954,47269 ,23659,9415 ,38079), 
+                   profs = c(250,553,438 ,150,636),
+                   prom_recht = c(FALSE,TRUE,TRUE,FALSE,TRUE),
+                   gegr  = c(1971,1870,1457,1818,1995))
 ```
 
--   Sehen Sie den `dat1` in Ihrem Enviroment?
--   Lassen Sie sich nur die dritte Zeile von `dat1` anzeigen.
--   Lassen Sie sich nur die Spalte `gegr` anzeigen.
--   Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`
--   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{dplyr}` zu installieren und mit `library()` zu laden)
 
-[Zurück](#ue1)
+
+-   Sehen Sie den `dat2` in Ihrem Environment?
+-   Lassen Sie sich `dat2` in der Console ausgeben.
+-   Fügen Sie die Namen der Unis als neue Spalte in den Datensatz ein. Diese sind in dieser Reihenfolge:
+```{r,eval= F}
+c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
+```
+
+-  Lassen Sie sich `dat2` anzeigen - in der Console oder mit `View()`
+-  Berechnen Sie das Verhältnis Studierende pro Professur und legen Sie die Ergebnisse in einer neuen Variable an. Sehen Sie sich das Ergebnis an.
+
+[Zurück nach oben](#ue1)
 
 ## Übungen 2 {#data2}
+
+-   Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`
+-   Verwenden Sie wieder den `data.frame` `dat2` aus Übung 1
+-   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{dplyr}` zu installieren und mit `library()` zu laden)
+-   Lassen Sie sich nur die dritte Zeile von `dat2` anzeigen.
+-   Lassen Sie sich nur die Spalte `gegr` anzeigen.
+-   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die vor 1900 gegründet wurden.
+-   Lassen Sie sich nur Zeilen der Hochschulen mit Promotionsrecht anzeigen.
+-   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden.
+-   Legen Sie eine `factor`-Variable an, welche folgende Reihenfolge festlegt:
+```{r,eval =F}
+c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
+```
+
+
+
+[Zurück nach oben](#ue2)
+
+## Übungen 3 {#data3}
 
 -   Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein [R-Projekt](#rproj)
 -   Legen Sie die Erwerbstätigenbefragung in Ihrem Verzeichnis im Unterordner *data* ab.
@@ -580,9 +654,9 @@ dat1 <- data.frame(studs = c(19173,5333,15643),
 -   Wie alt ist der/die Befragte mit der `respid` 2781?
 -   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable `S2_j` abgelegt.)
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
--   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen? Nutzen Sie für Ihre Antwort die Befehle die wir kennen gelernt haben.
+-   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen?
 
-[Zurück](#ue2)
+[Zurück nach oben](#ue3)
 
 ## Anhang
 
@@ -609,7 +683,6 @@ Alternativ können wir auch in `read.table()` den vollen Pfad angeben:
 ```{r,eval= F}
 etb <- read.table("C:/Kurse/R_BIBB/data/BIBBBAuA_2018_small.csv", sep = ";", header = T, stringsAsFactors = F)
 ```
-
 
 ### Zeilen & Spaltenauswahl ohne `{dplyr}` {#selfiltbase}
 
@@ -647,4 +720,23 @@ dat1[dat1$uni == "Uni Oldenburg" & dat1$studs > 10000, ] # & bedeutet UND
 Wir können auch hier einen ODER-Operator verwenden:
 ```{r, eval=F}
 dat1[dat1$uni == "Uni Oldenburg" | dat1$studs > 10000, ]
+```
+
+
+### `select()` vs `$`
+
+ 
+Wenn wir mit `select()` eine spezifische Variable auswählen, wird trotzdem die Datenstruktur als `data.frame()` erhalten, während die Auswahl `dat1$variablenname` die Spalte als Vektor (also Wertereihe) ausgibt:
+
+```{r}
+dat1$studs
+class(dat1$studs)
+dat1$studs/ 20
+```
+
+`select()` erhält die Werte als Spalte eines `data.frame`:
+```{r}
+dat1 %>% select(studs)
+dat1 %>% select(studs) %>% class()
+dat1 %>% select(studs)/20 
 ```
