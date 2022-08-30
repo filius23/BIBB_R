@@ -66,7 +66,6 @@ Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später 
 ```{r W04_3, include=T, echo = T}
 t1 <- xtabs(~m1202,etb18)
 t2 <- etb18 %>% count(m1202)
-t2
 ```
 
 Wir sehen hier, dass die Tabelle mit `xtabs()` eine neue Objektform ist, ein table. Mit `count()` wird hingegen ein `data.frame` erstellt.
@@ -74,8 +73,6 @@ Wir sehen hier, dass die Tabelle mit `xtabs()` eine neue Objektform ist, ein tab
 class(t1)
 class(t2)
 ```
-
-## [Übung 1](#ue1)
 
 ## Andere Tabellenwerte
 
@@ -86,7 +83,7 @@ Mit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpas
 ```{r W04_5, include=T, echo = T}
 xtabs(~m1202,data=etb18) %>% prop.table(.) 
 ```
-`r sprintf("%2.3f",prop.table(xtabs(~m1202,data=etb18)) [1]*100)`% aller Befragten haben keine Berufsausbildung haben.
+`r sprintf("%2.3f",prop.table(xtabs(~m1202,data=etb18)) [1]*100)`% aller Befragten haben keine Berufsausbildung.
 
 + `cumsum()`: kumulierte Werte
 
@@ -113,88 +110,6 @@ t2x <- cumsum(prop.table(xtabs(~m1202,data=etb18)))
 
 `r sprintf("%2.3f",round(t2x[2]*100,3))`% aller Befragten haben eine duale Berufsausbildung oder keine Berufsausbildung.
 
-
-
-## Mehrere Kennzahlen in einer Tabelle
-
-Stata kennen viele sicherlich folgende Ansicht mit `tab m1202`:
-```{stata miss5b, echo = F, collectcode=F}
-set linesize 80
-qui use "D:\Datenspeicher\BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta", clear
-qui mvdecode m1202 F100_kldb2010_BOF F1609_kldb2010_BOF F1610_kldb2010_BOF, mv(-1)
-qui mvdecode F100_wib1, mv(-4/-1)
-tab m1202
-```
-In R hat ein `table()` oder `xtabs()` immer nur eine Art von Kennzahlen. 
-Da wir aber mit `count()` die Auszählungen als `data.frame()` erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen. Dabei hilft uns `mutate()`: mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
-```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
-#| echo: false
-knitr::include_graphics("./pic/103_mutate.png")
-
-```
-Um also eine neue Spalte `pct`in unseren `data.frame` mit den Auszählungen einzufügen gehen wir wie folgt vor:
-
-```{r W201_9_pipe, echo = T}
-etb18 %>% 
-   count(m1202) # ausgangsbefehl
-
-etb18 %>% 
-   count(m1202) %>% 
-   mutate(pct= prop.table(n)*100) # erweitert um pct
-```
-
-```{r}
-etb18 %>% 
-   count(m1202) %>% 
-   mutate(pct= prop.table(n)*100,
-          Cum = cumsum(n)) 
-```
-
-Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
-
-   1. Erstelle die Häufigkeitstablle für `m1202` *und dann (`%>%`)*
-   2. Berechne daraus die relativen Häufigkeiten *und dann (`%>%`)*
-   3. Berechne dafür die kumulierten Werte *und dann (`%>%`)*
-   4. Runde das Ergebnis auf 3 Nachkommastellen
-
-Etwas störend ist aber noch die `-1`, die für fehlende Angaben steht und nicht berücksichtigt werden soll.
-
-## Fehlende Werte in R: `NA` {#NA_w103}
-
-Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
-```{r}
-#| eval: false
-etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
-```
-(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
-
-Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
-```{r W04_3miss, include=T, echo = T}
-etb18$m1202[etb18$m1202 == -1]  <- NA
-```
-
-`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `xtabs()` nicht aufgeführt:
-```{r W04_3miss_tab, include=T, echo = T}
-xtabs(~m1202,data=etb18)
-```
-Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
-```{r}
-xtabs(~m1202,data=etb18,addNA = T)
-etb18 %>% count(m1202)
-```
-**Achtung!** Die vor dem Ausschluss von `-1` abgespeicherte Tabelle `t2` ändert sich dadurch nicht:
-```{r}
-t2
-```
-Das liegt daran, dass bei Aufruf von `t2` die abgelegten Werte, so wie sie gespeichert wurden, wieder aufgerufen werden. Es wird **keine neue Auszählung** vorgenommen! Möchten wir die aktualisierte Tabelle ohne die `NA` in `t2` ablegen, dann müssen wir `t2` mit den neuen Werten überschreiben:
-```{r}
-t2 <- etb18 %>% count(m1202)
-t2
-```
-
-Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/).
-
-
 ## Kontingenztabellen
 
 Aus Kontingenztabellen erfahren wir, wie häufig Merkmalskombinationen auftreten. Auch für Kontingenztabellen können wir `table()` verwenden. Zum Beispiel können wir uns eine Tabelle anzeigen lassen, die uns die Häufigkeiten des Familienstatus getrennt nach Geschlechtern zeigt:
@@ -209,7 +124,7 @@ Wir erkennen aus dieser Tabelle beispielsweise, dass 4926 Befragte weiblich (`S1
 
 Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwenden wir `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
 
-### Zeilen- und Spaltenprozente
+## Zeilen- und Spaltenprozente
 
 Auch für Kontingenztabellen können wir uns die relativen Häufigkeiten anzeigen lassen, indem wir `prop.table()` anwenden:
 ```{r, echo = T}
@@ -232,6 +147,13 @@ xtabs(~S1+m1202, data = etb18) %>%
   prop.table(.,margin = 1) %>% 
   round(., 4)
 ```
+
++ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}$$
+
+- `6,56%` der befragten Frauen haben eine Aufstiegsfortbildung
+
++ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}$$ 
+
 ```{r, eval = F}
 xtabs(~S1+m1202, data = etb18) %>% 
   prop.table(.,margin = 2)
@@ -240,22 +162,134 @@ xtabs(~S1+m1202, data = etb18) %>%
 xtabs(~S1+m1202, data = etb18) %>% 
   prop.table(.,margin = 2) %>% 
   round(., 4)
+
+pct_spl <- 
+  xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 2) %>% 
+  round(., 4)
 ```
 
-+ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}$$
-
-- `6,58%` der befragten Frauen haben eine Aufstiegsfortbildung
-
-+ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}$$ 
-
 - `37,8%` der Befragten mit Aufstiegsfortbildung sind Frauen
+
+
+## [Übung 1](#ue1)
+
+## Mehrere Kennzahlen in einer Tabelle
+
+Aus Stata kennen viele sicherlich folgende Ansicht mit `tab m1202`:
+```{stata miss5b, echo = F, collectcode=F}
+set linesize 80
+qui use "D:\Datenspeicher\BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta", clear
+qui mvdecode m1202 F100_kldb2010_BOF F1609_kldb2010_BOF F1610_kldb2010_BOF, mv(-1)
+qui mvdecode F100_wib1, mv(-4/-1)
+tab m1202
+```
+In R hat ein `table()` oder `xtabs()` immer nur eine Art von Kennzahlen. 
+Da wir aber mit `count()` die Auszählungen als `data.frame()` erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen. Dabei hilft uns `mutate()`: mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
+```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
+#| echo: false
+knitr::include_graphics("./pic/103_mutate.png")
+
+```
+
+`mutate()` entspricht also `dat1$var <- ....`, das wir im vorherigen Kapitel kennen gelernt hatten. Allerdings können wir mit `mutate()` einfacher in einer Pipe-Kette arbeiten (und außerdem einige weitere Operationen einfacher erledigen - dazu später mehr).
+
+Um also eine neue Spalte `pct`in unseren `data.frame` mit den Auszählungen einzufügen gehen wir wie folgt vor:
+
+```{r W201_9_pipe, echo = T}
+etb18 %>% 
+   count(m1202) # ausgangsbefehl
+
+etb18 %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100) # erweitert um pct
+```
+
+```{r}
+etb18 %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100,
+          Cum = cumsum(pct)) 
+```
+
+Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
+
+   1. Erstelle die Häufigkeitstablle für `m1202` *und dann (`%>%`)*
+   2. Berechne aus `n` die relativen Häufigkeiten *und dann (`%>%`)*
+   3. Berechne dafür die kumulierten Werte basierend auf `pct` *und dann (`%>%`)*
+   4. Runde das Ergebnis auf 3 Nachkommastellen
+
+Etwas störend ist aber noch die `-1`, die für fehlende Angaben steht und nicht berücksichtigt werden soll.
+Wir werden gleich noch mehr zu fehlenden Werten in R erfahren, aber eine schnelle Lösung ist einfach `-1` mit `filter()` auszuschließen:
+```{r}
+etb18 %>% 
+  filter(m1202 != -1) %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100,
+          Cum = cumsum(pct)) 
+```
+
+## Kontingenztabellen mit `count()`
+
+```{r}
+etb18 %>% 
+  filter(m1202 != -1) %>% 
+   count(m1202,S1)
+```
+
+```{r}
+etb18 %>% 
+  filter(m1202 != -1) %>% 
+   count(m1202,S1) %>% 
+   mutate(pct = prop.table(n)) %>% 
+   group_by(S1) %>% 
+   mutate(pct_gender = prop.table(n)) 
+```
+
+
+## [Übung 3](#ue2)
+
+
+## Fehlende Werte in R: `NA` {#NA_w103}
+
+Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
+```{r}
+#| eval: false
+etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
+```
+(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
+
+Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
+```{r W04_3miss, include=T, echo = T}
+etb18$m1202[etb18$m1202 == -1]  <- NA
+```
+
+`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `xtabs()` nicht aufgeführt:
+```{r W04_3miss_tab, include=T, echo = T}
+xtabs(~m1202,data=etb18)
+```
+Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
+```{r}
+xtabs(~m1202,data=etb18,addNA = T)
+```
+
+In `count()` wird `NA` auch mit ausgezählt:
+```{r}
+etb18 %>% count(m1202)
+```
+Möchten wir das umgehen, nehmen wir wieder `filter()` zu Hilfe - mit `is.na()` können wir `NA` identifizieren. Durch Voranstellen von `!` können wir damit anfordern, dass alle nicht-`NA`-Werte mit `TRUE` behalten werden:
+```{r}
+etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
+```
+
+Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
+
 
 
 ## [Übung 2](#ue2)
 
 ##  Lage- & Konzentrationsmaße 
 
-###  Lagemaße 
 ```{r, echo =F}
 etb18$F518_SUF <- as.numeric(etb18$F518_SUF)
 ```
@@ -281,6 +315,11 @@ Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Bruttoverdien
 + Minimum und Maximum: `min()`, `max()`
 + arithm. Mittel: `mean()`
 + Median: `median()`
++ Quantile: `quantile()`
++ Varianz: `var()`
++ Standardabweichung: `sd()`
++ Gini-Koeffizient: `Gini` aus dem Paket `{ineq}`
+
 
 Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
 ```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
@@ -289,22 +328,12 @@ min(etb18$F518_SUF)
 Deshalb müssen wir die Option `na.rm = T` angeben:
 ```{r sw5_3b, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
 min(etb18$F518_SUF,na.rm = T)
-max(etb18$F518_SUF,na.rm = T) #größter Wert
-mean(etb18$F518_SUF, na.rm = T)
-median(etb18$F518_SUF, na.rm = T)
 ```
 
-### Streuungsmaße
-#### Quantile   
 Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
 ```{r sw5_quant1}
 quantile(etb18$F518_SUF,na.rm = T)
 ```
-Musterinterpretation: 
-
-  + *25% der Befragten haben einen Bruttoverdienst von `r quantile(etb18$F518_SUF,na.rm = T)[2]`€ oder weniger*
-  + *75% der Befragten haben einen Bruttoverdienst von `r quantile(etb18$F518_SUF,na.rm = T)[4]`€ oder weniger*
-  
 Wir können aber durch Angabe in den Optionen beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
 ```{r sw5_quant2}
 quantile(etb18$F518_SUF,probs = .4, na.rm = T)
@@ -315,21 +344,11 @@ quantile(etb18$F518_SUF,probs = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), na.r
 quantile(etb18$F518_SUF,probs = seq(0,1,0.1), na.rm = T) 
 ```
 
-
-
-#### Varianz & Standardabweichung
-
 Wir können die Varianz mit `var()` berechnen:
 ```{r W07_6, include=T, echo = T}
 var(etb18$F518_SUF, na.rm = T) # Varianz
 ```
-```{r, echo=F}
-var1 <- var(etb18$F518_SUF, na.rm = T)
-```
-
-In unseren Datensatz beträgt der Varianz der Haushaltseinkommen also `r format(var1,big.mark = ".",decimal.mark = ",")`€². 
-
-Die *Standardabweichung* entspricht der Wurzel der Varianz und hat somit die gleiche Messeinheit wie die Variable (hier EUR) - mit `sd()` bekommen wir die Standardabweichung:
+Die Standardabweichung erhalten wir mit `sd()`:
 ```{r}
 sd(etb18$F518_SUF, na.rm = T) # Standardabweichung
 ```
@@ -339,10 +358,6 @@ Den [Gini-Koeffizienten](#gini_graph) können wir mit `Gini()` aus dem Paket `in
 install.packages("ineq") # einmal installieren
 ```
 
-```{r,eval=F}
-library(ineq) # ineq laden
-Gini(etb18$F518_SUF)
-```
 ```{r, echo=F}
 library(ineq) # ineq laden
 Gini(etb18$F518_SUF)
@@ -360,6 +375,10 @@ nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
 etb18 %>% 
   group_by(Bula) %>% 
   summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+etb18 %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T),
+            median_inc = median(F518_SUF, na.rm = T))
 
 etb18 %>% 
   filter(Bula %in% c(3,5)) %>% 
