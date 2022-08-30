@@ -36,9 +36,6 @@ xtabs(~m1202,data=etb18)
 ```
 Wir bekommen hier die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. 
 
-
-
-
 Allerdings werden sowohl für `table()` als auch `xabs()` die labels in der Ausgabe erstmal ignoriert. 
 Mit `val_labels()` aus dem Paket `{labelled}` können wir die Labels aus dem Datensatz abrufen. - bspw. steht `1` dafür, dass der*die Befragte die keine Berufsabschluss besitzt:
 ```{r, eval=F}
@@ -67,12 +64,16 @@ etb18 %>% count(m1202)
 
 Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später wieder aufrufen:
 ```{r W04_3, include=T, echo = T}
+t1 <- xtabs(~m1202,etb18)
 t2 <- etb18 %>% count(m1202)
 t2
-class(t2)
 ```
 
-Etwas störend ist aber noch die `-1`. Aus den Labels wissen wir, dass `-1` für fehlende Angabe steht.
+Wir sehen hier, dass die Tabelle mit `xtabs()` eine neue Objektform ist, ein table. Mit `count()` wird hingegen ein `data.frame` erstellt.
+```{r W04class, include=T, echo = T}
+class(t1)
+class(t2)
+```
 
 ## [Übung 1](#ue1)
 
@@ -124,8 +125,8 @@ qui mvdecode m1202 F100_kldb2010_BOF F1609_kldb2010_BOF F1610_kldb2010_BOF, mv(-
 qui mvdecode F100_wib1, mv(-4/-1)
 tab m1202
 ```
-In R habt ein `table()` oder `xtabs()` immer nur eine Art von Kennzahlen. 
-Da wir aber mit `count()` die Auszählungen als `data.frame()` erhalteb können wir die relativen und kumulierten Häufigkeiten einfach als neuen Variablen anfügen. Dabei hilft uns `mutate()`: mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
+In R hat ein `table()` oder `xtabs()` immer nur eine Art von Kennzahlen. 
+Da wir aber mit `count()` die Auszählungen als `data.frame()` erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen. Dabei hilft uns `mutate()`: mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
 ```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
 #| echo: false
 knitr::include_graphics("./pic/103_mutate.png")
@@ -156,13 +157,17 @@ Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also
    3. Berechne dafür die kumulierten Werte *und dann (`%>%`)*
    4. Runde das Ergebnis auf 3 Nachkommastellen
 
+Etwas störend ist aber noch die `-1`, die für fehlende Angaben steht und nicht berücksichtigt werden soll.
 
 ## Fehlende Werte in R: `NA` {#NA_w103}
 
-Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
+Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
 ```{r}
+#| eval: false
 etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
 ```
+(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
+
 Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
 ```{r W04_3miss, include=T, echo = T}
 etb18$m1202[etb18$m1202 == -1]  <- NA
@@ -175,6 +180,7 @@ xtabs(~m1202,data=etb18)
 Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
 ```{r}
 xtabs(~m1202,data=etb18,addNA = T)
+etb18 %>% count(m1202)
 ```
 **Achtung!** Die vor dem Ausschluss von `-1` abgespeicherte Tabelle `t2` ändert sich dadurch nicht:
 ```{r}
@@ -182,7 +188,7 @@ t2
 ```
 Das liegt daran, dass bei Aufruf von `t2` die abgelegten Werte, so wie sie gespeichert wurden, wieder aufgerufen werden. Es wird **keine neue Auszählung** vorgenommen! Möchten wir die aktualisierte Tabelle ohne die `NA` in `t2` ablegen, dann müssen wir `t2` mit den neuen Werten überschreiben:
 ```{r}
-t2 <- xtabs(~m1202,data=etb18)
+t2 <- etb18 %>% count(m1202)
 t2
 ```
 
