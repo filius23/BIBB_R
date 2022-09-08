@@ -15,54 +15,62 @@ etb18$zpalter[etb18$zpalter>100] <- NA
 ```
 
 
-Neben Kennzahlen/Tabellen sollten Daten auch immer visualisiert werden. 
+Neben Kennzahlen/Tabellen können/sollten Verteilungen auch visualisiert werden. 
 Dafür bietet `{ggplot2}` eine riesige Auswahl an Möglichkeiten. 
-Um die Grundlagen kennenzulernen, visualisieren wir die gerade erstellte Kontingenztabelle:
+Im Folgenden sehen wir uns eine Möglichkeit an, die gerade erstellte Kontingenztabelle zu visualisieren:
 ```{r}
-xtabs(~S1+m1202, data = etb18)
+etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
 ```
 
 ```{r, out.height= "70%", out.width= "70%", fig.align="center", echo = F}
-tab_df <- data.frame( kt ) %>% 
-  left_join(enframe(labelled::val_labels(etb18$m1202)) %>% mutate(value =factor(value)),
-            by = c("m1202"="value")) %>% 
-  mutate(name = fct_reorder(name,as.numeric(as.character(m1202))))
- 
+#| warning: false
 
-ggplot(data = tab_df , 
-       aes(x = str_wrap(name,20), y = Freq, fill = S1 )) + 
-  geom_col(  position=position_dodge()) + 
-  theme_minimal() + 
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-       subtitle = "Absolute Häufigkeiten",
-       caption = "Quelle: ETB 2018",
-       x = "Ausbildung",
-       y = "Absolute Häufigkeit",
-       fill = "Geschlecht" ) 
+# tab_df <- 
+#   etb18 %>% count(S1,m1202) %>% 
+#   filter(!is.na(m1202)) %>% 
+#   mutate(m1202_lab = as_factor(m1202))
 
-
-ggplot(data = etb18 , 
-       aes(x = m1202, fill = factor(S1) )) + 
-  geom_bar(  position=position_dodge()) + 
-  theme_minimal() + 
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  scale_x_continuous(breaks = 1:4 , labels = c("ohne", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  # str_wrap(name,20)
-  
-  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-       subtitle = "Absolute Häufigkeiten",
-       caption = "Quelle: ETB 2018",
-       x = "Ausbildung",
-       y = "Absolute Häufigkeit",
-       fill = "Geschlecht" ) 
+# ggplot(data = tab_df , 
+#        aes(x = str_wrap(name,20), y = Freq, fill = S1 )) + 
+#   geom_col(  position=position_dodge()) + 
+#   theme_minimal() + 
+#   scale_fill_manual(values = c("navajowhite","navy"),
+#                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
+#   labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+#        subtitle = "Absolute Häufigkeiten",
+#        caption = "Quelle: ETB 2018",
+#        x = "Ausbildung",
+#        y = "Absolute Häufigkeit",
+#        fill = "Geschlecht" ) 
 
 
-ggplot(data = etb18, aes(x = zpalter, y = az)) + geom_point() + facet_grid(~S1) + 
-  geom_text(data = etb18 %>% filter(az >100), 
-            aes(label = intnr,y = az + 2), size = 3)
+# ggplot(data = etb18 , 
+#        aes(x = m1202, fill = factor(S1) )) + 
+#   geom_bar(  position=position_dodge()) + 
+#   theme_minimal() + 
+#   scale_fill_manual(values = c("navajowhite","navy"),
+#                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
+#   scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+#   labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+#        subtitle = "Absolute Häufigkeiten",
+#        caption = "Quelle: ETB 2018",
+#        x = "Ausbildung",
+#        y = "Absolute Häufigkeit",
+#        fill = "Geschlecht" ) 
+
+```
+
+
+```{r, out.height= "70%", out.width= "70%", fig.align="center", echo = F}
+etb18 %>%
+  slice(1:1000) %>% 
+  mutate(S1_fct = factor(S1, levels = 1:2, labels = c("Männer","Frauen"))) %>%
+ggplot(aes(x = zpalter, y = az)) +
+  geom_point(aes(color = S1_fct)) +
+  facet_grid(~S1_fct) +
+  theme_minimal() +
+  labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
+       x = "Alter")
 ```
 
 ## ggplot2 und die grammar of graphics 
@@ -72,7 +80,7 @@ Nach der Installation und der Aktivierung von `ggplot2` können wir uns der Logi
 
 ```{r,eval=F}
 ggplot(data = datensatz, aes(x = var1, y = var2, fill = var3)) +
-  geom_col() +
+  geom_bar() +
   labs(title= "Titel", subtitle = "Untertitel") +
   theme_bw()
 ```
@@ -103,6 +111,7 @@ ggplot(data = tab_df, aes(x = m1202, y = Freq))
 ```
 ```{r, out.height= "30%",fig.height=2, fig.align="center", echo=F, warning=F, message=F}
 ggplot(data = tab_df, aes(x = m1202, y = Freq)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
+ggplot(data = etb18, aes(x = m1202)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
 ```
 `geom`: Wenn wir nur diese Angaben machen, bekommen wir lediglich ein leeres Koordinatensystem - warum? Weil wir noch nicht angegeben haben, welche *Form* der Darstellung wir gerne möchten. Dazu muss wir ein `geom_` angeben, für Säulendiagramme ist das `geom_col()`, diese hängen wir an den `ggplot`-Befehl mit `+` an:
 ```{r, eval=F}

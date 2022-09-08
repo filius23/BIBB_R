@@ -39,14 +39,12 @@ ggplot(data = tab_df ,
 etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
 
 tab_df <- etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
-tab_df <- data.frame( kt )
-class(tab_df)
-head(tab_df, n=3) ## zur Kontrolle
 
-## ggplot(data = tab_df, aes(x = m1202, y = Freq))
-ggplot(data = tab_df, aes(x = m1202, y = Freq)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
+labelstab_df$m1202
 
-## ggplot(data = tab_df, aes(x = m1202, y = Freq)) + geom_col()
+
+
+
 ggplot(data = tab_df, aes(x = m1202, y = Freq)) + geom_col() + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
 
 ## ggplot(data = tab_df, aes(x = m1202, y = Freq, color= S1)) + geom_col()
