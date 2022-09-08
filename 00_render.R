@@ -1,5 +1,5 @@
 
-# knitr::purl(input = "09_reg.qmd",output= "09_reg.R",documentation = 0)
+knitr::purl(input = "04_viz.qmd",output= "04_viz.R",documentation = 0)
 
 
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 

@@ -38,6 +38,7 @@ Eine große Stärke von `ggplot2` sind die zahlreichen Erweiterungen, welche bei
 + Karten zu erstellen mit [sf](https://oliviergimenez.github.io/intro_spatialR/#1), weitere [Link](https://ourcodingclub.github.io/tutorials/dataviz-beautification-synthesis/)
 + fortgeschrittene Textformatierungen zu verwenden mit [`{ggtext}`](https://wilkelab.org/ggtext/)
 + Grafiken als Animation zu erstellen [`{gganimate}`](https://gganimate.com/)
++ Logos in in `{ggplot2}` einfügen mit [`{ggpath}`](https://mrcaseb.github.io/ggpath/)
 
 Eine Übersicht zu Erweiterungspakteten für `{ggplot2}` findet sich [hier](https://exts.ggplot2.tidyverse.org/gallery/)
 
@@ -59,6 +60,11 @@ Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw
 
 [`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an.
 
+## Weitere Modellierungen
+
+### Ereigniszeitmodelle / Event History Modellung / Survival Analysis
+ 
++ [Einführung von Emily Zabor](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)
 
 
 ::: {#refs}

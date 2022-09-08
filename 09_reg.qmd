@@ -1,6 +1,8 @@
 # Regressionsmodelle {#reg}
 
 ```{r reg01, include=F}
+# http://hbiostat.org/rmsc/
+
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 library(patchwork)
 library(tidyverse)
@@ -179,6 +181,9 @@ performance(m1)
 
 
 ## Interaktionen
+```{r}
+# https://strengejacke.github.io/ggeffects/index.html
+```
 
 ## Quadratische Terme & Polynome
 

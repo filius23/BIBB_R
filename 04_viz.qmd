@@ -5,11 +5,12 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 library(tidyverse)
 library(patchwork)
-knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(message = F,warning = F,highlight = "#<<",
+                      out.height= "65%", out.width = "65%", fig.align="center")
 # https://wtoivo.github.io/SGSSS-data-viz-workshop/bar-plots.html
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 etb18$m1202[etb18$m1202<0] <- NA
-kt <- xtabs(~S1+m1202, data = etb18) 
+tab_df <- xtabs(~S1+m1202, data = etb18) %>% data.frame()
 
 etb18$zpalter[etb18$zpalter>100] <- NA
 ```
@@ -17,174 +18,120 @@ etb18$zpalter[etb18$zpalter>100] <- NA
 
 Neben Kennzahlen/Tabellen können/sollten Verteilungen auch visualisiert werden. 
 Dafür bietet `{ggplot2}` eine riesige Auswahl an Möglichkeiten. 
-Im Folgenden sehen wir uns eine Möglichkeit an, die gerade erstellte Kontingenztabelle zu visualisieren:
-```{r}
-etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
-```
 
-```{r, out.height= "70%", out.width= "70%", fig.align="center", echo = F}
+Zunächst sehen wir uns den Weg zu einem Scatterplot an:
+
+```{r, out.height= "80%", out.width= "80%", fig.align="center", echo = F}
 #| warning: false
-
-# tab_df <- 
-#   etb18 %>% count(S1,m1202) %>% 
-#   filter(!is.na(m1202)) %>% 
-#   mutate(m1202_lab = as_factor(m1202))
-
-# ggplot(data = tab_df , 
-#        aes(x = str_wrap(name,20), y = Freq, fill = S1 )) + 
-#   geom_col(  position=position_dodge()) + 
-#   theme_minimal() + 
-#   scale_fill_manual(values = c("navajowhite","navy"),
-#                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
-#   labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-#        subtitle = "Absolute Häufigkeiten",
-#        caption = "Quelle: ETB 2018",
-#        x = "Ausbildung",
-#        y = "Absolute Häufigkeit",
-#        fill = "Geschlecht" ) 
-
-
-# ggplot(data = etb18 , 
-#        aes(x = m1202, fill = factor(S1) )) + 
-#   geom_bar(  position=position_dodge()) + 
-#   theme_minimal() + 
-#   scale_fill_manual(values = c("navajowhite","navy"),
-#                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
-#   scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-#   labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-#        subtitle = "Absolute Häufigkeiten",
-#        caption = "Quelle: ETB 2018",
-#        x = "Ausbildung",
-#        y = "Absolute Häufigkeit",
-#        fill = "Geschlecht" ) 
-
-```
-
-
-```{r, out.height= "70%", out.width= "70%", fig.align="center", echo = F}
 etb18 %>%
-  slice(1:1000) %>% 
+  slice(1:100) %>% 
   mutate(S1_fct = factor(S1, levels = 1:2, labels = c("Männer","Frauen"))) %>%
 ggplot(aes(x = zpalter, y = az)) +
   geom_point(aes(color = S1_fct)) +
   facet_grid(~S1_fct) +
   theme_minimal() +
   labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
-       x = "Alter")
+       x = "Alter") +
+  scale_color_manual(values = c("lightskyblue4","navy"))
 ```
 
 ## ggplot2 und die grammar of graphics 
 
-Nach der Installation und der Aktivierung von `ggplot2` können wir uns der Logik dieses Pakets widmen. 
+`{ggplot2}` ist Teil des `{tidyverse}`, d.h. wir können entweder nur `{ggplot2}` oder die gesamte `{tidyverse}`-Sammlung laden:
+```{r}
+#| eval: false
+library(ggplot2)
+library(tidyverse)
+```
+
+
+Nach der Installation und der Aktivierung von `{ggplot2}` können wir uns der Logik dieses Pakets widmen. 
 `ggplot2` ist die Umsetzung des Konzepts der "layered grammar of graphics" in R. Die Idee dieses Visualisierungssystems ist es, Datenvisualisierung in Parameter zu unterteilen: der zugrundeliegende Datensatz, die darzustellenden Variablen, die Wahl der darzustellenden Formen, das Koordinatensystem, Skalen und statistische Transformationen. Ein Standardbefehl in `ggplot2` sieht ungefähr so aus:
 
 ```{r,eval=F}
-ggplot(data = datensatz, aes(x = var1, y = var2, fill = var3)) +
-  geom_bar() +
+ggplot(data = datensatz, aes(x = var1, y = var2, color = var3)) +
+  geom_point() +
   labs(title= "Titel", subtitle = "Untertitel") +
-  theme_bw()
+  theme_minimal()
 ```
 Wir rufen also zunächst mit `ggplot()` eine Darstellung auf. In den weiteren Argumenten werden dann weitere Aspekte festgelegt:  
 
 + Mit `data = ` geben wir den `data.frame` an, den wir darstellen möchten
 + Die Aesthetics `aes()` legen fest, welche Variablen dargestellt werden sollen: hier also `var1` auf der x-Achse, `var2` auf der y-Achse und `var3` soll die Farbgebung festlegen
-+ Die Layers `geom_..` geben die Art der Darstellung an, zB. `geom_point` für Punkt- und `geom_col` für Säulendiagramme.
++ Die Layers `geom_..` geben die Art der Darstellung an, zB. `geom_point()` für Punkt- und `geom_bar()` für Säulendiagramme.
 + Mit `labs` können wir Beschriftungen angeben, zB. einen Titel vergeben oder die Achsenbeschriftungen anpassen
 + Die Themes `theme_...` legen das Design der Graphik fest, zB. schwarz/weiße Achsen- und Hintergrundfarben mit  `theme_bw()`
 
 Wir arbeiten uns also jetzt durch die einzelnen *layer*/Schichten der Grafik:
 
-`data = ` : Datengrundlage für unsere Graphik ist die Tabelle mit Familienstandsangaben nach Geschlecht.
+### `data =`
+
+`data = ` : Datengrundlage für unsere Graphik ist die ETB18 mit den Angaben zur Arbeitszeit sowie dem Geschlecht und Alter der Befragten:
 ```{r}
-etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
+etb18 %>% select(az,S1,zpalter) %>% head()
 ```
-Zunächst müssen wir diese Kontingenztabelle in einen `data.frame` umwandeln:
+
+Um die Grafik nicht zu groß zu machen, verwenden wir nur die ersten 100 Beobachtungen:
 ```{r}
-tab_df <- etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
-tab_df <- data.frame( kt )
-class(tab_df)
-head(tab_df, n=3) ## zur Kontrolle
+etb18_small <- etb18 %>% slice(1:100)
 ```
-`aes`: Diese Werte wollen wir also in einem Säulendiagramm darstellen, sodass die Ausbildungsabschlüsse auf der x-Achse abgetragen sind und auf der y-Achse die jeweiligen Häufigkeiten (`Freq`):
+
+Wir starten unseren ggplot also mit:
+```{r,out.height= "40%"}
+ggplot(data = etb18_small)
+```
+
+
+### `aes` 
+
+Diese Werte wollen wir also in einem Scatterplot darstellen, sodass das Alter auf der x-Achse und auf der y-Achse die Wochenarbeitszeit  abgetragen ist:
 ```{r, eval=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq))
+#| warning: false
+ggplot(data = etb18_small, aes(x = zpalter, y = az))
 ```
-```{r, out.height= "30%",fig.height=2, fig.align="center", echo=F, warning=F, message=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
-ggplot(data = etb18, aes(x = m1202)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
+```{r, fig.align="center", echo=F, warning=F, message=F}
+ggplot(data = etb18_small, aes(x = zpalter, y = az)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
 ```
-`geom`: Wenn wir nur diese Angaben machen, bekommen wir lediglich ein leeres Koordinatensystem - warum? Weil wir noch nicht angegeben haben, welche *Form* der Darstellung wir gerne möchten. Dazu muss wir ein `geom_` angeben, für Säulendiagramme ist das `geom_col()`, diese hängen wir an den `ggplot`-Befehl mit `+` an:
-```{r, eval=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq)) + geom_col()
+### `geom`
+Wenn wir nur diese Angaben machen, bekommen wir lediglich ein leeres Koordinatensystem - warum? Weil wir noch nicht angegeben haben, welche *Form* der Darstellung wir gerne möchten. Dazu muss wir ein `geom_` angeben, für Säulendiagramme ist das `geom_col()`, diese hängen wir an den `ggplot`-Befehl mit `+` an:
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point()
 ```
-```{r, out.height= "30%",fig.height=2.25, fig.align="center", echo=F, warning=F, message=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq)) + geom_col() + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
-```
-
-Das sieht soweit schon ganz gut aus, allerdings werden die Säulen noch nicht getrennt nach Geschlecht dargestellt. Wir haben `sex` auch noch nicht in `aes()` angegeben. Das Geschlecht soll die Färbung der Balken vorgeben, diese können wir in `aes` mit `fill` und `color` angeben. `color` ist dabei jeweils die Farbe des Rands, `fill` die Flächenfarbe eines Objekts.  Beide Optionen können wir in `aes()` angeben:
-```{r, eval=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, color= S1)) + geom_col() 
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + geom_col() 
+Mit `color =`
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point(color = "orange")
 ```
 
-```{r, out.height= "50%",fig.height=2.25,fig.align="center", echo=F, warning=F, message=F}
-step3 <- ggplot(data = tab_df, aes(x = m1202, y = Freq, color = S1)) + geom_col() + theme_gray(base_size = 8)  + theme(aspect.ratio = .75, plot.margin = unit(c(.1,.1,.1,.1), "cm"))
-step4 <- ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + geom_col() + theme_gray(base_size = 8) + theme(aspect.ratio = .75, plot.margin = unit(c(.1,.1,.1,.1), "cm")) 
-step3 + step4
-## cowplot::plot_grid(step3,step4,nrow = 1)
+Das sieht soweit schon ganz gut aus, allerdings werden die Punkte noch nicht getrennt nach Geschlecht dargestellt. 
+Dazu müssen wir die Geschlechtsangabe (`S1`) in `aes()` angeben. 
+Das Geschlecht soll die Färbung der Punkte vorgeben, diese können wir in `aes` mit `color` angeben:
+```{r,error=TRUE}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = S1 )) + 
+  geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.numeric(S1))) + 
+  geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point()
 ```
-
-Natürlich kann man auch `color` als auch `fill` angeben (nicht dargestellt):
-```{r, eval = F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, color = sex , fill = S1)) + geom_col() 
-```
-Da die Flächenfarben deutlich besser erkennbar sind als die Umrissfarben, beschränken wir uns im Sinne der Übersichtlichkeit auf `fill`. Um die Säulen statt aufeinander nebeneinander anzuordnen müssen wir die Option `position=position_dodge()` in `geom_col` angeben:
-```{r,eval=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) 
-```
-```{r, out.height= "30%",fig.height=2.25, fig.align="center", echo=F, warning=F, message=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + geom_col(position=position_dodge()) + 
-  theme_gray(base_size = 8) + theme(aspect.ratio = 1)
-```
-
 
 Außerdem können wir mit `scale_fill_manual`[^2] selbst Farben angeben, eine Liste möglicher Farben findet sich [**hier**](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf).
 
 [^2]: Hätten wir `color` in `aes`  angeben, wäre der entsprechende Befehl `scale_color_manual`.
-```{r, out.height= "50%", out.width = "50%", fig.align="center", eval=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) + 
-  scale_fill_manual(values = c("navajowhite","navy"))
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point() + 
+  scale_color_manual(values = c("lightskyblue4","navy"))
 ```
 
 ### Beschriftungen: Legende anpassen
 
 Wir können mit den Optionen `breaks` und `labels` zudem auch die Beschriftung der Legende bearbeiten. Dazu geben wir zunächst in `breaks`  die Ausprägungen der Variable Geschlecht an und dann in der gleichen Reihenfolge die zu vergebenden Labels:
-```{r, out.height= "50%", out.width = "50%", fig.align="center", eval=F}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) +
-  scale_fill_manual(values = c("navajowhite","navy"),
+```{r, out.height= "75%", out.width = "75%", fig.align="center"}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point() + 
+  scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") )
 ```
-
-```{r, out.height= "50%",fig.height=2.35, fig.align="center", echo=F}
-## out.height= "75%", out.width = "75%",
-step5 <- ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) + theme_gray(base_size = 8) +
-  scale_fill_manual(values = c("navajowhite","navy") )  + 
-  theme(aspect.ratio = .75, plot.margin = unit(c(.1,.1,.1,.1), "cm")) +
-  coord_fixed(ratio=.005)
-step6 <-  ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge())+ theme_gray(base_size = 8)  +
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) + 
-  theme(aspect.ratio = .75, plot.margin = unit(c(.1,.1,.1,.1), "cm")) +
-  coord_fixed(ratio=.0075)
-step5 + step6
-## cowplot::plot_grid(step5, step6, nrow = 1)
-```
-
 ### Beschriftungen: Titel
 
 Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben wir folgende Optionen:
@@ -198,51 +145,152 @@ Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben
 + `color`: Beschriftung für die Legende, wenn `color` in `aes()` angegeben wurde
 
 Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme_minimal()` einen weißen Hintergrund mit grauen Markierungslinien (weitere Beispiele in den Hinweisen unter [Themes](#themes))
-```{r, out.height= "66%", out.width= "66%", fig.align="center"}
-ggplot(data = etb18, aes(x = m1202, fill = factor(S1))) + 
-  geom_bar(position=position_dodge()) +
-  scale_fill_manual(values = c("navajowhite","navy"),
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point() + 
+  scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  scale_x_continuous(breaks = 1:4,
-                     labels = names(labelled::val_labels(etb18$m1202)[-1]),10
-                     ) +
-  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-       subtitle = "Absolute Häufigkeiten",
-       caption = "Quelle: ETB 2018",
-       x = "Ausbildung",
-       y = "Absolute Häufigkeit",
-       fill = "Geschlecht" ) +
-  theme_minimal()
+  theme_minimal() +
+  labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: ETB 2018"
+       ) 
 ```
 
 
-Der Vorteil von `ggplot2` ist dann unter anderem, dass sich für eine andere Darstellungsform die bestehenden Befehle einfach übernehmen lassen. zB müssen wir für ein Punktediagramm lediglich `geom_col` durch `geom_point` ersetzen:
+## Aesthetics
 
-```{r, out.height= "55%", out.width= "55%", fig.align="center"}
-ggplot(data = tab_df , aes(x = m1202, y = Freq, fill = S1 )) + 
-  geom_point(shape = 21, size = 1.25) + 
-  theme_minimal() + 
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  labs(title = "Familienstand", subtitle = "Absolute Häufigkeiten pro Geschlecht",
-       caption = "Quelle: Allbus 2016",x = "Familienstand",
-       y = "Absolute Häufigkeit",fill = "Geschlecht" ) 
+```{r}
+#| fig-asp: 0.35
+#| echo: false
+#| warning: false
+#| message: false
+eg <- tribble(
+  ~x, ~y, ~size, ~x1,
+  "A", 1, 5, 1,
+  "B", 1, 10, 2,
+  "C", 1, 15, 3
+)
+
+eg_theme <- 
+  theme(axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        # aspect.ratio = .5,
+        plot.title = element_text(size = rel(1.5),hjust = 0.5))
+
+aes_clr <- 
+  ggplot(eg, aes(x = x, y = y, color = x)) +
+    geom_point(size = 5) +
+    guides(color = FALSE) +
+    labs(title = "Color (discrete)") +
+    eg_theme   
+
+aes_clrc <- 
+  ggplot(eg, aes(x = x1, y = y, color = x1)) +
+    geom_point(size = 5) +
+    guides(color = FALSE) +
+    coord_cartesian(xlim = c(1, 3.5)) +
+    labs(title=  "Color (continuous)") +
+    eg_theme
+
+aes_size <- 
+  ggplot(eg, aes(x = x, y = y, size = x)) +
+    geom_point() +
+    scale_size_discrete(range = c(1.5, 10)) +
+    guides(size = FALSE) +
+    labs(title = "Size") +
+    eg_theme 
+  
+aes_fill <-   
+  ggplot(eg, aes(x = x, y = y, fill = x)) +
+    geom_point(size = 5, pch = 21, stroke = 1.5) +
+    guides(fill = FALSE) +
+    eg_theme+ 
+  labs(title = "fill")
+
+aes_shape <- 
+  ggplot(eg, aes(x = x, y = y, shape = x)) +
+    geom_point(size = 5) +
+    guides(shape = FALSE) +
+    eg_theme + 
+    labs(title = "shape")
+# Alpha
+
+aes_alpha <- 
+  ggplot(eg, aes(x = x, y = y, alpha = x)) +
+    geom_point(size = 5) +
+    guides(alpha = FALSE) +
+    eg_theme +
+  labs(title="alpha")
+
+
+aes_clr + aes_size + aes_shape
+aes_clrc + aes_fill + aes_alpha
 ```
 
-Wir können mit `coord_flip()` das Säulendiagramm ganz einfach in ein Balkendiagramm verwandeln:
-```{r, out.height= "55%", out.width= "55%", fig.align="center"}
-ggplot(data = tab_df , aes(x = m1202, y = Freq, fill = S1 )) + 
-  geom_col(  position=position_dodge()) + 
-  theme_minimal() + 
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  labs(title = "Familienstand",subtitle = "Absolute Häufigkeiten pro Geschlecht",
-       caption = "Quelle: Allbus 2016",x = "Familienstand",
-       y = "Absolute Häufigkeit",fill = "Geschlecht" ) +
-  coord_flip()
+
+```{r}
+#| out-height: 100%
+#| out-width: 100%
+ggplot(data = etb18_small, aes(x = zpalter, y = az, 
+                               color = factor(S1),
+                               fill = factor(S1),
+                               shape = factor(m1202))) + 
+  geom_point() + 
+  scale_fill_manual(values = c("lightskyblue4","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  scale_color_manual(values = c("green","orange"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  scale_shape_manual(values = c(21:24),breaks = c(1:4), 
+                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  theme_minimal() +
+  labs(color = "Geschlecht", 
+       shape = "Ausbildung",
+       fill = "Geschlecht",
+       y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: ETB 2018"
+       ) 
+```
+### Shapes
+```{r}
+#| echo: false
+#| out-height: 50%
+#| out-width: 50%
+#| fig-align: "center"
+shp_df <- data.frame(shp = factor(1:25), x = rep(1:5,each=5), y = rep(1:5,5))
+ggplot(shp_df,aes(x,y)) +
+  geom_point(shape=shp_df$shp, size = 7, fill = "dodgerblue") +
+  geom_text(aes(label=shp,x = x-.2), size = 6) +
+  theme_void(base_size=15)+
+  scale_y_reverse() +
+  theme(plot.margin = unit(c(2,2,2,2),"lines"))
+```
+
+
+### Linetypes
+```{r}
+#| echo: false
+#| out-height: 30%
+#| out-width: 50%
+#| fig-align: "center"
+lt_df <- data.frame(x = 0, y = seq(0,.75,.125),
+                    lty = 0:6,
+                     lt = c("0 'blank'"   ,"1 'solid'"   ,"2 'dashed'"  ,"3 'dotted'"  ,"4 'dotdash'" ,"5 'longdash'",  "6 'twodash'" )  )
+ggplot(lt_df, aes(x,y,linetype = factor(lty))) + 
+  geom_segment(aes(xend = 1,yend = y), size = 1) +
+  geom_text(aes(x=-.35,label = lt),hjust= 0, size = 6) +
+  theme_void(base_size=12)+
+  guides(linetype = F) +
+  scale_y_reverse()
 
 ```
 
+Übersicht zu Shapes und Linetypes im [R Cookbook](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
 
 ## Verteilungen visualisieren: Boxplots, Histogramme
 
@@ -362,6 +410,26 @@ ggplot(data = etb18, aes(x = az)) +
 
 + jitter
 
+
+## Kategoriale Merkmale 
+Im Folgenden sehen wir uns eine Möglichkeit an, die gerade erstellte Kontingenztabelle zu visualisieren:
+```{r}
+etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
+
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1) )) + 
+  geom_bar(  position=position_dodge()) + 
+  theme_minimal() + 
+  scale_fill_manual(values = c("navajowhite","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
+  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Absolute Häufigkeiten",
+       caption = "Quelle: ETB 2018",
+       x = "Ausbildung",
+       y = "Absolute Häufigkeit",
+       fill = "Geschlecht" ) 
+```
 
 ## Aufgaben
 
