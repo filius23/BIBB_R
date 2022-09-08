@@ -282,6 +282,10 @@ Möchten wir das umgehen, nehmen wir wieder `filter()` zu Hilfe - mit `is.na()` 
 etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
 ```
 
+```{r}
+etb18 %>% filter(!is.na(m1202)) %>% count(S1,m1202)
+```
+
 Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
 
 
