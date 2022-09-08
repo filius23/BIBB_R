@@ -406,10 +406,6 @@ ggplot(data = etb18, aes(x = az)) +
   labs(fill = "") +
   theme_minimal()
 ```
-## Scatterplot
-
-+ jitter
-
 
 ## Kategoriale Merkmale 
 Im Folgenden sehen wir uns eine Möglichkeit an, die gerade erstellte Kontingenztabelle zu visualisieren:
@@ -429,6 +425,26 @@ ggplot(data = etb18 ,
        x = "Ausbildung",
        y = "Absolute Häufigkeit",
        fill = "Geschlecht" ) 
+
+
+
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1),
+           y = ..count../sum(..count..)
+           )) + 
+  geom_bar(  position=position_dodge()) + 
+  theme_minimal() + 
+  scale_fill_manual(values = c("navajowhite","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
+  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Relative Häufigkeiten",
+       caption = "Quelle: ETB 2018",
+       x = "Ausbildung",
+       y = "Relative Häufigkeit",
+       fill = "Geschlecht" ) 
+
 ```
 
 ## Aufgaben
