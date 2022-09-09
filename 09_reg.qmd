@@ -38,18 +38,11 @@ theme_set(theme_x)
 
 ```
 
-## Beispieldatensatz
-
 Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich vier Fällen. Mit dem `data.frame` Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2 
 ```{r}
 dat1 <- data.frame(var1 = c(1,2,7,8),
                    var2 = c(2,4,7,6))
 dat1
-```
-
-```{r}
-#| echo: false
-dat1$var2_mean <- mean(dat1$var2)
 ```
 
 ## Regressionsmodelle mit `lm()` {#lm1}
@@ -85,99 +78,20 @@ In unserer Grafik sieht diese Gerade so aus:
 
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
-  geom_smooth(method = "lm", color = "darkblue" , se = FALSE, size = .65)  +
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  scale_y_continuous(breaks = seq(0,8,2)) +
-  scale_x_continuous(breaks = seq(0,8,2)) 
+  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
+  expand_limits(x = c(0,8),y=c(0,8)) 
 ```
 
-### Vorhergesagte Werte {#pred}
 
-In welcher Hinsicht ist die Gerade nun eine Verbesserung gegenüber dem `mean`? Wir können uns für eine Einschätzung die Residuen ansehen. Für den Punkt ganz links hatte wir vorhin berechnet, dass das Residuum auf Basis des arithm. Mittels (also die Distanz zum orangen Punkt auf der gestrichelten Linie) `2-4.75 = -2.75` beträgt:
-```{r}
-dat1
-```
-Die vorhergesagten Werte von `lm()` finden sich unter `$fitted.values`:
-```{r}
-m1$fitted.values
-```
-Diese vorhergesagten Werte entsprechen einfach der Summe aus dem Wert unter `Intercept` und dem Wert unter `var1` multipliziert mit dem jeweiligen Wert für `var1`. 
-```{r}
-m1
-```
-Für die erste Zeile aus `dat1` ergibt sich also `m1` folgender vorhergesagter Wert: `2.1351+0.5811*1=``r 2.1351+0.5811*1`
-
-Die Werte unter `fitted.values` folgen der Reihenfolge im Datensatz, sodass wir sie einfach als neue Spalte in `dat1` ablegen können:
-```{r}
-dat1$lm_vorhersagen <- m1$fitted.values
-dat1
-```
-Die Grafik zeigt wie Vorhersagen auf Basis von `m1` aussehen: Sie entsprechen den Werten auf der blauen Geraden (der sog. Regressionsgeraden) an den jeweiligen Stellen für `var1`. 
-```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
-#| code-fold: true
-ggplot(dat1, aes(x = var1, y = var2)) + geom_point(size = 3) +      expand_limits(x = c(0,8),y=c(0,8)) +
-  scale_y_continuous(breaks = seq(0,8,2)) +
-  scale_x_continuous(breaks = seq(0,8,2)) +
-  geom_hline(aes(yintercept = var2_mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_point(aes(x = var1, y = var2_mean), col = "darkorange", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = var2_mean), color = "red", size = .65, linetype = "dotted")  +
-  geom_smooth(method = "lm", color = "darkblue" , se = FALSE,size =.65) +
-  geom_point(aes(x = var1, y = lm_vorhersagen), color = "dodgerblue3", size = 3)
-```
-
-### Residuen des Regressionsmodells {#res2}
-
-Wir können erkennen, dass die hellblauen Punkte (also die Vorhersagen von `m1`) deutlich näher an den tatsächlichen Punkten liegen als die orangen Vorhersagen auf Basis des `mean`. Trotzdem sind auch die hellblauen Punkte nicht deckungsgleich mit den tatsächlichen Werten. Es gibt also auch hier wieder Residuen. Wir können diese per Hand berechnen als Differenz zwischen dem tatsächlichen und dem vorhergesagten Wert:
-```{r}
-dat1$var2 - m1$fitted.values
-```
-Oder wir können Sie unter `m1$residuals` aufrufen:
-```{r}
-m1$residuals
-```
-Auch die Residuen für `lm` können wir in `dat1` ablegen: 
-```{r}
-dat1$lm_residuen <- m1$residuals
-dat1
-```
-
-Hier sind die Residuen für `lm` hellblau eingezeichnet:
-```{r, fig.height=2.75, fig.width=2.75, fig.align="center" , eval = T, message=F}
-#| code-fold: true
-ggplot(dat1, aes(x = var1, y = var2)) + geom_point(size = 3) + 
-    
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  geom_hline(aes(yintercept = var2_mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_point(aes(x = var1, y = var2_mean), col = "darkorange", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = var2_mean), color = "red", size = .65, linetype = "dotted")  +
-  geom_smooth(method = "lm", color = "darkblue" , se = FALSE,size =.65) +
-  geom_point(aes(x = var1, y = lm_vorhersagen), color = "dodgerblue3", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = lm_vorhersagen), color = "dodgerblue3", size = .65, linetype = 1) 
-```
-
-## Modellgüte {#r2}
-
-Um zu beurteilen, um wieviel besser unsere Gerade aus `lm()` die Werte vorhersagen kann als der `mean` können wir die Summe der quadrierten Residuen vergleichen:
-```{r}
-dat1$lm_residuen2 <- dat1$lm_residuen^2
-dat1
-sum(dat1$m_residuen2)
-sum(dat1$lm_residuen2)
-```
-Zum Beispiel können wir uns fragen, um wieviel sich die Summe der quadrierten Residuen verringert wenn wir statt des `mean` unser `lm`-Modell verwenden:
-```{r}
-sum(dat1$m_residuen2)-sum(dat1$lm_residuen2)
-```
-Wenn wir diese Veränderung ins Verhältnis mit dem "Ausgangswert", also den Residuen aus der Mittelwertregel setzen, dann erhalten wir das $R^{2}$ für unser `lm()`-Modell. Dieses gibt die prozentuale Verringerung der Residuen durch das `lm()`-Modell im Vergleich zur Mittelwertregel an: 
-```{r}
-( sum(dat1$m_residuen2)-sum(dat1$lm_residuen2) )/sum(dat1$m_residuen2)
-```
-Unser `lm`-Modell kann also 84,7\% der Streuung um den Mittelwert erklären.
+## Regressionstabellen
 
 ```{r}
-library(performance)
-performance(m1)
+modelsummary::modelsummary(m1)
 ```
+
+
+## Kategoriale unabhängige Variablen
+
 
 
 ## Interaktionen
@@ -187,7 +101,6 @@ performance(m1)
 
 ## Quadratische Terme & Polynome
 
-## Kategoriale unabhängige Variablen
 
 
 
@@ -255,102 +168,61 @@ View(a16f)
 
 
 
-## Für Interessierte: Syntax für Graphiken
+## Anhang
 
-Die Abbildungen oben sind mit `ggplot2` erstellt. 
+### Vorhergesagte Werte {#pred}
 
-Falls nicht bereits geschehen, können wir es so installieren:
-```{r,eval=F}
-install.packages("ggplot2")
-library(ggplot2)
+Die vorhergesagten Werte von `lm()` finden sich unter `$fitted.values`:
+```{r}
+m1$fitted.values
 ```
-Das Prinzip bei `ggplot2` ist, zunächst grundlegende Optionen festzulegen und erst dann schließen wir mit `+` Befehle für die Art der Darstellung an.  
-
-Wir geben also zunächst an, dass wir Variablen aus `dat1` darstellen möchten. Auf die x-Achse soll var1, auf der y-Achse soll `var2` abgetragen werden. Diese Daten möchten wir als Punktediagramm/"Scatterplot" darstellen, der Befehl dafür ist `geom_point`. Diese beiden Befehle liefern schon eine Darstellung, die wir aber noch anpassen. In den Optionen von `geom_point` können wir mit `size` die Punkte etwas größer machen, außerdem mit können wir mit `theme_minimal()` dar Farbschema auf Schwarz/Weiß setzen. Mit `scale_x_continuous()` und  `scale_y_continuous()` können wir die Intervalle für die x- und y-Achse festlegen.
-
-```{r, eval=F, echo=T}
-ggplot(dat1, aes(x = var1, y = var2)) + geom_point()
-ggplot(dat1, aes(x = var1, y = var2)) + geom_point(size = 2) + theme_minimal() +
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  scale_y_continuous(breaks = seq(0,8,2)) +
-  scale_x_continuous(breaks = seq(0,8,2)) 
+Diese vorhergesagten Werte entsprechen einfach der Summe aus dem Wert unter `Intercept` und dem Wert unter `var1` multipliziert mit dem jeweiligen Wert für `var1`. 
+```{r}
+m1
 ```
-### mean einzeichnen
-Für die `mean`-Linie müssen wir bei `yintercept` den y-Achsenabschnitt angeben, bei dem die horizontale Linie (das h in hline steht für horizontal) eingezeichnet werden soll. Außerdem können wir mit `color` eine Farbe, mit `size` die Breite und mit `linetype` den Linientyp auswählen. Mit `geom_label` können Textfelder eingeblendet werden.
-```{r, eval = F, echo =T}
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_point(size = 3) + 
-  theme_minimal() +
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  scale_y_continuous(breaks = seq(0,8,2)) +
-  scale_x_continuous(breaks = seq(0,8,2)) +
-  geom_hline(aes(yintercept = mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_label(aes(y = 4, x = 5), label = "mean = 4.75", color = "grey30")
+Für die erste Zeile aus `dat1` ergibt sich also `m1` folgender vorhergesagter Wert: `2.1351+0.5811*1=``r 2.1351+0.5811*1`
+
+Die Werte unter `fitted.values` folgen der Reihenfolge im Datensatz, sodass wir sie einfach als neue Spalte in `dat1` ablegen können:
+```{r}
+dat1$lm_vorhersagen <- m1$fitted.values
+dat1
 ```
-
-
-
-### Vorhergesagte Werte aus Mittelwertregel
-Um die vorhergesagten Werte einzuzeichnen geben wir in einem zusätzlichen `geom_point` für die x-Werte weiterhin `var1` an, hier ändert sich ja nichts. Für `y` geben  wir aber `mean` an, also den vorhergesagten Wert.
-```{r, fig.height=2.5, fig.width=2.5, echo=T, fig.align="center" , eval = F}
-## vohergesagte Werte einzeichnen
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_point(size = 3) + 
-  theme_minimal() +
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  geom_hline(aes(yintercept = mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_point(aes(x = var1, y = mean), color = "darkorange", size = 3) 
-```
-
-### Residuen einzeichnen
-
-Die Residuen zweichnen wir mit Hilfe von `geom_segment` ein. `geom_segment` benötigt in `aes()` 4 Angaben: jeweils den Start- und Endpunkt der Linie für die x- und y-Achse. `x` und `xend` geben also die Strecke in "x-Richtung" von links nach rechts an, `y` und `yend` die Strecke in "y-Richtung". Mit `color`, `size` und `linetype` wird die Farbe, die Größe und den Linientyp angepasst.
-
-```{r, fig.height=2.5, fig.width=2.5, echo=T, fig.align="center" , eval = F}
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_point(size = 3) + 
-  theme_minimal() +
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  scale_y_continuous(breaks = seq(0,8,2)) +
-  scale_x_continuous(breaks = seq(0,8,2)) +
-  geom_hline(aes(yintercept = mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_point(aes(x = var1, y = mean), col = "darkorange", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = mean), color = "red", size = .65, 
-               linetype = "dotted")  
-```
-
-### Regressionsgerade einzeichnen
-Die Regressionsgerade aus `lm` können wir mit `geom_smooth(method = "lm")` einzeichnen:
-```{r, eval = F, echo =T }
-ggplot(dat1, aes(x = var1, y = var2)) + geom_point(size = 3) +   
-  theme_minimal() +
-  expand_limits(x = c(0,8),y=c(0,8)) +
-  scale_y_continuous(breaks = seq(0,8,2)) +
-  scale_x_continuous(breaks = seq(0,8,2)) +
-  geom_hline(aes(yintercept = mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_point(aes(x = var1, y = mean), col = "darkorange", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = mean), color = "red", size = .65, 
-               linetype = "dotted")  +
-  geom_smooth(method = "lm", color = "darkblue" , se = FALSE) 
-```
-
-
-### Residuen aus Regression einzeichnen
-Schließlich können wir auch die Residuen aus `lm` einzeichnen, wiederum mit `geom_segment`:
-```{r, eval = F}
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_point(size = 3) + theme_minimal() +
-  geom_hline(aes(yintercept = mean), color = "#4F5CB3", size = .75, linetype = "dashed") +
-  geom_point(aes(x = var1, y = mean), col = "darkorange", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = mean), color = "red", size = .65, 
-               linetype = "dotted")  +
-  geom_smooth(method = "lm", color = "darkblue" , se = FALSE) +
+Die Grafik zeigt wie Vorhersagen auf Basis von `m1` aussehen: Sie entsprechen den Werten auf der blauen Geraden (der sog. Regressionsgeraden) an den jeweiligen Stellen für `var1`. 
+```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+#| code-fold: true
+ggplot(dat1, aes(x = var1, y = var2)) +
+  geom_point(size = 3) +      
+  geom_smooth(method = "lm", color = "darkblue" , se = FALSE,size =.65) +
   geom_point(aes(x = var1, y = lm_vorhersagen), color = "dodgerblue3", size = 3) +
-  geom_segment(aes(x = var1, xend = var1, y = var2, yend = lm_vorhersagen), 
-               color = "dodgerblue3", size = .65, linetype = 1) 
+  expand_limits(x = c(0,8),y=c(0,8)) 
 ```
 
+### Residuen {#res2}
 
+Die hellblauen Punkte (also die Vorhersagen von `m1`) liegen in der Nähe der tatsächlichen Punkte. Trotzdem sind auch die hellblauen Punkte nicht deckungsgleich mit den tatsächlichen Werten. 
+Diese Abweichungen zwischen den vorhergesagten und tatsächlichen Werten werden als Residuen bezeichnet:
+$$Residuum = beobachteter\, Wert \; - \; vorhergesagter\,Wert$$
+$$\epsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}$$
+Wir können diese per Hand berechnen als Differenz zwischen dem tatsächlichen und dem vorhergesagten Wert oder einfach unter `m1$residuals` aufrufen:
+```{r}
+m1$residuals
+```
+Auch die Residuen für `lm` können wir in `dat1` ablegen: 
+```{r}
+dat1$lm_residuen <- m1$residuals
+dat1
+```
+
+Hier sind die Residuen für `lm` hellblau eingezeichnet:
+```{r, fig.height=2.75, fig.width=2.75, fig.align="center" , eval = T, message=F}
+#| code-fold: true
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_smooth(method = "lm", color = "darkblue" , se = FALSE,size =.65) +
+  geom_segment(aes(x = var1, xend = var1, y = var2, yend = lm_vorhersagen), color = "dodgerblue3", size = .65, linetype = 1) +
+  geom_point(size = 3) +
+  geom_point(aes(x = var1, y = lm_vorhersagen), color = "dodgerblue3", size = 3) +
+  expand_limits(x = c(0,8),y=c(0,8)) 
+```
 
 
 ### Annahmen checken
