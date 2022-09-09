@@ -28,12 +28,23 @@ etb18 %>%
   mutate(S1_fct = factor(S1, levels = 1:2, labels = c("Männer","Frauen"))) %>%
 ggplot(aes(x = zpalter, y = az)) +
   geom_point(aes(color = S1_fct)) +
-  facet_grid(~S1_fct) +
+  # facet_grid(~S1_fct) +
   theme_minimal() +
   labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
        x = "Alter") +
   scale_color_manual(values = c("lightskyblue4","navy"))
 ```
+
+Datengrundlage für unsere Graphik ist die ETB18 mit den Angaben zur Arbeitszeit sowie dem Geschlecht und Alter der Befragten:
+```{r}
+etb18 %>% select(az,S1,zpalter) %>% head()
+```
+
+Um die Grafik nicht zu groß zu machen, verwenden wir nur die ersten 100 Beobachtungen:
+```{r}
+etb18_small <- etb18 %>% slice(1:100)
+```
+
 
 ## ggplot2 und die grammar of graphics 
 
@@ -66,44 +77,35 @@ Wir arbeiten uns also jetzt durch die einzelnen *layer*/Schichten der Grafik:
 
 ### `data =`
 
-`data = ` : Datengrundlage für unsere Graphik ist die ETB18 mit den Angaben zur Arbeitszeit sowie dem Geschlecht und Alter der Befragten:
+In `data = ` geben die den `data.frame` an, aus dem die darzustellenden Informationen kommen. Wir starten unseren ggplot also mit:
 ```{r}
-etb18 %>% select(az,S1,zpalter) %>% head()
-```
-
-Um die Grafik nicht zu groß zu machen, verwenden wir nur die ersten 100 Beobachtungen:
-```{r}
-etb18_small <- etb18 %>% slice(1:100)
-```
-
-Wir starten unseren ggplot also mit:
-```{r,out.height= "40%"}
 ggplot(data = etb18_small)
 ```
 
 
 ### `aes` 
 
-Diese Werte wollen wir also in einem Scatterplot darstellen, sodass das Alter auf der x-Achse und auf der y-Achse die Wochenarbeitszeit  abgetragen ist:
-```{r, eval=F}
+Diese Werte wollen wir also in einem Scatterplot darstellen, sodass das Alter auf der x-Achse und auf der y-Achse die Wochenarbeitszeit abgetragen ist:
+```{r}
 #| warning: false
 ggplot(data = etb18_small, aes(x = zpalter, y = az))
 ```
-```{r, fig.align="center", echo=F, warning=F, message=F}
-ggplot(data = etb18_small, aes(x = zpalter, y = az)) + theme_gray(base_size = 8) + theme(aspect.ratio = 1)
-```
+
 ### `geom`
 Wenn wir nur diese Angaben machen, bekommen wir lediglich ein leeres Koordinatensystem - warum? Weil wir noch nicht angegeben haben, welche *Form* der Darstellung wir gerne möchten. Dazu muss wir ein `geom_` angeben, für Säulendiagramme ist das `geom_col()`, diese hängen wir an den `ggplot`-Befehl mit `+` an:
 ```{r}
 ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point()
 ```
-Mit `color =`
+Mit `color =` können wir den Punkten auch eine andere Farbe geben:
 ```{r}
 ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point(color = "orange")
 ```
 
+### `aes()` Teil II
 Das sieht soweit schon ganz gut aus, allerdings werden die Punkte noch nicht getrennt nach Geschlecht dargestellt. 
-Dazu müssen wir die Geschlechtsangabe (`S1`) in `aes()` angeben. 
+Dazu müssen wir die Geschlechtsangabe (`S1`) in `aes()` angeben.
+Neben den Achsen werden in `aes()` nämlich auch die Variablen für das Aussehen der `geom_`s angeben - das kann neben der Farbe auch die Form, Größe oder Transparenz sein. [Hier ein Überblick](#aes)
+
 Das Geschlecht soll die Färbung der Punkte vorgeben, diese können wir in `aes` mit `color` angeben:
 ```{r,error=TRUE}
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = S1 )) + 
@@ -114,7 +116,7 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
   geom_point()
 ```
 
-Außerdem können wir mit `scale_fill_manual`[^2] selbst Farben angeben, eine Liste möglicher Farben findet sich [**hier**](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf).
+Außerdem können wir mit `scale_color_manual`[^2] selbst Farben angeben, eine Liste möglicher Farben findet sich [**hier**](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf).
 
 [^2]: Hätten wir `color` in `aes`  angeben, wäre der entsprechende Befehl `scale_color_manual`.
 ```{r}
@@ -123,7 +125,16 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
   scale_color_manual(values = c("lightskyblue4","navy"))
 ```
 
-### Beschriftungen: Legende anpassen
+```{r}
+#| code-fold: true
+#| eval: false
+ggplot(data = etb18_small, aes(x = zpalter, y = az)) + 
+  geom_point(aes(color = factor(S1))) + 
+  scale_color_manual(values = c("lightskyblue4","navy"))
+```
+
+
+### Beschriftungen
 
 Wir können mit den Optionen `breaks` und `labels` zudem auch die Beschriftung der Legende bearbeiten. Dazu geben wir zunächst in `breaks`  die Ausprägungen der Variable Geschlecht an und dann in der gleichen Reihenfolge die zu vergebenden Labels:
 ```{r, out.height= "75%", out.width = "75%", fig.align="center"}
@@ -132,8 +143,6 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
   scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") )
 ```
-### Beschriftungen: Titel
-
 Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben wir folgende Optionen:
 
 + `title`: Überschrift für die Graphik
@@ -144,13 +153,12 @@ Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben
 + `fill`: Beschriftung für die Legende, wenn `fill` in `aes()` angegeben wurde
 + `color`: Beschriftung für die Legende, wenn `color` in `aes()` angegeben wurde
 
-Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme_minimal()` einen weißen Hintergrund mit grauen Markierungslinien (weitere Beispiele in den Hinweisen unter [Themes](#themes))
+
 ```{r}
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  theme_minimal() +
   labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
        x = "Alter",
        title = "Arbeitszeit und Alter",
@@ -160,7 +168,246 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
 ```
 
 
-## Aesthetics
+Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme_minimal()` einen weißen Hintergrund mit grauen Markierungslinien (weitere Beispiele in den Hinweisen unter [Themes](#themes))
+
+## Plots als Objekte
+
+
+Außerdem kann ein ggplot auch ein Objekt sein:
+```{r}
+#| layout-ncol: 2
+p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) 
+
+p1 + scale_color_manual(values = c("lightskyblue3","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+
+p1 + scale_color_manual(values = c("coral","orange"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+
+
+## Kombination aus allem
+```{r}
+#| out-height: 100%
+#| out-width: 100%
+ggplot(data = etb18_small, aes(x = zpalter, y = az, 
+                               color = factor(S1),
+                               shape = factor(m1202))) + 
+  geom_point(size = 2) + 
+  scale_color_manual(values = c("lightskyblue3","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  scale_shape_manual(values = c(15:18),breaks = c(1:4), 
+                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  labs(color = "Geschlecht", 
+       shape = "Ausbildung",
+       fill = "Geschlecht",
+       y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: ETB 2018"
+       ) 
+```
+
+[Übersicht zu shapes](#shape1)
+
+## [Übung 1](#pltue1) {#ue041}
+
+## Verteilungen visualisieren
+
+### Boxplot 
+
+Definition der Bestandteile eines Boxplots: 
+
+<!-- + ggf. Ausreißer -->
+<!-- + unterer Whisker: `q1 - 1.5* IQR` -->
+<!-- + untere Grenze: 1. Quartil  -->
+<!-- + mittlere Linie: Median  -->
+<!-- + obere Grenze: 3. Quartil  -->
+<!-- + oberer Whisker: `q3 + 1.5* IQR` -->
+<!-- + ggf. Ausreißer -->
+
+<!-- Die Box enthält also die zentralen 50% des Wertebereichs. -->
+```{r, sw05_boxplot1, echo = F, out.height="45%", out.width="55%", fig.align="center", warning=F,message=F}
+ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
+
+bp_ann_df <- 
+  filter(ak,hs16>0) %>% 
+  mutate_at(vars(hs16),~ifelse(.<0,NA,.)) %>% 
+  summarise(q25 = quantile(hs16,probs = .25),
+            q50 = quantile(hs16,probs = .5),
+            q75 = quantile(hs16,probs = .75),
+            whis1 = q25 - 1.5*(q75-q25) + .5 ,
+            whis2 = q75 + 1.5*(q75-q25) - .5) %>% 
+  mutate_all(~if_else(. < 0,0,.)) %>% 
+  pivot_longer(cols=everything(), values_to = "hs16") %>% 
+  mutate(xend1 = ifelse(grepl("whis",name),.015,.4),
+         name = case_when(name == "q25" ~ "1. Quartil (25% Grenze)",
+                          name == "q50" ~ "Median (50% Grenze)",
+                          name == "q75" ~ "3. Quartil (75% Grenze)",
+                          name == "whis1" ~ "unterer Whisker: q1 - 1.5*IQR",
+                          name == "whis2" ~ "oberer Whisker: q3 - 1.5*IQR"),
+         x = 1)
+
+bp_ann_ausr <- filter(ak,!between(hs16,146,197),hs16>0) %>% select(hs16) %>% mutate(name="Ausreißer",x=1) %>% 
+  distinct() %>% group_by(aus=hs16>146) %>% 
+  mutate(hs16m=mean(hs16) %>% if_else(.<144,140,.))
+
+  
+ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) + 
+  geom_boxplot() + 
+  geom_label(data = bp_ann_df, aes(x = x-.45, y = hs16, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_label(data = bp_ann_ausr, aes(x = x-.45, y = hs16m, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_segment(data = bp_ann_df, aes(x = x-.451, xend = xend1, yend = hs16, y = hs16), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.025,"npc"), type = "closed")) +
+  geom_segment(data = bp_ann_ausr, aes(x = x-.451, xend = .015, yend = hs16, y = hs16m), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.01,"npc"), type = "closed")) +
+  labs(color = "", # legenden-label auf leer
+       y = "", # y-Achse labeln
+       x="")+ # x-Achse labeln
+  theme_void() + 
+  theme(axis.text.x = element_blank()) +
+  expand_limits(x = c(0,1.2))
+
+```
+
+Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
+```{r}
+ggplot(data = etb18_small, aes(y = az)) + geom_boxplot()
+```
+
+So können wir einen Boxplot erstellen, der die Werte für Männer und Frauen getrennt darstellt: 
+```{r}
+ggplot(data = etb18_small, aes(y = az, x = factor(S1))) + geom_boxplot()
+```
+
+### Histogram 
+
+Ebenso können Verteilungen mit einem Histogramm beschrieben werden:
+```{r}
+ggplot(data = etb18_small, aes(x = az)) + 
+  geom_histogram()  
+```
+
+Wenn wir hier die Farbe ändern möchten, dann ist `fill =` anstelle von `color =` die richtige Option:
+```{r}
+ggplot(data = etb18_small, aes(x = az)) + 
+  geom_histogram(fill = "sienna1")  
+```
+
+Möchten wir das Histogramm nach Geschlecht aufsplitten, können wir auch hier wieder `fill` als Aesthetic angeben, Mit `position = position_dodge()` können wir die Balken nebeneinander stellen lassen:
+```{r}
+#| layout-ncol: 2
+ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+  geom_histogram(alpha = .85, color = "grey70") 
+
+ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+  geom_histogram(position = position_dodge()) 
+```
+
+Auch hier funktionieren natürlich wieder die `scale_...manual` Befehle, allerdings hier als `scale_fill_manual` anstelle `scale_color_manual` von oben:
+```{r}
+#| layout-ncol: 2
+ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+  geom_histogram(position = position_dodge()) +
+  scale_fill_manual(values = c("sienna1","dodgerblue4"),
+                    breaks = 1:2, labels = c("Männer","Frauen")) +
+  labs(fill = "Geschlecht")
+
+ggplot(data = etb18, aes(x = az)) + 
+  geom_histogram(aes(fill = factor(S1)), color = "grey50",position = position_dodge()) + 
+  scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen"))
+```
+
+Wir können das ganze auch als Density-Plot darstellen `geom_density()`, hier empfiehlt es sich aber mit `alpha =` die Transparenz hochzusetzen:
+```{r}
+ggplot(data = etb18, aes(x = az,fill = factor(S1))) + 
+  geom_density(alpha = .5) + 
+  scale_fill_manual(values = c("sienna1","dodgerblue4"),
+                    breaks = 1:2, labels = c("Männer","Frauen")) +
+  labs(fill = "Geschlecht") 
+```
+
+## Übung 2 {ue2}
+
+## Kategoriale Merkmale 
+Im Folgenden sehen wir uns eine Möglichkeit an, die gerade erstellte Kontingenztabelle zu visualisieren:
+```{r}
+etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
+```
+
+
+```{r}
+#| layout-ncol: 2
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1) )) + 
+  geom_bar(  position=position_dodge()) + 
+  labs(title = "Absolute Häufigkeit")
+
+
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1),
+           y = ..count../sum(..count..)
+           )) + 
+  geom_bar(  position=position_dodge()) + 
+  labs(title = "Relative Häufigkeit")
+```
+
+
+Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg: 
+```{r}
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1),
+           y = ..count../sum(..count..)
+           )) + 
+  geom_bar(  position=position_dodge()) +
+  theme_minimal() + 
+  scale_fill_manual(values = c("navajowhite","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
+  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Relative Häufigkeiten",
+       caption = "Quelle: ETB 2018",
+       x = "Ausbildung",
+       y = "Relative Häufigkeit",
+       fill = "Geschlecht" ) 
+
+```
+
+## Übung 1 {ue1}
+
++ Erstellen Sie einen Scatterplot für die Variablen ``
+
+```{r}
+#| eval: false
+etb %>% filter(S2_j < 9999,h1216d>0) %>% slice(1:150) %>% ggplot(aes(x=S2_j,y=h1216d)) + geom_point()
+etb %>% filter(S2_j < 9999,h1216d>0) %>% slice(1:150) %>% ggplot(aes(x=S2_j,y=h1216d,color = factor(S1))) + geom_point()
+```
+
+## Übung 2 {ue2}
+
++ Erstellen Sie einen Boxplot für die Verteilung des Einkommens (`F518_SUF`).
++ Passen Sie diesen Boxplot so an, dass die Einkommensverteilungen für Männer und Frauen getrennt dargestellt werden
++ Erstellen Sie ein Histogramm, ebenfalls für die Einkommensverteilung und mit getrennten Farben für Männer und Frauen
++ Was passiert wenn Sie statt `color =` anstelle von `fill =` verwenden?
++ Was passiert wenn Sie statt `color =` anstelle von `fill =` verwenden?
++ Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` oder `scale_fill_brewer` oder `scale_fill_viridis` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) und [viridis](#viridis) unter "weitere Optionen")
+
+
+
+## Profi-Aufgaben
+
+(@) Erstellen Sie eine Säulengraphik auf Basis der absoluten Häufigkeitsverteilung der Wohnortgrößen nach Geschlecht! Analog zur Darstellung aus dem Beispiel soll das Geschlecht durch unterschiedliche Farben gekennzeichnet werden.
++ Ändern Sie die Darstellung in eine Punktegraphik oder fügen sie mit `geom_line()` eine Linie ein. Für `geom_line()` ist zusätzliche die Gruppierung für die zu verbindenden Punkte anzugeben (`aes(......, group = sex)`)
++ Sie können mit `size = 2` die Göße und mit `shape = ` auch die Formen der Punkte verändern, siehe [hier](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
+
+
+## Weitere Optionen für ggplot2 
+
+### Aesthetics {#aes}
 
 ```{r}
 #| fig-asp: 0.35
@@ -184,7 +431,7 @@ aes_clr <-
   ggplot(eg, aes(x = x, y = y, color = x)) +
     geom_point(size = 5) +
     guides(color = FALSE) +
-    labs(title = "Color (discrete)") +
+    labs(title = "color (discrete)") +
     eg_theme   
 
 aes_clrc <- 
@@ -192,7 +439,7 @@ aes_clrc <-
     geom_point(size = 5) +
     guides(color = FALSE) +
     coord_cartesian(xlim = c(1, 3.5)) +
-    labs(title=  "Color (continuous)") +
+    labs(title=  "color (continuous)") +
     eg_theme
 
 aes_size <- 
@@ -200,7 +447,7 @@ aes_size <-
     geom_point() +
     scale_size_discrete(range = c(1.5, 10)) +
     guides(size = FALSE) +
-    labs(title = "Size") +
+    labs(title = "size") +
     eg_theme 
   
 aes_fill <-   
@@ -230,33 +477,114 @@ aes_clr + aes_size + aes_shape
 aes_clrc + aes_fill + aes_alpha
 ```
 
+### themes {#themes} 
+
+Mit sog. themes können wir das layout der Grafik verändern. 
+Weitere Themes sind zB: `theme_light()`, `theme_classic()` ider `theme_void()`, eine Liste findet sich [hier](https://ggplot2.tidyverse.org/reference/ggtheme.html). 
+Außerdem bietet das Paket [{ggthemes}](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes) (`install.packages('ggthemes')`) eine große Auswahl.
+
 
 ```{r}
-#| out-height: 100%
-#| out-width: 100%
-ggplot(data = etb18_small, aes(x = zpalter, y = az, 
-                               color = factor(S1),
-                               fill = factor(S1),
-                               shape = factor(m1202))) + 
-  geom_point() + 
-  scale_fill_manual(values = c("lightskyblue4","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  scale_color_manual(values = c("green","orange"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  scale_shape_manual(values = c(21:24),breaks = c(1:4), 
-                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  theme_minimal() +
-  labs(color = "Geschlecht", 
-       shape = "Ausbildung",
-       fill = "Geschlecht",
-       y = "Arbeitszeit/Woche",
-       x = "Alter",
-       title = "Arbeitszeit und Alter",
-       subtitle = "Nach Geschlecht",
-       caption = "Quelle: ETB 2018"
-       ) 
+#| eval: false
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) + 
+  theme_minimal()
+
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) +
+  theme_dark()
 ```
-### Shapes
+
+
+```{r}
+#| layout-ncol: 2
+#| echo: false
+
+p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) 
+
+p1 + theme_gray() + labs(title="theme_grey() - Standard") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+p1 + theme_bw() + labs(title="theme_bw()") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+p1 + theme_minimal() + labs(title="theme_minimal()") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+p1 + theme_dark() + labs(title="theme_dark()") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+```
+
+### Farben {#farben}
+
+```{r}
+p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 3) 
+```
+
+
+Neben den im Beispiel verwendeten Farben für `fill` können natürlich auch noch unzählige weitere Farben in `scale_fill_manual`  und `scale_color_manual` verwendet werden. *[Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)* findet sich eine Übersicht. Alternativ können auch sog. HEX-Codes angeben werden, die bspw. mit dem [Adobe Color Wheel](https://color.adobe.com/de/create/color-wheel) oder [Color Hex](https://www.color-hex.com/) erstellt werden können.
+
+```{r}
+#| layout-ncol: 2
+p1 +  scale_color_manual(values = c("dodgerblue4","sienna1"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") )
+
+p1 +  scale_color_manual(values = c("#005b96","#6497b1"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") )
+```
+
+#### ColorBreweR {#brewer}
+
+Alternativ zur manuellen Auswahl der Farben mit `scale_fill_manual` und `scale_color_manual` können mit `scale_fill_brewer()` auch vorgegebene Farbpaletten des *colorbrewer* verwendet werden. Dazu muss lediglich `scale_fill_brewer()` anstelle von `scale_fill_manual` angeben werden und statt `values` eine der Paletten - eine Übersicht findet sich [hier](http://colorbrewer2.org/). Die Farbpaletten von ColorBreweR sind alle in ggplot2 integriert.
+
+```{r}
+p1 +
+  scale_color_brewer(palette = "RdYlBu",
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+
+#### viridis {#viridis}
+
+Analog dazu gibt es auch die [{viridis}](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)-Paletten, welche durchgängig "colorblind-safe" und ebenfalls in {ggplot2} integriert sind. Allerdings ist hier zu beachten, dass für Farbauswahlen basierend auf einer kategorialen Variable `scale_color_viridis_d()` zu verwenden ist. Soll die Farbe entlang einer numerischen/metrischen Variable bestimmt werden, dann ist `scale_color_viridis_c()` zu verwenden. Außerdem kann mit `begin` und `end` die Breite der Farbskala angepasst werden:
+```{r}
+#| layout-ncol: 2
+p1 +
+  scale_color_viridis_d(option="B",
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+p1 +
+  scale_color_viridis_d(option="B",begin = .65,end = .85,
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+
+
+#### Weitere Farbpaletten
+
+Darüber hinaus gibt es unzählige Pakete, die ebenfalls `scale_color_` und `scale_fill_`-Funktionen bieten:
+Hier noch zwei Beispiele mit  [{scico}](https://github.com/thomasp85/scico) und [{MetBrewer}](https://github.com/BlakeRMills/MetBrewer), welches Farben aus Bildern im Metropolitan Museum of Art enthält:
+```{r, eval =F}
+install.packages('scico')
+install.packages("MetBrewer")
+```
+
+```{r}
+#| layout-ncol: 2
+library(scico)
+p1 +
+  scale_color_scico_d(palette = "oslo",begin = .5,end = .8,
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+
+library(MetBrewer)
+p1 +
+  scale_color_met_d(name = "Kandinsky",
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+Vergleichbare Pakete gibt es auch für 
+
++ [{DutchMasters}](https://github.com/EdwinTh/dutchmasters) - Farbpaletten aus Bildern niederländischer Maler
++ [{wesanderson}](https://github.com/karthik/wesanderson) - Farbpaletten basierend auf verschiedenen Filmen von Wes Anderson (The Grand Budapest Hotel usw.)
++ [{ochRe}](https://github.com/hollylkirk/ochRe) - Farbpaletten "inspired by Australian art, landscapes and wildlife"
++ [{paletteer}](https://github.com/EmilHvitfeldt/paletteer) bietet eine riesige Auswahl verschiedenster Farbpaletten
+
+
+### Shapes {#shape1}
 ```{r}
 #| echo: false
 #| out-height: 50%
@@ -272,7 +600,7 @@ ggplot(shp_df,aes(x,y)) +
 ```
 
 
-### Linetypes
+### Linetypes {#line}
 ```{r}
 #| echo: false
 #| out-height: 30%
@@ -292,288 +620,6 @@ ggplot(lt_df, aes(x,y,linetype = factor(lty))) +
 
 Übersicht zu Shapes und Linetypes im [R Cookbook](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
 
-## Verteilungen visualisieren: Boxplots, Histogramme
-
-Definition der Bestandteile eines Boxplots: 
-
-+ ggf. Ausreißer
-+ unterer Whisker: `q1 - 1.5* IQR`
-+ untere Grenze: 1. Quartil 
-+ mittlere Linie: Median 
-+ obere Grenze: 3. Quartil 
-+ oberer Whisker: `q3 + 1.5* IQR`
-+ ggf. Ausreißer
-
-Die Box enthält also die zentralen 50% des Wertebereichs.
-```{r, sw05_boxplot1, echo = F, out.height="45%", out.width="50%", fig.align="center", warning=F,message=F}
-ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()))
-
-bp_ann_df <- 
-  filter(ak,hs16>0) %>% 
-  mutate_at(vars(hs16),~ifelse(.<0,NA,.)) %>% 
-  summarise(q25 = quantile(hs16,probs = .25),
-            q50 = quantile(hs16,probs = .5),
-            q75 = quantile(hs16,probs = .75),
-            whis1 = q25 - 1.5*(q75-q25) + .5 ,
-            whis2 = q75 + 1.5*(q75-q25) - .5) %>% 
-  mutate_all(~if_else(. < 0,0,.)) %>% 
-  pivot_longer(cols=everything(), values_to = "hs16") %>% 
-  mutate(xend1 = ifelse(grepl("whis",name),.015,.4),
-         name = case_when(name == "q25" ~ "1. Quartil (25% Grenze)",
-                          name == "q50" ~ "Median (50% Grenze)",
-                          name == "q75" ~ "3. Quartil (75% Grenze)",
-                          name == "whis1" ~ "unterer Whisker",
-                          name == "whis2" ~ "oberer Whisker"),
-         x = 1)
-
-bp_ann_ausr <- filter(ak,!between(hs16,146,197),hs16>0) %>% select(hs16) %>% mutate(name="Ausreißer",x=1) %>% 
-  distinct() %>% group_by(aus=hs16>146) %>% 
-  mutate(hs16m=mean(hs16) %>% if_else(.<144,140,.))
-
-  
-ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) + 
-  geom_boxplot() + 
-  geom_label(data = bp_ann_df, aes(x = x-.45, y = hs16, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
-  geom_label(data = bp_ann_ausr, aes(x = x-.45, y = hs16m, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
-  geom_segment(data = bp_ann_df, aes(x = x-.451, xend = xend1, yend = hs16, y = hs16), color = "#172869",
-               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.025,"npc"), type = "closed")) +
-  geom_segment(data = bp_ann_ausr, aes(x = x-.451, xend = .015, yend = hs16, y = hs16m), color = "#172869",
-               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.01,"npc"), type = "closed")) +
-  labs(color = "", # legenden-label auf leer
-       y = "", # y-Achse labeln
-       x="")+ # x-Achse labeln
-  theme_void() + 
-  theme(axis.text.x = element_blank()) +
-  expand_limits(x = c(0,1.1))
-
-```
-
-Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
-```{r, eval = F}
-library(ggplot2)
-ggplot(data = etb18, aes(y = az)) + geom_boxplot()
-```
-
-So können wir einen Boxplot erstellen, der die Werte für Männer und Frauen getrennt darstellt: 
-```{r, eval = F}
-ggplot(data = etb18, aes(y = az)) + geom_boxplot() + 
-  facet_wrap(~S1) + # nach geschlecht aufsplitten
-  theme_minimal()
-```
-Oben sehen wir die Ausprägungen von `S1`: (1 & 2). Da durch die Ausreißer die Box sehr klein ist, rechts ein Zoom auf den Bereich von 0-20.000€ Monatseinkommen (Syntax unter [**Hinweise**](#bp_hinweise))
-```{r sw05_boxplot, echo = F, out.height="80%", out.width="80%", fig.align="center", warning=F,message=F}
-library(ggplot2)
-library(patchwork)
-
-box_plot <- 
-  ggplot( etb18, aes(y = az, x = as.character(S1))) + 
-  geom_boxplot(aes(color = as.character(S1))) + 
-  # facet_wrap(~S1) +
-  theme_minimal() +
-  labs(color = "",
-       y = "Arbeitszeit",
-       x="")+
-  scale_color_manual(values = c("#8F92A1","#172869"),
-                     breaks = c("1","2"),
-                     labels = c("M", "F"), guide = F) 
-
-box_zoom <- box_plot +
-  coord_cartesian(ylim = c(25,50)) 
-
-box_plot + box_zoom
-```
-Befragte aus den neuen Bundesländern geben niedrigere Einkommen an: der Median sowie beide Quartilsgrenzen liegen im Osten niedriger als im Westen. 
-
-```{r}
-ggplot(data = etb18, aes(x = az, fill = as.character(S1))) + 
-  geom_histogram() + 
-  facet_wrap(~S1) + # nach geschlecht aufsplitten
-  theme_minimal()
-```
-```{r}
-ggplot(data = etb18, aes(x = az)) + 
-  geom_histogram(aes(fill = factor(S1)), alpha = .5, color = "grey50") + 
-  theme_minimal()
-
-ggplot(data = etb18, aes(x = az)) + 
-  geom_histogram(aes(fill = factor(S1)), color = "grey50",position = position_dodge()) + 
-  scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen")) +
-  theme_minimal()
-
-ggplot(data = etb18, aes(x = az)) + 
-  geom_density(aes(fill = factor(S1)), alpha = .5) + 
-  scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen")) +
-  labs(fill = "") +
-  theme_minimal()
-```
-
-## Kategoriale Merkmale 
-Im Folgenden sehen wir uns eine Möglichkeit an, die gerade erstellte Kontingenztabelle zu visualisieren:
-```{r}
-etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
-
-ggplot(data = etb18 , 
-       aes(x = m1202, fill = factor(S1) )) + 
-  geom_bar(  position=position_dodge()) + 
-  theme_minimal() + 
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-       subtitle = "Absolute Häufigkeiten",
-       caption = "Quelle: ETB 2018",
-       x = "Ausbildung",
-       y = "Absolute Häufigkeit",
-       fill = "Geschlecht" ) 
-
-
-
-ggplot(data = etb18 , 
-       aes(x = m1202, fill = factor(S1),
-           y = ..count../sum(..count..)
-           )) + 
-  geom_bar(  position=position_dodge()) + 
-  theme_minimal() + 
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
-  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
-       subtitle = "Relative Häufigkeiten",
-       caption = "Quelle: ETB 2018",
-       x = "Ausbildung",
-       y = "Relative Häufigkeit",
-       fill = "Geschlecht" ) 
-
-```
-
-## Aufgaben
-
-(@) Laden Sie den Allbusdatensatz mit dem csv-Import in R.
-(@) Erstellen Sie eine Kontingenztabelle für `sex` und `educ`. Welche Merkmalskombination ist die häufigste? Denken Sie daran, fehlende Werte mit `NA` auszuschließen.
-(@) Erstellen Sie die Kontingenztabelle mit relativen Häufigkeiten.
-(@) Erstellen Sie die Varianten der Kontingenztabelle mit relativen Häufigkeiten als Zeilen- und Spaltenprozente. 
-+ Welcher Anteil der Befragten mit Fachhochschulreife ist männlich?
-+ Wie hoch ist der Anteil der Frauen an Befragten mit Hauptschulabschluss?
-+ Welcher Anteil der Frauen hat Abitur?
-+ Wie hoch ist der Anteil der Realschulabsolventen an allen befragten Männern?
-
-(@) Erstellen Sie eine Säulengraphik auf Basis der absoluten Häufigkeitsverteilung der Bildung nach Geschlecht! 
-+ Ändern Sie die Darstellung in ein Punktdiagramm. 
-
-(@) Erstellen Sie eine Kontingenztabelle für `sex` und `gkpol`. Welche Merkmalskombination ist die häufigste? Denken Sie daran, fehlende Werte mit  `NA` auszuschließen.
-(@) Erstellen Sie die Kontingenztabelle mit relativen Häufigkeiten.
-(@) Erstellen Sie die Varianten der Kontingenztabelle mit relativen Häufigkeiten als Zeilen- und Spaltenprozente. 
-+ Welcher Anteil der Befragten aus Städten mit über 500.000 Einwohnern ist weiblich?
-+ Wie hoch ist der Anteil der Männer an Befragten, die in Orten mit unter 2.000 Einwohnern leben?
-+ Welcher Anteil der Frauen lebt in Städten mit 50.000 bis 99.999 Einwohnern?
-+ Wie hoch ist der Anteil der Bewohner von Städten mit 20.000 bis 49.999 Einwohnern an allen befragten Männern?
-
-## Profi-Aufgaben
-
-(@) Erstellen Sie eine Säulengraphik auf Basis der absoluten Häufigkeitsverteilung der Wohnortgrößen nach Geschlecht! Analog zur Darstellung aus dem Beispiel soll das Geschlecht durch unterschiedliche Farben gekennzeichnet werden.
-+ Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) unter "weitere Optionen")
-+ Ändern Sie die Darstellung in eine Punktegraphik oder fügen sie mit `geom_line()` eine Linie ein. Für `geom_line()` ist zusätzliche die Gruppierung für die zu verbindenden Punkte anzugeben (`aes(......, group = sex)`)
-+ Sie können mit `size = 2` die Göße und mit `shape = ` auch die Formen der Punkte verändern, siehe [hier](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
-
-
-
-## Aufgaben zu Verteilungen
-
-(@) Erstellen Sie jeweils einen Boxplot für das HH-Einkommen für 1994 und 2010! 
-  + Welche Kennzahlen können Sie jeweils aus den horizontalen Linien ablesen?
-  + Was können Sie jeweils zu den HH-Einkommensverteilungen sagen?
-  + Durch Anhängen des Arguments `+  coord_cartesian(ylim = c(min,max))` können Sie "zoomen" indem Sie statt `min` und `max` die Limits einsetzen.
-
-(@) Erstellen Sie jeweils einen Boxplot für Ost und West!
-
-
-Erstellen Sie die Boxplots nach Ost-West für 1994 und 2010 Jahre in einer Grafik!
-+ Erstellen Sie zunächst einen Datensatz, welcher nur Beobachtungen aus 1994 und 2010 enthält und legen diesen als `a9410` ab. Nutzen Sie dazu `|` für eine "Oder"-Auswahl:
-```{r, eval = F}
-a9410 <- ak[ak$year == jahr1 | ak$year == jahr2,]
-```
-+ Denken Sie daran, auch in `a9410` die Missings für `di05` mit `NA` zu überschreiben (siehe oben)!  
-
-Indem wir zu `facet_wrap` neben `eastwest` auch `year` angeben, wird eine 4-teilige Grafik erstellt mit jeweils einem Boxplot für jedes Jahr und Ost/West. Mit `nrow = 1` können wir  die Boxplots in eine Reihe setzen:
-
-```{r, eval = F}
-ggplot(data = ..., aes(...) )+ 
-  geom_boxplot() +
-  facet_wrap(~year+eastwest, nrow = 1) + ...
-```
-
-Was können Sie bei den Unterschieden zwischen Ost und West im Zeitverlauf erkennen? Denken Sie auch hier wieder an die Möglichkeit, mit ` coord_cartesian(ylim = c(0,20000))` zu zoomen. 
-
-+ Vergeben Sie unterschiedliche Farben für Ost und West (siehe Hinweise)
-
-# Hinweise {#bp_hinweise}
-Vollständige Syntax für farbigen Boxplot
-```{r, eval = F}
-library(ggplot2)
-ggplot(a14, aes(x = "", y = di05)) + 
-  geom_boxplot(aes(color = as.character(eastwest))) + 
-  facet_wrap(~eastwest) +
-  theme_minimal() +
-  labs(color = "",
-       y = "HH- Einkommen",
-       x="")+
-  scale_color_manual(values = c("lightblue3","navy"),
-                     breaks = c(1,2),
-                     labels = c("west", "ost")) 
-```
-
-
-
-## Weitere Optionen für ggplot2 
-### Farben {#farben}
-Neben den im Beispiel verwendeten Farben für `fill` können natürlich auch noch unzählige weitere Farben in `scale_fill_manual` verwendet werden. *[Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)* findet sich eine Übersicht. 
-
-```{r, out.height= "40%", out.width= "40%", fig.align="center"}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) +
-  scale_fill_manual(values = c("dodgerblue4","sienna1"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  labs(title = "Familienstand",subtitle = "Absolute Häufigkeiten pro Geschlecht",
-       caption = "Quelle: Allbus 2016",x = "Familienstand",
-       y = "Absolute Häufigkeit",fill = "Geschlecht" ) + theme_minimal()
-```
-
-### ColorBreweR {#brewer}
-
-Alternativ zur manuellen Auswahl der Farben mit `scale_fill_manual` können mit `scale_fill_brewer()` auch vorgegebene Farbpaletten des *colorbrewer* verwendet werden. Dazu muss lediglich `scale_fill_brewer()` anstelle von `scale_fill_manual` angeben werden und statt `values` eine der Paletten - eine Übersicht findet sich hier: <http://colorbrewer2.org/>
-
-```{r, out.height= "50%", out.width= "50%", fig.align="center"}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) +
-  geom_col(position=position_dodge()) +
-  scale_fill_brewer(palette = "YlGnBu",
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  labs(title = "Familienstand",subtitle = "Absolute Häufigkeiten pro Geschlecht",
-       caption = "Quelle: Allbus 2016", x = "Familienstand",
-       y = "Absolute Häufigkeit",fill = "Geschlecht" ) + theme_minimal()
-```
-
-
-MetBrewer
-DutchMasters
-scico
-
-
-
-### Weitere themes {#themes}
-Neben `theme_minimal()` gibt es noch weitere Designs: eine Liste findet sich [hier](https://ggplot2.tidyverse.org/reference/ggtheme.html). Hier ein Beispiel mit `theme_dark()`:
-
-```{r,  out.height= "40%", out.width= "40%", fig.align="center"}
-ggplot(data = tab_df, aes(x = m1202, y = Freq, fill = S1)) + 
-  geom_col(position=position_dodge()) +
-  scale_fill_manual(values = c("navajowhite","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  labs(title = "Familienstand",subtitle = "Absolute Häufigkeiten pro Geschlecht",
-       caption = "Quelle: Allbus 2016",x = "Familienstand",
-       y = "Absolute Häufigkeit",fill = "Geschlecht" ) + 
-  theme_dark()
-```
-Es muss also lediglich das letzte Argument (`theme_..`) angepasst werden. Weitere Themes sind zB: `theme_light()`, `theme_classic()`, `theme_void()` oder `theme_bw()`
 
 
 ## Linksammlung
