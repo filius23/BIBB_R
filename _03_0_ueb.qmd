@@ -1,0 +1,104 @@
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(kableExtra)
+library(tidyverse)
+```
+
+
+## Übungen
+
+Alle Übungen beziehen sich auf die Erwerbstätigenbefragung:
+
+```{r einls, eval=F, echo = T}
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+[Abschnitt zum Einlesen](02_intro.qmd#import)
+
+
+### Übung 1 {#ue1}
+
+Wir interessieren uns für die Variable `gkpol`, welche die Größe der Wohngemeinde der Befragten enthält:
+```{r}
+#| echo: false
+etb18 %>% count(gkpol) %>% pull(gkpol) %>% labelled::val_labels() %>% enframe() %>% kable(.) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>% 
+  row_spec(0, color = "white",font_size = 0)
+```
+
+
++ Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen, nutzen Sie dafür sowohl `table()`, `xtabs()` als auch `count()` (Denken Sie daran, `{tidyverse}` zu laden für `count()`). 
++ Lassen Sie sich der relativen Häufigkeiten (Anteile) ausgeben (nutzen sie entweder `table()` oder `xtabs()`)
++ Erstellen Sie eine Kontingenztabelle, indem Sie neben `gkpol` auch das Geschlecht `S1` (2 = Frauen, 1 = Männer) mit einbeziehen
++ Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben?
++ Wie viel Prozent der Befragten, die in einer Gemeinde mit unter 2000 Einwohnern leben, sind Frauen?
++ Wie viel Prozent der Frauen leben in einer Gemeinde mit unter 2000 Einwohnern leben?
+
+
+### Übung 2 {#ue2}
+
+Wir interessieren uns für die Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein). Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten.
+  
+  + Erstellen Sie zunächst eine Auszählung der absoluten Häufigkeiten: Hat die Variable fehlende Werte, die Sie ausschließen sollten? Nutzen Sie `count()` und `xtabs()` für die Auszählung.
+  + Falls ja, ersetzen Sie diese Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben. [Siehe hier](#NA03)
+  
+  
+### Übung 3 {#ue3}
+  
+3) Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol`, welche folgende Informationen enthält:
+  + absolute Häufigkeiten 
+  + relative Häufigkeiten
+  + kumulierte absolute Häufigkeiten
+  + kumulierte relative Häufigkeiten 
+  + Wie viele Befragte leben in einem Ort mit höchstens 49.999 Einwohnern?
+  + Wie groß ist der Anteil der Befragten, die in einem Ort mit höchstens 99.999 Einwohnern leben?
+  + Wie groß ist der Anteil der Befragten, die in einem Ort mit *mindestens* 100.000 Einwohnern leben?
+  
+4) Erstellen Sie eine Häufigkeitstabelle für das Geburtsjahr der Befragten (`yborn`)!
+  + Welches Skalenniveau hat die Variable? (inhaltliche Frage, keine R-Frage) 
+  + Müssen Sie die Variable erst klassieren um eine sinnvoll interpretierbare Tabelle zu erhalten? Beachten Sie dazu auch die [Hinweise](#hinweis_cut_w103) am Ende dieses Dokuments. Verwenden Sie die Jahrzehntgrenzen ab 1910.
+  + Erstellen Sie eine Tabelle welche die absoluten Häufigkeiten anzeigt
+  + Gibt es fehlende Werte, die Sie mit `NA` überschreiben sollten?
+  + Erstellen Sie eine zweite Version dieser Tabelle mit relativen Häufigkeiten
+  + Wie groß ist der Anteil der Befragten, die bis 1970 geboren wurden?
+  + Wie groß ist der Anteil der Befragten, die nach 1980 geboren wurden?
+  
+  
+
+
+## Profi-Aufgaben
+
+Für alle, die noch etwas mehr machen möchten:  
+
++ Runden Sie die Angaben zur relativen Häufigkeit auf 3 Nachkommastellen!
++ Lassen Sie sich von R die häufigste Ausprägung für `yborn` ausgeben
++ Fügen Sie der vollständigen Häufigkeitstabelle für die Variable `gkpol` eine neue Spalte hinzu, welche die Bedeutung der Zahlencodes wiedergibt!
+
+Tipps dazu finden Sie in den Hinweisen am Ende!
+(Wissen aus diesen Aufgaben wird nicht vorausgesetzt in den kommenden Wochen, aber es hilft natürlich)
+
+## Aufgaben 2: Lage- & Konzentrationsmaße
+
+Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 und 2010 entwickelt?
+
+(1) Laden Sie den **kumulierten** Allbusdatensatz in R (siehe [oben](#einlesen)).
+(2) Erstellen Sie jeweils einen Datensatz für das Befragungsjahr 1994 und 2010 - filtern Sie mit `[]` also den kumulierten Datensatz jeweils einmal nach einem Jahr und legen Sie das Ergebnis in `a94` bzw. `a10` ab
+
+(3) Betrachten Sie zunächst für 1994 die Haushaltseinkommensverteilung (Variable `di05`) 
++ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
++ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz - was sagen Ihnen die Werte jeweils?
++ Berechnen Sie die Interdezildistanz und die Spannweite!
++ Berechnen Sie den Gini-Koeffizenten! 
+
+(4) Betrachten Sie dann die Haushaltseinkommensverteilung für 2010 (Variable `di05`) 
++ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
++ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz und den Gini-Koeffizienten für alle Fälle im Datensatz für 2010 - was sagen Ihnen die Werte jeweils?
++ Berechnen Sie die Interdezildistanz und die Spannweite!
+
+(5) Berechnen Sie für 1994 getrennt nach Ost und West (Variable `eastwest`) - welche Werte erhalten Sie jeweils für folgende Kennzahlen in Ost und West? (Denken Sie an `summary()`):
++ arithm. Mittel, den Median, das 25%- und 75%-Quartil 
++ Variationskoeffizient 
++ Gini-Koeffizient
+
+(6) Vergleichen Sie diese Ost-West-Unterschiede im Jahr 1994 mit denen für das Jahr 2010. Welche Tendenz können Sie für die Ost-West-Unterschiede erkennen?

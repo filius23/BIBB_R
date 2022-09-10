@@ -13,7 +13,8 @@ library(Statamarkdown)
 
 Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:
 ```{r W04_1, eval=F, echo = T}
-library(haven)
+library(haven) # datenimport
+library(tidyverse) # tidyverse
 etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 ```
 
@@ -131,9 +132,7 @@ Auch für Kontingenztabellen können wir uns die relativen Häufigkeiten anzeige
 xtabs(~S1+m1202, data = etb18) %>% 
   prop.table(.) 
 ```
-Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`S1=2`) und ledig (`m1202 = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung }}{\text{Gesamtzahl der Befragten}}$$ 
-
-- Wir können also aus dieser Tabelle ablesen dass `3,27%` *aller Befragten* Frauen mit Aufstiegsfortbildung sind. 
+Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`S1=2`) und Aufstiegsfortbildung (`m1202 = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung }}{\text{Gesamtzahl der Befragten}} \Rightarrow$ 3,27% *aller Befragten* sind Frauen mit Aufstiegsfortbildung. 
 
 Wir können diese Tabelle auch mit *Zeilen- und Spaltenprozenten* anzeigen lassen, indem wir die Option `margin` verwenden. `margin=1` liefert die **Zeilenprozente**, `margin=2` die **Spaltenprozente**.[^1]  
 
@@ -147,13 +146,6 @@ xtabs(~S1+m1202, data = etb18) %>%
   prop.table(.,margin = 1) %>% 
   round(., 4)
 ```
-
-+ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}$$
-
-- `6,56%` der befragten Frauen haben eine Aufstiegsfortbildung
-
-+ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $$\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}$$ 
-
 ```{r, eval = F}
 xtabs(~S1+m1202, data = etb18) %>% 
   prop.table(.,margin = 2)
@@ -169,10 +161,53 @@ pct_spl <-
   round(., 4)
 ```
 
-- `37,8%` der Befragten mit Aufstiegsfortbildung sind Frauen
++ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}\Rightarrow$  6,56% der befragten Frauen haben eine Aufstiegsfortbildung
+
++ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}\Rightarrow$ 37,8% der Befragten mit Aufstiegsfortbildung sind Frauen
 
 
-## [Übung 1](#ue1)
+### [Übung](#ue1)
+
+## Fehlende Werte in R: `NA` {#NA03}
+
+Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
+```{r}
+#| eval: false
+etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
+```
+(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
+
+Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
+```{r W04_3miss, include=T, echo = T}
+etb18$m1202[etb18$m1202 == -1]  <- NA
+```
+
+`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `xtabs()` nicht aufgeführt:
+```{r W04_3miss_tab, include=T, echo = T}
+xtabs(~m1202,data=etb18)
+```
+Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
+```{r}
+xtabs(~m1202,data=etb18,addNA = T)
+```
+
+In `count()` wird `NA` auch mit ausgezählt:
+```{r}
+etb18 %>% count(m1202)
+```
+Möchten wir das umgehen, nehmen wir wieder `filter()` zu Hilfe - mit `is.na()` können wir `NA` identifizieren. Durch Voranstellen von `!` können wir damit anfordern, dass alle nicht-`NA`-Werte mit `TRUE` behalten werden:
+```{r}
+etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
+```
+
+```{r}
+etb18 %>% filter(!is.na(m1202)) %>% count(S1,m1202)
+```
+
+Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
+
+### [Übung](#ue2)
+
 
 ## Mehrere Kennzahlen in einer Tabelle
 
@@ -246,51 +281,7 @@ etb18 %>%
    mutate(pct_gender = prop.table(n)) 
 ```
 
-
-## [Übung 3](#ue2)
-
-
-## Fehlende Werte in R: `NA` {#NA_w103}
-
-Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
-```{r}
-#| eval: false
-etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
-```
-(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
-
-Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
-```{r W04_3miss, include=T, echo = T}
-etb18$m1202[etb18$m1202 == -1]  <- NA
-```
-
-`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `xtabs()` nicht aufgeführt:
-```{r W04_3miss_tab, include=T, echo = T}
-xtabs(~m1202,data=etb18)
-```
-Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
-```{r}
-xtabs(~m1202,data=etb18,addNA = T)
-```
-
-In `count()` wird `NA` auch mit ausgezählt:
-```{r}
-etb18 %>% count(m1202)
-```
-Möchten wir das umgehen, nehmen wir wieder `filter()` zu Hilfe - mit `is.na()` können wir `NA` identifizieren. Durch Voranstellen von `!` können wir damit anfordern, dass alle nicht-`NA`-Werte mit `TRUE` behalten werden:
-```{r}
-etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
-```
-
-```{r}
-etb18 %>% filter(!is.na(m1202)) %>% count(S1,m1202)
-```
-
-Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
-
-
-
-## [Übung 2](#ue2)
+### [Übung](#ue3)
 
 ##  Lage- & Konzentrationsmaße 
 
@@ -402,97 +393,18 @@ summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
 
 :::
 
-
-## Aufgaben
-
-1) Laden Sie den Allbusdatensatz `allbus_kompakt.csv` mit dem csv-Import in R:
-```{r einls, eval=F, echo = T}
-setwd("...") # wo liegt der Datensatz?
-a16 <- read.table("allbus2016_kompakt.csv",sep = ";",header = T,stringsAsFactors = F) # einlesen
-```
-
-2) Wir interessieren uns für die Variable `gkpol`.
-  + Suchen Sie die Variable im Codebuch: welche Information können Sie dieser Variable entnehmen?
-  + Welches Skalenniveau hat die Variable?  (inhaltliche Frage, keine R-Frage) 
-  + Müssen Sie die Variable erst klassieren um eine sinnvoll interpretierbare Tabelle zu erhalten?
-  + Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen. Welche ist die häufigste Ausprägung, wofür steht die Kategorie? (Sehen Sie im Codebuch nach)
-  + Hat die Variable fehlende Werte, die Sie ausschließen sollten? Falls ja, ersetzen Sie diese Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben.
-  
-3) Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol`, welche folgende Informationen enthält:
-  + absolute Häufigkeiten 
-  + relative Häufigkeiten
-  + kumulierte absolute Häufigkeiten
-  + kumulierte relative Häufigkeiten 
-  + Wie viele Befragte leben in einem Ort mit höchstens 49.999 Einwohnern?
-  + Wie groß ist der Anteil der Befragten, die in einem Ort mit höchstens 99.999 Einwohnern leben?
-  + Wie groß ist der Anteil der Befragten, die in einem Ort mit *mindestens* 100.000 Einwohnern leben?
-  
-4) Erstellen Sie eine Häufigkeitstabelle für das Geburtsjahr der Befragten (`yborn`)!
-  + Welches Skalenniveau hat die Variable? (inhaltliche Frage, keine R-Frage) 
-  + Müssen Sie die Variable erst klassieren um eine sinnvoll interpretierbare Tabelle zu erhalten? Beachten Sie dazu auch die [Hinweise](#hinweis_cut_w103) am Ende dieses Dokuments. Verwenden Sie die Jahrzehntgrenzen ab 1910.
-  + Erstellen Sie eine Tabelle welche die absoluten Häufigkeiten anzeigt
-  + Gibt es fehlende Werte, die Sie mit `NA` überschreiben sollten?
-  + Erstellen Sie eine zweite Version dieser Tabelle mit relativen Häufigkeiten
-  + Wie groß ist der Anteil der Befragten, die bis 1970 geboren wurden?
-  + Wie groß ist der Anteil der Befragten, die nach 1980 geboren wurden?
-  
-  
-
-
-## Profi-Aufgaben
-
-Für alle, die noch etwas mehr machen möchten:  
-
-+ Runden Sie die Angaben zur relativen Häufigkeit auf 3 Nachkommastellen!
-+ Lassen Sie sich von R die häufigste Ausprägung für `yborn` ausgeben
-+ Fügen Sie der vollständigen Häufigkeitstabelle für die Variable `gkpol` eine neue Spalte hinzu, welche die Bedeutung der Zahlencodes wiedergibt!
-
-Tipps dazu finden Sie in den Hinweisen am Ende!
-(Wissen aus diesen Aufgaben wird nicht vorausgesetzt in den kommenden Wochen, aber es hilft natürlich)
-
-## Aufgaben 2: Lage- & Konzentrationsmaße
-
-Forschungsfrage: Wie hat sich die Haushaltseinkommensverteilung zwischen 1994 und 2010 entwickelt?
-
-(1) Laden Sie den **kumulierten** Allbusdatensatz in R (siehe [oben](#einlesen)).
-(2) Erstellen Sie jeweils einen Datensatz für das Befragungsjahr 1994 und 2010 - filtern Sie mit `[]` also den kumulierten Datensatz jeweils einmal nach einem Jahr und legen Sie das Ergebnis in `a94` bzw. `a10` ab
-
-(3) Betrachten Sie zunächst für 1994 die Haushaltseinkommensverteilung (Variable `di05`) 
-+ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
-+ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz - was sagen Ihnen die Werte jeweils?
-+ Berechnen Sie die Interdezildistanz und die Spannweite!
-+ Berechnen Sie den Gini-Koeffizenten! 
-
-(4) Betrachten Sie dann die Haushaltseinkommensverteilung für 2010 (Variable `di05`) 
-+ Denken Sie daran, die negativen Werte mit `NA` zu überschreiben!
-+ Berechnen Sie das arithm. Mittel, den Median, das 25%- und 75%-Quartil sowie die Varianz und den Gini-Koeffizienten für alle Fälle im Datensatz für 2010 - was sagen Ihnen die Werte jeweils?
-+ Berechnen Sie die Interdezildistanz und die Spannweite!
-
-(5) Berechnen Sie für 1994 getrennt nach Ost und West (Variable `eastwest`) - welche Werte erhalten Sie jeweils für folgende Kennzahlen in Ost und West? (Denken Sie an `summary()`):
-+ arithm. Mittel, den Median, das 25%- und 75%-Quartil 
-+ Variationskoeffizient 
-+ Gini-Koeffizient
-
-(6) Vergleichen Sie diese Ost-West-Unterschiede im Jahr 1994 mit denen für das Jahr 2010. Welche Tendenz können Sie für die Ost-West-Unterschiede erkennen?
-
-
-
 ::: note
 
 [**Häufige Fehlermeldungen**](#rerror)
 
 :::
 
+## Übungen
+
+{{< include _03_0_ueb.qmd >}}
+
+
 ## Hinweise 
-
-### cut wählt ein ungünstiges Zahlenformat {#hinweis_cut_w103}
-
-`cut` verwendet für Klassengrenzen mit mehr als 3 Stellen eine wenig intuitive Darstellung. Mit `dig.lab` können Labels mit mehr als 3 Stellen angefordert werden:
-```{r}
-x1 <- c(1212,2121,1212)
-table( cut(x1, breaks = c(0,1500,2500)) )
-table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) )
-```
 
 ### Runden mit `round()` {#round}
 
@@ -506,12 +418,10 @@ round(21.12121123,digits = 0)
 
 Wir können also die relativen Häufigkeiten runden und so die Tabelle von oben übersichtlicher machen: 
 ```{r W04_11, eval=F, echo = T}
-t2
-t3$f <- round(t3$f,3)
-t3$F <- round(t3$F,3)
-t3
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 1) %>% 
+  round(.,3)
 ```
-
 
 
 ### Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?
@@ -522,87 +432,9 @@ t4[which(t4 == max(t4))] # Modus
 ```
 `r names(t4[which(t4 == max(t4))])` ist mit `r t4[which(t4 == max(t4))]` Befragten die häufigste Ausprägung.
 
-### Labels als neue Spalte hinzufügen
 
-Wir können die Übersichtstabelle auch noch beschriften, indem wir eine Textvariable hinzufügen:
-```{r, eval = F}
-t3 
-t3$labels <- c("dt Staatsbürgerschaft","dt und andere Staatsbürgerschaft",
-               "andere Staatsbürgerschaft")
-t3
-```
 
-### Gini-Koeffizient {#gini_graph}
-
-Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
-
-```{r gini_plot1, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
-gdf2 <- 
-  data.frame(id = 1:5) %>% 
-  mutate(eq = 1, ineq = id/5*5/3, w = 6-id ) %>% 
-  mutate(across( matches("eq"), ~ cumsum(.x),.names = "{col}_{fn}")) %>% 
-  uncount(w,.id = "x") %>% 
-  mutate(eq2 = ifelse(lead(id)==id | id == 5,NA,eq_1))
-
-  gdf2 %>% 
-  ggplot(.,aes(x = 6-x,y = ineq)) +
-  geom_col(color = "grey25", aes(fill = factor(id,levels=5:1))) +
-  geom_line(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), color = "#EEDA9DFF", size = .5) +
-  geom_point(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), fill = "#EEDA9DFF", size = 3, shape= 21, color = "grey25", stroke = .25)+
-  geom_text(aes(label = id,y = ineq_1-ineq/2, color = factor(id,levels=5:1) )) + 
-    scale_x_continuous(breaks = 1:5, labels = c("kleinster","2.kleinster","3","zweitgrößter","größter")) +
-    scale_y_continuous(breaks = 0:5, labels = paste0(seq(0,100,20),"%") ) +
-    scale_fill_manual(values = paletteer::palettes_d$dutchmasters$pearl_earring[2:6]) +
-    scale_color_manual(values = c("grey25","grey25","grey98","grey25","grey25")) +
-    guides(fill = "none", color = "none") +
-    labs(y = "Anteil am Gesamtwert", x = "Sortierte Beobachtungen") +
-    theme_minimal(base_size = 11) +
-    theme(panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank())
-```
-
-```{r dpi = 900, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
-gdf <- a14 %>% mutate_at(vars(di05),~ifelse(.<0,NA,.)) %>%  
-  select(respid, di05) %>% 
-  na.omit() %>% 
-  arrange(di05) %>% 
-  mutate(pct_id = 1:n()/n(),
-         pct_di05 = cumsum(di05/sum(di05)),
-         sampl = runif(n = nrow(.)))
-
-gini_ann_df <- gdf %>% 
-  filter(sampl<.0151, between(pct_id,.5,.6 ) ) %>% slice(1) %>%
-  mutate(lab_lo = "Lorenzkurve", 
-         labl = paste0("Lorenzkurve (aus Beobachtungen):\n\"",
-                       round(pct_id*100,0),"% der Befragten verfügen über\n",
-                       round(pct_di05*100,0),"% des gesamten HH-Einkommens\""),
-         labl1 = paste0("(Theoretische) Diagonale:\n\"",
-                       round(pct_id*100,0),"% der Befragten verfügen über\n",
-                       round(pct_id*100,0),"% des gesamten HH-Einkommens\""),
-         labl2 = "Gini Koeffizient:\nFläche zwischen Diagonale und Lorenzkurve\nim Verhältnis zu Fläche unter Lorenzkurve (weiß)\n(0=Gleichverteilung,1=Maximale Konzentration)")
-
-ggplot(gdf, aes(x = pct_id, y = pct_di05)) + 
-  geom_ribbon(aes(ymin = pct_di05, ymax = pct_id, xmin = pct_id, xmax = pct_id), fill = "#1BB6AF" ) +
-  geom_line(aes(y = pct_id), linetype = 2, size = .95, color = "#172869") + # Diagonale
-  geom_line(size = .5, color = "#9ED80B") + # Lorenzkurve
-  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
-  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
-  geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
-  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 3, 
-             color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
-  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
-  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 3, 
-             color = "grey95", fill = "#172869") + # diagonale label
-  geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
-  geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
-  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 3, 
-             color = "grey15", fill = "#1BB6AF") + # Gini Label
-  geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
-  scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
-  scale_y_continuous("Kumulierter Einkommensanteil", labels = scales::percent_format(accuracy = 1L)) +
-  theme_minimal(base_size = 11) +
-  coord_cartesian(x =c(0,1),y =c(0,1),expand = F)
-```
-
+{{< include _03_1_gini.qmd >}}
 
 
 
