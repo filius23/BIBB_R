@@ -393,7 +393,7 @@ Das mag für den Moment relativ trivial erscheinen, ist aber später sehr prakti
 
 ## [Übung](#data2) {#ue2}
 
-## Datensätze einlesen
+## Datensätze einlesen {#import}
 
 In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.
 
