@@ -9,3 +9,10 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf
 
 Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuch Methoden der empirischen Sozialforschung (pp. 349–356). Springer Fachmedien Wiesbaden. https://doi.org/10.1007/978-3-531-18939-0_24
+
+
+```{r}
+etb18 %>% 
+  count(S1,m1202,wt = gew2018_hr17)
+```
+
