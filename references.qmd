@@ -19,8 +19,11 @@ Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum se
 
 [Stata 2 R](https://stata2r.github.io/) richtet sich alle Anwender\*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des `{tidyverse}` das Paket `{data.table}` für die Datenaufbereitung gezeigt. `{data.table}` ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das `{tidyverse}`. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, `{data.table}` auszuprobieren.
 
-
 für base R
+
+[Problemorientiere Einführungen in spezifische Anwendungen "do more with R"](https://www.infoworld.com/article/3411819/do-more-with-r-video-tutorials.html)
+
+[Ten simple rules for teaching yourself R](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010372)
 
 ## Cheatsheets
 
@@ -37,7 +40,7 @@ Eine große Stärke von `ggplot2` sind die zahlreichen Erweiterungen, welche bei
 + mehrere Grafiken zu kombinieren mit [`{patchwork}`](https://github.com/thomasp85/patchwork#patchwork)
 + Karten zu erstellen mit [sf](https://oliviergimenez.github.io/intro_spatialR/#1), weitere [Link](https://ourcodingclub.github.io/tutorials/dataviz-beautification-synthesis/)
 + fortgeschrittene Textformatierungen zu verwenden mit [`{ggtext}`](https://wilkelab.org/ggtext/)
-+ Grafiken als Animation zu erstellen [`{gganimate}`](https://gganimate.com/)
++ Grafiken als Animation zu erstellen [`{gganimate}`](https://gganimate.com/) - [eine Einführung](https://goodekat.github.io/presentations/2019-isugg-gganimate-spooky/slides.html) oder [hier](https://rpubs.com/bradyrippon/929572)
 + Logos in in `{ggplot2}` einfügen mit [`{ggpath}`](https://mrcaseb.github.io/ggpath/)
 
 Eine Übersicht zu Erweiterungspakteten für `{ggplot2}` findet sich [hier](https://exts.ggplot2.tidyverse.org/gallery/)
