@@ -1,0 +1,42 @@
+# Data Wrangling I {#wrang1}
+
+
+```{r setup05, echo = F, include=FALSE}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+knitr::opts_chunk$set(collapse = F)
+library(haven)
+library(tidyverse)
+```
+```{r}
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+
+## `factor` und Labels
+
+R verfügt über einen speziellen Variablentypen namens factor, um mit kategorialen Daten umzugehen. factor Variablen sind besonders hilfreich, wenn wir Grafiken erstellen wollen oder statistische Analysen durchführen. 
+
+In den beiden vorherigen Kapiteln haben wir schon gesehen, dass Labels in R immer etwas extra Aufwand bedeuten.
+In Grafiken mussten wir mit `breaks = c(1,2), labels = c("Männer", "Frauen")` die Labels extra erstellen.
+Auch in den Auszählungen waren die Labels nur mit `count()` aufrufbar. 
+
+In vielen Programmen wie Stata oder SPSS werden die labels häufig durch die Operationen "mitgeschleift" und dann ausgegeben. Das ist in R nicht der Fall. Stattdesssen können wir mit Hilfe des Variablentyps `factor` Labels vergeben. Das Vorgehen mag für alle, die schon lange mit Stata oder SPSS gearbeitet haben, etwas ungewöhnlich sein - ist aber in der Praxis sehr hilfreich, wenn man sich den entsprechenden Workflow angewöhnt hat.
+
+factors stellen kategoriale Daten dar. Sie werden als ganze Zahlen in Verbindung mit Bezeichnungen gespeichert und haben dazu eine festgelegte Ordnung. 
+
+Wir sehen uns factor-Variablen nun etwas genauer an. Dazu nehmen wir 10 Beobachtungen aus der ETB 2018 und behalten lediglich die Variable `m1202` - die Ausbildung der Befragten.
+```{r}
+etb18_small <- etb18 %>% select(m1202) %>% slice(20:30)
+etb18_small
+```
+
+
+
+
+
+factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln.
+
+Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als Ebenen bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge. Wenn Sie zum Beispiel einen Faktor mit 2 Ebenen haben:
+
+
