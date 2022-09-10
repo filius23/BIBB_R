@@ -11,6 +11,9 @@ data science in a box
 https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f
 
 https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb
+
+# across & select
+https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
  
 
 ## `cut()`
@@ -57,6 +60,16 @@ cumsum(prop.table(table( cut(a16$age, breaks = seq(10,100,10) ) )))
 ```
 
 [^1]: Die Werte für fehlende Angaben finden wir Codebuch: auch hier ist `-32` wieder ein Code für fehlende Werte.
+
+### cut wählt ein ungünstiges Zahlenformat {#hinweis_cut_w103}
+
+`cut` verwendet für Klassengrenzen mit mehr als 3 Stellen eine wenig intuitive Darstellung. Mit `dig.lab` können Labels mit mehr als 3 Stellen angefordert werden:
+```{r}
+x1 <- c(1212,2121,1212)
+table( cut(x1, breaks = c(0,1500,2500)) )
+table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) )
+```
+
 
 ## Eigene Funktionen
 
