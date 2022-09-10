@@ -1,4 +1,9 @@
 # Häufige Fehlermeldungen {#rerror}
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(tweetrmd)
+```
 
 Die Arbeit in R ist - wie in jedem Datenanalyseprogramm - ein Hangeln von Fehlermeldung zu Fehlermeldung. 
 Das kann gerade zu Beginn frustrierend sein, bis die tiefere Bedeutung von Fehlermeldungen und deren Ursachen etwas deutlicher werden. 
@@ -12,27 +17,26 @@ Die Liste lehnt sich stark an die die großartige Zusammenstellung von [Nick C. 
 1. Selbst wenn du die Meldung nicht verstehst, gibt sie dir oft einen Hinweis auf die Ursache des Problems, so dass du weißt, wo du nachschauen musst, um deinen Code zu überprüfen
 1. Google: oftmals hilft es eine Fehlermeldung oder ein Problem ("How to .... in R") zu googeln. Neben stackoverflow gibt es unzählige Blogs, Tutorials und andere Hilfeseiten für R in hervorragender Qualität - und sie sind (fast) immer kostenlos!
 
-:::{.callout-note}
-
-[Fehlerliste](https://twitter.com/emilynordmann/status/1548942198246440962?s=11&t=vemXPmcotIqs4hP5J__XvQ) als Lernhilfe
-
-:::
+```{r}
+#| echo: false
+tweetrmd::include_tweet("https://twitter.com/hioberman/status/1566699138309410817")
+```
 
 
 ## There is no package called
 
 Die Fehlermeldung `there is no package called 'XXXX'` erscheint, wenn Sie ein Paket bspw. mit `library()` laden, diese Paket allerdings nicht installiert ist.
 
-The Fix:
+Lösungsvorschläge:
 
-1. Did you spell the package name correctly? Maybe you do have the package, but you made a typo
-1. If you spelled it correctly, you may not have installed it. Install it (usually) with `install.packages('packagename')` where `'packagename'` is replaced with the name of the package you actually want.
+1. Tippfehler? 
+1. Noch nicht installiert? Eventuell ist das Paket nicht (richtig) installiert: `install.packages('packagename')` 
 
 ## Could not find function
 
 Die Fehlermeldung `could not find function "XXX"` weist darauf hin, dass R die genannte Funktion nicht finden kann. 
 
-The Fix:
+Lösungsvorschläge:
 
 1. Did you spell the function name correctly? Maybe you made a typo.
 1. If the function is in a package, did you load the package? Remember, the package must be re-loaded every time you restart R. If you're working in RMarkdown, you must load the package inside of your RMarkdown script, since RMarkdown starts from a blank slate.
@@ -41,7 +45,7 @@ The Fix:
 
 If you get an error like `object 'objectname' not found`, that means that you've made a reference to an object called `objectname`, but there is no such object to refer to.
 
-The Fix:
+Lösungsvorschläge:
 
 1. Did you spell the object's name correctly? Maybe you made a typo.
 1. Did you remember to create the object before referring to it? For example, the code `mean(x); x <- 1:10` would not work, because you try to take the mean of `x` before it's been created. If you're working in RMarkdown, remember that it will start from a blank slate, so you must create all objects inside of your Rmarkdown script.
@@ -59,7 +63,7 @@ mean$meanness
 # Error in mean$meanness : object of type 'closure' is not subsettable
 ```
 
-The Fix:
+Lösungsvorschläge:
 
 1. See where it says the error is "in" - that's the place where you've referred to the wrong thing. fix it!
 
@@ -68,7 +72,7 @@ The Fix:
 
 If you get an error like `column 'columnname' doesn't exist`, that means it's trying to refer to a column name that is not actually in your data.
 
-The Fix:
+Lösungsvorschläge:
 
 1. Did you spell the column's name correctly? Maybe you made a typo.
 1. Are you referring to the proper dataset? Maybe you created the variable in `my_data2` but you're trying to access it in `my_data`. 
@@ -93,7 +97,7 @@ Paket ‘XXX’ wurde unter R Version 4.1.2 erstellt
 
 If you load a package and get a warning that looks like `Warning: packagename was compiled with R version...`, that just means that the package was compiled using a slightly newer version of R than yours. It's generally not a problem as long as you have a somewhat-recent version of R.
 
-The Fix:
+Lösungsvorschläge:
 
 1. Ignore it
 1. If you want it to go away, update your R installation.
@@ -102,7 +106,7 @@ The Fix:
 
 If you are installing packages, you may be asked whether you'd like to build packages from source. If you say "Yes", but you do not have Rtools installed, you will get an error, and the package won't install properly.
 
-The Fix:
+Lösungsvorschläge:
 
 1. When asked whether you want to install packages from source, say "No."
 1. Install Rtools before installing packages. The easiest way to do this is to install the **installr** package, and then run `installr::install.rtools()`.
@@ -111,7 +115,7 @@ The Fix:
 
 If you get an error like `'filename.csv' does not exist`, that means that you're trying to load a file, but the file is not in the location you're telling R to look.
 
-The Fix:
+Lösungsvorschläge:
 
 1. Did you spell the filename correctly? Maybe you made a typo. Or, perhaps, you're trying to open an Excel fie (`.xlsx`) but telling R to look for a CSV (`.csv`). Or you wrote "file.csv" but the file is "file (1).csv". 
 1. Is the file perhaps open in Excel? Sometimes, Microsoft Office will hold files hostage and not let them be opened in other programs while they're open in Office. Close the Excel window that has the file open.
@@ -121,7 +125,7 @@ The Fix:
 
 Just in general, a very large percentage of errors students come to me with occur simply because they made a typo, or didn't balance their parentheses (pairing each ( with a )).
 
-The Fix:
+Lösungsvorschläge:
 
 1. If you get an error message of any kind, read the relevant part of the code carefully to make sure you didn't make a typo
 1. Avoid coding where you have lots and lots of nested parentheses (this is something that **tidyverse** piping we learn is intended to avoid). Then, for whatever parentheses you do have, click on each one in RStudio - it will highlight its "partner" or show where there is a missing partner.
@@ -154,7 +158,7 @@ If you want a variable to be treated as a number, **do not put it in quotes.** T
 
 R is pretty loose, and will allow you to do things like ask whether `'2' > 1`, and will answer yes. This *feels* like it's okay to put the 2 in quotes. But it's not. What R is doing is saying "oof... I can't compare a number to a letter, but you're asking me to. I'll just convert this number to a string as well, so I'm really doing `'2' > '1'`, and since '2' is alphabetically after '1', that's true, which is the desired result. Great! Except it also means that `'02' > 1` is false, since '02' is alphabetically before '1'. Same with `'120'>'20'` being false. Oops.
 
-The Fix:
+Lösungsvorschläge:
 
 1. If it's a number, and you want it treated like a numeric value, don't put quotes around it.
 
