@@ -1,0 +1,47 @@
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(kableExtra)
+library(tidyverse)
+```
+
+## Zeilen- und Spaltenprozente
+
+Auch für Kontingenztabellen können wir uns die relativen Häufigkeiten anzeigen lassen, indem wir `prop.table()` anwenden:
+```{r, echo = T}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.) 
+```
+Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`S1=2`) und Aufstiegsfortbildung (`m1202 = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung }}{\text{Gesamtzahl der Befragten}} \Rightarrow$ 3,27% *aller Befragten* sind Frauen mit Aufstiegsfortbildung. 
+
+Wir können diese Tabelle auch mit *Zeilen- und Spaltenprozenten* anzeigen lassen, indem wir die Option `margin` verwenden. `margin=1` liefert die **Zeilenprozente**, `margin=2` die **Spaltenprozente**.[^1]  
+
+[^1]: Der Übersichtlichkeit halber wurden die Darstellungen hier gerundet - siehe [Hinweise](#hinweise_w04).
+```{r, eval = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 1)
+```
+```{r, echo = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 1) %>% 
+  round(., 4)
+```
+```{r, eval = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 2)
+```
+```{r, echo = F}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 2) %>% 
+  round(., 4)
+
+pct_spl <- 
+  xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 2) %>% 
+  round(., 4)
+```
+
++ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}\Rightarrow$  6,56% der befragten Frauen haben eine Aufstiegsfortbildung
+
++ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}\Rightarrow$ 37,8% der Befragten mit Aufstiegsfortbildung sind Frauen
+

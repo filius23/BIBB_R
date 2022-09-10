@@ -346,21 +346,50 @@ ggplot(data = etb18, aes(x = az,fill = factor(S1))) +
 
 ## Kategoriale Merkmale 
 
-Im Folgenden sehen wir uns eine Möglichkeit an, Kontingenztabelle zu visualisieren:
+Im Folgenden sehen wir uns eine Möglichkeit an, die Kontingenztabelle aus [Kapitel 2](03_desc.qmd#crosscount) zu visualisieren:
 ```{r}
-etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202))
+etb18$m1202[etb18$m1202<0] <- NA # missings ausschließen
+etb18 %>% 
+  count(S1,m1202) %>% 
+  filter(!is.na(m1202))
 ```
 
-Wir haben zwei Möglichkeiten: aus einer Tabelle mit `count()` und `geom_col()`:
+Da wir mit `count()` einen `data.frame` erhalten, können wir diesen direkt in `ggplot()` schicken und mit `geom_col()` Säulen darstellen:
 ```{r}
-etb18 %>% count(S1,m1202) %>% filter(!is.na(m1202)) %>% 
+etb18 %>% 
+  count(S1,m1202) %>% 
+  filter(!is.na(m1202)) %>% 
   ggplot(data = ., aes(x = m1202, y = n, fill = factor(S1))) +
   geom_col(position=position_dodge()) 
 ```
 
-Oder direkt aus dem Ausgangsdatensatz mit `geom_bar()`:
+Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweiteren einfach die Pipeline vor `ggplot()` um den `mutate()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
 ```{r}
 #| layout-ncol: 2
+# #| code-line-numbers: "5"
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+  count(S1,m1202) %>% 
+  group_by(S1) %>% 
+  mutate(pct_gender = prop.table(n)) %>% 
+  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  geom_col(position=position_dodge()) 
+
+
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+  count(S1,m1202) %>% 
+  group_by(S1) %>% 
+  mutate(pct_gender = prop.table(n)) %>% 
+  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  geom_col(position=position_dodge())  +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) 
+```
+
+
+```{r}
+#| layout-ncol: 2
+#| include: false
 ggplot(data = etb18 , 
        aes(x = m1202, fill = factor(S1) )) + 
   geom_bar(  position=position_dodge()) + 
@@ -372,19 +401,20 @@ ggplot(data = etb18 ,
            y = ..count../sum(..count..)
            )) + 
   geom_bar(  position=position_dodge()) + 
-  labs(title = "Relative Häufigkeit")
+  labs(title = "Relative Häufigkeit") 
 ```
-
 
 Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg: 
 ```{r}
-#| code-line-numbers: "9"
-ggplot(data = etb18 , 
-       aes(x = m1202, fill = factor(S1),
-           y = ..count../sum(..count..)
-           )) + 
-  geom_bar(  position=position_dodge()) +
-  theme_minimal() + 
+# #| code-line-numbers: "9"
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+  count(S1,m1202) %>% 
+  group_by(S1) %>% 
+  mutate(pct_gender = prop.table(n)) %>% 
+  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  geom_col(position=position_dodge())  +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1))  + 
   scale_fill_manual(values = c("navajowhite","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
   scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
@@ -429,9 +459,7 @@ etb %>% filter(S2_j < 9999,h1216d>0) %>% slice(1:150) %>%
 
 
 + Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`)
-+ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`)
-
-+ Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein).
++ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`) betrennt nach der Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein).
 ```{r}
 etb18 %>% count(F100_wib2,gkpol) %>% filter(F100_wib2>=0) %>% 
   ggplot(aes(x = gkpol, y = n, fill = factor(F100_wib2))) +

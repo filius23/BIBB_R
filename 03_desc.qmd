@@ -95,12 +95,11 @@ xtabs(~m1202,data=etb18) %>% cumsum(.)
 ct2 <- xtabs(~m1202,data=etb18) %>% cumsum(.)
 ```
 
-Also: `r ct2[2]` Befragte haben eine duale Berufsausbildung oder keine Berufsausbildung.
+`r ct2[2]` Befragte haben eine duale Berufsausbildung oder keine Berufsausbildung.
 
 
-+ Kumulierte, relative Häufigkeiten
++ `prop.table()` mit `cumsum()`: kumulierte relative Häufigkeiten
 
-Auch die relativen Häufigkeiten können wir uns als kumulierte Werte ausgeben lassen, dazu kombinieren wir `prop.table()` mit `cumsum()`:
 ```{r}
 xtabs(~m1202,data=etb18) %>% prop.table() %>% cumsum()
 ```
@@ -123,48 +122,7 @@ xtabs(~S1+m1202, data = etb18)
 
 Wir erkennen aus dieser Tabelle beispielsweise, dass 4926 Befragte weiblich (`S1=2`) und ohne Berufsabschluss (`m1202 = 5`) sind.
 
-Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwenden wir `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
-
-## Zeilen- und Spaltenprozente
-
-Auch für Kontingenztabellen können wir uns die relativen Häufigkeiten anzeigen lassen, indem wir `prop.table()` anwenden:
-```{r, echo = T}
-xtabs(~S1+m1202, data = etb18) %>% 
-  prop.table(.) 
-```
-Die hier dargestellten relativen Häufigkeiten beziehen sich jeweils auf die Gesamtzahl der Befragten. Formal dargestellt wird also für die Kombination weiblich (`S1=2`) und Aufstiegsfortbildung (`m1202 = 5`) die Anzahl ledigen Frauen durch die Anzahl **aller Befragten** geteilt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung }}{\text{Gesamtzahl der Befragten}} \Rightarrow$ 3,27% *aller Befragten* sind Frauen mit Aufstiegsfortbildung. 
-
-Wir können diese Tabelle auch mit *Zeilen- und Spaltenprozenten* anzeigen lassen, indem wir die Option `margin` verwenden. `margin=1` liefert die **Zeilenprozente**, `margin=2` die **Spaltenprozente**.[^1]  
-
-[^1]: Der Übersichtlichkeit halber wurden die Darstellungen hier gerundet - siehe [Hinweise](#hinweise_w04).
-```{r, eval = F}
-xtabs(~S1+m1202, data = etb18) %>% 
-  prop.table(.,margin = 1)
-```
-```{r, echo = F}
-xtabs(~S1+m1202, data = etb18) %>% 
-  prop.table(.,margin = 1) %>% 
-  round(., 4)
-```
-```{r, eval = F}
-xtabs(~S1+m1202, data = etb18) %>% 
-  prop.table(.,margin = 2)
-```
-```{r, echo = F}
-xtabs(~S1+m1202, data = etb18) %>% 
-  prop.table(.,margin = 2) %>% 
-  round(., 4)
-
-pct_spl <- 
-  xtabs(~S1+m1202, data = etb18) %>% 
-  prop.table(.,margin = 2) %>% 
-  round(., 4)
-```
-
-+ Für die Zeilenprozente werden die Werte in Bezug zu den Zeilensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl der befragten Frauen gesetzt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der befragten Frauen}}\Rightarrow$  6,56% der befragten Frauen haben eine Aufstiegsfortbildung
-
-+ Für die Spaltenprozente werden die Werte in Bezug zu den Spaltensummen gesetzt. Also wird die Anzahl der Frauen mit Aufstiegsfortbildung ins Verhältnis zur Zahl aller Befragten mit Aufstiegsfortbildung gesetzt: $\frac{\text{Anzahl Frauen mit Aufstiegsfortbildung}}{\text{Gesamtzahl der Befragten mit Aufstiegsfortbildung}}\Rightarrow$ 37,8% der Befragten mit Aufstiegsfortbildung sind Frauen
-
+Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwende ich meistens `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
 
 ### [Übung](#ue1)
 
@@ -172,7 +130,6 @@ pct_spl <-
 
 Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
 ```{r}
-#| eval: false
 etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
 ```
 (Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
@@ -198,10 +155,6 @@ etb18 %>% count(m1202)
 Möchten wir das umgehen, nehmen wir wieder `filter()` zu Hilfe - mit `is.na()` können wir `NA` identifizieren. Durch Voranstellen von `!` können wir damit anfordern, dass alle nicht-`NA`-Werte mit `TRUE` behalten werden:
 ```{r}
 etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
-```
-
-```{r}
-etb18 %>% filter(!is.na(m1202)) %>% count(S1,m1202)
 ```
 
 Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
@@ -254,42 +207,90 @@ Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also
    3. Berechne dafür die kumulierten Werte basierend auf `pct` *und dann (`%>%`)*
    4. Runde das Ergebnis auf 3 Nachkommastellen
 
-Etwas störend ist aber noch die `-1`, die für fehlende Angaben steht und nicht berücksichtigt werden soll.
-Wir werden gleich noch mehr zu fehlenden Werten in R erfahren, aber eine schnelle Lösung ist einfach `-1` mit `filter()` auszuschließen:
+Etwas störend ist aber noch das `NA`, die für fehlende Angaben steht und nicht berücksichtigt werden soll.
+Das können wir einfach `!is.na()` in `filter()` ausschließen:
 ```{r}
 etb18 %>% 
-  filter(m1202 != -1) %>% 
+  filter(!is.na(m1202)) %>% 
    count(m1202) %>% 
    mutate(pct= prop.table(n)*100,
           Cum = cumsum(pct)) 
 ```
 
-## Kontingenztabellen mit `count()`
+## Kontingenztabellen mit `count()` {#crosscount}
 
+Für eine Kontingenztabelle mit `count()` geben wir einfach die interessierenden Variablen in `count()` an. Das Ergebnis wird immer im "long shape" Format ausgegeben:
 ```{r}
 etb18 %>% 
-  filter(m1202 != -1) %>% 
+  filter(!is.na(m1202)) %>% 
    count(m1202,S1)
 ```
-
+Auch hier können wir wie oben die relativen und kumulierten relativen Häufigkeiten anfügen:
 ```{r}
 etb18 %>% 
-  filter(m1202 != -1) %>% 
+  filter(!is.na(m1202)) %>% 
+  count(m1202,S1) %>% 
+  mutate(pct= prop.table(n)*100) 
+```
+
+Was aber wenn wir jetzt die Anteile *innerhalb* von Männern und Frauen möchten? 
+Hier hilft uns `group_by()` weiter:
+```{r}
+etb18 %>% 
+   filter(!is.na(m1202)) %>% 
    count(m1202,S1) %>% 
-   mutate(pct = prop.table(n)) %>% 
    group_by(S1) %>% 
    mutate(pct_gender = prop.table(n)) 
 ```
 
+49.7% der Befragten Frauen haben eine duale oder schule Berufsausbildung. 
+
+
+Wir können dann auch mit einem angehängten `filter()` nur die beiden Zeilen `m1202 == 2` ausgeben lassen:
+```{r}
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+   count(m1202,S1) %>% 
+   group_by(S1) %>% 
+   mutate(pct_gender = prop.table(n)) %>% 
+  filter(m1202 == 2)
+```
+
+...wir können diese Ausgaben natürlich immer auch ablegen:
+```{r}
+tab_aus_gender <- 
+      etb18 %>% 
+        filter(!is.na(m1202)) %>% 
+         count(m1202,S1) %>% 
+         group_by(S1) %>% 
+         mutate(pct_gender = prop.table(n))
+class(tab_aus_gender)
+```
+
+...und dann wieder weiterverwenden
+```{r}
+tab_aus_gender %>%  filter(m1202 == 3)
+```
+
+
+
 ### [Übung](#ue3)
+
+::: callout-tip
+
+Bei langen Tabellen werden nicht alle Werte ausgegeben, sondern nur die ersten Zeilen. Um hier alle Werte zu bekommen, hilft `print(n=Inf)`:
+```{r}
+#| eval: false
+etb18 %>% count(Bula,S1) # wird abgeschnitten
+etb18 %>% count(Bula,S1) %>% print(n=Inf) # alle Werte werden gezeigt
+```
+
+
+:::
 
 ##  Lage- & Konzentrationsmaße 
 
-```{r, echo =F}
-etb18$F518_SUF <- as.numeric(etb18$F518_SUF)
-```
-
-Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen, wie beispielsweise das . Einen Überblick bietet `summary()`:
+Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen, wie beispielsweise das arithmetische Mittel oder der Median. Einen Überblick bietet `summary()`:
 ```{r sw5_quant_summary}
 summary(etb18$F518_SUF)
 ```
@@ -318,34 +319,16 @@ Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Bruttoverdien
 
 Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
 ```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-min(etb18$F518_SUF)
+mean(etb18$F518_SUF)
 ```
 Deshalb müssen wir die Option `na.rm = T` angeben:
 ```{r sw5_3b, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
-min(etb18$F518_SUF,na.rm = T)
+mean(etb18$F518_SUF,na.rm = T)
 ```
 
-Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
-```{r sw5_quant1}
-quantile(etb18$F518_SUF,na.rm = T)
-```
-Wir können aber durch Angabe in den Optionen beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
+Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen. Mit `quantile()`wir durch Angabe in der Option `probs =` beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
 ```{r sw5_quant2}
 quantile(etb18$F518_SUF,probs = .4, na.rm = T)
-```
-In Kombination mit `seq()` können wir zB. auch die Dezilgrenzen (entlang der Vielfachen von 0,1) anfordern:
-```{r sw5_quant3}
-quantile(etb18$F518_SUF,probs = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), na.rm = T) 
-quantile(etb18$F518_SUF,probs = seq(0,1,0.1), na.rm = T) 
-```
-
-Wir können die Varianz mit `var()` berechnen:
-```{r W07_6, include=T, echo = T}
-var(etb18$F518_SUF, na.rm = T) # Varianz
-```
-Die Standardabweichung erhalten wir mit `sd()`:
-```{r}
-sd(etb18$F518_SUF, na.rm = T) # Standardabweichung
 ```
 
 Den [Gini-Koeffizienten](#gini_graph) können wir mit `Gini()` aus dem Paket `ineq` berechnen:
@@ -353,12 +336,30 @@ Den [Gini-Koeffizienten](#gini_graph) können wir mit `Gini()` aus dem Paket `in
 install.packages("ineq") # einmal installieren
 ```
 
-```{r, echo=F}
+```{r}
 library(ineq) # ineq laden
 Gini(etb18$F518_SUF)
 ```
 
+
+### Kennzahlentabelle mit `summarise`
+
+Mit Hilfe von `summarise()` aus `{dplyr}` können wir ein eigenes `summary()` bauen:
+
+```{r}
+etb18 %>% summarise(Minimum = min(F518_SUF,na.rm = T),
+                    Median = median(F518_SUF,na.rm = T),
+                    Mittelwert = mean(F518_SUF,na.rm = T),
+                    Maximum = max(F518_SUF,na.rm = T),
+                    Gini = Gini(F518_SUF))
+```
+
+
+Der Vorteil des Ganzen wird im nächsten Schritt klarer.
+
 ### Lage- und Streuungsmaße vergleichen
+
+
 Häufig werden diese Kennzahlen erst im Vergleich richtig spannend, dafür hilft uns das `group_by()` Argument und `summarise()`:
 ```{r, echo=F}
 nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
@@ -383,26 +384,91 @@ etb18 %>%
 
 
 
-::: callout-tip
+<!-- ::: callout-tip -->
 
-Für den Kennzahlenvergleich können wir auch die Schreibweise mit `[]` verwenden, beispielsweise können wir für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden:
-```{r sw5_su_vgl}
-summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
-  summary(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) 
-```
+<!-- Für den Kennzahlenvergleich können wir auch die Schreibweise mit `[]` verwenden, beispielsweise können wir für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden: -->
+<!-- ```{r sw5_su_vgl} -->
+<!-- summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) - -->
+<!--   summary(etb18$F518_SUF[etb18$Bula == 3], na.rm = T)  -->
+<!-- ``` -->
 
-:::
+<!-- ::: -->
 
-::: note
+<!-- ::: note -->
 
-[**Häufige Fehlermeldungen**](#rerror)
+<!-- [**Häufige Fehlermeldungen**](#rerror) -->
 
-:::
+<!-- ::: -->
+
+### [Übung](#ue4)
+
 
 ## Übungen
 
-{{< include _03_0_ueb.qmd >}}
+<!-- {{< include _03_0_ueb.qmd >}} -->
+Alle Übungen beziehen sich auf die Erwerbstätigenbefragung:
 
+```{r einls, eval=F, echo = T}
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+[Abschnitt zum Einlesen](02_intro.qmd#import)
+
+
+### Übung 1 {#ue1}
+
+Wir interessieren uns für die Variable `gkpol`, welche die Größe der Wohngemeinde der Befragten enthält:
+```{r}
+#| echo: false
+library(gt)
+etb18 %>% count(gkpol) %>% pull(gkpol) %>% labelled::val_labels() %>% enframe(name = "label") %>% gt() %>% tab_options(  table.font.size = 9)
+# %>% kable(.) %>% 
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>% 
+#   row_spec(0, color = "white",font_size = 0)
+```
+
+
++ Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen, nutzen Sie dafür sowohl `table()`, `xtabs()` als auch `count()` (Denken Sie daran, `{tidyverse}` zu laden für `count()`). 
++ Lassen Sie sich der relativen Häufigkeiten (Anteile) ausgeben (nutzen sie entweder `table()` oder `xtabs()`)
++ Erstellen Sie eine Kontingenztabelle, indem Sie neben `gkpol` auch das Geschlecht `S1` (2 = Frauen, 1 = Männer) mit einbeziehen
++ Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben? Berechnen Sie die relativen Häufigkeiten.
+
+### Übung 2 {#ue2}
+
+Wir interessieren uns für die Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein). Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten.
+  
+  + Erstellen Sie zunächst eine Auszählung der absoluten Häufigkeiten: Hat die Variable fehlende Werte, die Sie ausschließen sollten? Nutzen Sie `count()` und `xtabs()` für die Auszählung.
+  + Falls ja, ersetzen Sie diese Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben. [Siehe hier](#NA03)
+  
+  
+### Übung 3 {#ue3}
+  
++ Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol`, welche folgende Informationen enthält:
+  + absolute Häufigkeiten 
+  + relative Häufigkeiten
+  + kumulierte relative Häufigkeiten 
+  + Wie viele Befragte leben in einem Ort mit höchstens 49.999 Einwohnern?
+  + Wie groß ist der Anteil der Befragten, die in einem Ort mit höchstens 99.999 Einwohnern leben?
+  + Wie groß ist der Anteil der Befragten, die in einem Ort mit *mindestens* 100.000 Einwohnern leben?
+  
+  
++ Beziehen Sie neben `gkpol` auch das Geschlecht (`S1`)
+  + Wie viel Prozent der Befragten, die in einer Gemeinde mit unter 2000 Einwohnern leben, sind Frauen? (`S1` = 2, `gkpol` = 1)
+  + Wie viel Prozent der Frauen leben in einer Gemeinde mit unter 2000 Einwohnern leben?  
+  
+### Übung 4 {#ue4}
+
+Beschreiben Sie das Alter der Befragten (`zpalter`) mit `summary` und erstellen Sie selbst einen Überblick mit Hilfe von `summarise()`, der einen Vergleich des Befragtenalters nach Gemeindegrößen erlaubt.
+
+  + Überschreiben Sie zunächst die Missings mit `NA`: 
+```{r}
+#| eval: false
+etb18$zpalter[etb18$zpalter>100] <- NA
+```
+  
+  + Erstellen Sie einen Überblick mit `summary()`
+  + Erstellen Sie einen Überblick mit dem Minimum, Median, arith. Mittel, Varianz und Maximum der Alterswerte mit Hilfe von `summarise()`
+  + Erweitern Sie diesen Überblick dann so, dass sie einen Vergleich der Kennzahlen für die verschieden `gkpol`-Kategorien ausgegeben bekommen.
 
 ## Hinweise 
 
@@ -417,11 +483,12 @@ round(21.12121123,digits = 0)
 ```
 
 Wir können also die relativen Häufigkeiten runden und so die Tabelle von oben übersichtlicher machen: 
-```{r W04_11, eval=F, echo = T}
+```{r}
 xtabs(~S1+m1202, data = etb18) %>% 
   prop.table(.,margin = 1) %>% 
   round(.,3)
 ```
+
 
 
 ### Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?

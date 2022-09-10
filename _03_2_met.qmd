@@ -1,0 +1,124 @@
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(kableExtra)
+library(tidyverse)
+etb18$F518_SUF <- as.numeric(etb18$F518_SUF)
+```
+
+Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen, wie beispielsweise das . Einen Überblick bietet `summary()`:
+```{r sw5_quant_summary}
+summary(etb18$F518_SUF)
+```
+
+Allerdings gibt es im Datensatz keine Befragten mit einem Bruttoverdienst von 99999 EUR. 
+99999 ist der Zahlencode *keine Angabe* , 99998 für *weiß nicht*. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
+```{r sw5_2, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+etb18$F518_SUF[etb18$F518_SUF %in% 99998:99999] <- NA # missings überschreiben
+```
+
+```{r sw5_quant_summary2}
+summary(etb18$F518_SUF)
+```
+
+
+Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Bruttoverdienste der Befragten zu beschreiben:
+
++ Minimum und Maximum: `min()`, `max()`
++ arithm. Mittel: `mean()`
++ Median: `median()`
++ Quantile: `quantile()`
++ Varianz: `var()`
++ Standardabweichung: `sd()`
++ Gini-Koeffizient: `Gini` aus dem Paket `{ineq}`
+
+
+Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
+```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+min(etb18$F518_SUF)
+```
+Deshalb müssen wir die Option `na.rm = T` angeben:
+```{r sw5_3b, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+min(etb18$F518_SUF,na.rm = T)
+```
+
+Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen.  Gebräuchlich sind die Quartile, welche die Grenzen für 25\%, 50\% und 75\% angeben. Diese werden auch standardmäßig von `quantile()` ausgegeben:
+```{r sw5_quant1}
+quantile(etb18$F518_SUF,na.rm = T)
+```
+Wir können aber durch Angabe in den Optionen beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
+```{r sw5_quant2}
+quantile(etb18$F518_SUF,probs = .4, na.rm = T)
+```
+
+Wir können die Varianz mit `var()` berechnen:
+```{r W07_6, include=T, echo = T}
+var(etb18$F518_SUF, na.rm = T) # Varianz
+```
+Die Standardabweichung erhalten wir mit `sd()`:
+```{r}
+sd(etb18$F518_SUF, na.rm = T) # Standardabweichung
+```
+
+Den [Gini-Koeffizienten](#gini_graph) können wir mit `Gini()` aus dem Paket `ineq` berechnen:
+```{r,eval=F}
+install.packages("ineq") # einmal installieren
+```
+
+```{r, echo=F}
+library(ineq) # ineq laden
+Gini(etb18$F518_SUF)
+```
+
+
+### Kennzahlentabelle mit `summarise`
+
+Mit Hilfe von `summarise()` aus `{dplyr}` können wir ein eigenes `summary()` bauen:
+
+```{r}
+etb18 %>% summarise(min = min(F518_SUF,na.rm = T),
+                    median = median(F518_SUF,na.rm = T),
+                    mean = mean(F518_SUF,na.rm = T),
+                    max = max(F518_SUF,na.rm = T),
+                    gini = Gini(F518_SUF))
+```
+
+
+
+### Lage- und Streuungsmaße vergleichen
+
+Der Vorteil des Ganzen wird im nächsten Schritt klarer.
+
+Häufig werden diese Kennzahlen erst im Vergleich richtig spannend, dafür hilft uns das `group_by()` Argument und `summarise()`:
+```{r, echo=F}
+nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
+  mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
+```
+
+
+```{r}
+etb18 %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+etb18 %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T),
+            median_inc = median(F518_SUF, na.rm = T))
+
+etb18 %>% 
+  filter(Bula %in% c(3,5)) %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+```
+
+
+
+::: callout-tip
+
+Für den Kennzahlenvergleich können wir auch die Schreibweise mit `[]` verwenden, beispielsweise können wir für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden:
+```{r sw5_su_vgl}
+summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
+  summary(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) 
+```
+
+:::
