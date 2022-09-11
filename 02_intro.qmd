@@ -579,10 +579,10 @@ readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>%
 ## Code
 
 ```{r, eval = F,warning=F}
-# csv
-write.table(dat1,file = "Dateiname.csv",sep = ";",row.names = F)
 # Rdata
 saveRDS(dat1,file = "Dateiname.Rdata")
+# csv
+write.table(dat1,file = "Dateiname.csv",sep = ";",row.names = F)
 # dta
 library(haven)
 write_dta(dat1,path = "Dateiname.dta")
