@@ -7,9 +7,12 @@ if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 knitr::opts_chunk$set(collapse = F)
 library(haven)
 library(tidyverse)
+theme_set(theme_gray() + theme(axis.text.x = element_text(size=rel(1.45))))
 ```
 ```{r}
+library(tidyverse)
 etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+etb18_small <- etb18 %>% slice(20:30) # für Beispiel weiter unten
 ```
 
 
@@ -23,20 +26,183 @@ Auch in den Auszählungen waren die Labels nur mit `count()` aufrufbar.
 
 In vielen Programmen wie Stata oder SPSS werden die labels häufig durch die Operationen "mitgeschleift" und dann ausgegeben. Das ist in R nicht der Fall. Stattdesssen können wir mit Hilfe des Variablentyps `factor` Labels vergeben. Das Vorgehen mag für alle, die schon lange mit Stata oder SPSS gearbeitet haben, etwas ungewöhnlich sein - ist aber in der Praxis sehr hilfreich, wenn man sich den entsprechenden Workflow angewöhnt hat.
 
-factors stellen kategoriale Daten dar. Sie werden als ganze Zahlen in Verbindung mit Bezeichnungen gespeichert und haben dazu eine festgelegte Ordnung. 
+factors stellen kategoriale Daten dar. Sie werden als ganze Zahlen in Verbindung mit Bezeichnungen gespeichert und haben dazu eine festgelegte Ordnung. Wir sehen uns factor-Variablen nun etwas genauer an. 
 
-Wir sehen uns factor-Variablen nun etwas genauer an. Dazu nehmen wir 10 Beobachtungen aus der ETB 2018 und behalten lediglich die Variable `m1202` - die Ausbildung der Befragten.
+Wir beginnen nochmal "ganz von vorne" und zwar mit einem `data.frame`, der lediglich den Vektor `educ` enthält. 
+Wenn wir diesen Mini-Datensatz aber auszählen, dann erhalten wir keine Info darüber, was 1-4 bedeuten.
 ```{r}
-etb18_small <- etb18 %>% select(m1202) %>% slice(20:30)
-etb18_small
+dat1 <- data.frame(educ=c(3, 3, -1, 1, 4, 3, 1, 4, 2))
+tab_dat1 <- dat1 %>% count(educ)
+tab_dat1
+```
+
+Dabei soll `educ` die verschiedenen Ausbildungsniveaus entsprechend der Codierung von `m1202` repräsentieren:
+
+```{r}
+#| code-fold: true
+library(labelled)
+names(val_labels(etb18$m1202)[-1])
+```
+
+
+<!-- ```{r} -->
+<!-- #| out-height: 60% -->
+<!-- #| out-width: 60% -->
+<!-- tab_dat1 %>%  -->
+<!--   ggplot(data = ., aes(x = educ, y = n)) + -->
+<!--   geom_col(position=position_dodge(), fill = "steelblue4") -->
+<!-- ``` -->
+Wie können wir diese jetzt hinterlegen?
+In Kapitel 2 hatten wir einfach einen `character`-Vektor in Reihenfolge der Werte eingefügt:
+```{r}
+#| eval: false
+dat1$uni <- c("Uni Bremen","Uni Vechta", "Uni Oldenburg")
+```
+
+So könnten wir einfach eine `educ_chr`-Spalte hinzufügen:
+```{r}
+tab_dat1$educ_chr <- c("k.A.","ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni")
+tab_dat1
+```
+
+
+
+Mit `factor()` können wir `levels` und `labels` angeben - die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen. Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
+```{r}
+tab_dat1$educ_fct <- factor(tab_dat1$educ, 
+                        levels = c(1,2,3,4), 
+                        labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
+tab_dat1
+```
+Warum ist das besser als einfach ein `character`?
+Weil eine Reihenfolge festgelegt wird:
+```{r}
+levels(tab_dat1$educ_fct)
+tab_dat1$educ_fct2 <- factor(tab_dat1$educ, levels = c(4,3,2,1), 
+                   labels = c("FH/Uni","Aufstiegsfortb.","dual/schul.", "ohne Abs."))
+levels(tab_dat1$educ_fct2)
+tab_dat1
+```
+
+Wenn wir dann `tab_dat1` in einen ggplot pipen, dann werden die Werte der Reihenfolge der `levels` entsprechend auf der x-Achse sortiert:
+```{r}
+#| echo: false
+theme_set(theme_gray() + theme(axis.title.x = element_text(size = rel(1.75),face = "bold",family = "mono"))) 
+```
+
+
+```{r}
+#| out-height: 60%
+#| out-width: 60%
+#| fig-align: "center"
+#| layout-ncol: 2
+
+tab_dat1 %>% 
+  ggplot(data = ., aes(x = educ_fct, y = n)) +
+  geom_col(position=position_dodge(), fill = "steelblue4") 
+
+tab_dat1 %>% 
+  ggplot(data = ., aes(x = educ_chr, y = n)) +
+  geom_col(position=position_dodge(), fill = "mediumturquoise")
+```
+```{r}
+#| echo: false
+# reset theme
+theme_set(theme_gray()) 
+```
+
+### `as_factor()` in `{labelled}`
+
+In `{labelled}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels einen `factor` erstellen können.
+
+[^2]: Nicht zu verwechseln mit `as.factor()` aus base R - der `_` macht einen riesen Unterschied!
+
+```{r}
+library(labelled)
+tab_ausb <- etb18 %>% count(m1202)
+tab_ausb
+tab_ausb$m1202_fct <- as_factor(tab_ausb$m1202)
+tab_ausb$m1202 <- as.numeric(tab_ausb$m1202) # labels aus m1202 löschen (numeric ist nicht gelabelt)
+tab_ausb
+```
+
+Das können wir dann in den Plot pipen - mit `str_wrap( , 10)` aus [{stringr}](https://stringr.tidyverse.org/) (aus [{tidyverse}](https://www.tidyverse.org/)) können wir außerdem festlegen, dass nach 10 Zeichen ein Zeilenumbruch eingefügt werden soll:
+```{r}
+#| layout-ncol: 2
+tab_ausb %>% 
+  ggplot(data = ., aes(x = m1202_fct, y = n)) +
+  geom_col(position=position_dodge(), fill = "sienna1")
+
+tab_ausb %>% 
+  ggplot(data = ., aes(x = str_wrap(m1202_fct,10), y = n)) +
+  geom_col(position=position_dodge(), fill = "sienna1")
+```
+
+
+### `factor` Variablen bearbeiten mit `{forcats}`
+
+`factor`-Variablen haben einen vordefinierten Werteraum. Wenn wir den fehlenden Wert in Zeile durch ein Label ersetzen möchten, bekommen wir ein `Warning` und müssen feststellen, das in Zeile 3 weiterhin `NA` steht:
+```{r}
+tab_ausb
+tab_ausb$m1202_fct[1] <- "weiß nicht"
+tab_ausb
+```
+
+Wenn wir ein neues `level` hinzufügen möchten, muss das im `factor` hinterlegt werden. Eine sehr große Hilfe für solche Operationen ist [{forcats}](https://forcats.tidyverse.org/) aus dem [{tidyverse}](https://www.tidyverse.org/). 
+
+```{r}
+library(forcats) ## nicht nötig wenn bereits tidyverse geladen
+tab_ausb$m1202_fct <- fct_expand(tab_ausb$m1202_fct,"weiß nicht") # neues level hinzufügen
+levels(tab_ausb$m1202_fct)
+```
+
+Jetzt können wir *"weiß nicht"* hinzufügen:
+```{r}
+tab_ausb
+tab_ausb$m1202_fct[1] <- "weiß nicht"
+tab_ausb
+```
+
+Weitere hilfreiche Funktionen zur Veränderung der Reihenfolge von `factor`-Variablen: 
+
+Mit `fct_infreq()` können wir die levels nach Häufigkeit sortieren:
+```{r}
+tab_ausb$educ_fct3 <- fct_infreq(tab_ausb$educ_fct)
+levels(tab_ausb$educ_fct)
+levels(tab_ausb$educ_fct3)
+```
+Mit `fct_recode()` können wir die levels verändern:
+```{r}
+tab_ausb$educ_fct4 <- fct_recode(tab_ausb$educ_fct,Aufstiegsfortbildung = "Aufstiegsfortb.")
+tab_ausb
+tab_ausb$educ_fct5 <- fct_recode(tab_ausb$educ_fct,
+                               Aufstiegsfortbildung = "Aufstiegsfortb.",
+                               `kein Abs.` = "ohne Abs.") # bei Leerzeichen `` um die Wörter
+tab_ausb
+```
+
+Es gibt noch sehr viele weitere Funktionen in [{forcats}](https://forcats.tidyverse.org/), einen Überblick gibt bspw. das [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf).
+
+
+## Labels selbst erstellen und ranspielen
+
+```{r}
+lab_df <- data.frame(m1202=1:4)
+lab_df
+lab_df$m1202_lab <- factor(lab_df$m1202,levels = 1:4,
+                           labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
+
+
+etb18 %>% 
+  count(m1202) %>% 
+  left_join(lab_df,by = "m1202")
 ```
 
 
 
 
+<!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->
 
-factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln.
-
-Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als Ebenen bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge. Wenn Sie zum Beispiel einen Faktor mit 2 Ebenen haben:
+<!-- Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als Ebenen bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge. Wenn Sie zum Beispiel einen Faktor mit 2 Ebenen haben: -->
 
 
