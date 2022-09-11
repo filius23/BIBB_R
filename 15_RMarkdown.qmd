@@ -1,73 +1,120 @@
 # RMarkdown
 
 ```{r setup, include=FALSE}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 knitr::opts_chunk$set(fig.align = "center")
 ```
 
-[R Markdown](https://rmarkdown.rstudio.com/) ist ein Mix aus [Markdown](markdown.qmd) und R code bzw. Output. You can do everything you can with [regular Markdown](markdown.qmd), but you can incorporate graphs, tables, and other R output directly in your document. You can create HTML, PDF, and Word documents, PowerPoint and HTML presentations, websites, books, and even [interactive dashboards](https://rmarkdown.rstudio.com/flexdashboard/index.html) with R Markdown. 
-Diese gesamte Webseite wurde mit [R Markdown]](https://bookdown.org/yihui/rmarkdown-cookbook/) bzw. dem verwandten Paket [Quarto](quarto.org/) erstellt.
+[{R Markdown}](https://rmarkdown.rstudio.com/) erlaubt, formatierte Textelemente mit [Markdown](markdown.qmd) und R code bzw. Output zu kombinieren. 
+Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von [Markdown](markdown.qmd)-Befehlen formatiert werden kann.
+So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden.
+Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen.
+Diese gesamte Webseite wurde mit [{R Markdown}](https://bookdown.org/yihui/rmarkdown-cookbook/) bzw. dem verwandten Paket [{Quarto}](quarto.org/) erstellt.
 
-The [documentation for R Markdown](https://rmarkdown.rstudio.com/) is extremely comprehensive, and their [tutorials](https://rmarkdown.rstudio.com/lesson-1.html) and [cheatsheets](https://rmarkdown.rstudio.com/lesson-15.html) are excellent—rely on those.
+Dieses Kapitel kann lediglich eine kleine Einführung in RMarkdown sein.
+Die [Hilfeseiten und Dokumentation für R Markdown](https://rmarkdown.rstudio.com/) ist extrem umfangreich und auch die [Tutorials](https://rmarkdown.rstudio.com/lesson-1.html) und [Cheatsheets](https://rmarkdown.rstudio.com/lesson-15.html) sind hervorragend.
+Daher hier nur eine kleiner Überblick.
 
-Here are the most important things you'll need to know about R Markdown in this class:
+Ein RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:
+ 
+````{verbatim, lang = "markdown"}
+---
+title: "Mein erstes RMarkdown-Dokument"
+author: "Mein Name"
+date: "2022-09-11"
+output: pdf_document
+---
+  
+# Überschrift 1
 
-## Key terms
+## Unterüberschrift 2
 
-- **Document**: A Markdown file where you type stuff
+Dies ist ein R Markdown-Dokument. 
+Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. 
+Text kann **fett** und *kursiv* geschrieben werden. 
 
-- **Chunk**: A piece of R code that is included in your document. It looks like this:
+Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.
+Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. 
+Ein R-Code-Baustein ("chunk") sieht so aus:
+
+```{r cars}
+# hier kommt der R Code hin
+summary(mtcars$qsec)
+```
+
+````
+
+```{r, out.width="50%", out.width="50%"}
+#| echo: false
+
+knitr::include_graphics("./pic/115_rmd_demo.png")
+```
+
+
+
+## Wichtige Begriffe
+
+- **Chunk**: Abschnitt mit R-Code innerhalb eines RMarkdown-Dokuments.
 
 ````{verbatim, indent="    "}
 ```{r}
-# Code goes here
+# hier kommt der R Code hin
 ```
 ````
 
+Vor und nach dem Teilstück muss eine Leerzeile stehen. Die letzten drei Backticks müssen das Einzige sein, was in der Zeile steht. Wenn Sie weiteren Text hinzufügen, die Backticks vergessen oder sie versehentlich löschen, wird Ihr Dokument nicht korrekt in das Zielformat übersetzt.
 
-There must be an empty line before and after the chunk. The final three backticks must be the only thing on the line—if you add more text, or if you forget to add the backticks, or accidentally delete the backticks, your document will not knit correctly.
 
-- **Knit**: When you "knit" a document, R runs each of the chunks sequentially and converts the output of each chunk into Markdown. R then runs the knitted document through [pandoc](https://pandoc.org/) to convert it to HTML or PDF or Word (or whatever output you've selected).
+- **Knit**: Beim  "knitten" eines RMarkdown Dokuments, werden zuerst alle chunks ausgeführt und der jeweilige Output in Markdown konvertiert. Im Anschluss ruft R [pandoc](https://pandoc.org/) auf um, den Markdown-Text in HTML, PDF oder Word zu konvertieren.
 
-    You can knit by clicking on the "Knit" button at the top of the editor window, or by pressing `⌘⇧K` on macOS or `control + shift + K` on Windows.
+Knitten kann entweder über das "Knit"-Symbol oben im Editor mit der Tastenkombination `⌘⇧K` 
+auf macOS
+oder STRG + shift + k in Windows
+
 
 ```{r knit-button, echo=FALSE, out.width="30%"}
-knitr::include_graphics("/files/img/assignments/knit-button.png", error = FALSE)
+knitr::include_graphics("./pic/115_knit-button.png", error = FALSE)
 ```
 
 
-## Add chunks
+## Chunks einfügen
 
-There are three ways to insert chunks:
+Wir können neue chunks auf drei Arten erstellen
 
-- Press `⌘⌥I` on macOS or `control + alt + I` on Windows
+- Mit `⌘⌥I` auf macOS oder `STRG + alt + I` auf Windows-Rechnern.
+Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.
 
-- Click on the "Insert" button at the top of the editor window
+- Mit dem "Insert" Button oben im Editor:
 
 ```{r insert-chunk, echo=FALSE, out.width="30%"}
-# knitr::include_graphics("/files/img/reference/insert-chunk.png", error = FALSE)
+knitr::include_graphics("./pic/115_insert_chunk.png", error = FALSE)
 ```
 
-- Manually type all the backticks and curly braces (don't do this)
+- Selbest eintippen (besser nicht)
 
 
-## Chunk names
+## Namen für chunks
 
-You can add names to chunks to make it easier to navigate your document. If you click on the little dropdown menu at the bottom of your editor in RStudio, you can see a table of contents that shows all the headings and chunks. If you name chunks, they'll appear in the list. If you don't include a name, the chunk will still show up, but you won't know what it does.
+Wir können den Abschnitten Namen hinzufügen, um die Navigation innerhalb des Dokument zu erleichtern. 
+Wenn wir in RStudio auf das kleine Dropdown-Menü (mit dem `#`) am unteren Rand des Editors klicken, bekommen wir ein Inhaltsverzeichnis, das alle Überschriften und Abschnitte anzeigt. 
+Wenn wir die Abschnitte benennen, werden sie in der Liste angezeigt. Wenn Sie keinen Namen angeben, wird der Chunk trotzdem angezeigt, aber Sie wissen nicht, was er tut.
 
 ```{r chunk-toc, echo=FALSE, out.width="40%"}
-# knitr::include_graphics("/files/img/reference/chunk-toc.png", error = FALSE)
+knitr::include_graphics("./pic/115_chunk-toc.png", error = FALSE)
 ```
 
-To add a name, include it immediately after the `{r` in the first line of the chunk. Names cannot contain spaces, but they can contain underscores and dashes. **All chunk names in your document must be unique.**
+Namen werden direkt nach dem  `{r` in der ersten Zeile des chunks angegeben. 
+Leerzeichen sind in chunk-Namen nicht erlaubt, aber Unterstriche und Bindestriche. 
+**Jeder chunk-Name darf innerhalb eines Dokuments nur einmal vergeben werden.**
 
 ````{verbatim}
-```{r name-of-this-chunk}
-# Code goes here
+```{r chunk_Name}
+# R Code
 ```
 ````
 
 
-## Chunk options
+## Chunk-Optionen
 
 There are a bunch of different options you can set for each chunk. You can see a complete list in the [RMarkdown Reference Guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) or at [**knitr**'s website](https://yihui.org/knitr/options/).
 
@@ -79,18 +126,19 @@ Options go inside the `{r}` section of the chunk:
 ```
 ````
 
-The most common chunk options are these:
+Hier eine kleine Liste der wichtigsten Optionen:
 
-- `fig.width=5` and `fig.height=3` (*or whatever number you want*): Set the dimensions for figures
-- `echo=FALSE`: The code is not shown in the final document, but the results are
-- `message=FALSE`: Any messages that R generates (like all the notes that appear after you load a package) are omitted
-- `warning=FALSE`: Any warnings that R generates are omitted
-- `include=FALSE`: The chunk still runs, but the code and results are not included in the final document
+- `fig.width=5` & `fig.height=4`: Größe von Plots
+- `echo=FALSE`: Der chunk wird zwar ausgeführt und das Ergebnis im Zieldokument gezeigt, nicht aber der Code
+- `include=FALSE`: Der chunk wird zwar ausgeführt, aber im Zieldokument werden weder der Code selbst noch das Ergebnis gezeigt
+- `eval=FALSE`: Der chunk wird nicht ausgeführt, aber im Zieldokument gezeigt
+- `message=FALSE`: messages werden ausgeblendet (bspw. alles was beim Laden von Paketen angezeigt wird)
+- `warning=FALSE`: warnings werden ausgeblendet
 
 You can also set chunk options by clicking on the little gear icon in the top right corner of any chunk:
 
 ```{r chunk-options, echo=FALSE, out.width="70%"}
-knitr::include_graphics("/files/img/reference/chunk-options.png", error = FALSE)
+# knitr::include_graphics("/files/img/reference/chunk-options.png", error = FALSE)
 ```
 
 ## Inline chunks
@@ -109,7 +157,8 @@ The average fuel efficiency for cars from 1974 was `r round(avg_mpg, 1)` miles p
 … would knit into this:
 
 > The average fuel efficiency for cars from 1974 was `r round(mean(mtcars$mpg), 1)` miles per gallon.
-## Output formats
+
+## Output
 
 You can specify what kind of document you create when you knit in the [YAML front matter](/resource/markdown.qmd#front-matter). 
 
@@ -124,28 +173,25 @@ output:
 You can also click on the down arrow on the "Knit" button to choose the output *and* generate the appropriate YAML. If you click on the gear icon next to the "Knit" button and choose "Output options", you change settings for each specific output type, like default figure dimensions or whether or not a table of contents is included.
 
 ```{r output-options, echo=FALSE, out.width="35%"}
-knitr::include_graphics("/files/img/reference/output-options.png", error = FALSE)
+# knitr::include_graphics("/files/img/reference/output-options.png", error = FALSE)
 ```
 
 The first output type listed under `output:` will be what is generated when you click on the "Knit" button or press the keyboard shortcut (`⌘⇧K` on macOS; `control + shift + K` on Windows). If you choose a different output with the "Knit" button menu, that output will be moved to the top of the `output` section.
 
 The indentation of the YAML section matters, especially when you have settings nested under each output type. Here's what a typical `output` section might look like:
 
+## `yaml`
+
+Als yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen. Unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:
+
 ```yaml
 ---
-title: "My document"
+title: "Mein Worddokument"
 author: "My name"
-date: "January 13, 2020"
+date: "13. August 2022"
 output: 
-  html_document: 
-    toc: yes
-    fig_caption: yes
-    fig_height: 8
-    fig_width: 10
-  pdf_document: 
-    latex_engine: xelatex  # More modern PDF typesetting engine
-    toc: yes
   word_document: 
+    reference_docx: "Vorlage.docx"
     toc: yes
     fig_caption: yes
     fig_height: 4
