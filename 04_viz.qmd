@@ -598,7 +598,10 @@ p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
 ```
 
 
-Neben den im Beispiel verwendeten Farben für `fill` können natürlich auch noch unzählige weitere Farben in `scale_fill_manual`  und `scale_color_manual` verwendet werden. *[Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)* findet sich eine Übersicht. Alternativ können auch sog. HEX-Codes angeben werden, die bspw. mit dem [Adobe Color Wheel](https://color.adobe.com/de/create/color-wheel) oder [Color Hex](https://www.color-hex.com/) erstellt werden können.
+Neben den im Beispiel verwendeten Farben für `fill` können natürlich auch noch unzählige weitere Farben in `scale_fill_manual`  und `scale_color_manual` verwendet werden:
+
++ [Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) findet sich eine Übersicht mit allen Farbnamen, die verstanden werden
++ Alternativ können auch sog. HEX-Codes angeben werden, die bspw. mit dem [Adobe Color Wheel](https://color.adobe.com/de/create/color-wheel) oder [Color Hex](https://www.color-hex.com/) erstellt werden können.
 
 ```{r}
 #| layout-ncol: 2
