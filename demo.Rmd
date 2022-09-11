@@ -1,0 +1,22 @@
+---
+title: "Mein erstes RMarkdown-Dokument"
+author: "Mein Name"
+date: "2022-09-11"
+output: pdf_document
+---
+  
+# Überschrift 1
+
+## Unterüberschrift 2
+
+Dies ist ein R Markdown-Dokument. 
+Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. 
+Text kann **fett** und *kursiv* geschrieben werden. 
+
+Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.
+Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. 
+Ein R-Code-Baustein ("chunk") sieht so aus:
+
+```{r cars}
+summary(mtcars$qsec)
+```
