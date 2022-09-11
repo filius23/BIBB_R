@@ -1,29 +1,90 @@
-## Variablen erstellen {#var}
-
-[`{janitor}`](https://appsilon.com/data-cleaning-in-r/)
-
-
-[`across()` und `c_across()`](https://twitter.com/tmfmnk/status/1525840447419162625)
-
-https://mgimond.github.io/ES218/Week03ab_groupby.html
-https://datacarpentry.org/r-socialsci/
-data science in a box
-https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f
-
-https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb
-
-# across & select
-https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
- 
-
-## `cut()`
+# Data Wrangling II {#wrang2}
 
 ```{r}
-# ?cut_width()
+#|include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+knitr::opts_chunk$set(collapse = F)
+library(haven)
+library(tidyverse)
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+Wir gehen nochmal zurück zum Anfang
+
+```{r}
+dat1 <- data.frame(studs = c(19173,5333,15643), 
+                   profs = c(322,67,210),
+                   gegr  = c(1971,1830,1973),
+                   prom_recht = rep(TRUE,3),
+                   uni = c("Uni Bremen","Uni Vechta", "Uni Oldenburg"))
+dat2 <- data.frame(studs = c(14954,47269 ,23659,9415 ,38079), 
+                   profs = c(250,553,438 ,150,636),
+                   prom_recht = c(FALSE,TRUE,TRUE,FALSE,TRUE),
+                   gegr  = c(1971,1870,1457,1818,1995),
+                   uni = c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg"))
+
+dat3 <- bind_rows(dat1,dat2)
+dat3
+```
+## Variablen erstellen {#var}
+
+Zwei Arten, Variablen in einen `data.frame` hinzuzufügen:
+
+### base R: `...$newvar`
+
+### {tidyverse}: `... %>% mutate(newvar = )`
+
+```{r}
+dat3 %>% mutate(studs_rel_to_mean = mean(studs)-studs,
+                profs_rel_to_mean = mean(profs)-profs)
 ```
 
 
-Das bisherige Beispiel Staatsbürgerschaft (`m1202`) bezog sich auf ein kategoriales Merkmal. Für ein metrisches Merkmal, wie zum Beispiel das Geburtsjahr macht eine Häufigkeitstabelle wenig Sinn, da das Geburtsjahr sehr viele Ausprägungen hat und eine Tabelle  unübersichtlich wäre - hier nur als Beispiel die ersten 20 Ausprägungen (es gibt insgesamt 77!):
+Variablen können innerhalb von `mutate()` weiterverarbeitet werden
+```{r}
+dat3 %>% mutate(rel_to_mean = mean(studs)-studs,
+                ab_mean = mean(studs)-studs > 0)
+```
+
+
+### `ifelse()` und `case_when()`
+
+```{r}
+dat3 %>% mutate(rel_to_mean = mean(studs)-studs,
+                ab_mean_lab = ifelse(mean(studs)-studs > 0,"darüber","darunter"))
+```
+```{r}
+dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
+                                  gegr < 1900 ~ "alt",
+                                  TRUE ~ "relativ neu"))
+```
+
+> studs/profs berechnen -> über oder unter dem Schnitt?
+> studs/profs berechnen -> über oder unter dem Schnitt LABELN
+
+### `group_by()`
+
+[{janitor}](https://appsilon.com/data-cleaning-in-r/)
+### `mutate()` vs. `summarise()`
+
+## Hilfreiche Funktionen
+
+### String-Funktionen
+
+```{r}
+dat3 %>% mutate(uni_fh = str_detect(uni,"Uni"))
+dat3 %>% mutate(bula = case_when(str_detect(uni,"Bremen")~ "HB",
+                                 str_detect(uni,"Oldenb|Vechta")~ "NDS",
+                                 str_detect(uni,"Bonn|Aachen")~ "NRW",
+                                 str_detect(uni,"Freiburg")~ "BW"
+                                 ))
+dat3 %>% mutate(ort = str_remove(uni,"Uni |FH |RWTH "))
+```
+
+### `cut()`
+
+Für ein metrisches Merkmal, wie zum Beispiel das Geburtsjahr macht eine Häufigkeitstabelle wenig Sinn, da das Geburtsjahr sehr viele Ausprägungen hat und eine Tabelle  unübersichtlich wäre - hier nur als Beispiel die ersten 20 Ausprägungen (es gibt insgesamt 77!):
 ```{r, eval=F}
 xtabs(~zpalter,etb18)
 ```
@@ -70,14 +131,37 @@ table( cut(x1, breaks = c(0,1500,2500)) )
 table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) )
 ```
 
+## Mehrere Variablen bearbeiten
+
+
+## Schleifen/eigene Funktionen
+
+Standardisieren als Beispiel für eine Funktion
+
+```{r}
+mode <- function(x) { names(which.max(table(x))) }
+```
+
+
+## `lapply()` und `map()`
+
+
+[`across()` und `c_across()`](https://twitter.com/tmfmnk/status/1525840447419162625)
+
+https://mgimond.github.io/ES218/Week03ab_groupby.html
+https://datacarpentry.org/r-socialsci/
+data science in a box
+https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f
+
+https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb
+
+# across & select
+https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
+ 
+
 
 ## Eigene Funktionen
 
 
-```{r}
-mode <- function(x) { names(which.max(table(x))) }
 
-```
-
-## `lapply()` und `map()`
 

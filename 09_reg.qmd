@@ -237,6 +237,10 @@ m1 <- lm(mpg ~ qsec, mtcars)
 m2 <- lm(mpg ~ qsec + gear, mtcars)
 
 check_model(m2,panel = F)
+
+model_test <- performance::check_model(m2)
+plot(model_test)
+
 ```
 
 ### Regressionsmodelle vergleichen

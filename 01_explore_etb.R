@@ -5,6 +5,7 @@ library(LaCroixColoR)
 knitr::opts_chunk$set(collapse = F)
 
 # load etb -------------
+
 etb <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta") 
 etb <- etb %>% 
   mutate(
@@ -35,17 +36,22 @@ xtabs(~S3,etb)
 
 
 
+
+
 # distinct values ----
 ndis <- 
-  etb %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
+  etb18 %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
   t(.) %>% data.frame(ndis = .) %>% rownames_to_column(.,var = "var") %>% janitor::clean_names() %>% tibble() %>% 
   left_join(
-    map_dfr(etb,~attributes(.x)$label) %>% 
+    map_dfr(etb18,~attributes(.x)$label) %>% 
       t(.) %>% data.frame() %>% 
       rownames_to_column(.,var = "var") )
 
 ndis %>% filter(ndis %in% 3:4) %>% print(n=Inf)
-ndis %>% filter(ndis %in% 3:4) %>% View()
+ndis %>% filter(ndis > 1000)
+
+etb18 %>% 
+  count(S1,m1202,wt = gew2018_hr17)
 
 
 table(etb18$F230_02)
