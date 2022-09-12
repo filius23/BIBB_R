@@ -14,10 +14,12 @@ book:
     - 03_desc.qmd
     - 04_viz.qmd
     - 05_data_wrangle1.qmd
+    - 06_data_wrangle2.qmd
     - 09_reg.qmd
     - 09_reg2.qmd
     - 10_log_reg.qmd
     - 14_tabellenexport.qmd
+    # - 15_markdown.qmd
     - 15_RMarkdown.qmd
     - 17_errors.qmd
     - summary.qmd
