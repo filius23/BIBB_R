@@ -1,15 +1,15 @@
 # RMarkdown
 
 ```{r setup, include=FALSE}
-if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 knitr::opts_chunk$set(fig.align = "center")
 ```
 
-[{R Markdown}](https://rmarkdown.rstudio.com/) erlaubt, formatierte Textelemente mit [Markdown](markdown.qmd) und R code bzw. Output zu kombinieren. 
-Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von [Markdown](markdown.qmd)-Befehlen formatiert werden kann.
+[{rmarkdown}](https://rmarkdown.rstudio.com/) erlaubt, formatierte Textelemente mit [Markdown](https://www.markdownguide.org/cheat-sheet/) und R code bzw. Output zu kombinieren. 
+Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von [Markdown](https://www.markdownguide.org/cheat-sheet/)-Befehlen formatiert werden kann.
 So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden.
 Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen.
-Diese gesamte Webseite wurde mit [{R Markdown}](https://bookdown.org/yihui/rmarkdown-cookbook/) bzw. dem verwandten Paket [{Quarto}](quarto.org/) erstellt.
+Diese gesamte Webseite wurde mit [{R Markdown}](https://bookdown.org/yihui/rmarkdown-cookbook/) bzw. dem verwandten Paket [{Quarto}](www.quarto.org/) erstellt.
 
 Dieses Kapitel kann lediglich eine kleine Einführung in RMarkdown sein.
 Die [Hilfeseiten und Dokumentation für R Markdown](https://rmarkdown.rstudio.com/) ist extrem umfangreich und auch die [Tutorials](https://rmarkdown.rstudio.com/lesson-1.html) und [Cheatsheets](https://rmarkdown.rstudio.com/lesson-15.html) sind hervorragend.
@@ -42,9 +42,9 @@ Ein R-Code-Baustein ("chunk") sieht so aus:
 summary(mtcars$qsec)
 ```
 
-````
+```` 
 
-```{r, out.width="50%", out.width="50%"}
+```{r, out.width="75%", out.width="75%"}
 #| echo: false
 
 knitr::include_graphics("./pic/115_rmd_demo.png")
@@ -90,7 +90,7 @@ Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.
 knitr::include_graphics("./pic/115_insert_chunk.png", error = FALSE)
 ```
 
-- Selbest eintippen (besser nicht)
+- Selbst eintippen (besser nicht)
 
 
 ## Namen für chunks
@@ -99,7 +99,7 @@ Wir können den Abschnitten Namen hinzufügen, um die Navigation innerhalb des D
 Wenn wir in RStudio auf das kleine Dropdown-Menü (mit dem `#`) am unteren Rand des Editors klicken, bekommen wir ein Inhaltsverzeichnis, das alle Überschriften und Abschnitte anzeigt. 
 Wenn wir die Abschnitte benennen, werden sie in der Liste angezeigt. Wenn Sie keinen Namen angeben, wird der Chunk trotzdem angezeigt, aber Sie wissen nicht, was er tut.
 
-```{r chunk-toc, echo=FALSE, out.width="40%"}
+```{r chunk-toc, echo=FALSE, out.width="30%"}
 knitr::include_graphics("./pic/115_chunk-toc.png", error = FALSE)
 ```
 
@@ -116,9 +116,9 @@ Leerzeichen sind in chunk-Namen nicht erlaubt, aber Unterstriche und Bindestrich
 
 ## Chunk-Optionen
 
-There are a bunch of different options you can set for each chunk. You can see a complete list in the [RMarkdown Reference Guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) or at [**knitr**'s website](https://yihui.org/knitr/options/).
+Wir haben eine Reihe an Möglichkeiten festzulegen, wie RMarkdown mit Chunks umgehen soll. Eine vollständige Übersicht findest sich im [RMarkdown Reference Guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) oder auf der Webseite von [**knitr**](https://yihui.org/knitr/options/).
 
-Options go inside the `{r}` section of the chunk:
+Optionen werden in der ersten Zeile eines chunks nach dem `{r}` festgelegt:
 
 ````{verbatim}
 ```{r name-of-this-chunk, warning=FALSE, message=FALSE}
@@ -135,54 +135,41 @@ Hier eine kleine Liste der wichtigsten Optionen:
 - `message=FALSE`: messages werden ausgeblendet (bspw. alles was beim Laden von Paketen angezeigt wird)
 - `warning=FALSE`: warnings werden ausgeblendet
 
-You can also set chunk options by clicking on the little gear icon in the top right corner of any chunk:
+Außerdem können Optionen auch mit einem Klick auf das Zahnrad rechts oben in einem Chunk gesetzt werden:
 
 ```{r chunk-options, echo=FALSE, out.width="70%"}
-# knitr::include_graphics("/files/img/reference/chunk-options.png", error = FALSE)
+knitr::include_graphics("./pic/115_chunk-opts.png", error = FALSE)
 ```
 
 ## Inline chunks
 
-You can also include R output directly in your text, which is really helpful if you want to report numbers from your analysis. To do this, use `` `r "\u0060r r_code_here\u0060"` ``.
+Eine weitere Stärke von RMarkdown ist, dass Ergebnisse direkt im Text dargestellt werden können. 
+Dazu dienen "inline chunks", um bspw. Kennzahlen aus einer Analyse einzufügen `` `r "\u0060r R Code\u0060"` ``.
 
-It's generally easiest to calculate numbers in a regular chunk beforehand and then use an inline chunk to display the value in your text. For instance, this document…
+So können wir bspw. Werte in einem Chunk berechnen und dann in den Text einfügen.
 
 ````{verbatim}
 ```{r find-avg-mpg, echo=FALSE}
-avg_mpg <- mean(mtcars$mpg)
+median_mpg <- mean(mtcars$mpg)
 ```
-The average fuel efficiency for cars from 1974 was `r round(avg_mpg, 1)` miles per gallon.
+Im Median haben die Fahrzeuge einen Verbrauch von `r round(median_mpg, 1)` miles per gallon.
 ````
 
-… would knit into this:
+… führt zu folgendem Ergebnis:
 
-> The average fuel efficiency for cars from 1974 was `r round(mean(mtcars$mpg), 1)` miles per gallon.
+> Im Median haben die Fahrzeuge einen Verbrauch von `r round(median(mtcars$mpg), 1)` miles per gallon.
 
-## Output
+## Output & `yaml`
 
-You can specify what kind of document you create when you knit in the [YAML front matter](/resource/markdown.qmd#front-matter). 
+Als yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen, insbesondere das Zieldateiformat. 
 
-```yaml
-title: "My document"
-output:
-  html_document: default
-  pdf_document: default
-  word_document: default
-```
+Das erste unter `output` aufgeführte Dateiformat ist der, der erzeugt wird, wenn wir auf die Schaltfläche "knit" klicken oder das Tastaturkürzel
+(⌘⇧K" unter macOS; "
+STRG + Umschalt + K" unter Windows) drücken. 
 
-You can also click on the down arrow on the "Knit" button to choose the output *and* generate the appropriate YAML. If you click on the gear icon next to the "Knit" button and choose "Output options", you change settings for each specific output type, like default figure dimensions or whether or not a table of contents is included.
+Die Einrückung im YAML-Abschnitts ist von Bedeutung, insbesondere dann, wenn unter den einzelnen Ausgabetypen verschachtelte Einstellungen vorhanden sind. So könnte ein typischer `Output`-Abschnitt aussehen, unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:
 
-```{r output-options, echo=FALSE, out.width="35%"}
-# knitr::include_graphics("/files/img/reference/output-options.png", error = FALSE)
-```
 
-The first output type listed under `output:` will be what is generated when you click on the "Knit" button or press the keyboard shortcut (`⌘⇧K` on macOS; `control + shift + K` on Windows). If you choose a different output with the "Knit" button menu, that output will be moved to the top of the `output` section.
-
-The indentation of the YAML section matters, especially when you have settings nested under each output type. Here's what a typical `output` section might look like:
-
-## `yaml`
-
-Als yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen. Unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:
 
 ```yaml
 ---
@@ -198,3 +185,22 @@ output:
     fig_width: 5
 ---
 ```
+
+Auch für die anderen Output-Formate gibt es einen YAML-Befehl:
+
+```yaml
+title: "My document"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+```
+
+[Eine Übersicht findet zu verschiedenen Optionen findet sich bspw. hier](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html) oder hier für  [Word](https://bookdown.org/yihui/rmarkdown/word-document.html), [HTML](https://bookdown.org/yihui/rmarkdown/html-document.html), [PDF](https://bookdown.org/yihui/rmarkdown/pdf-document.html) oder [Powerpoint](https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html)
+
+Alternativ lassen sich auch mit den Zahnrad oben neben dem Knit-Button Einstellungen für den YAML-Header festlegen:
+
+```{r output-options, echo=FALSE, out.width="35%"}
+knitr::include_graphics("./pic/115_output-opts.png", error = FALSE)
+```
+
