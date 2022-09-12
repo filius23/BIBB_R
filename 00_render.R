@@ -5,6 +5,7 @@ knitr::purl(input = "04_viz.qmd",output= "04_viz.R",documentation = 0)
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 library(tidyverse)
 
+rmarkdown::render("demo.Rmd",output_format = "pdf_document")
 
 # https://datasciencebook.ca/
 # https://towardsdatascience.com/r-programming-a-study-guide-for-beginners-732de9542aa8?gi=dce1e602d5ab 
