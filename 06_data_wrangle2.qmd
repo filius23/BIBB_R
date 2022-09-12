@@ -1,0 +1,326 @@
+# Data Wrangling II {#wrang2}
+
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+windowsFonts(mono=windowsFont("Fira Code"))
+# windowsFont()
+```
+
+
+```{r}
+#| message: false
+#| warning: false
+library(haven)
+library(tidyverse)
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+Wir gehen nochmal zurück zum Uni-Datensatz vom Anfang:
+
+```{r}
+dat1 <- data.frame(studs = c(19173,5333,15643), 
+                   profs = c(322,67,210),
+                   gegr  = c(1971,1830,1973),
+                   prom_recht = rep(TRUE,3),
+                   uni = c("Uni Bremen","Uni Vechta", "Uni Oldenburg"))
+dat2 <- data.frame(studs = c(14954,47269 ,23659,9415 ,38079), 
+                   profs = c(250,553,438 ,150,636),
+                   prom_recht = c(FALSE,TRUE,TRUE,FALSE,TRUE),
+                   gegr  = c(1971,1870,1457,1818,1995),
+                   uni = c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg"))
+dat1
+dat2
+```
+
+Mit `bind_rows()` aus `{dplyr}` können wir die beiden `data.frame`s zusammensetzen:
+```{r}
+dat3 <- bind_rows(dat1,dat2)
+dat3
+```
+
+
+## Variablen erstellen {#var}
+
+Nun sehen wir uns die Möglichkeiten, Variablen zu erstellen, nochmal etwas genauer an.
+Grundsätzlich gibt es zwei Arten, Variablen in einen `data.frame` hinzuzufügen:
+
+### base R: `...$newvar`
+
+
+```{r}
+dat3$studs_to_mean  <- dat3$studs - mean(dat3$studs)
+dat3
+```
+
+Mit `<- NULL` können Variablen auch einfach gelöscht werden:
+```{r}
+dat3$studs_to_mean  <-  NULL
+dat3
+```
+
+
+### {tidyverse}: `... %>% mutate(neue_var = )`
+
+
+Wir hatten die Variante aus `{dplyr}` bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt. Die grundsätzliche Struktur ist immer `datensatz %>% mutate(neue_var = ....)`:
+
+```{r}
+dat3 %>% mutate(studs_to_mean = studs-mean(studs))
+```
+
+Wir können auch mehrere Variablen innerhalb eines `mutate()`-Befehls erstellen:
+```{r}
+dat3 %>% mutate(studs_to_mean = studs-mean(studs),
+                profs_to_mean = profs-mean(profs))
+
+```
+
+Oder Variablen können innerhalb von `mutate()` weiterverwendet werden:
+```{r}
+dat3 %>% mutate(rel_to_mean = studs-mean(studs),
+                above_mean = rel_to_mean > 0)
+```
+
+
+Der Ausgangsdatensatz bleibt aber unverändert:
+```{r}
+dat3
+```
+
+Wenn wir die Ergebnisse behalten wollen, müssen wir das Ergebnis in einem Objekt ablegen:
+```{r}
+dat4 <-
+  dat3 %>% 
+  mutate(rel_to_mean = studs-mean(studs),
+         above_mean = rel_to_mean > 0)
+
+dat4
+```
+
+
+### [Übung](#mutate1)
+
++ Erstellen Sie `dat3` wie oben gezeigt aus `dat1` und `dat2`
++ Berechnen Sie das Betreuungsverhältnis (Studierende pro Professur) und legen Sie die Ergebnisse in einer neuen Variable `studprofs` ab.
++ Nutzen Sie dazu `mutate()`
++ Berechnen Sie außerdem das Betreuungsverhältnis an den Hochschulen relativ zum Mittelwert des Betreuungsverhältnisses (`rel_studprofs`). 
++ Liegt das Betreuungsverhältnis über oder unter dem Mittelwert? Wie können Sie den Befehl anpassen, sodass die Variable `rel_studprofs` lediglich `TRUE` oder `FALSE` enthält anstelle der Zahlenwerte.
+
+## Hilfsfunktionen
+
+### `ifelse()` und `case_when()`
+
+`ifelse()` ist eine große Hilfe für alle Umcodierungen: wir formulieren darin eine Bedingung und wenn diese zutrifft wird der erste Wert eingesetzt, wenn nicht wird der zweite Wert eingesetzt. Hier fragen wir also ab, ob `studs-mean(studs)` größer `0` ist - dann wird `darüber` eingesetzt, ansonsten eine `darunter`:
+
+
+```{r}
+dat3 %>% mutate(rel_to_mean = studs-mean(studs),
+                ab_mean_lab = ifelse(studs-mean(studs) > 0,"darüber","darunter"))
+```
+
+`case_when()` (`{dplyr}`) erweitert dieses Prinzip, sodass wir mehr als zwei Optionen angeben können. 
+Die Syntax ist aber etwas anders: hier geben wir erst die Bedingung an, dann nach einer `~`[^tilde] die einzusetzenden Werte: 
+
+[^tilde]: Tastaturbefehle: `Alt Gr` + `*` auf Windows. Auf macOS `Alt` + `N` und anschließend ein Leerzeichen, damit die Tilde erscheint.
+```{r}
+dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
+                                  gegr < 1900 ~ "alt",
+                                  TRUE ~ "relativ neu"))
+```
+
+### `group_by()`
+
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  mutate(mean_prof = mean(profs))
+```
+
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(mean_prof = mean(profs))
+```
+
+
+### [Übung](#grpue)
++ studs/profs berechnen -> über oder unter dem Schnitt?  
++ studs/profs berechnen -> über oder unter dem Schnitt LABELN
++ gruppiert nach `prom_recht`
+
+
+### `across`: Mehrere Variablen bearbeiten
+
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), ~mean(.x)))
+```
+
+Wir können auch mehrere Funktionen durchführen:
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd)))
+```
+
+
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd),
+                   .names = "{.fn}_{.col}"))
+```
+
+[Mehr Beispiele in der Hilfe zu across](https://dplyr.tidyverse.org/reference/across.html)
+
+
+
+<!-- [{janitor}](https://appsilon.com/data-cleaning-in-r/) -->
+
+## Übung 
+
+
+## Schleifen/eigene Funktionen
+
+Standardisieren als Beispiel für eine Funktion
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+vals1 <- 
+  etb18 %>% select(starts_with("F1450")) %>% 
+    map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+    pivot_longer(-var) %>% 
+    pivot_wider(names_from = value,values_from = name) %>% 
+    select(-"NA",-"8",-"7") %>% 
+    rename(`7/8/9`=`9`) %>% 
+    mutate(`7/8/9` = "t.n.z./k.A.")
+  
+
+etb18 %>% select(starts_with("F1450")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  left_join(vals1) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+vals <- 
+  etb18 %>% select(starts_with("F700")) %>% 
+    map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+    pivot_longer(-var) %>% 
+    pivot_wider(names_from = value,values_from = name) %>% 
+  select(-"NA",-"8") %>% 
+  rename(`8/9`=`9`) %>% 
+  mutate(`8/9` = "t.n.z./k.A.")
+  
+
+etb18 %>% select(starts_with("F700")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  left_join(vals) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
+```{r}
+etb18 %>% count(F1450_01)
+etb18 %>% count(F1450_04)
+etb18 %>% count(F700_02)
+
+
+etb18 %>% mutate(across(c("F1450_01","F1450_02"), ~ifelse(.x==9,NA,.x))) %>% count(F1450_04)
+```
+
+
+```{r}
+mode <- function(x) { names(which.max(table(x))) }
+```
+
+
+## `lapply()` und `map()`
+
+
+[`across()` und `c_across()`](https://twitter.com/tmfmnk/status/1525840447419162625)
+
+https://mgimond.github.io/ES218/Week03ab_groupby.html
+https://datacarpentry.org/r-socialsci/
+data science in a box
+https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f
+
+https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb
+
+## across & select
+https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
+ 
+
+
+## Eigene Funktionen
+
+## Anhang
+
+
+### Klassen bilden mit `cut()`
+
+```{r}
+etb18$zpalter[etb18$zpalter == 9999] <- NA
+```
+
+Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel das Alter.
+Wir möchten also `zpalter` in 10-Jahreskategorien zusammenfassen.
+Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab: 
+```{r}
+etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) )
+etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq()
+```
+Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern:
+
+
+```{r}
+etb18 %>% count(age_zehner)
+```
+```{r}
+#| echo: false
+tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>% pull(n)
+```
+`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
+
+
+
+### String-Funktionen
+
+```{r}
+dat3 %>% mutate(uni_fh = str_detect(uni,"Uni"))
+dat3 %>% mutate(bula = case_when(str_detect(uni,"Bremen")~ "HB",
+                                 str_detect(uni,"Oldenb|Vechta")~ "NDS",
+                                 str_detect(uni,"Bonn|Aachen")~ "NRW",
+                                 str_detect(uni,"Freiburg")~ "BW"
+                                 ))
+dat3 %>% mutate(ort = str_remove(uni,"Uni |FH |RWTH "))
+```
+
+
+
+
+
+
+<!-- ### cut wählt ein ungünstiges Zahlenformat {#hinweis_cut_w103} -->
+
+<!-- `cut` verwendet für Klassengrenzen mit mehr als 3 Stellen eine wenig intuitive Darstellung. Mit `dig.lab` können Labels mit mehr als 3 Stellen angefordert werden: -->
+<!-- ```{r} -->
+<!-- x1 <- c(1212,2121,1212) -->
+<!-- table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) ) -->
+<!-- ``` -->
