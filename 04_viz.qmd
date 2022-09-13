@@ -476,8 +476,8 @@ etb18 %>% count(F100_wib2,gkpol) %>% pull(gkpol) %>% as_factor() %>% levels() %>
   dput()
 ```
 ```{r}
-#|eval: false
-#|code-fold: true
+#| eval: false
+#| code-fold: true
 scale_y_continuous(breaks = 1:7,
                    labels = c("<2k", "2k bis <5.000", "5k bis <20.000", "20k bis <50.000", 
                               "50k bis <100.000", "100k bis <500.000", "500k und mehr"))
@@ -651,10 +651,19 @@ Hier noch zwei Beispiele mit  [{scico}](https://github.com/thomasp85/scico) und 
 install.packages('scico')
 install.packages("MetBrewer")
 ```
+
+[{scico}](https://github.com/thomasp85/scico) Farbpaletten
 ```{r}
 #| echo: false
 #| out-height: 60%
 scico::scico_palette_show()
+```
+
+[{MetBrewer}](https://github.com/BlakeRMills/MetBrewer) Farbpaletten
+```{r}
+#| out-width: 100%
+#| echo: false
+knitr::include_graphics("./pic/104_metbrewer.png")
 ```
 
 ```{r}
