@@ -61,10 +61,10 @@ dat3
 ```
 
 
-### {tidyverse}: `... %>% mutate(neue_var = )`
+### {tidyverse}: `mutate(neue_var= )`
 
 
-Wir hatten die Variante aus `{dplyr}` bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt. Die grundsätzliche Struktur ist immer `datensatz %>% mutate(neue_var = ....)`:
+Wir hatten die Variante aus `{dplyr}` (`{tidyverse}`) bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt. Die grundsätzliche Struktur ist immer `datensatz %>% mutate(neue_var = ....)`:
 
 ```{r}
 dat3 %>% mutate(studs_to_mean = studs-mean(studs))
@@ -144,12 +144,40 @@ dat3 %>%
   summarise(mean_prof = mean(profs))
 ```
 
+### Klassen bilden mit `cut()`
+
+```{r}
+etb18$zpalter[etb18$zpalter == 9999] <- NA
+```
+
+Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel das Alter.
+Wir möchten also `zpalter` in 10-Jahreskategorien zusammenfassen.
+Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab: 
+```{r}
+etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) )
+etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq()
+```
+Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern:
+
+
+```{r}
+etb18 %>% count(age_zehner)
+```
+```{r}
+#| echo: false
+tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>% pull(n)
+```
+`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
+
 
 ### [Übung](#grpue)
 + studs/profs berechnen -> über oder unter dem Schnitt?  
 + studs/profs berechnen -> über oder unter dem Schnitt LABELN
 + gruppiert nach `prom_recht`
-
+  
+  
+  
+  
 
 ### `across`: Mehrere Variablen bearbeiten
 
@@ -183,9 +211,6 @@ dat3 %>%
 ## Übung 
 
 
-## Schleifen/eigene Funktionen
-
-Standardisieren als Beispiel für eine Funktion
 
 ```{r}
 #| echo: false
@@ -210,6 +235,24 @@ etb18 %>% select(starts_with("F1450")) %>%
   gt() %>% 
   tab_options(  table.font.size = 12) %>% 
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
+```{r}
+etb18 %>% 
+  select(F1450_01,F1450_02,F1450_03) %>% 
+  slice(1:10) %>% 
+  mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) %>% 
+  mutate(index = mean(F1450_01+F1450_02+F1450_03,na.rm = T))
+```
+
+
+```{r}
+etb18 %>% 
+  select(F1450_01,F1450_02,F1450_03) %>% 
+  slice(1:10) %>% 
+  mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) %>% 
+  rowwise() %>% 
+  mutate(index = mean(c(F1450_01,F1450_02,F1450_03),na.rm = T),
+         n_mis = sum(is.na(c(F1450_01,F1450_02,F1450_03))) )
 ```
 
 
@@ -236,18 +279,66 @@ etb18 %>% select(starts_with("F700")) %>%
   tab_options(  table.font.size = 12) %>% 
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
+
+## Eigene Funktionen - Schleifen
+
+
+
 ```{r}
-etb18 %>% count(F1450_01)
-etb18 %>% count(F1450_04)
-etb18 %>% count(F700_02)
+sat_small <- 
+  etb18 %>% 
+  select(F1450_01,F1450_02,F1450_03) %>% 
+  slice(1:5) %>% 
+  mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) # missings ausschließen
+```
+
+Standardisieren als Beispiel für eine Funktion
+
+```{r}
+sat_small %>% 
+  mutate(std_F1450_01 = (F1450_01 - mean(F1450_01,na.rm = T))/sd(F1450_01,na.rm = T),
+         std_F1450_02 = (F1450_02 - mean(F1450_02,na.rm = T))/sd(F1450_02,na.rm = T))
+
+```
+
+...und jetzt noch `F1450_03`?
 
 
-etb18 %>% mutate(across(c("F1450_01","F1450_02"), ~ifelse(.x==9,NA,.x))) %>% count(F1450_04)
+```{r}
+stdize <- function(x){
+  std_x <- (x - mean(x,na.rm = T)) / sd(x,na.rm = T)
+  return(std_x)
+}
 ```
 
 
 ```{r}
-mode <- function(x) { names(which.max(table(x))) }
+var1 <- c(1,2,6,3,7,8,2,1,5)
+stdize(var1)
+```
+
+```{r}
+sat_small %>% 
+  mutate(std_F1450_01 = stdize(F1450_01),
+         std_F1450_02 = stdize(F1450_02),
+         std_F1450_03 = stdize(F1450_03))
+```
+
+```{r}
+sat_small %>% 
+  mutate(across(matches("F1450"),~stdize(.x),.names = "std_{.col}"))
+```
+
+
+
+
+
+```{r}
+mode <- function(x) {
+  names(which.max(table(x))) 
+}
+
+mode(etb18$m1202)
 ```
 
 
@@ -273,31 +364,6 @@ https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
 ## Anhang
 
 
-### Klassen bilden mit `cut()`
-
-```{r}
-etb18$zpalter[etb18$zpalter == 9999] <- NA
-```
-
-Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel das Alter.
-Wir möchten also `zpalter` in 10-Jahreskategorien zusammenfassen.
-Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab: 
-```{r}
-etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) )
-etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq()
-```
-Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern:
-
-
-```{r}
-etb18 %>% count(age_zehner)
-```
-```{r}
-#| echo: false
-tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>% pull(n)
-```
-`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
-
 
 
 ### String-Funktionen
@@ -313,6 +379,31 @@ dat3 %>% mutate(ort = str_remove(uni,"Uni |FH |RWTH "))
 ```
 
 
+
+<!-- ### Klassen bilden mit `cut()` -->
+
+<!-- ```{r} -->
+<!-- etb18$zpalter[etb18$zpalter == 9999] <- NA -->
+<!-- ``` -->
+
+<!-- Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel das Alter. -->
+<!-- Wir möchten also `zpalter` in 10-Jahreskategorien zusammenfassen. -->
+<!-- Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab:  -->
+<!-- ```{r} -->
+<!-- etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) ) -->
+<!-- etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq() -->
+<!-- ``` -->
+<!-- Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern: -->
+
+
+<!-- ```{r} -->
+<!-- etb18 %>% count(age_zehner) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>% pull(n) -->
+<!-- ``` -->
+<!-- `(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.   -->
 
 
 
