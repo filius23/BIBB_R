@@ -12,8 +12,13 @@ library(Statamarkdown)
 ```
 
 Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:
+```{r}
+#| eval: false
+install.packages("haven") # falls nicht schon installiert
+```
+
 ```{r W04_1, eval=F, echo = T}
-library(haven) # datenimport
+library(haven) # datenimport für stata-datensätze
 library(tidyverse) # tidyverse
 etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 ```
