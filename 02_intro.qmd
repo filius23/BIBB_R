@@ -7,11 +7,25 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los gehts.
+**(Spätes) Vorwort zu R und der Befehlsstruktur**
 
-## Befehlsstruktur
 
--   Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. `colnames()`, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable sein 
+::: callout-note
+
+1.  Alles ist ein Objekt.
+2.  Alles hat einen Namen.
+3.  Alles was wir tun basiert auf Funktionen.
+4.  Funktionen kommen aus "packages"[^pkg], aber wir werden auch eigene Funktionen schreiben.
+
+[^pkg]: In vielen anderen Programmiersprachen ist auch von Bibliotheken/"libraries" die Rede.
+
+Punkt 1. und 2. wird als [Objektorientierte Programmierung (object-orientated programming, OOP)](https://de.wikipedia.org/wiki/Objektorientierte_Programmierung) bezeichnet. Wir werden in diesem Kurs also objektorientierte Programmierung lernen.
+
+Klingt gut, oder?
+
+:::
+
+-   Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. `colnames()`, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable oder ein Datensatz sein 
 -  Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: `read.csv(datei.csv, header = T, sep = ",")`
 -  Zeilenumbrüche werden von R ignoriert, d.h. wir können einen Befehl über mehre Zeilen schreiben - bspw. um es etwas übersichtlicher zu halten:
 ```{r}
@@ -23,9 +37,12 @@ funktion(objektname1,
 ```
 
 -  Wenn wir eine Funktion durchführen mit `funktion(objektname, option1 = TRUE, option2 = FALSE)` bekommen wir das Ergebnis in der Konsole ausgegeben.
--  Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit `name <- funktion(name)`
+-  Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit `name <- funktion(name)`. Hier im Skript werde ich sehr häufig den Schritt des Ablegens weglassen, weil wir ja direkt sehen wollen, was passiert. Wenn wir aber mit bisherigen Operationen weiterarbeiten wollen, dann müssen wir sie in R unter einem Objektnamen ablegen.
 - Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
 - Mit `?funktion()` ist die Hilfe aufrufbar, bspw. `?colnames()`
+
+In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los geht's.
+
 
 ## Datenstrukturen in R: `data.frame`
 
@@ -179,7 +196,20 @@ Neben `library()` gibt es auch die Möglichkeit, Funktionen aus Paketen mit `::`
 paket::function()
 ```
 
-Diese Option wird häufig verwendet, wenn lediglich eine Funktion aus einem Paket einmalig verwendet wird und der Rest des Pakets nicht hilft.
+Diese Option wird häufig verwendet, wenn lediglich eine Funktion aus einem Paket einmalig verwendet wird und oder um deutlich zu machen, aus welchem Paket die verwendete Funktion kommt. Das kann auch bei Problemen mit einem Befehl hilfreich sein: evtl. wurde ein weiteres Paket mit einem gleichnamigen Befehl geladen - dann wird der erste Befehl überschrieben (meist mit einer Warnung), die bespielweise so aussehen kann:
+
+```{r}
+#| eval: false
+Die folgenden Objekte sind maskiert von ‘package:dplyr’:
+
+    between, first, last
+
+Das folgende Objekt ist maskiert ‘package:purrr’:
+
+    transpose
+```
+
+Das kann umgangen werden, wenn gewisse Pakte gar nicht vollständig geladen, sondern lediglich die nötigen Funktionen mit `::` aufgerufen werden.
 
 :::
 
@@ -210,7 +240,7 @@ werden folgende Pakete installiert:
 Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist `{dplyr}`, welches unter anderem die Auswahl von Fällen und Variablen erleichtert:
 
 ```{r dplyr, echo = F, out.height="80%",out.width="80%", fig.align="center"}
-#| fig-cap: Darstellung nach [Andrew Heiss](https://talks.andrewheiss.com/2021-seacen/01_welcome-tidyverse/slides/01_tidyverse-dplyr.html#22) und dem [`{dplyr}` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdat1) 
+#| fig-cap: Darstellung basierend auf dem [`{dplyr}` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdat1) 
 knitr::include_graphics("./pic/103_dplyr.png")
 ```
 
@@ -338,7 +368,7 @@ dat_ohne_profs
 dat1 <- select(dat1, !profs) # alles außer profs
 ```
 
-### Hilfsfunktionen
+### Hilfsfunktionen {#selecthelpers}
 
 `select()` hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.
 
@@ -467,7 +497,8 @@ Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^02_intro-1
 
 [^02_intro-1]: Abkürzung für comma-separated values
 
-```{r,echo = F, out.height="50%",out.width="50%", fig.align="center"}
+```{r,echo = F, out.height="50%",out.width="50%"}
+#| fig-align: center
 # knitr::include_graphics(paste0(path,"images/102_csvdatei.png"))
 ```
 
@@ -575,14 +606,19 @@ Außerdem hat `senior` natürlich deutlich weniger Zeilen als `etb`:
 nrow(senior)
 ```
 
-Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als `age` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
+Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als `zpalter` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
 Außerdem können wir auf die `attributes()` einer Variable zurückgreifen - mehr zu labels später.
 
-### Überblick: Einlesen und Exportieren
+
+### [Übung](#data4) {#ue_4}
+
+## Überblick: Einlesen und Exportieren
+
+### Datensätze einlesen
 
 ::: panel-tabset
-## Datensätze einlesen
 
+## Überblick
 ```{r,echo=F,warning=F}
 dat1_link2 <- 
   data.frame(cmd= c("read.table()","vroom()"),
@@ -611,6 +647,7 @@ dat1 <- readRDS(file = "Dateiname.Rdata")
 library(vroom)
 dat1 <- vroom(file = "Dateiname.csv",delim = ";")
 # Stata dta
+library(haven)
 dat1 <- read_dta(file = "Dateiname.dta")
 # SPSS sav
 dat1 <- read_sav(file = "Dateiname.sav")
@@ -620,9 +657,10 @@ dat1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "Tabellenblatt1")
 ```
 :::
 
-::: panel-tabset
-## Datensätze exportieren
+### Datensätze exportieren
 
+::: panel-tabset
+## Überblick
 ```{r,echo=F,warning=F}
 #### | column: margin
 options(knitr.kable.NA = '')
@@ -661,21 +699,68 @@ write.xlsx(dat1,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 ```
 :::
 
-::: callout-note
-# Hinweis
+### Objekte exportieren
 
-Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - innerhalb von R in einem Objekt hinterlegen)
+Wir können aber auch einzelne oder mehrere Objekte exportieren und später wieder einlesen:
+```{r}
+#| eval: false
+save(studs, file = "./data/stud_vektor.RData")
+rm(studs)
+load(file = "./data/stud_vektor.RData") # studs wieder mit selbem Namen zurück im environment
+```
+
+Mehrere Objekte:
+```{r}
+#| eval: false
+save(studs,profs, file = "./data/meine_vektoren.RData")
+rm(studs,profs)
+load(file = "./data/meine_vektoren.RData") # studs & profs mit selbem Namen zurück im environment
+```
+
+::: callout-note
+#
+
+Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - Ergebnisse/Werte innerhalb von R in einem Objekt abzulegen)
 :::
 
 
-## Übungen 1 {#data1}
+## Hilfe zu Paketen und Funktionen
+
+R Pakete kommen (häufig) mit sehr ausführlichen Hilfeseiten, die entweder direkt aus RStudio abgerufen werden können:
+```{r}
+#| eval: false
+# Hilfe zu Paketen
+vignette("dplyr")
+vignette(package = "dplyr")
+vignette("rowwise")
+help("dplyr")
+help(package = "dplyr")
+
+
+# Hilfe zu Funktionen
+?select()
+```
+
+Alternativ führt aber Google auch zum Ziel, bspw. [**R dplyr select()**](https://www.google.de/search?q=R+dplyr+select())
+
+Oder auf CRAN (woher auch `install.packages()` die Pakete bezieht):
+```{r}
+#| echo: false
+#| out-height: "30%"
+#| fig-cap: "[CRAN-Seite für {dplyr}](https://cran.r-project.org/web/packages/dplyr/index.html)"
+knitr::include_graphics("./pic/102_dplyr_vignette.png")
+```
+
+
+## Übungen
+### Übung 1 {#data1}
 
 -   Erstellen Sie den Datensatz mit den Studierenden- & Prof-Zahlen wie gezeigt:
 
 ```{r,eval= F}
 dat2 <- data.frame(studs = c(14954,47269 ,23659,9415 ,38079), 
                    profs = c(250,553,438 ,150,636),
-                   prom_recht = c(FALSE,TRUE,TRUE,FALSE,TRUE),
+                   prom_recht = c(FALSE,TRUE,TRUE,TRUE,FALSE),
                    gegr  = c(1971,1870,1457,1818,1995))
 ```
 
@@ -693,7 +778,7 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 
 [Zurück nach oben](#ue1)
 
-## Übungen 2 {#data2}
+### Übung 2 {#data2}
 
 -   Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`
 -   Verwenden Sie wieder den `data.frame` `dat2` aus Übung 1
@@ -706,7 +791,7 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 [Zurück nach oben](#ue2)
 
 
-## Übungen 3 {#data3}
+### Übung 3 {#data3}
 
 -   Verwenden Sie weiterhin den Datensatz aus Übung 1 & 2.
 -   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden.
@@ -718,15 +803,14 @@ c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 
 
 
-## Übungen 4 {#data4}
+### Übung 4 {#data4}
 
 -   Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein [R-Projekt](#rproj)
 -   Legen Sie die Erwerbstätigenbefragung in Ihrem Verzeichnis im Unterordner *data* ab.
--   Lesen Sie den Datensatz `BIBBBAuA_2018_small.csv` in R ein und legen Sie den Datensatz unter dem Objektnamen `etb` ab.
+-   Lesen Sie den Datensatz `BIBBBAuA_2018_small.csv` [wie oben gezeigt](#import) in R ein und legen Sie den Datensatz unter dem Objektnamen `etb` ab.
 -   Nutzen Sie `head()` und `View()`, um sich einen Überblick über den Datensatz zu verschaffen.
 -   Wie viele Befragte (Zeilen) enthält der Datensatz?
 -   Lassen Sie sich die Variablennamen von `etb` mit `names()` anzeigen!
--   Die Variable `S1` gibt das Geschlecht der Befragten an. Welcher Variablentyp ist für die Variable festgelegt? Ändern Sie den Variablentyp auf `character`.
 -   Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte\*n mit der `intnr` 2781 enthält?
 -   Wie alt ist der/die Befragte mit der `respid` 2781?
 -   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable `S2_j` abgelegt.)
