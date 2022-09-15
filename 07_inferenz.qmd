@@ -3,10 +3,21 @@
 ```{r inf01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 ```
+```{r}
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
 
 ## Gewichtung 
 
-http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf
+<!-- http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf -->
+
+`{survey}`
+https://stylizeddata.com/how-to-use-survey-weights-in-r/
+
+`{srvyr}`
+https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html
+https://github.com/gergness/srvyr/
+https://federicovegetti.github.io/teaching/heidelberg_2018/lab/sst_lab_day2.html
 
 Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuch Methoden der empirischen Sozialforschung (pp. 349–356). Springer Fachmedien Wiesbaden. https://doi.org/10.1007/978-3-531-18939-0_24
 
@@ -15,4 +26,46 @@ Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuch Methoden 
 etb18 %>% 
   count(S1,m1202,wt = gew2018_hr17)
 ```
+
+## Gewichtetes Regressionsmodell
+```{r}
+m_etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                           col_select = c("intnr","S1","F605","F518_SUF","m1202","zpalter","gew2018","zpalter")) %>% 
+  filter(F605 < 9, F518_SUF < 99998, zpalter < 100,m1202>0) %>% 
+  mutate(inc100 = F518_SUF/100,
+         gender = factor(S1,levels = 1:2, labels = c("m","w")),
+         
+         outside = 2-F605)
+```
+```{r}
+m_etb18 %>% count(S1,m1202,wt = gew2018)
+m_etb18 %>% summarise(mean = weighted.mean(F518_SUF,w = gew2018))
+
+library(survey)
+m_etb18_weighted <- svydesign(id      = ~intnr,
+                          weights = ~gew2018,
+                          nest    = TRUE,
+                          data    = m_etb18)
+svymean(~F518_SUF, m_etb18_weighted, na.rm = TRUE)
+```
+
+
+```{r}
+modl1 <- "F518_SUF ~ zpalter + I(zpalter^2)"
+
+
+m2<- lm(modl1, data = m_etb18)
+
+survey_m2 <- survey::svyglm(modl1, family = gaussian(), data = m_etb18,design = m_etb18_weighted)
+
+
+library(srvyr)
+srvyr_m2 <- svyglm(formula = modl1, design = m_etb18 %>% as_survey(weights = c(gew2018)) )
+
+
+modelsummary::modelsummary(list("glm"=m2,"svyglm"= survey_m2,"srvyr"=srvyr_m2),gof_omit = "RM|IC|Log")
+```
+
+
+
 
