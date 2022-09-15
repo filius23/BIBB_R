@@ -51,10 +51,11 @@ In der ersten Zeile stehen also die Werte der Uni Bremen, in der zweiten Zeile d
 dat1$profs 
 ```
 
-Mit `colnames()` können wir die Variablen-/Spaltennamen des Datensatzes anzeigen lassen, zudem können wir mit `nrow` und `ncol` die Zahl der Zeilen bzw. Spalten aufrufen:
+Mit `colnames()`/`names()` können wir die Variablen-/Spaltennamen des Datensatzes anzeigen lassen, zudem können wir mit `nrow` und `ncol` die Zahl der Zeilen bzw. Spalten aufrufen:
 
 ```{r , include=T, echo = T}
 colnames(dat1) ## Variablen-/Spaltennamen anzeigen
+names(dat1) ## Variablen-/Spaltennamen anzeigen
 ncol(dat1) ## Anzahl der Spalten/Variablen
 nrow(dat1) ## Anzahl der Zeilen/Fälle
 ```
@@ -143,7 +144,7 @@ Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentype
 
 
 
-## [Übung](#data1) {#ue1}
+### [Übung](#data1) {#ue1}
 
 
 ## Pakete in R {#packages}
@@ -167,6 +168,33 @@ Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `libra
 ```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
 knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
+
+
+:::{.callout-tip}
+# Pakete einmalig laden {#pkgdoublecolon}
+
+Neben `library()` gibt es auch die Möglichkeit, Funktionen aus Paketen mit `::` aufzurufen:
+```{r}
+#| eval: false
+paket::function()
+```
+
+Diese Option wird häufig verwendet, wenn lediglich eine Funktion aus einem Paket einmalig verwendet wird und der Rest des Pakets nicht hilft.
+
+:::
+
+:::{.callout-caution collapse="true"}
+# Wenn keine Internetverbindung besteht
+
+Unter [R Packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) können die benötigten Pakete heruntergeladen werden. Nachdem wir das Paket als .zip-Datei gespeichert haben, wir mit folgendem Befehl das Paket in der R-Umgebung installieren:
+
+```{r}
+#| eval: false
+# Installation von Paket "XML"
+install.packages("E:/XML_3.98-1.3.zip", repos = NULL, type = "source")
+```
+
+:::
 
 
 ## `{tidyverse}`
@@ -232,12 +260,26 @@ ueber_10tsd
 class(ueber_10tsd)
 ```
 
-In R stehen uns einige weitere Operatoren zur Auswahl von Zeilen zu Verfügung:
+### Auswahloperatoren
 
--   `<=` und `>=`: kleiner gleich/ größer gleich
--   `|` oder: `filter(dat1,studs > 10000 | prof < 200)`: mehr als 10.000 Studierende *oder* weniger als 200 Professuren
--   `%in%` "eines von": `filter(dat1, gegr %in% c(1971,1973,2004))`: gegründet 1971 oder 1973 oder 2004
--   `between()` ist eine Hilfsfunktion aus `{dplyr}` für Wertebereiche: `filter(dat1,between(studs,10000,20000)`: zwischen 10.000 und 20.000 Studierenden *oder* (jeweils eingeschlossen)
+R und `{dplyr}` stellen uns einige weitere Operatoren zur Auswahl von Zeilen zu Verfügung:
+
+-   `<=` und `>=`
+-   `|` oder
+-   `%in%` "eines von"
+-   `between()` ist eine Hilfsfunktion aus `{dplyr}` für Wertebereiche
+
+```{r}
+#| label: "Beispiele"
+#| warning: false
+#| eval: false
+
+filter(dat1, studs >= 10000)
+filter(dat1, studs <= 10000)
+filter(dat1,studs > 10000 | prof < 200) # mehr als 10.000 Studierende *oder* weniger als 200 Professuren
+filter(dat1, gegr %in% c(1971,1830)) # gegründet 1971 oder 1830
+filter(dat1, between(gegr,1971,1830)) # gegründet zwischen 1971 und 1830 (einschließlich)
+```
 
 <!-- Erweiterte Hilfsfunktionen für `filter()`:  `if_any()` or `if_all()` -->
 
@@ -282,13 +324,27 @@ select(dat1, 1:3) # Spalte 1-3
 select(dat1, !profs) # alles außer profs
 ```
 
+Auch hier gilt: wenn wir die Veränderungen auch weiter verwenden wollen, müssen wir sie in einem neuen Objekt ablegen:
+
+```{r}
+dat_ohne_profs <- select(dat1, !profs) 
+dat_ohne_profs
+```
+
+...oder das alte überschreiben:
+
+```{r}
+#| eval: false
+dat1 <- select(dat1, !profs) # alles außer profs
+```
+
 ### Hilfsfunktionen
 
 `select()` hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.
 
 -   `starts_with()`: Variablenname beginnt mit ..., bspw. `select(dat1,starts_with("p"))`
 -   `ends_with()`: Variablenname endet mit ..., bspw. `select(dat1,ends_with("p"))`
--   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(dat1,matches("_")`: alle Variablen mit `_` im Namen.
+-   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(dat1,matches("_"))`: alle Variablen mit `_` im Namen.
 -   `num_range()`: Variablen mit Zahlenbereiche: `select(etb,num_range("F",1:220))`
 -   `last_col()`: Letzte Variable, für die 4.letzte Variable bspw. `last_col(4)`
 -   `any_of()` um eine Auswahl auf Basis eines `character`-Vektors zu treffen
@@ -313,7 +369,7 @@ select(dat1,matches("s$")) # alle Spalten, die mit s enden
 
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
 
-
+### [Übung](#data2) {#ue2}
 
 ## Arbeiten mit der Pipe: `filter()` und `select()` kombinieren  {#pipe}
 
@@ -384,14 +440,24 @@ dat1$uni_fct <- factor(dat1$uni,
 
 Wenn wir nun nach `uni_fct` sortieren, dann wird die Reihenfolge der `levels` berücksichtigt:
 ```{r}
-dat1 %>% arrange(uni_fct)
 class(dat1$uni_fct)
+dat1 %>% arrange(uni_fct)
+```
+
+Mit `desc()` können wir in umgekehrter Reihenfolge sortieren:
+```{r}
+dat1 %>% arrange(desc(uni_fct))
 ```
 
 Das mag für den Moment relativ trivial erscheinen, ist aber später sehr praktisch um in Grafiken Variablen in eine gewisse Ordnung zu bringen oder in Regressionsmodellen die Referenzkategorie festzulegen.
 
+Natürlich können wir auch nach mehreren Variablen sortieren, dazu fügen wir einfach weitere in `arrange()` ein:
+```{r}
+dat1 %>% arrange(desc(uni_fct), gegr, studs) 
+```
+(Macht in diesem Beispiel aber wenig Sinn)
 
-## [Übung](#data2) {#ue2}
+### [Übung](#data3) {#ue3}
 
 ## Datensätze einlesen {#import}
 
@@ -452,7 +518,7 @@ getwd()
 knitr::include_graphics("./pic/102_Rproj2.png")
 ```
 
-Alternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen:
+Alternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen (hier ein Beispiel für den [Aufruf eines Pakets mit `::`](#pkgdoublecolon)):
 ```{r, eval = F, echo=T}
 rstudioapi::initializeProject(path = "D:/Kurse/R-Kurs")
 ```
@@ -596,6 +662,8 @@ write.xlsx(dat1,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 :::
 
 ::: callout-note
+# Hinweis
+
 Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - innerhalb von R in einem Objekt hinterlegen)
 :::
 
@@ -634,24 +702,30 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 -   Lassen Sie sich nur die Spalte `gegr` anzeigen.
 -   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die vor 1900 gegründet wurden.
 -   Lassen Sie sich nur Zeilen der Hochschulen mit Promotionsrecht anzeigen.
+
+[Zurück nach oben](#ue2)
+
+
+## Übungen 3 {#data3}
+
+-   Verwenden Sie weiterhin den Datensatz aus Übung 1 & 2.
 -   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden.
--   Legen Sie eine `factor`-Variable an, welche folgende Reihenfolge festlegt:
+-   Sortieren Sie den Datensatz entsprechend dieser Reihenfolge. (Legen Sie dazu eine `factor`-Variable an, welche die entsprechende Reihenfolge festlegt.)
 ```{r,eval =F}
 c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 ```
 
 
 
-[Zurück nach oben](#ue2)
 
-## Übungen 3 {#data3}
+## Übungen 4 {#data4}
 
 -   Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein [R-Projekt](#rproj)
 -   Legen Sie die Erwerbstätigenbefragung in Ihrem Verzeichnis im Unterordner *data* ab.
 -   Lesen Sie den Datensatz `BIBBBAuA_2018_small.csv` in R ein und legen Sie den Datensatz unter dem Objektnamen `etb` ab.
 -   Nutzen Sie `head()` und `View()`, um sich einen Überblick über den Datensatz zu verschaffen.
 -   Wie viele Befragte (Zeilen) enthält der Datensatz?
--   Lassen Sie sich die Variablennamen von `etb` anzeigen!
+-   Lassen Sie sich die Variablennamen von `etb` mit `names()` anzeigen!
 -   Die Variable `S1` gibt das Geschlecht der Befragten an. Welcher Variablentyp ist für die Variable festgelegt? Ändern Sie den Variablentyp auf `character`.
 -   Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte\*n mit der `intnr` 2781 enthält?
 -   Wie alt ist der/die Befragte mit der `respid` 2781?
