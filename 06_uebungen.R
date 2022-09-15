@@ -69,9 +69,21 @@ etb18_small2 %>%
   count(age_cat,age_cut_lab)
 
 
-## Nutzen Sie `ifelse()`, um Werte > 4 in den Variablen F1450_01, F1450_02, und F1450_03 in `etb18_small2` mit `NA` zu überschreiben.
-## Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `F1450_01` alle Werte > 4 mit `NA` überschreibt und ansonsten den Ausgangswert `F1450_01` einsetzt.
+
+## ifelse F1450_01 ----
 
 etb18_small2 %>% mutate(F1450_01 = ifelse(F1450_01>4,NA,F1450_01))
-## Wie würde die Funktion aussehen, wenn Sie sie mit `across()` auf F1450_01,F1450_02 und F1450_03 gleichzeitig anwenden?
+## ifelse & `across()` auf F1450_01,F1450_02 und F1450_03 ------
 etb18_small2 %>% mutate(across(matches("F1450_(01|02|03)"), ~ifelse(.x>4,NA,.x)))  
+
+
+
+
+# function -----
+stdize <- function(x){
+  stdx <- (x - mean(x,na.rm = T))/sd(x,na.rm = T)
+  return(stdx)
+}
+
+etb18_small2 %>% 
+  mutate(across(matches("F1450"),~stdize(.x),.names = "std_{.col}"))
