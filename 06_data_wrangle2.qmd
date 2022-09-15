@@ -12,9 +12,9 @@ windowsFonts(mono=windowsFont("Fira Code"))
 ```{r}
 #| message: false
 #| warning: false
-library(haven)
 library(tidyverse)
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+etb18_small <- etb18 %>% slice(1:10) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
 ```
 
 Wir gehen nochmal zurück zum Uni-Datensatz vom Anfang:
@@ -27,7 +27,7 @@ dat1 <- data.frame(studs = c(19173,5333,15643),
                    uni = c("Uni Bremen","Uni Vechta", "Uni Oldenburg"))
 dat2 <- data.frame(studs = c(14954,47269 ,23659,9415 ,38079), 
                    profs = c(250,553,438 ,150,636),
-                   prom_recht = c(FALSE,TRUE,TRUE,FALSE,TRUE),
+                   prom_recht = c(FALSE,TRUE,TRUE,TRUE,FALSE),
                    gegr  = c(1971,1870,1457,1818,1995),
                    uni = c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg"))
 dat1
@@ -41,11 +41,7 @@ dat3
 ```
 
 
-Es gibt auch `bind_cols()` um Datensätze spaltenweise zusammenzufügen:
-```{r}
-
-```
-
+(Es gibt auch `bind_cols()` um Datensätze spaltenweise zusammenzufügen.)
 
 ## Variablen erstellen {#var}
 
@@ -67,7 +63,7 @@ dat3
 ```
 
 
-### {tidyverse}: `mutate(neue_var= )`
+### {dplyr}: `mutate(neue_var= )`
 
 
 Wir hatten die Variante aus `{dplyr}` (`{tidyverse}`) bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt. Die grundsätzliche Struktur ist immer `datensatz %>% mutate(neue_var = ....)`:
@@ -104,15 +100,28 @@ dat4 <-
 
 dat4
 ```
+::: callout-tip
+# Dummy-Variablen erstellen mit `as.numeric()`
 
+Wenn wir logische Variablen mit `as.numeric()` in numerische Variablen umformatieren erhalten wir eine Dummy-Codierung:
+```{r}
+dat4$above_mean 
+as.numeric(dat4$above_mean )
+dat3 %>% 
+  mutate(rel_to_mean = studs-mean(studs),
+         above_mean = as.numeric(rel_to_mean > 0) )
+```
+
+:::
 
 ### [Übung](#mutate1)
 
-+ Erstellen Sie `dat3` wie oben gezeigt aus `dat1` und `dat2`
++ Erstellen Sie `dat3` wie [oben gezeigt](#) aus `dat1` und `dat2`
 + Berechnen Sie das Betreuungsverhältnis (Studierende pro Professur) und legen Sie die Ergebnisse in einer neuen Variable `studprofs` ab.
-+ Nutzen Sie dazu `mutate()`
++ Nutzen Sie dazu `mutate()` oder `...$newvar <- `
 + Berechnen Sie außerdem das Betreuungsverhältnis an den Hochschulen relativ zum Mittelwert des Betreuungsverhältnisses (`rel_studprofs`). 
 + Liegt das Betreuungsverhältnis über oder unter dem Mittelwert? Wie können Sie den Befehl anpassen, sodass die Variable `rel_studprofs` lediglich `TRUE` oder `FALSE` enthält anstelle der Zahlenwerte.
++ Wandeln Sie `rel_studprofs` in eine Dummy-Variable mit 0/1 als Werten statt `TRUE`/`FALSE`
 
 ::: callout-tip
 
@@ -121,67 +130,145 @@ Daumenregel zur Entscheidung, ob `mutate()` oder `...$newvar <-` besser passt: I
 :::
 
 
-## Gruppierung und mehrere Variablen bearbeiten {#group_across}
+## Gruppierung mit `group_by()` {#group_by}
 
 Die wirkliche Stärke von `mutate()` kommt aber erst zum Tragen, wenn wir es mit weiteren `{dplyr}`-Funktionen kombinieren.
-Eine häufige Aufgabe in der Datenaufbereitung sind gruppierte 
+Eine häufige Aufgabe in der Datenaufbereitung sind gruppierte Werte.
 
-### `group_by()`
-
-Wenn wir 
-
+Wir machen unseren Beispieldatensatz noch etwas kleiner:
 ```{r}
-dat3 %>%
-  group_by(prom_recht) %>%
-  mutate(mean_studs = mean(studs))
+dat5 <- dat3 %>% 
+  select(-uni,-gegr) # nur dass alles zu sehen ist
 ```
 
-...oder eine Übersicht:
+Wenn wir einen Datensatz mit `group_by()` entlang den Werten einer Variablen gruppieren, dann werden alle weiteren `mutate()` Berechnungen nur innerhalb dieser Gruppen ausgeführt:
+
+```{r}
+dat5 %>%
+  mutate(m_studs = mean(studs),
+         m_profs = mean(profs)) %>% 
+  group_by(prom_recht) %>%
+  mutate(m_studs2 = mean(studs),
+         m_profs2 = mean(profs))
+```
+Mit `ungroup()` können (sollten!) wir die Gruppierung wieder aufheben, sobald wir sie nicht mehr benötigen:
+```{r}
+dat5 %>%
+  mutate(m_studs = mean(studs),
+         m_profs = mean(profs)) %>% 
+  group_by(prom_recht) %>%
+  mutate(m_studs2 = mean(studs)) %>% 
+  ungroup() %>% 
+  mutate(m_profs2 = mean(profs)) 
+```
+
+Mit `summarise()` statt `mutate()` erhalten wir eine Übersicht:
 ```{r}
 dat3 %>%
   group_by(prom_recht) %>%
-  summarise(mean_studs = mean(studs))
+  summarise(m_studs = mean(studs))
 ```
 
 ### [Übung](#grpue)
-+ studs/profs berechnen -> über oder unter dem Schnitt?  
-+ studs/profs berechnen -> über oder unter dem Schnitt LABELN
-+ gruppiert nach `prom_recht`
-  
-  
-  
+
++ Verwenden Sie weiterhin den Uni-Datensatz.
++ Berechnen Sie das Betreuungsverhältnis (`studprofs`) an den Hochschulen/Unis mit und ohne Promotionsrecht und fügen Sie dieses als neue Spalte ein.
++ Wie müssen Sie ihren Code ändern, wenn die neue Variable das `studprof`-Verhältnis der Hochschule relativ zum Mittelwert des Betreuungsverhältnisses innerhalb mit und ohne Promotionsrecht wiedergeben soll? 
+
+
+
+<!-- studs/profs berechnen -> über oder unter dem Schnitt?   -->
+<!-- + studs/profs berechnen -> über oder unter dem Schnitt LABELN -->
+<!-- + gruppiert nach `prom_recht` -->
   
 
-### `across`: Mehrere Variablen bearbeiten
+## `across()`: Mehrere Variablen bearbeiten
+
+Eine sehr vielseitige Erweiterung für `mutate()` und `summarise()` ist `across()`.
+Hier mit können wir eine Funktion auf mehrere Spalten gleichzeitig anwenden, ohne uns zu wiederholen:
+
+```{r}
+dat3 %>%
+  summarise(studs = mean(studs),
+            profs = mean(profs))
+```
+
+Hier ist `across()` deutlich kürzer - für die Variablenauswahl können wir die [`?select_helpers`](02_intro.qmd#selecthelpers) verwenden - z.B. `matches()`:
 
 ```{r}
 dat3 %>%
   summarise(across(matches("studs|profs"), ~mean(.x)))
 ```
 
+
+Natürlich ist das auch kombinierbar mit `group_by()`:
 ```{r}
 dat3 %>%
   group_by(prom_recht) %>%
   summarise(across(matches("studs|profs"), ~mean(.x)))
 ```
 
-Wir können auch mehrere Funktionen durchführen:
+Wir können auch mehrere Funktionen durchführen, dafür müssen wir sie in einer `list()` angeben:
 ```{r}
 dat3 %>%
   group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd)))
+  summarise(across(matches("studs|profs"), list(mean = ~mean(.x), sd = ~sd(.x))))
+```
+
+Mit dem `.names()`-Argument können wir auch die Benennung der Spalten steuern. 
+`{.fn}` steht dabei als Platzhalter für die angewendete Funktion, `{.col}` für den Namen der bearbeiteten Variable.
+
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), 
+                   list(mean = ~mean(.x), sd = ~sd(.x)),
+                   .names = "{.fn}_{.col}"))
 ```
 
 
+...eine sehr praktische Hilfsfunktion aus `{dplyr}` ist `n()` - so erhalten wir die Fallzahlen. Allerdings werden so auch ggf. Zeilen mit `NA` mitgezählt, sodass wir für die Zähler alle nicht-`NA` Zeilen eine anderen Lösung brauchen, bspw. `sum(!is.na(.x))` - also die Summe der "is not NA"==`TRUE`:
+
 ```{r}
 dat3 %>%
   group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd),
+  summarise(across(matches("studs|profs"), 
+                   list(mean = ~mean(.x), sd = ~sd(.x), n = ~n(), notNA = ~sum(!is.na(.x))),
                    .names = "{.fn}_{.col}"))
 ```
 
 [Mehr Beispiele in der Hilfe zu across](https://dplyr.tidyverse.org/reference/across.html)
 
+
+### [Übung](#across_ue)
+
+
++ Verwenden Sie den `etb18_small`-Datensatz:
+```{r}
+#| eval: false
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+etb18_small <- etb18 %>% slice(1:10) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
+etb18_small 
+```
+
++ Berechnen Sie den Mittelwert für die Variablen F1450_01, F1450_02, und F1450_03:
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+
+etb18_small %>% select(starts_with("F1450")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
++ Verwenden Sie `across()` und denken Sie ggf. daran, dass Sie `NA`s die `na.rm = T` in `mean()` setzen müssen: `mean(....,na.rm = T)`
++ Berechnen Sie die Mittelwerte getrennt nach Geschlecht, indem Sie `group_by()` verwenden.
++ Fügen auch die Varianz (`var()`) und die Zahl der nicht-`NA`-Fälle hinzu und nutzen sie `.names=`, um die Spaltennamen erst nach dem Schema `kennzahl.variable` zu benennen.
 
 
 ## Hilfsfunktionen
@@ -223,7 +310,7 @@ tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>%
 
 ```{r}
 dat3 %>% mutate(rel_to_mean = studs-mean(studs),
-                ab_mean_lab = ifelse(studs-mean(studs) > 0,"darüber","darunter"))
+                ab_mean_lab = ifelse(rel_to_mean > 0,"darüber","darunter"))
 ```
 
 `case_when()` (`{dplyr}`) erweitert dieses Prinzip, sodass wir mehr als zwei Optionen angeben können. 
@@ -232,10 +319,26 @@ Die Syntax ist aber etwas anders: hier geben wir erst die Bedingung an, dann nac
 [^tilde]: Tastaturbefehle: `Alt Gr` + `*` auf Windows. Auf macOS `Alt` + `N` und anschließend ein Leerzeichen, damit die Tilde erscheint.
 ```{r}
 dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
+                                  gegr < 1900 ~ "alt"))
+```
+
+Mit `TRUE` können alle Fälle angesprochen werden, die bis dahin keiner Bedingung entsprochen haben:
+```{r}
+dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
                                   gegr < 1900 ~ "alt",
                                   TRUE ~ "relativ neu"))
 ```
 
+
+Das muss sich nicht auf eine Variable beschränken:
+
+```{r}
+dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni",
+                                  gegr < 1900 & prom_recht == T ~ "alte Uni",
+                                  gegr > 1900 & prom_recht == T ~ "junge Uni",
+                                  gegr < 1900 & prom_recht == F ~ "alte Hochschule",
+                                  gegr > 1900 & prom_recht == F ~ "junge Hochschule"))
+```
 
 <!-- [{janitor}](https://appsilon.com/data-cleaning-in-r/) -->
 
@@ -373,24 +476,23 @@ mode(etb18$m1202)
 ```
 
 
-## `lapply()` und `map()`
+<!-- ## `lapply()` und `map()` -->
 
 
-[`across()` und `c_across()`](https://twitter.com/tmfmnk/status/1525840447419162625)
+<!-- [`across()` und `c_across()`](https://twitter.com/tmfmnk/status/1525840447419162625) -->
 
-https://mgimond.github.io/ES218/Week03ab_groupby.html
-https://datacarpentry.org/r-socialsci/
-data science in a box
-https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f
+<!-- https://mgimond.github.io/ES218/Week03ab_groupby.html -->
+<!-- https://datacarpentry.org/r-socialsci/ -->
+<!-- data science in a box -->
+<!-- https://medium.com/@tomazkastrun/eight-r-tidyverse-tips-for-everyday-data-engineering-8474f3d4af4f -->
 
-https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb
+<!-- https://medium.com/@alwinw/are-r-loops-really-that-slow-1bbf46b21fcb -->
 
-## across & select
-https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
- 
+<!-- ## across & select -->
+<!-- https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe -->
 
 
-## Eigene Funktionen
+
 
 ## Anhang
 
