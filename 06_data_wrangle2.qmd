@@ -277,30 +277,39 @@ etb18_small %>% select(starts_with("F1450")) %>%
 ### Klassen bilden mit `cut()`
 
 ```{r}
-etb18$zpalter[etb18$zpalter == 9999] <- NA
+dat3
 ```
 
-Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel das Alter.
-Wir möchten also `zpalter` in 10-Jahreskategorien zusammenfassen.
-Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab: 
+Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel die Professorenzahlen.
+Wir möchten also `profs` in 150er-Schritten zusammenfassen.
+Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. 
+Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. 
 ```{r}
-etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) )
-etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq()
+cut(dat3$profs,breaks = c(50, 200, 350, 500, 650))
+cut(dat3$profs,breaks = seq(50,650,150))
+```
+
+
+Diese Werte legen wir in einer neuen Variable im Datensatz `dat3` ab: 
+```{r}
+dat3$prof_class <- cut(dat3$profs,breaks = seq(50,650,150))
 ```
 Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern:
-
-
 ```{r}
-etb18 %>% count(age_zehner)
+dat3 %>% count(prof_class)
 ```
 ```{r}
 #| echo: false
-tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>% pull(n)
+n200_350 <-  dat3 %>% count(prof_class) %>% filter(grepl("\\(20",prof_class)) %>% pull(n)
 ```
-`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
+`(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r n200_350` Unis im Datensatz, die über 200 bis inklusive 350 Professuren unterhalten.
 
 [**Einige hilfreiche Optionen für `cut()` im Anhang**](#cut_ops)
 
+Für die weiteren Beispiele löschen wir die `prof_class` wieder:
+```{r}
+dat3$prof_class <- NULL
+```
 
 
 ### `ifelse()` und `case_when()`
@@ -342,7 +351,22 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
 
 <!-- [{janitor}](https://appsilon.com/data-cleaning-in-r/) -->
 
-## Übung 
+## [Übung](#ifcase)
+
++ Bearbeiten Sie `etb18_small`:
+```{r}
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+etb18_small2 <- etb18 %>% slice(5654:5666) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
+etb18_small2
+```
+
+
++ Nutzen Sie `ifelse()`, um Personen ab 50 Jahren mit "ü50" zu kennzeichnen - lassen Sie für Personen bis unter 50 Jahren "u50" eintragen.
++ Führen Sie eine Dreiteilung durch: Personen bis 40 bekommen "u40", Personen bis einschließlich 50 "u50" und Personen über 50 Jahren "ü50". Wie würden Sie mit `case_when()` vorgehen und wie mit `cut()`?
++ Nutzen Sie `ifelse()`, um Werte > 4 in den Variablen F1450_01, F1450_02, und F1450_03 in `etb18_small2` mit `NA` zu überschreiben.
++ Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `F1450_01` alle Werte > 4 mit `NA` überschreibt und ansonsten den Ausgangswert `F1450_01` einsetzt.
++ Wie würde die Funktion aussehen, wenn Sie sie mit `across()` auf F1450_01,F1450_02 und F1450_03 gleichzeitig anwenden?
+
 
 
 
@@ -352,16 +376,16 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
 #| message: false
 library(gt)
 vals1 <- 
-  etb18 %>% select(starts_with("F1450")) %>% 
+  etb18_small2 %>% select(starts_with("F1450")) %>% 
     map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
     pivot_longer(-var) %>% 
     pivot_wider(names_from = value,values_from = name) %>% 
-    select(-"NA",-"8",-"7") %>% 
+    select(matches("var|1|2|3|4|9")) %>% 
     rename(`7/8/9`=`9`) %>% 
     mutate(`7/8/9` = "t.n.z./k.A.")
   
 
-etb18 %>% select(starts_with("F1450")) %>% 
+etb18_small2 %>% select(starts_with("F1450")) %>% 
   map_dfr(.,~attributes(.x)$label) %>% 
       t(.) %>% data.frame() %>% 
       rownames_to_column(.,var = "var") %>% 
@@ -370,6 +394,8 @@ etb18 %>% select(starts_with("F1450")) %>%
   tab_options(  table.font.size = 12) %>% 
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
+
+
 ```{r}
 etb18 %>% 
   select(F1450_01,F1450_02,F1450_03) %>% 
@@ -524,41 +550,3 @@ dat3 %>% mutate(bula = case_when(str_detect(uni,"Bremen")~ "HB",
                                  ))
 dat3 %>% mutate(ort = str_remove(uni,"Uni |FH |RWTH "))
 ```
-
-
-
-<!-- ### Klassen bilden mit `cut()` -->
-
-<!-- ```{r} -->
-<!-- etb18$zpalter[etb18$zpalter == 9999] <- NA -->
-<!-- ``` -->
-
-<!-- Eine häufig Aufgabe in der Datenaufbereitung die Klassierung eines metrisches Merkmals, wie zum Beispiel das Alter. -->
-<!-- Wir möchten also `zpalter` in 10-Jahreskategorien zusammenfassen. -->
-<!-- Um die Klassen zu bilden, nutzen wir `cut()` und geben neben der zu unterteilenden Variable mit `breaks` die Klassengrenzen an. Für die Grenzen können wir `seq()` verwenden. Darin geben wir zunächst die obere und untere Grenze an und dann die Schrittbreiten. Diese Werte legen wir in einer neuen Variable im Datensatz `etb18` ab:  -->
-<!-- ```{r} -->
-<!-- etb18$age_zehner <- cut(etb18$zpalter, breaks = c(10,20,30,40,50,60,70,80,90) ) -->
-<!-- etb18$age_zehner <- cut(etb18$zpalter, breaks = seq(10,90,10) ) # kürzer mit seq() -->
-<!-- ``` -->
-<!-- Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern: -->
-
-
-<!-- ```{r} -->
-<!-- etb18 %>% count(age_zehner) -->
-<!-- ``` -->
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>% pull(n) -->
-<!-- ``` -->
-<!-- `(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.   -->
-
-
-
-
-<!-- ### cut wählt ein ungünstiges Zahlenformat {#hinweis_cut_w103} -->
-
-<!-- `cut` verwendet für Klassengrenzen mit mehr als 3 Stellen eine wenig intuitive Darstellung. Mit `dig.lab` können Labels mit mehr als 3 Stellen angefordert werden: -->
-<!-- ```{r} -->
-<!-- x1 <- c(1212,2121,1212) -->
-<!-- table( cut(x1, breaks = c(0,1500,2500), dig.lab = 4) ) -->
-<!-- ``` -->

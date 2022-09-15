@@ -21,6 +21,7 @@ etb18_small %>%
 etb18_small %>% 
   summarise(across(matches("F1450_(01|02|03)"),~mean(.x,na.rm=T)))
 
+## F1450_(01|02|03) werden mit neuen Werten überschrieben
 
 ## nach Geschlecht ----
 etb18_small %>% 
@@ -37,4 +38,40 @@ etb18_small %>%
                    .names = "{.fn}.{.col}") )
 
 
+# Übung 4: cut -----
 
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+etb18_small2 <- etb18 %>% slice(5654:5666) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
+etb18_small2
+
+
+## ü50/u50 -----
+etb18_small2 %>% 
+  mutate(over_under = ifelse(zpalter >= 50, "ü50", "u50"))
+
+## u40 u55 ü55 ---------------
+etb18_small2 %>% 
+  mutate(age_cat = case_when(zpalter <= 40 ~ "u40",
+                             zpalter <= 50 ~ "u50",
+                             zpalter >  50 ~ "ü50"),
+         age_cut = cut(zpalter,breaks = c(0,40,50,100)),
+         age_cut_lab = cut(zpalter,breaks = c(0,40,50,100),
+                           labels = c("u40","u50","ü50"))) 
+
+# Kontrolle:
+etb18_small2 %>% 
+  mutate(age_cat = case_when(zpalter <= 40 ~ "u40",
+                             zpalter <= 50 ~ "u50",
+                             zpalter >  50 ~ "ü50"),
+         age_cut = cut(zpalter,breaks = c(0,40,50,100)),
+         age_cut_lab = cut(zpalter,breaks = c(0,40,50,100),
+                           labels = c("u40","u50","ü50"))) %>% 
+  count(age_cat,age_cut_lab)
+
+
+## Nutzen Sie `ifelse()`, um Werte > 4 in den Variablen F1450_01, F1450_02, und F1450_03 in `etb18_small2` mit `NA` zu überschreiben.
+## Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `F1450_01` alle Werte > 4 mit `NA` überschreibt und ansonsten den Ausgangswert `F1450_01` einsetzt.
+
+etb18_small2 %>% mutate(F1450_01 = ifelse(F1450_01>4,NA,F1450_01))
+## Wie würde die Funktion aussehen, wenn Sie sie mit `across()` auf F1450_01,F1450_02 und F1450_03 gleichzeitig anwenden?
+etb18_small2 %>% mutate(across(matches("F1450_(01|02|03)"), ~ifelse(.x>4,NA,.x)))  
