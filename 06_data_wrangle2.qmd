@@ -41,12 +41,18 @@ dat3
 ```
 
 
+Es gibt auch `bind_cols()` um Datensätze spaltenweise zusammenzufügen:
+```{r}
+
+```
+
+
 ## Variablen erstellen {#var}
 
 Nun sehen wir uns die Möglichkeiten, Variablen zu erstellen, nochmal etwas genauer an.
 Grundsätzlich gibt es zwei Arten, Variablen in einen `data.frame` hinzuzufügen:
 
-### base R: `...$newvar`
+### base R: `...$newvar <-`
 
 
 ```{r}
@@ -108,41 +114,78 @@ dat4
 + Berechnen Sie außerdem das Betreuungsverhältnis an den Hochschulen relativ zum Mittelwert des Betreuungsverhältnisses (`rel_studprofs`). 
 + Liegt das Betreuungsverhältnis über oder unter dem Mittelwert? Wie können Sie den Befehl anpassen, sodass die Variable `rel_studprofs` lediglich `TRUE` oder `FALSE` enthält anstelle der Zahlenwerte.
 
-## Hilfsfunktionen
+::: callout-tip
 
-### `ifelse()` und `case_when()`
+Daumenregel zur Entscheidung, ob `mutate()` oder `...$newvar <-` besser passt: Immer wenn es nur darum geht, schnell eine Variable zu erstellen/löschen, ist `...$newvar <-` die einfachere Wahl. Sobald es darüber hinaus geht, hat `mutate()` sehr große Vorteile ([folgender Abschnitt](#group_across)).
 
-`ifelse()` ist eine große Hilfe für alle Umcodierungen: wir formulieren darin eine Bedingung und wenn diese zutrifft wird der erste Wert eingesetzt, wenn nicht wird der zweite Wert eingesetzt. Hier fragen wir also ab, ob `studs-mean(studs)` größer `0` ist - dann wird `darüber` eingesetzt, ansonsten eine `darunter`:
+:::
 
 
-```{r}
-dat3 %>% mutate(rel_to_mean = studs-mean(studs),
-                ab_mean_lab = ifelse(studs-mean(studs) > 0,"darüber","darunter"))
-```
+## Gruppierung und mehrere Variablen bearbeiten {#group_across}
 
-`case_when()` (`{dplyr}`) erweitert dieses Prinzip, sodass wir mehr als zwei Optionen angeben können. 
-Die Syntax ist aber etwas anders: hier geben wir erst die Bedingung an, dann nach einer `~`[^tilde] die einzusetzenden Werte: 
-
-[^tilde]: Tastaturbefehle: `Alt Gr` + `*` auf Windows. Auf macOS `Alt` + `N` und anschließend ein Leerzeichen, damit die Tilde erscheint.
-```{r}
-dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
-                                  gegr < 1900 ~ "alt",
-                                  TRUE ~ "relativ neu"))
-```
+Die wirkliche Stärke von `mutate()` kommt aber erst zum Tragen, wenn wir es mit weiteren `{dplyr}`-Funktionen kombinieren.
+Eine häufige Aufgabe in der Datenaufbereitung sind gruppierte 
 
 ### `group_by()`
 
+Wenn wir 
+
 ```{r}
 dat3 %>%
   group_by(prom_recht) %>%
-  mutate(mean_prof = mean(profs))
+  mutate(mean_studs = mean(studs))
+```
+
+...oder eine Übersicht:
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(mean_studs = mean(studs))
+```
+
+### [Übung](#grpue)
++ studs/profs berechnen -> über oder unter dem Schnitt?  
++ studs/profs berechnen -> über oder unter dem Schnitt LABELN
++ gruppiert nach `prom_recht`
+  
+  
+  
+  
+
+### `across`: Mehrere Variablen bearbeiten
+
+```{r}
+dat3 %>%
+  summarise(across(matches("studs|profs"), ~mean(.x)))
 ```
 
 ```{r}
 dat3 %>%
   group_by(prom_recht) %>%
-  summarise(mean_prof = mean(profs))
+  summarise(across(matches("studs|profs"), ~mean(.x)))
 ```
+
+Wir können auch mehrere Funktionen durchführen:
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd)))
+```
+
+
+```{r}
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd),
+                   .names = "{.fn}_{.col}"))
+```
+
+[Mehr Beispiele in der Hilfe zu across](https://dplyr.tidyverse.org/reference/across.html)
+
+
+
+## Hilfsfunktionen
+
 
 ### Klassen bilden mit `cut()`
 
@@ -169,41 +212,29 @@ tweens <-  etb18 %>% count(age_zehner) %>% filter(grepl("\\(20",age_zehner)) %>%
 ```
 `(` bedeutet dabei ausgeschlossen, `]` inklusive. Es gibt also `r tweens` Befragte, die über 20 bis inklusive 30 Jahre alt sind.  
 
+[**Einige hilfreiche Optionen für `cut()` im Anhang**](#cut_ops)
 
-### [Übung](#grpue)
-+ studs/profs berechnen -> über oder unter dem Schnitt?  
-+ studs/profs berechnen -> über oder unter dem Schnitt LABELN
-+ gruppiert nach `prom_recht`
-  
-  
-  
-  
 
-### `across`: Mehrere Variablen bearbeiten
 
-```{r}
-dat3 %>%
-  group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), ~mean(.x)))
-```
+### `ifelse()` und `case_when()`
 
-Wir können auch mehrere Funktionen durchführen:
-```{r}
-dat3 %>%
-  group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd)))
-```
+`ifelse()` ist eine große Hilfe für alle Umcodierungen: wir formulieren darin eine Bedingung und wenn diese zutrifft wird der erste Wert eingesetzt, wenn nicht wird der zweite Wert eingesetzt. Hier fragen wir also ab, ob `studs-mean(studs)` größer `0` ist - dann wird `darüber` eingesetzt, ansonsten eine `darunter`:
 
 
 ```{r}
-dat3 %>%
-  group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), list(mean = mean, sd = sd),
-                   .names = "{.fn}_{.col}"))
+dat3 %>% mutate(rel_to_mean = studs-mean(studs),
+                ab_mean_lab = ifelse(studs-mean(studs) > 0,"darüber","darunter"))
 ```
 
-[Mehr Beispiele in der Hilfe zu across](https://dplyr.tidyverse.org/reference/across.html)
+`case_when()` (`{dplyr}`) erweitert dieses Prinzip, sodass wir mehr als zwei Optionen angeben können. 
+Die Syntax ist aber etwas anders: hier geben wir erst die Bedingung an, dann nach einer `~`[^tilde] die einzusetzenden Werte: 
 
+[^tilde]: Tastaturbefehle: `Alt Gr` + `*` auf Windows. Auf macOS `Alt` + `N` und anschließend ein Leerzeichen, damit die Tilde erscheint.
+```{r}
+dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
+                                  gegr < 1900 ~ "alt",
+                                  TRUE ~ "relativ neu"))
+```
 
 
 <!-- [{janitor}](https://appsilon.com/data-cleaning-in-r/) -->
@@ -364,6 +395,20 @@ https://gist.github.com/AlbertRapp/043c7941d0fa6478cbea55f45525befe
 ## Anhang
 
 
+### Optionen für `cut` {#cut_opts}
+```{r}
+bsp <- c(1990,1998,2001,2009)
+bsp
+cut(bsp,breaks = c(1990,2000,2010)) 
+# Anzahl der stellen in den labels
+cut(bsp,breaks = c(1990,2000,2010),dig.lab = 4) 
+# untere Grenze mit einbeziehen
+cut(bsp,breaks = c(1990,2000,2010),dig.lab = 4,include.lowest = T) 
+# durchnummerieren statt labels:
+cut(bsp,breaks = c(1990,2000,2010),labels = FALSE)
+# eigene labels angeben:
+cut(bsp,breaks = c(1990,2000,2010),labels = c("90er","00er"))
+```
 
 
 ### String-Funktionen
