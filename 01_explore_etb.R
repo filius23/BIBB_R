@@ -44,11 +44,16 @@ ndis <-
   t(.) %>% data.frame(ndis = .) %>% rownames_to_column(.,var = "var") %>% janitor::clean_names() %>% tibble() %>% 
   left_join(
     map_dfr(etb18,~attributes(.x)$label) %>% 
-      t(.) %>% data.frame() %>% 
+      t(.) %>% data.frame("lab"=.) %>% 
       rownames_to_column(.,var = "var") )
 
 ndis %>% filter(ndis %in% 3:4) %>% print(n=Inf)
-ndis %>% filter(ndis > 1000)
+ndis %>% filter(ndis > 5) %>% print(n=Inf)
+
+
+ndis %>% filter(grepl("[A,a]lter",lab)) %>% print(n=Inf)
+
+
 
 etb18 %>% 
   count(S1,m1202,wt = gew2018_hr17)

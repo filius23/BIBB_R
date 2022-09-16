@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Andreas Filser">
-<meta name="dcterms.date" content="2022-08-12">
+<meta name="dcterms.date" content="2022-09-16">
 
 <title>R am BIBB</title>
 <style>
@@ -37,6 +37,8 @@ ul.task-list{list-style: none;}
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -57,10 +59,8 @@ ul.task-list{list-style: none;}
   }
 }</script>
 
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
-
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body class="nav-sidebar floating">
@@ -105,6 +105,71 @@ ul.task-list{list-style: none;}
   <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -140,7 +205,7 @@ ul.task-list{list-style: none;}
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 12, 2022</p>
+      <p class="date">September 16, 2022</p>
     </div>
   </div>
     
@@ -167,43 +232,15 @@ ul.task-list{list-style: none;}
 <!-- Note that there are five types of callouts, including:  -->
 <!-- `note`, `tip`, `warning`, `caution`, and `important`. -->
 <!-- ::: -->
-<p><strong>Kurszeiten</strong></p>
+<p><strong>Kursinformationen</strong></p>
 <div class="cell">
-<div class="cell-output-display">
-
-<table class=" lightable-material table table-striped table-hover table-condensed" style="font-family: Roboto; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:left;font-weight: bold;color: white !important;font-size: 0px;"> Tag </th>
-   <th style="text-align:left;font-weight: bold;color: white !important;font-size: 0px;"> Start </th>
-   <th style="text-align:left;font-weight: bold;color: white !important;font-size: 0px;"> Ende </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> 29.09.2022 </td>
-   <td style="text-align:left;"> 08:30 </td>
-   <td style="text-align:left;"> 15:15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 30.09.2022 </td>
-   <td style="text-align:left;"> 08:30 </td>
-   <td style="text-align:left;"> 15:30 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 06.10.2022 </td>
-   <td style="text-align:left;"> 08:30 </td>
-   <td style="text-align:left;"> 15:30 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 07.10.2022 </td>
-   <td style="text-align:left;"> 08:30 </td>
-   <td style="text-align:left;"> 15:30 </td>
-  </tr>
-</tbody>
-</table>
 
 </div>
+<div class="g-col-12 g-col-sm-6 g-col-md-4">
+<p><i class="fa-solid fa-calendar" aria-hidden="true"></i> &nbsp; Donnerstags und Freitags</p>
+<p><i class="fa-solid fa-calendar-alt" aria-hidden="true"></i> &nbsp; 29.-30.09. und 06.-07.10.2022</p>
+<p><i class="fa-solid fa-clock" aria-hidden="true"></i> &nbsp; 8:30 - 15:30 Uhr</p>
+<p><i class="fa-solid fa-location-dot" aria-hidden="true"></i> &nbsp; Webex</p>
 </div>
 
 
@@ -319,8 +356,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Inhalt by <a href="https://afilser.netlify.app/">Andreas Filser</a><br> Erstellt mit R und <a href="https://quarto.org/">Quarto</a><br> <a href="https://github.com/filius23/BIBB_R">View the source at GitHub</a><br></div>   
-    <div class="nav-footer-right">All content licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)</a></div>
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2022 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/BIBB_R">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
   </div>
 </footer>
 
