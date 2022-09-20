@@ -363,10 +363,9 @@ etb18 %>%
   geom_col(position=position_dodge()) 
 ```
 
-Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweiteren einfach die Pipeline vor `ggplot()` um den `mutate()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
+Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweitern einfach die Pipeline vor `ggplot()` um den `prop.table()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
 ```{r}
 #| layout-ncol: 2
-# #| code-line-numbers: "5"
 etb18 %>% 
   filter(!is.na(m1202)) %>% 
   count(S1,m1202) %>% 
@@ -406,7 +405,6 @@ ggplot(data = etb18 ,
 
 Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg: 
 ```{r}
-# #| code-line-numbers: "9"
 etb18 %>% 
   filter(!is.na(m1202)) %>% 
   count(S1,m1202) %>% 
@@ -460,10 +458,15 @@ etb %>% filter(S2_j < 9999,h1216d>0) %>% slice(1:150) %>%
 
 + Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`)
 + Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`) betrennt nach der Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein).
+
 ```{r}
+#| echo: false
 etb18 %>% count(F100_wib2,gkpol) %>% filter(F100_wib2>=0) %>% 
   ggplot(aes(x = gkpol, y = n, fill = factor(F100_wib2))) +
-  geom_col(position=position_dodge()) 
+  geom_col(position=position_dodge()) +
+  scale_x_continuous(breaks = 1:7,
+                   labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
+                              "50k bis <100k", "100k bis <500k", "500k und mehr"))
 ```
 
 Kleine Hilfe: das sind die Labels für `gkpol` 1-7:
@@ -471,16 +474,16 @@ Kleine Hilfe: das sind die Labels für `gkpol` 1-7:
 #| echo: false
 etb18 %>% count(F100_wib2,gkpol) %>% pull(gkpol) %>% as_factor() %>% levels() %>% 
   str_remove_all(.," Einwohner") %>% 
-  str_replace(.,pattern = "\\.000","k") %>% 
+  str_replace_all(.,pattern = "\\.000","k") %>% 
   str_replace(.,pattern = "unter ","<") %>% 
   dput()
 ```
 ```{r}
 #| eval: false
 #| code-fold: true
-scale_y_continuous(breaks = 1:7,
-                   labels = c("<2k", "2k bis <5.000", "5k bis <20.000", "20k bis <50.000", 
-                              "50k bis <100.000", "100k bis <500.000", "500k und mehr"))
+scale_x_continuous(breaks = 1:7,
+                   labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
+                              "50k bis <100k", "100k bis <500k", "500k und mehr"))
 
 ```
 
@@ -743,7 +746,7 @@ knitr::include_graphics("./pic/104_decision.png")
 
 + Die [R Graph Gallery](https://r-graph-gallery.com/) ist noch etwas umfangreicher und bietet noch weitere Visualisierungsideen
 
-+ Für alle, die mehr zu gelungenen (und schönen) Datenvisualisierungen mit `{ggplot2}` erfahren möchten, ist das [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) ein hervorragender Einstieg.
++ Für alle, die mehr zu gelungenen (und schönen) Datenvisualisierungen mit `{ggplot2}` erfahren möchten, ist das [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) ein hervorragender Einstieg. [Dieser Workshop](https://github.com/z3tt/beyond-bar-and-box-plots/blob/main/README.md#talk-resources) eignet sich sehr gut für eine Vertiefung.
 
 + [Dieser Workshop](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/) bietet weitere Einblicke wie Datenvisualisierungen mit `{ggplot2}` schöner gestaltet werden können.
 
