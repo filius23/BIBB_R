@@ -193,10 +193,11 @@ ttest1 <- t.test(etb18$zpalter~etb18$S1,alternative = "two.sided")
 ttest1$statistic # t-Wert
 ttest1$p.value # p-Wert
 ```
-Mit `str()` können wir alle Werte ansehen:
+Mit `View()` oder `str()` können wir alle Werte ansehen:
 ```{r}
 #| eval: false
 str(ttest1)
+View(ttest1)
 ```
 
 ```{r ttest_str, message=F, out.width="100%", out.height="10%"}
