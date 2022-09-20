@@ -309,7 +309,8 @@ Berechnen Sie das Cohen's d für diesen Zusammenhang.
 
 ### Übung 2 {#corr}
 
-+ Untersuchen Sie den Zusammenhang zwischen der Wochenarbeitszeit (`az`) und dem Einkommen (`F518_SUF`) der Befragten. Welches Maß ist das richtige?
++ Untersuchen Sie die Korrelation zwischen der Wochenarbeitszeit (`az`) und dem Einkommen (`F518_SUF`) der Befragten.
+
 + Denken Sie daran, die Missings in `F518_SUF` auszuschließen: `etb18$F518_SUF[etb18$F518_SUF>99990] <- NA`, `az` hat keine Missings.
 
 
@@ -338,25 +339,45 @@ etb18 %>% select(starts_with("F411_01")) %>%
 
 
 
-  + So können Sie `educ` in `etb18` erstellen und die Missings in `F411_01` überschreiben:   
+  + So können Sie `educ` in `etb18` erstellen und die Missings in `F411_01` überschreiben und Erstellen Sie einen kleineren Datensatz, indem Sie die ersten 300 Zeilen auswählen:
 ```{r, eval =F}
-etb18 <- 
+etb18_small <- 
   etb18 %>% 
   mutate(educ = case_when(S3 %in% 2:4 ~ 1,
                           S3 %in% 5:6 ~ 2,
                           S3 %in% 7:8 ~ 3),
-         F411_01 = ifelse(F411_01 > 4,NA,F411_01))
+         F411_01 = ifelse(F411_01 > 4,NA,F411_01)) %>% 
+  slice(1:300)
 ```
-  + Berechnen Sie Spearman's $\rho$, Kendall's $\tau$ und Cramér's $v$.
-
-```{r}
-cor.test(etb18$educ,etb18$F411_01,method = "spearman", use = "pairwise.complete.obs")
-```
+  + Erstellen Sie eine Kreuztabelle aus `educ` und `F411_01`
+  + Berechnen Sie Spearman's $\rho$, Kendall's $\tau$ und Cramér's $v$ auf Basis von `etb18_small`.
 
 
 ### Übung 3 {#weight}
 
++ Legen Sie die Gewichtung auf Basis von `gew2018` an.
++ Erstellen Sie eine Kontingenztabelle für `gkpol` und `Mig` - einmal gewichtet und einmal ohne Gewichte. Sehen Sie die Unterschiede?
 
+```{r}
+#| echo: false
+etb18$F518_SUF[etb18$F518_SUF>99990] <- NA
+```
+
++ Berechnen Sie den Mittelwert für den Bruttoverdienst `F518_SUF` (Schließen Sie die Missings ggf. mit `etb18$F518_SUF[etb18$F518_SUF>99990] <- NA` - sie können mit `max(etb18$F518_SUF,na.rm = T)` überprüfen ob das Maximum bei `r max(etb18$F518_SUF,na.rm = T)` liegt)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+etb18 %>% select(matches("gkpol|Mig")) %>% 
+  map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+  pivot_longer(-var) %>% 
+  filter(!is.na(value)) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
 ## Anhang
 
 ### t-Verteilung {#tdist}
@@ -514,6 +535,6 @@ Auch Goodman & Kruskal's $\gamma$ deutet auf einen negativen Zusammenhang hin, h
 ```{r}
 etb18 %>% 
   select(educ,F600_12) %>% 
-  correlation(method = "kendal")
+  correlation(method = "kendall")
 ```
 [Hier findet sich eine Liste weiterer Kennzahlen, die sich mit {correlate}](https://easystats.github.io/correlation/articles/types.html) berechnen lassen.
