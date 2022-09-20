@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R am BIBB - 7&nbsp; Regressionsmodelle</title>
+<title>R am BIBB - 8&nbsp; Regressionsmodelle</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -89,7 +89,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./09_reg2.html" rel="next">
-<link href="./06_data_wrangle2.html" rel="prev">
+<link href="./07_inferenz.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -135,7 +135,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -198,37 +198,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09_reg.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Summary</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -245,22 +250,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#lm1" id="toc-lm1" class="nav-link active" data-scroll-target="#lm1"> <span class="header-section-number">7.1</span> Regressionsmodelle mit <code>lm()</code></a></li>
-  <li><a href="#regressionstabellen" id="toc-regressionstabellen" class="nav-link" data-scroll-target="#regressionstabellen"> <span class="header-section-number">7.2</span> Regressionstabellen</a></li>
-  <li><a href="#kategoriale-unabhängige-variablen" id="toc-kategoriale-unabhängige-variablen" class="nav-link" data-scroll-target="#kategoriale-unabhängige-variablen"> <span class="header-section-number">7.3</span> Kategoriale unabhängige Variablen</a></li>
-  <li><a href="#interaktionen" id="toc-interaktionen" class="nav-link" data-scroll-target="#interaktionen"> <span class="header-section-number">7.4</span> Interaktionen</a></li>
-  <li><a href="#quadratische-terme-polynome" id="toc-quadratische-terme-polynome" class="nav-link" data-scroll-target="#quadratische-terme-polynome"> <span class="header-section-number">7.5</span> Quadratische Terme &amp; Polynome</a></li>
-  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"> <span class="header-section-number">7.6</span> Aufgaben</a>
+  <li><a href="#lm1" id="toc-lm1" class="nav-link active" data-scroll-target="#lm1"> <span class="header-section-number">8.1</span> Regressionsmodelle mit <code>lm()</code></a></li>
+  <li><a href="#regressionstabellen" id="toc-regressionstabellen" class="nav-link" data-scroll-target="#regressionstabellen"> <span class="header-section-number">8.2</span> Regressionstabellen</a></li>
+  <li><a href="#kategoriale-unabhängige-variablen" id="toc-kategoriale-unabhängige-variablen" class="nav-link" data-scroll-target="#kategoriale-unabhängige-variablen"> <span class="header-section-number">8.3</span> Kategoriale unabhängige Variablen</a></li>
+  <li><a href="#interaktionen" id="toc-interaktionen" class="nav-link" data-scroll-target="#interaktionen"> <span class="header-section-number">8.4</span> Interaktionen</a></li>
+  <li><a href="#quadratische-terme-polynome" id="toc-quadratische-terme-polynome" class="nav-link" data-scroll-target="#quadratische-terme-polynome"> <span class="header-section-number">8.5</span> Quadratische Terme &amp; Polynome</a></li>
+  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"> <span class="header-section-number">8.6</span> Aufgaben</a>
   <ul class="collapse">
-  <li><a href="#aufgabe-1" id="toc-aufgabe-1" class="nav-link" data-scroll-target="#aufgabe-1"> <span class="header-section-number">7.6.1</span> Aufgabe 1</a></li>
-  <li><a href="#aufgabe-2" id="toc-aufgabe-2" class="nav-link" data-scroll-target="#aufgabe-2"> <span class="header-section-number">7.6.2</span> Aufgabe 2</a></li>
+  <li><a href="#aufgabe-1" id="toc-aufgabe-1" class="nav-link" data-scroll-target="#aufgabe-1"> <span class="header-section-number">8.6.1</span> Aufgabe 1</a></li>
+  <li><a href="#aufgabe-2" id="toc-aufgabe-2" class="nav-link" data-scroll-target="#aufgabe-2"> <span class="header-section-number">8.6.2</span> Aufgabe 2</a></li>
   </ul></li>
-  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"> <span class="header-section-number">7.7</span> Anhang</a>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"> <span class="header-section-number">8.7</span> Anhang</a>
   <ul class="collapse">
-  <li><a href="#pred" id="toc-pred" class="nav-link" data-scroll-target="#pred"> <span class="header-section-number">7.7.1</span> Vorhergesagte Werte</a></li>
-  <li><a href="#res2" id="toc-res2" class="nav-link" data-scroll-target="#res2"> <span class="header-section-number">7.7.2</span> Residuen</a></li>
-  <li><a href="#annahmen-checken" id="toc-annahmen-checken" class="nav-link" data-scroll-target="#annahmen-checken"> <span class="header-section-number">7.7.3</span> Annahmen checken</a></li>
-  <li><a href="#regressionsmodelle-vergleichen" id="toc-regressionsmodelle-vergleichen" class="nav-link" data-scroll-target="#regressionsmodelle-vergleichen"> <span class="header-section-number">7.7.4</span> Regressionsmodelle vergleichen</a></li>
+  <li><a href="#pred" id="toc-pred" class="nav-link" data-scroll-target="#pred"> <span class="header-section-number">8.7.1</span> Vorhergesagte Werte</a></li>
+  <li><a href="#res2" id="toc-res2" class="nav-link" data-scroll-target="#res2"> <span class="header-section-number">8.7.2</span> Residuen</a></li>
+  <li><a href="#annahmen-checken" id="toc-annahmen-checken" class="nav-link" data-scroll-target="#annahmen-checken"> <span class="header-section-number">8.7.3</span> Annahmen checken</a></li>
+  <li><a href="#regressionsmodelle-vergleichen" id="toc-regressionsmodelle-vergleichen" class="nav-link" data-scroll-target="#regressionsmodelle-vergleichen"> <span class="header-section-number">8.7.4</span> Regressionsmodelle vergleichen</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -270,7 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="reg" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></span></h1>
+<h1 class="title"><span id="reg" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></span></h1>
 </div>
 
 
@@ -297,8 +302,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 4    8    6</code></pre>
 </div>
 </div>
-<section id="lm1" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="lm1"><span class="header-section-number">7.1</span> Regressionsmodelle mit <code>lm()</code></h2>
+<section id="lm1" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="lm1"><span class="header-section-number">8.1</span> Regressionsmodelle mit <code>lm()</code></h2>
 <div class="cell">
 
 </div>
@@ -361,8 +366,8 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 </div>
 </div>
 </section>
-<section id="regressionstabellen" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="regressionstabellen"><span class="header-section-number">7.2</span> Regressionstabellen</h2>
+<section id="regressionstabellen" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="regressionstabellen"><span class="header-section-number">8.2</span> Regressionstabellen</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -429,22 +434,22 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 </div>
 </div>
 </section>
-<section id="kategoriale-unabhängige-variablen" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="kategoriale-unabhängige-variablen"><span class="header-section-number">7.3</span> Kategoriale unabhängige Variablen</h2>
+<section id="kategoriale-unabhängige-variablen" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="kategoriale-unabhängige-variablen"><span class="header-section-number">8.3</span> Kategoriale unabhängige Variablen</h2>
 </section>
-<section id="interaktionen" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="interaktionen"><span class="header-section-number">7.4</span> Interaktionen</h2>
+<section id="interaktionen" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="interaktionen"><span class="header-section-number">8.4</span> Interaktionen</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://strengejacke.github.io/ggeffects/index.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="quadratische-terme-polynome" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="quadratische-terme-polynome"><span class="header-section-number">7.5</span> Quadratische Terme &amp; Polynome</h2>
+<section id="quadratische-terme-polynome" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="quadratische-terme-polynome"><span class="header-section-number">8.5</span> Quadratische Terme &amp; Polynome</h2>
 </section>
-<section id="aufgaben" class="level2" data-number="7.6">
-<h2 data-number="7.6" class="anchored" data-anchor-id="aufgaben"><span class="header-section-number">7.6</span> Aufgaben</h2>
-<section id="aufgabe-1" class="level3" data-number="7.6.1">
-<h3 data-number="7.6.1" class="anchored" data-anchor-id="aufgabe-1"><span class="header-section-number">7.6.1</span> Aufgabe 1</h3>
+<section id="aufgaben" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="aufgaben"><span class="header-section-number">8.6</span> Aufgaben</h2>
+<section id="aufgabe-1" class="level3" data-number="8.6.1">
+<h3 data-number="8.6.1" class="anchored" data-anchor-id="aufgabe-1"><span class="header-section-number">8.6.1</span> Aufgabe 1</h3>
 <p>Erstellen Sie wie folgt einen Beispieldatensatz (Sie können aber gerne auch eigene, andere Werte verwenden)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dat12 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">var1 =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">10</span>,<span class="dv">24</span>,<span class="dv">28</span>,<span class="dv">23</span>) ,</span>
@@ -463,8 +468,8 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 <li>Berechnen Sie die Differenz zwischen den quadrierten Residuen der Mittelwertregel und den quadrierten Residuen für <code>m2</code>. Berechnen Sie das <span class="math inline">\(R^2\)</span> für <code>m2</code>! (siehe <a href="#r2">hier</a>)</li>
 </ul>
 </section>
-<section id="aufgabe-2" class="level3" data-number="7.6.2">
-<h3 data-number="7.6.2" class="anchored" data-anchor-id="aufgabe-2"><span class="header-section-number">7.6.2</span> Aufgabe 2</h3>
+<section id="aufgabe-2" class="level3" data-number="8.6.2">
+<h3 data-number="8.6.2" class="anchored" data-anchor-id="aufgabe-2"><span class="header-section-number">8.6.2</span> Aufgabe 2</h3>
 <p>Dieses Prinzip funktioniert natürlich genauso für größere Datensätze, zum Beispiel den Allbus 2016. Untersuchen Sie den Zusammenhang zwischen Alter (<code>age</code>) und dem Einkommen (<code>inc</code>) der weiblichen, in Vollzeit erwerbstätigen Befragten!</p>
 <ul>
 <li>Lesen Sie den Allbus-Datensatz wie bekannt ein. Hier nochmal zu Erinnerung das Vorgehen:</li>
@@ -512,10 +517,10 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 </ul>
 </section>
 </section>
-<section id="anhang" class="level2" data-number="7.7">
-<h2 data-number="7.7" class="anchored" data-anchor-id="anhang"><span class="header-section-number">7.7</span> Anhang</h2>
-<section id="pred" class="level3" data-number="7.7.1">
-<h3 data-number="7.7.1" class="anchored" data-anchor-id="pred"><span class="header-section-number">7.7.1</span> Vorhergesagte Werte</h3>
+<section id="anhang" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="anhang"><span class="header-section-number">8.7</span> Anhang</h2>
+<section id="pred" class="level3" data-number="8.7.1">
+<h3 data-number="8.7.1" class="anchored" data-anchor-id="pred"><span class="header-section-number">8.7.1</span> Vorhergesagte Werte</h3>
 <p>Die vorhergesagten Werte von <code>lm()</code> finden sich unter <code>$fitted.values</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>fitted.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -569,8 +574,8 @@ Coefficients:
 </div>
 </div>
 </section>
-<section id="res2" class="level3" data-number="7.7.2">
-<h3 data-number="7.7.2" class="anchored" data-anchor-id="res2"><span class="header-section-number">7.7.2</span> Residuen</h3>
+<section id="res2" class="level3" data-number="8.7.2">
+<h3 data-number="8.7.2" class="anchored" data-anchor-id="res2"><span class="header-section-number">8.7.2</span> Residuen</h3>
 <p>Die hellblauen Punkte (also die Vorhersagen von <code>m1</code>) liegen in der Nähe der tatsächlichen Punkte. Trotzdem sind auch die hellblauen Punkte nicht deckungsgleich mit den tatsächlichen Werten. Diese Abweichungen zwischen den vorhergesagten und tatsächlichen Werten werden als Residuen bezeichnet:</p>
 <p><span class="math display">\[Residuum = beobachteter\, Wert \; - \; vorhergesagter\,Wert\]</span></p>
 <p><span class="math display">\[\epsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}\]</span></p>
@@ -614,8 +619,8 @@ Coefficients:
 </div>
 </div>
 </section>
-<section id="annahmen-checken" class="level3" data-number="7.7.3">
-<h3 data-number="7.7.3" class="anchored" data-anchor-id="annahmen-checken"><span class="header-section-number">7.7.3</span> Annahmen checken</h3>
+<section id="annahmen-checken" class="level3" data-number="8.7.3">
+<h3 data-number="8.7.3" class="anchored" data-anchor-id="annahmen-checken"><span class="header-section-number">8.7.3</span> Annahmen checken</h3>
 <p><a href="https://easystats.github.io/easystats/reference/model_dashboard.html">model dashboard</a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a> <span class="do">## install.packages('see')</span></span>
@@ -634,8 +639,8 @@ Coefficients:
 </div>
 </div>
 </section>
-<section id="regressionsmodelle-vergleichen" class="level3" data-number="7.7.4">
-<h3 data-number="7.7.4" class="anchored" data-anchor-id="regressionsmodelle-vergleichen"><span class="header-section-number">7.7.4</span> Regressionsmodelle vergleichen</h3>
+<section id="regressionsmodelle-vergleichen" class="level3" data-number="8.7.4">
+<h3 data-number="8.7.4" class="anchored" data-anchor-id="regressionsmodelle-vergleichen"><span class="header-section-number">8.7.4</span> Regressionsmodelle vergleichen</h3>
 <p>Mit dem Paket <code>{performance}</code> können wir auch einen umfassenden Modellvergleich bekommen:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_performance</span>(m1,m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -753,13 +758,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="./06_data_wrangle2.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></span>
+      <a href="./07_inferenz.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./09_reg2.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

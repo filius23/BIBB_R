@@ -164,7 +164,7 @@ dat5 %>%
 
 Mit `summarise()` statt `mutate()` erhalten wir eine Übersicht:
 ```{r}
-dat3 %>%
+dat5 %>%
   group_by(prom_recht) %>%
   summarise(m_studs = mean(studs))
 ```
