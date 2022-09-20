@@ -72,107 +72,6 @@ m_etb18 %>% count(outside,F605)
 summary(m_etb18$inc100)
 ```
 
-
-Wenn wir uns jetzt fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die "Punktewolke" zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:
-
-
-```{r, fig.align="center", fig.width=3.5, fig.height=2.625, warning=FALSE, message=F}
-#| code-fold: true
-ggplot(m_etb18, aes(x = inc100, y = outside)) +
-  geom_point(color = "#172869") +
-  theme(aspect.ratio = .75)
-```
-Um trotzdem ein Regressionsmodell zu berechnen, könnten wir die abhängige Variable uminterpretieren. $\hat{y}$ wird dann nicht mehr dichotom, sondern als metrische Wahrscheinlichkeit interpretiert, dass der Befragte mehr als die Hälfte der Arbeitszeit im Freien arbeitet (also die Wahrscheinlichkeit für outside = 1). Das können wir dann wie gehabt in eine Regressionsgleichung aufnehmen, zB. mit dem Einkommen als unabhängiger Variable:   
-
-\begin{equation*}
-\widehat{y_i} = P(outside\texttt{\small{=}}1) = \hat\beta0 + \hat\beta1 * \texttt{inc100}_i
-\end{equation*}
-
-Allerdings führt das zwangsläufig zu Verstößen gegen die Annahmen bzgl. der Residuen - die Fehler werden immer heteroskedastisch und nicht normalverteilt sein. Zudem wird es vorhergesagte Werte geben, die nicht sinnvoll interpretiert werden können, weil es mit 0 und 1 Grenzen gibt, jenseits derer Wahrscheinlichkeiten nicht existieren (zB gibt es keine negativen Wahrscheinlichkeiten).
-
-```{r,include=F}
-m1 <- lm(outside ~ inc100, data = m_etb18)
-summary(m1)
-```
-
-```{r, fig.align="center", fig.width=5, fig.height=3.5, warning=FALSE, message=F}
-#| code-fold: true
-ggplot(m_etb18, aes(x = inc100, y = outside)) +
-  geom_point(color = "#172869", size = .75) +
-  geom_smooth(method = "lm", color = lacroix_palette("PeachPear",6)[2],se = F ) + 
-  labs(y = "P(outside = 1)", x = "Einkommen (in 100 EUR)",
-       title = "lineares Wahrscheinlichkeitsmodell")
-  
-```
-```{r, eval = F}
-library(ggfortify)
-autoplot(m1,which = 1:2) # Homosk. & NV 
-```
-
-```{r, echo=F, fig.align="center", warning=FALSE, message=F}
-library(ggfortify)
-autoplot(m1,which = 1:2,nrow=1,ncol = 2) + theme_x + theme(aspect.ratio = .75)
-```
-
-
-
-## Logistische Linkfunktion
-Um diese Probleme zu umgehen, sind für dichotome abhängige Variablen logistische Regressionsmodelle ein sehr verbreitetes Vorgehen. Dafür werden neben dem bereits angesprochenen Schritt der Betrachtung von $\hat{y}$ als Wahrscheinlichkeit zwei weitere Transformationen der abhängigen Variable vorgenommen:
-
-- *Odds statt Wahrscheinlichkeiten*: Um die obere Grenze des Wertebereichs der abhängigen Variablen auf $+\infty$ auszudehnen, werden statt Wahrscheinlichkeiten Odds betrachtet. Odds sind definiert als der Quotient aus Wahrscheinlichkeit und der Gegenwahrscheinlichkeit für ein gegebenes Ereignis. In unserem Beispiel sind also die Odds dafür, dass ein*e Befragte*r angibt, sich nachts outside zu fühlen: $$Odds(outside=1) = \frac{P(outside=1)}{P(outside=0)}= \frac{P(outside=1)}{1-P(outside=1)} $$ 
-Die Odds gehen gegen 0, je unwahrscheinlicher das betrachtete Ereignis ist. Für sehr wahrscheinliche Ereignisse nehmen die Odds Werte an, die gegen $+\infty$ gehen, das Verhältnis zwischen Dividend ("Zähler") und Divisor ("Nenner") wird immer größer.
-
-- *Logits statt Odds*: Damit bleibt aber noch das Problem der negativen Werte bestehen: Auch Odds sind nur für [0;$+\infty$] definiert. Um auch den negativen Wertebereich sinnvoll interpretierbar zu machen, werden die Odds logarithmiert, wir erhalten die sogenannten Logits: $$Logit(outside=1) = log(Odds(outside=1)) = log\left(\frac{P(outside=1)}{1-P(outside=1)}\right)$$ 
-Die Logarithmierung führt für Werte zwischen 0 und 1 zu negativen Werten, für Werte größer als 1 zu positiven Werten. 
-
-Dementsprechend gibt es bei logistischen Regressionen drei Einheiten:
-
- + Wahrscheinlichkeiten $P = \frac{\text{Anzahl Treffer}}{\text{Anzahl aller Möglichkeiten}}$
- 
- + $\text{Odds} = \frac{P}{1-P} = \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}}$
- 
- + $\text{log-Odds/Logits} = log(Odds) = log( \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}})$
-
-  
-  
-<br>  
-
-```{r, echo = F}
-df <- 
-  data.frame(p1 = c(.5,1/3,1/4,1/5,2/3,3/4,1)) %>% 
-  mutate(p = c("$$\\frac{1}{2}$$","$$\\frac{1}{3}$$","$$\\frac{1}{4}$$",
-               "$$\\frac{1}{5}$$","$$\\frac{2}{3}$$","$$\\frac{3}{4}$$",
-               "$$1$$" ),
-         odds1 = c("$$1$$","$$0.5$$","$$0.33$$","$$0.25$$","$$2$$","$$3$$","$$\\frac{1}{0}$$"),
-         odds2 = c("oder 1:1","oder 1:2","oder 1:3","oder 1:5","oder 2:1","oder 3:1","*sicher*"), 
-         logodds = round(log(p1/(1-p1)),4))
-
-gt(df[,2:5]) %>% 
-  cols_width(p~px(120),
-             odds1 ~ px(200),
-             logodds ~ px(200),
-             everything()  ~ px(100)) %>% 
-  opt_align_table_header(align = c("right")) %>% 
-  cols_align(align = "right",columns = everything()) %>% 
-  cols_align(align = c("right"),columns = logodds) %>% 
-    cols_label(
-      p = md('$$P$$'), 
-      odds1 = md('$$Odds = \\frac{P}{1-P}$$'),
-      odds2 = '',
-      logodds= md('$$Logits = log(Odds)$$')) %>% 
-  fmt_markdown(columns = everything()) %>% 
-  tab_options(heading.title.font.size = "small",
-              table.border.top.style = "hidden",
-              table.border.bottom.style = "hidden") %>% 
-  tab_style(
-    style = "vertical-align:top",
-    locations = cells_title(groups = "title")) %>% 
-  tab_options(data_row.padding = px(1))
-  
-  
-```
-
-
 ## Das logistische Regressionsmodell {#logmod}
 
 Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise wie folgt aus:
@@ -181,8 +80,10 @@ Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise
 \widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}
 \end{equation*}
 
-In R können wir ein solches Modell mit `glm()` und der Option `family="binomial"` berechnen:
+In R können wir ein solches Modell mit `glm()` und der Option `family="binomial"` berechnen:[^log_fam]
 
+
+[^log_fam]: `family="binomial"` ist dabei entscheidend: `glm(outside ~ inc100, data = m_etb18)` oder `glm(outside ~ inc100, family = gaussian(), data = m_etb18)` ist gleichbedeutend mit `lm(outside ~ inc100, data = m_etb18)`
 ```{r}
 m2 <- glm(outside ~ inc100, family = "binomial", data = m_etb18)
 summary(m2)
@@ -364,7 +265,106 @@ pred4 %>%
 
 
 
-## Hintergrund zu average marginal effects
+## Hintergrund zu log. Regression & average marginal effects
+
+Wenn wir uns fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die "Punktewolke" zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:
+
+```{r, fig.align="center", fig.width=3.5, fig.height=2.625, warning=FALSE, message=F}
+#| code-fold: true
+ggplot(m_etb18, aes(x = inc100, y = outside)) +
+  geom_point(color = "#172869") +
+  theme(aspect.ratio = .75)
+```
+Um trotzdem ein Regressionsmodell zu berechnen, könnten wir die abhängige Variable uminterpretieren. $\hat{y}$ wird dann nicht mehr dichotom, sondern als metrische Wahrscheinlichkeit interpretiert, dass der Befragte mehr als die Hälfte der Arbeitszeit im Freien arbeitet (also die Wahrscheinlichkeit für outside = 1). Das können wir dann wie gehabt in eine Regressionsgleichung aufnehmen, zB. mit dem Einkommen als unabhängiger Variable:   
+
+\begin{equation*}
+\widehat{y_i} = P(outside\texttt{\small{=}}1) = \hat\beta0 + \hat\beta1 * \texttt{inc100}_i
+\end{equation*}
+
+Allerdings führt das zwangsläufig zu Verstößen gegen die Annahmen bzgl. der Residuen - die Fehler werden immer heteroskedastisch und nicht normalverteilt sein. Zudem wird es vorhergesagte Werte geben, die nicht sinnvoll interpretiert werden können, weil es mit 0 und 1 Grenzen gibt, jenseits derer Wahrscheinlichkeiten nicht existieren (zB gibt es keine negativen Wahrscheinlichkeiten).
+
+```{r,include=F}
+m1 <- lm(outside ~ inc100, data = m_etb18)
+summary(m1)
+```
+
+```{r, fig.align="center", fig.width=5, fig.height=3.5, warning=FALSE, message=F}
+#| code-fold: true
+ggplot(m_etb18, aes(x = inc100, y = outside)) +
+  geom_point(color = "#172869", size = .75) +
+  geom_smooth(method = "lm", color = lacroix_palette("PeachPear",6)[2],se = F ) + 
+  labs(y = "P(outside = 1)", x = "Einkommen (in 100 EUR)",
+       title = "lineares Wahrscheinlichkeitsmodell")
+  
+```
+```{r, eval = F}
+library(ggfortify)
+autoplot(m1,which = 1:2) # Homosk. & NV 
+```
+
+```{r, echo=F, fig.align="center", warning=FALSE, message=F}
+library(ggfortify)
+autoplot(m1,which = 1:2,nrow=1,ncol = 2) + theme_x + theme(aspect.ratio = .75)
+```
+
+
+### Logistische Linkfunktion
+Um diese Probleme zu umgehen, sind für dichotome abhängige Variablen logistische Regressionsmodelle ein sehr verbreitetes Vorgehen. Dafür werden neben dem bereits angesprochenen Schritt der Betrachtung von $\hat{y}$ als Wahrscheinlichkeit zwei weitere Transformationen der abhängigen Variable vorgenommen:
+
+- *Odds statt Wahrscheinlichkeiten*: Um die obere Grenze des Wertebereichs der abhängigen Variablen auf $+\infty$ auszudehnen, werden statt Wahrscheinlichkeiten Odds betrachtet. Odds sind definiert als der Quotient aus Wahrscheinlichkeit und der Gegenwahrscheinlichkeit für ein gegebenes Ereignis. In unserem Beispiel sind also die Odds dafür, dass ein*e Befragte*r angibt, sich nachts outside zu fühlen: $$Odds(outside=1) = \frac{P(outside=1)}{P(outside=0)}= \frac{P(outside=1)}{1-P(outside=1)} $$ 
+Die Odds gehen gegen 0, je unwahrscheinlicher das betrachtete Ereignis ist. Für sehr wahrscheinliche Ereignisse nehmen die Odds Werte an, die gegen $+\infty$ gehen, das Verhältnis zwischen Dividend ("Zähler") und Divisor ("Nenner") wird immer größer.
+
+- *Logits statt Odds*: Damit bleibt aber noch das Problem der negativen Werte bestehen: Auch Odds sind nur für [0;$+\infty$] definiert. Um auch den negativen Wertebereich sinnvoll interpretierbar zu machen, werden die Odds logarithmiert, wir erhalten die sogenannten Logits: $$Logit(outside=1) = log(Odds(outside=1)) = log\left(\frac{P(outside=1)}{1-P(outside=1)}\right)$$ 
+Die Logarithmierung führt für Werte zwischen 0 und 1 zu negativen Werten, für Werte größer als 1 zu positiven Werten. 
+
+Dementsprechend gibt es bei logistischen Regressionen drei Einheiten:
+
+ + Wahrscheinlichkeiten $P = \frac{\text{Anzahl Treffer}}{\text{Anzahl aller Möglichkeiten}}$
+ 
+ + $\text{Odds} = \frac{P}{1-P} = \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}}$
+ 
+ + $\text{log-Odds/Logits} = log(Odds) = log( \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}})$
+
+  
+  
+<br>  
+
+```{r, echo = F}
+df <- 
+  data.frame(p1 = c(.5,1/3,1/4,1/5,2/3,3/4,1)) %>% 
+  mutate(p = c("$$\\frac{1}{2}$$","$$\\frac{1}{3}$$","$$\\frac{1}{4}$$",
+               "$$\\frac{1}{5}$$","$$\\frac{2}{3}$$","$$\\frac{3}{4}$$",
+               "$$1$$" ),
+         odds1 = c("$$1$$","$$0.5$$","$$0.33$$","$$0.25$$","$$2$$","$$3$$","$$\\frac{1}{0}$$"),
+         odds2 = c("oder 1:1","oder 1:2","oder 1:3","oder 1:5","oder 2:1","oder 3:1","*sicher*"), 
+         logodds = round(log(p1/(1-p1)),4))
+
+gt(df[,2:5]) %>% 
+  cols_width(p~px(120),
+             odds1 ~ px(200),
+             logodds ~ px(200),
+             everything()  ~ px(100)) %>% 
+  opt_align_table_header(align = c("right")) %>% 
+  cols_align(align = "right",columns = everything()) %>% 
+  cols_align(align = c("right"),columns = logodds) %>% 
+    cols_label(
+      p = md('$$P$$'), 
+      odds1 = md('$$Odds = \\frac{P}{1-P}$$'),
+      odds2 = '',
+      logodds= md('$$Logits = log(Odds)$$')) %>% 
+  fmt_markdown(columns = everything()) %>% 
+  tab_options(heading.title.font.size = "small",
+              table.border.top.style = "hidden",
+              table.border.bottom.style = "hidden") %>% 
+  tab_style(
+    style = "vertical-align:top",
+    locations = cells_title(groups = "title")) %>% 
+  tab_options(data_row.padding = px(1))
+  
+  
+```
+
+
 
 ### Vorhergesagte Werte
 

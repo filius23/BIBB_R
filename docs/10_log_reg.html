@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R am BIBB - 9&nbsp; Logistische Regressionsmodelle</title>
+<title>R am BIBB - 10&nbsp; Logistische Regressionsmodelle</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,7 +135,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -198,37 +198,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Summary</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -245,24 +250,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#logistische-linkfunktion" id="toc-logistische-linkfunktion" class="nav-link active" data-scroll-target="#logistische-linkfunktion"> <span class="header-section-number">9.1</span> Logistische Linkfunktion</a></li>
-  <li><a href="#logmod" id="toc-logmod" class="nav-link" data-scroll-target="#logmod"> <span class="header-section-number">9.2</span> Das logistische Regressionsmodell</a></li>
-  <li><a href="#average-marginal-effects" id="toc-average-marginal-effects" class="nav-link" data-scroll-target="#average-marginal-effects"> <span class="header-section-number">9.3</span> average marginal effects</a></li>
-  <li><a href="#übung-1" id="toc-übung-1" class="nav-link" data-scroll-target="#übung-1"> <span class="header-section-number">9.4</span> <span>Übung 1</span></a></li>
-  <li><a href="#kategoriale-unabhängige-variablen" id="toc-kategoriale-unabhängige-variablen" class="nav-link" data-scroll-target="#kategoriale-unabhängige-variablen"> <span class="header-section-number">9.5</span> Kategoriale unabhängige Variablen</a></li>
-  <li><a href="#marginal-effect-at-specified-values" id="toc-marginal-effect-at-specified-values" class="nav-link" data-scroll-target="#marginal-effect-at-specified-values"> <span class="header-section-number">9.6</span> Marginal Effect at Specified Values</a></li>
-  <li><a href="#adjusted-predictions" id="toc-adjusted-predictions" class="nav-link" data-scroll-target="#adjusted-predictions"> <span class="header-section-number">9.7</span> Adjusted Predictions</a></li>
-  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">9.8</span> Übungen</a>
+  <li><a href="#logmod" id="toc-logmod" class="nav-link active" data-scroll-target="#logmod"> <span class="header-section-number">10.1</span> Das logistische Regressionsmodell</a></li>
+  <li><a href="#average-marginal-effects" id="toc-average-marginal-effects" class="nav-link" data-scroll-target="#average-marginal-effects"> <span class="header-section-number">10.2</span> average marginal effects</a></li>
+  <li><a href="#übung-1" id="toc-übung-1" class="nav-link" data-scroll-target="#übung-1"> <span class="header-section-number">10.3</span> <span>Übung 1</span></a></li>
+  <li><a href="#kategoriale-unabhängige-variablen" id="toc-kategoriale-unabhängige-variablen" class="nav-link" data-scroll-target="#kategoriale-unabhängige-variablen"> <span class="header-section-number">10.4</span> Kategoriale unabhängige Variablen</a></li>
+  <li><a href="#marginal-effect-at-specified-values" id="toc-marginal-effect-at-specified-values" class="nav-link" data-scroll-target="#marginal-effect-at-specified-values"> <span class="header-section-number">10.5</span> Marginal Effect at Specified Values</a></li>
+  <li><a href="#adjusted-predictions" id="toc-adjusted-predictions" class="nav-link" data-scroll-target="#adjusted-predictions"> <span class="header-section-number">10.6</span> Adjusted Predictions</a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">10.7</span> Übungen</a>
   <ul class="collapse">
-  <li><a href="#übung-1-1" id="toc-übung-1-1" class="nav-link" data-scroll-target="#übung-1-1"> <span class="header-section-number">9.8.1</span> Übung 1</a></li>
-  <li><a href="#übung-2" id="toc-übung-2" class="nav-link" data-scroll-target="#übung-2"> <span class="header-section-number">9.8.2</span> Übung 2</a></li>
+  <li><a href="#übung-1-1" id="toc-übung-1-1" class="nav-link" data-scroll-target="#übung-1-1"> <span class="header-section-number">10.7.1</span> Übung 1</a></li>
+  <li><a href="#übung-2" id="toc-übung-2" class="nav-link" data-scroll-target="#übung-2"> <span class="header-section-number">10.7.2</span> Übung 2</a></li>
   </ul></li>
-  <li><a href="#hintergrund-zu-average-marginal-effects" id="toc-hintergrund-zu-average-marginal-effects" class="nav-link" data-scroll-target="#hintergrund-zu-average-marginal-effects"> <span class="header-section-number">9.9</span> Hintergrund zu average marginal effects</a>
+  <li><a href="#hintergrund-zu-log.-regression-average-marginal-effects" id="toc-hintergrund-zu-log.-regression-average-marginal-effects" class="nav-link" data-scroll-target="#hintergrund-zu-log.-regression-average-marginal-effects"> <span class="header-section-number">10.8</span> Hintergrund zu log. Regression &amp; average marginal effects</a>
   <ul class="collapse">
-  <li><a href="#vorhergesagte-werte" id="toc-vorhergesagte-werte" class="nav-link" data-scroll-target="#vorhergesagte-werte"> <span class="header-section-number">9.9.1</span> Vorhergesagte Werte</a></li>
-  <li><a href="#die-idee-von-average-marginal-effects" id="toc-die-idee-von-average-marginal-effects" class="nav-link" data-scroll-target="#die-idee-von-average-marginal-effects"> <span class="header-section-number">9.9.2</span> Die Idee von average marginal effects</a></li>
+  <li><a href="#logistische-linkfunktion" id="toc-logistische-linkfunktion" class="nav-link" data-scroll-target="#logistische-linkfunktion"> <span class="header-section-number">10.8.1</span> Logistische Linkfunktion</a></li>
+  <li><a href="#vorhergesagte-werte" id="toc-vorhergesagte-werte" class="nav-link" data-scroll-target="#vorhergesagte-werte"> <span class="header-section-number">10.8.2</span> Vorhergesagte Werte</a></li>
+  <li><a href="#die-idee-von-average-marginal-effects" id="toc-die-idee-von-average-marginal-effects" class="nav-link" data-scroll-target="#die-idee-von-average-marginal-effects"> <span class="header-section-number">10.8.3</span> Die Idee von average marginal effects</a></li>
   </ul></li>
-  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links"> <span class="header-section-number">9.10</span> Links</a></li>
+  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links"> <span class="header-section-number">10.9</span> Links</a></li>
   </ul>
 </nav>
     </div>
@@ -271,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></h1>
 </div>
 
 
@@ -310,18 +315,305 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    0.01   25.00   35.00   42.38   50.00  720.00 </code></pre>
 </div>
 </div>
-<p>Wenn wir uns jetzt fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die “Punktewolke” zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:</p>
+<section id="logmod" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="logmod"><span class="header-section-number">10.1</span> Das logistische Regressionsmodell</h2>
+<p>Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise wie folgt aus:</p>
+<p><span class="math display">\[\begin{equation*}
+\widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}
+\end{equation*}\]</span></p>
+<p>In R können wir ein solches Modell mit <code>glm()</code> und der Option <code>family="binomial"</code> berechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> inc100, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = outside ~ inc100, family = "binomial", data = m_etb18)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-0.9580  -0.6005  -0.4841  -0.3042   5.5160  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -0.54045    0.07285  -7.419 1.18e-13 ***
+inc100      -0.03861    0.00218 -17.716  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6643.5  on 8431  degrees of freedom
+Residual deviance: 6209.8  on 8430  degrees of freedom
+AIC: 6213.8
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>Die Interpretation der <span class="math inline">\(\beta\)</span> aus einem logistischen Regressionsmodell bezieht sich also auf die Logits (die logarithmierten Odds):</p>
+<div class="inter">
+<p>Es besteht ein am 0,001-Niveau signifikanter Zusammenhang zwischen dem Einkommen und der Wahrscheinlichkeit, im Freien zu arbeiten. Mit einem um 100 Euro höheren Einkommen gehen um 0.038612 niedrigere <em>Logits</em> einher, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.</p>
+</div>
+</section>
+<section id="average-marginal-effects" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="average-marginal-effects"><span class="header-section-number">10.2</span> average marginal effects</h2>
+<p>Logits sind aber sehr unhandlich - wie verändert sich jetzt aber die <em>Wahrscheinlichkeit</em> für <span class="math inline">\(\texttt{outside} = 1\)</span> mit <code>inc100</code>? Hier haben wir das Problem, dass die Ableitung der “rücktransformierten Funktion” nicht so einfach ist wie im Fall der OLS. Verändern wir nämlich auch die <a href="#logmod">Regressionsgleichung von oben</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> mit <code>exp()</code> und <span class="math inline">\(p=\frac{Odds}{1+Odds}\)</span>, so landen wir bei</p>
+<p><span class="math display">\[\begin{equation*}
+\widehat{P(outside=1)} = \frac{e^{\hat\beta0+\hat\beta1 \times \texttt{inc100}}}{1+e^{\hat\beta0+\hat{\beta1}\times \texttt{inc100}}}
+\end{equation*}\]</span></p>
+<p>Diesen Ausdruck müssten wir nach <code>inc100</code> ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für <span class="math inline">\(\texttt{outside} = 1\)</span> mit einem um einen Euro höheren Befragteneinkommen verändert. Durch die Tatsache dass inc hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor (“oben und unten”) steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen <code>lm()</code>-Modellen der Fall war. Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket <code>{marginaleffects}</code> brauchen. Darin findet sich der Befehl , welcher uns erlaubt ein <span class="math inline">\(\beta\)</span> zwischen dem Einkommen und der Wahrscheinlichkeit, dass der*die Befragte sich outside fühlt, zu berechnen. Dieses wird auch als average marginal effect bezeichnet, da sie den <em>durchschnittlichen marginalen Effekt</em> der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"marginaleffects"</span>) <span class="co"># nur einmal nötig</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mfx <span class="ot">&lt;-</span> <span class="fu">marginaleffects</span>(m2)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mfx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Term    Effect Std. Error z value   Pr(&gt;|z|)     2.5 %    97.5 %
+1 inc100 -0.004263  0.0002405  -17.73 &lt; 2.22e-16 -0.004734 -0.003792
+
+Model type:  glm 
+Prediction type:  response </code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<div class="inter">
+<p>Mit einem um 100 Euro (inc100 ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um 0.0043 (0.43 Prozentpunkte) geringere Wahrscheinlichkeit einher, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.</p>
+</div>
+</section>
+<section id="übung-1" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="übung-1"><span class="header-section-number">10.3</span> <a href="#ame1">Übung 1</a></h2>
+</section>
+<section id="kategoriale-unabhängige-variablen" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="kategoriale-unabhängige-variablen"><span class="header-section-number">10.4</span> Kategoriale unabhängige Variablen</h2>
+<p>Natürlich können wir auch kategoriale unabhängige Variablen in ein logistisches Regressionsmodell aufnehmen. Wichtig ist nur, dass wir die Variable als <code>factor</code> definieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  m_etb18 <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">m1202_fct =</span> <span class="fu">factor</span>(m1202,<span class="at">levels =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">labels =</span> <span class="fu">names</span>(<span class="fu">attributes</span>(m1202)<span class="sc">$</span>labels) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">substr</span>(.,<span class="dv">1</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">str_squish</span>()),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">m1202_fct =</span> <span class="fu">fct_relevel</span>(m1202_fct,<span class="st">"Ohne"</span>))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="sc">%&gt;%</span> <span class="fu">count</span>(m1202,m1202_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  m1202                                                         m1202_fct     n
+  &lt;dbl+lbl&gt;                                                     &lt;fct&gt;     &lt;int&gt;
+1 -1 [keine Angabe]                                             keine         9
+2  1 [Ohne Berufsabschluss]                                     Ohne        490
+3  2 [duale o. schulische Berufsausbildung/einf.,mittl. Beamte] duale      3687
+4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)] Aufst       907
+5  4 [Fachhochschule, Universität/ geh., höhere Beamte]         Fachh      3339</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> m1202_fct <span class="sc">+</span> inc100, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = outside ~ m1202_fct + inc100, family = "binomial", 
+    data = m_etb18)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.0010  -0.6542  -0.3809  -0.2316   4.7433  
+
+Coefficients:
+                Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)    -0.635956   0.119779  -5.309  1.1e-07 ***
+m1202_fctkeine  0.771583   0.720510   1.071    0.284    
+m1202_fctduale  0.136499   0.119610   1.141    0.254    
+m1202_fctAufst -0.134309   0.151126  -0.889    0.374    
+m1202_fctFachh -1.271991   0.147970  -8.596  &lt; 2e-16 ***
+inc100         -0.028289   0.002402 -11.778  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6643.5  on 8431  degrees of freedom
+Residual deviance: 5960.8  on 8426  degrees of freedom
+AIC: 5972.8
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mfx3 <span class="ot">&lt;-</span> <span class="fu">marginaleffects</span>(m3)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mfx3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Term     Contrast   Effect Std. Error  z value   Pr(&gt;|z|)     2.5 %
+1 m1202_fct keine - Ohne  0.12520  0.1380301   0.9071    0.36436 -0.145330
+2 m1202_fct duale - Ohne  0.01857  0.0157300   1.1804    0.23783 -0.012262
+3 m1202_fct Aufst - Ohne -0.01678  0.0190482  -0.8809    0.37838 -0.054113
+4 m1202_fct Fachh - Ohne -0.10857  0.0157660  -6.8862 5.7296e-12 -0.139469
+5    inc100        dY/dX -0.00304  0.0002571 -11.8217 &lt; 2.22e-16 -0.003544
+     97.5 %
+1  0.395738
+2  0.049399
+3  0.020555
+4 -0.077667
+5 -0.002536
+
+Model type:  glm 
+Prediction type:  response </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mfx3) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lab =</span> <span class="fu">paste0</span>(term,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,contrast)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span> estimate,<span class="at">y=</span>lab)) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"navy"</span>,<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin=</span>conf.low,<span class="at">xmax =</span> conf.high), <span class="at">color =</span> <span class="st">"navy"</span>,<span class="at">height =</span> .<span class="dv">2</span>,<span class="at">size=</span>.<span class="dv">65</span>) <span class="sc">+</span> </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="marginal-effect-at-specified-values" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="marginal-effect-at-specified-values"><span class="header-section-number">10.5</span> Marginal Effect at Specified Values</h2>
+<p>Wie groß ist der Unterschied zwischen Befragten ohne Berufsabschluss und Befragten mit Fachhochschul- oder Uni-Abschluss bei einem gewissen Alter?</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> m1202_fct<span class="sc">*</span>zpalter, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = outside ~ m1202_fct * zpalter, family = "binomial", 
+    data = m_etb18)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.2275  -0.6772  -0.2903  -0.2876   2.5408  
+
+Coefficients:
+                        Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)            -1.079983   0.319483  -3.380 0.000724 ***
+m1202_fctkeine          2.814318   2.812096   1.001 0.316928    
+m1202_fctduale         -0.299560   0.358718  -0.835 0.403670    
+m1202_fctAufst         -0.612686   0.544412  -1.125 0.260416    
+m1202_fctFachh         -2.045476   0.484998  -4.217 2.47e-05 ***
+zpalter                -0.004355   0.007678  -0.567 0.570565    
+m1202_fctkeine:zpalter -0.053405   0.066516  -0.803 0.422043    
+m1202_fctduale:zpalter  0.004894   0.008427   0.581 0.561431    
+m1202_fctAufst:zpalter  0.001581   0.011899   0.133 0.894326    
+m1202_fctFachh:zpalter  0.003645   0.010711   0.340 0.733635    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6643.5  on 8431  degrees of freedom
+Residual deviance: 6138.5  on 8422  degrees of freedom
+AIC: 6158.5
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p><code>marginaleffects()</code> bietet die Möglichkeit, bestimmte Werte einzusetzen und dafür jeweils den marginalen Effekt zu berechnen. Dementsprechend können</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">marginaleffects</span>(m4,<span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">m1202_fct =</span> <span class="fu">levels</span>(m_etb18<span class="sc">$</span>m1202_fct),</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">zpalter =</span> <span class="fu">seq</span>(<span class="dv">20</span>,<span class="dv">60</span>,<span class="dv">2</span>) ))  <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(.) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["rowid"],"name":[1],"type":["int"],"align":["right"]},{"label":["type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["term"],"name":[3],"type":["chr"],"align":["left"]},{"label":["contrast"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dydx"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["predicted_lo"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["predicted_hi"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["m1202_fct"],"name":[13],"type":["fct"],"align":["left"]},{"label":["zpalter"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["eps"],"name":[15],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.4034874","6":"0.3605941","7":"1.118952","8":"0.2631607","9":"-0.3032641","10":"1.1102388","11":"0.2373824","12":"0.6408698","13":"Ohne","14":"20","15":"NA","_rn_":"1"},{"1":"2","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.3780638","6":"0.3439483","7":"1.099188","8":"0.2716862","9":"-0.2960625","10":"1.0521902","11":"0.2358092","12":"0.6138730","13":"Ohne","14":"22","15":"NA","_rn_":"2"},{"1":"3","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.3519141","6":"0.3247420","7":"1.083673","8":"0.2785099","9":"-0.2845686","10":"0.9883969","11":"0.2342432","12":"0.5861573","13":"Ohne","14":"24","15":"NA","_rn_":"3"},{"1":"4","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.3252006","6":"0.3035194","7":"1.071433","8":"0.2839749","9":"-0.2696864","10":"0.9200877","11":"0.2326844","12":"0.5578850","13":"Ohne","14":"26","15":"NA","_rn_":"4"},{"1":"5","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.2980996","6":"0.2809791","7":"1.060932","8":"0.2887209","9":"-0.2526093","10":"0.8488085","11":"0.2311329","12":"0.5292325","13":"Ohne","14":"28","15":"NA","_rn_":"5"},{"1":"6","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.2707974","6":"0.2579710","7":"1.049720","8":"0.2938468","9":"-0.2348165","10":"0.7764113","11":"0.2295886","12":"0.5003860","13":"Ohne","14":"30","15":"NA","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mfx4 <span class="ot">&lt;-</span> <span class="fu">marginaleffects</span>(m4,<span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">m1202_fct =</span> <span class="fu">levels</span>(m_etb18<span class="sc">$</span>m1202_fct),</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">zpalter =</span> <span class="fu">seq</span>(<span class="dv">20</span>,<span class="dv">60</span>,<span class="dv">2</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                                              )) </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>mfx4 <span class="sc">%&gt;%</span> </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"m1202_fct"</span>, <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"keine"</span>,contrast)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span> zpalter, <span class="at">y=</span> dydx,<span class="at">color =</span> contrast)) <span class="sc">+</span> </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low,<span class="at">ymax=</span>conf.high)) <span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wahrscheinlichkeitsdifferenz für outside = 1 vs. ohne Ausb."</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Marginaler Effekt"</span>, <span class="at">x =</span>  <span class="st">"Alter"</span>, <span class="at">color =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>)[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">6</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="adjusted-predictions" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="adjusted-predictions"><span class="header-section-number">10.6</span> Adjusted Predictions</h2>
+<p>Wie groß ist die vorhergesagte Wahrscheinlichkeit, mehr als die Häfte der Arbeitszeit im Freien zu arbeiten für</p>
+<ul>
+<li><p>20 Jahre Alte Befragte ohne Berufsabschluss</p></li>
+<li><p>20 Jahre Alte mit Fachhochschul- oder Uni-Abschluss</p></li>
+<li><p>50 Jahre Alte Befragte ohne Berufsabschluss</p></li>
+<li><p>50 Jahre Alte mit Fachhochschul- oder Uni-Abschluss</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pred4 <span class="ot">&lt;-</span> <span class="fu">predictions</span>(m4,<span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">m1202_fct =</span> <span class="fu">levels</span>(m_etb18<span class="sc">$</span>m1202_fct),</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">zpalter =</span> <span class="fu">seq</span>(<span class="dv">20</span>,<span class="dv">60</span>,<span class="dv">2</span>))) </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>pred4 <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"keine"</span>,m1202_fct)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span> zpalter, <span class="at">y=</span> predicted,<span class="at">color =</span> m1202_fct)) <span class="sc">+</span> </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low,<span class="at">ymax=</span>conf.high)) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>)[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">6</span>)]) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vorhergesagte Wahrscheinlichkeit für outside = 1"</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wahrscheinlichkeit"</span>, <span class="at">x =</span>  <span class="st">"Alter"</span>, <span class="at">color =</span> <span class="st">""</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="übungen" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="übungen"><span class="header-section-number">10.7</span> Übungen</h2>
+<section id="übung-1-1" class="level3" data-number="10.7.1">
+<h3 data-number="10.7.1" class="anchored" data-anchor-id="übung-1-1"><span class="header-section-number">10.7.1</span> Übung 1</h3>
+<ul>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+</section>
+<section id="übung-2" class="level3" data-number="10.7.2">
+<h3 data-number="10.7.2" class="anchored" data-anchor-id="übung-2"><span class="header-section-number">10.7.2</span> Übung 2</h3>
+<ul>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+</section>
+</section>
+<section id="hintergrund-zu-log.-regression-average-marginal-effects" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="hintergrund-zu-log.-regression-average-marginal-effects"><span class="header-section-number">10.8</span> Hintergrund zu log. Regression &amp; average marginal effects</h2>
+<p>Wenn wir uns fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die “Punktewolke” zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m_etb18, <span class="fu">aes</span>(<span class="at">x =</span> inc100, <span class="at">y =</span> outside)) <span class="sc">+</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#172869"</span>) <span class="sc">+</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">aspect.ratio =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m_etb18, <span class="fu">aes</span>(<span class="at">x =</span> inc100, <span class="at">y =</span> outside)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#172869"</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">aspect.ratio =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="336"></p>
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="336"></p>
 </figure>
 </div>
 </div>
@@ -334,35 +626,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m_etb18, <span class="fu">aes</span>(<span class="at">x =</span> inc100, <span class="at">y =</span> outside)) <span class="sc">+</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#172869"</span>, <span class="at">size =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>,<span class="dv">6</span>)[<span class="dv">2</span>],<span class="at">se =</span> F ) <span class="sc">+</span> </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"P(outside = 1)"</span>, <span class="at">x =</span> <span class="st">"Einkommen (in 100 EUR)"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"lineares Wahrscheinlichkeitsmodell"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m_etb18, <span class="fu">aes</span>(<span class="at">x =</span> inc100, <span class="at">y =</span> outside)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#172869"</span>, <span class="at">size =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>,<span class="dv">6</span>)[<span class="dv">2</span>],<span class="at">se =</span> F ) <span class="sc">+</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"P(outside = 1)"</span>, <span class="at">x =</span> <span class="st">"Einkommen (in 100 EUR)"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"lineares Wahrscheinlichkeitsmodell"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="480"></p>
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="480"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(m1,<span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="co"># Homosk. &amp; NV </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(m1,<span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="co"># Homosk. &amp; NV </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<section id="logistische-linkfunktion" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="logistische-linkfunktion"><span class="header-section-number">9.1</span> Logistische Linkfunktion</h2>
+<section id="logistische-linkfunktion" class="level3" data-number="10.8.1">
+<h3 data-number="10.8.1" class="anchored" data-anchor-id="logistische-linkfunktion"><span class="header-section-number">10.8.1</span> Logistische Linkfunktion</h3>
 <p>Um diese Probleme zu umgehen, sind für dichotome abhängige Variablen logistische Regressionsmodelle ein sehr verbreitetes Vorgehen. Dafür werden neben dem bereits angesprochenen Schritt der Betrachtung von <span class="math inline">\(\hat{y}\)</span> als Wahrscheinlichkeit zwei weitere Transformationen der abhängigen Variable vorgenommen:</p>
 <ul>
 <li><p><em>Odds statt Wahrscheinlichkeiten</em>: Um die obere Grenze des Wertebereichs der abhängigen Variablen auf <span class="math inline">\(+\infty\)</span> auszudehnen, werden statt Wahrscheinlichkeiten Odds betrachtet. Odds sind definiert als der Quotient aus Wahrscheinlichkeit und der Gegenwahrscheinlichkeit für ein gegebenes Ereignis. In unserem Beispiel sind also die Odds dafür, dass ein<em>e Befragte</em>r angibt, sich nachts outside zu fühlen: <span class="math display">\[Odds(outside=1) = \frac{P(outside=1)}{P(outside=0)}= \frac{P(outside=1)}{1-P(outside=1)} \]</span> Die Odds gehen gegen 0, je unwahrscheinlicher das betrachtete Ereignis ist. Für sehr wahrscheinliche Ereignisse nehmen die Odds Werte an, die gegen <span class="math inline">\(+\infty\)</span> gehen, das Verhältnis zwischen Dividend (“Zähler”) und Divisor (“Nenner”) wird immer größer.</p></li>
@@ -378,12 +670,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="bjtpkznibj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="swxlbpkvjq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#bjtpkznibj .gt_table {
+#swxlbpkvjq .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -408,7 +700,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-left-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_heading {
+#swxlbpkvjq .gt_heading {
   background-color: #FFFFFF;
   text-align: right;
   border-bottom-color: #FFFFFF;
@@ -420,7 +712,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_title {
+#swxlbpkvjq .gt_title {
   color: #333333;
   font-size: small;
   font-weight: initial;
@@ -432,7 +724,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-width: 0;
 }
 
-#bjtpkznibj .gt_subtitle {
+#swxlbpkvjq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -444,13 +736,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-width: 0;
 }
 
-#bjtpkznibj .gt_bottom_border {
+#swxlbpkvjq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_col_headings {
+#swxlbpkvjq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -465,7 +757,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_col_heading {
+#swxlbpkvjq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -485,7 +777,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   overflow-x: hidden;
 }
 
-#bjtpkznibj .gt_column_spanner_outer {
+#swxlbpkvjq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -497,15 +789,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 4px;
 }
 
-#bjtpkznibj .gt_column_spanner_outer:first-child {
+#swxlbpkvjq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bjtpkznibj .gt_column_spanner_outer:last-child {
+#swxlbpkvjq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bjtpkznibj .gt_column_spanner {
+#swxlbpkvjq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -517,7 +809,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   width: 100%;
 }
 
-#bjtpkznibj .gt_group_heading {
+#swxlbpkvjq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -542,7 +834,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: middle;
 }
 
-#bjtpkznibj .gt_empty_group_heading {
+#swxlbpkvjq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -557,15 +849,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: middle;
 }
 
-#bjtpkznibj .gt_from_md > :first-child {
+#swxlbpkvjq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bjtpkznibj .gt_from_md > :last-child {
+#swxlbpkvjq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bjtpkznibj .gt_row {
+#swxlbpkvjq .gt_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -584,7 +876,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   overflow-x: hidden;
 }
 
-#bjtpkznibj .gt_stub {
+#swxlbpkvjq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -597,7 +889,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#bjtpkznibj .gt_stub_row_group {
+#swxlbpkvjq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -611,11 +903,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: top;
 }
 
-#bjtpkznibj .gt_row_group_first td {
+#swxlbpkvjq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bjtpkznibj .gt_summary_row {
+#swxlbpkvjq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -625,16 +917,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#bjtpkznibj .gt_first_summary_row {
+#swxlbpkvjq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_first_summary_row.thick {
+#swxlbpkvjq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bjtpkznibj .gt_last_summary_row {
+#swxlbpkvjq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -644,7 +936,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_grand_summary_row {
+#swxlbpkvjq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -654,7 +946,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#bjtpkznibj .gt_first_grand_summary_row {
+#swxlbpkvjq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -664,11 +956,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_striped {
+#swxlbpkvjq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bjtpkznibj .gt_table_body {
+#swxlbpkvjq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -677,7 +969,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_footnotes {
+#swxlbpkvjq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -691,7 +983,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_footnote {
+#swxlbpkvjq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -700,7 +992,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#bjtpkznibj .gt_sourcenotes {
+#swxlbpkvjq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -714,7 +1006,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#bjtpkznibj .gt_sourcenote {
+#swxlbpkvjq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -722,64 +1014,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#bjtpkznibj .gt_left {
+#swxlbpkvjq .gt_left {
   text-align: left;
 }
 
-#bjtpkznibj .gt_center {
+#swxlbpkvjq .gt_center {
   text-align: center;
 }
 
-#bjtpkznibj .gt_right {
+#swxlbpkvjq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bjtpkznibj .gt_font_normal {
+#swxlbpkvjq .gt_font_normal {
   font-weight: normal;
 }
 
-#bjtpkznibj .gt_font_bold {
+#swxlbpkvjq .gt_font_bold {
   font-weight: bold;
 }
 
-#bjtpkznibj .gt_font_italic {
+#swxlbpkvjq .gt_font_italic {
   font-style: italic;
 }
 
-#bjtpkznibj .gt_super {
+#swxlbpkvjq .gt_super {
   font-size: 65%;
 }
 
-#bjtpkznibj .gt_footnote_marks {
+#swxlbpkvjq .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#bjtpkznibj .gt_asterisk {
+#swxlbpkvjq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bjtpkznibj .gt_indent_1 {
+#swxlbpkvjq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bjtpkznibj .gt_indent_2 {
+#swxlbpkvjq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bjtpkznibj .gt_indent_3 {
+#swxlbpkvjq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bjtpkznibj .gt_indent_4 {
+#swxlbpkvjq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bjtpkznibj .gt_indent_5 {
+#swxlbpkvjq .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -864,295 +1156,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="logmod" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="logmod"><span class="header-section-number">9.2</span> Das logistische Regressionsmodell</h2>
-<p>Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise wie folgt aus:</p>
-<p><span class="math display">\[\begin{equation*}
-\widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}
-\end{equation*}\]</span></p>
-<p>In R können wir ein solches Modell mit <code>glm()</code> und der Option <code>family="binomial"</code> berechnen:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> inc100, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = outside ~ inc100, family = "binomial", data = m_etb18)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--0.9580  -0.6005  -0.4841  -0.3042   5.5160  
-
-Coefficients:
-            Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept) -0.54045    0.07285  -7.419 1.18e-13 ***
-inc100      -0.03861    0.00218 -17.716  &lt; 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 6643.5  on 8431  degrees of freedom
-Residual deviance: 6209.8  on 8430  degrees of freedom
-AIC: 6213.8
-
-Number of Fisher Scoring iterations: 6</code></pre>
-</div>
-</div>
-<p>Die Interpretation der <span class="math inline">\(\beta\)</span> aus einem logistischen Regressionsmodell bezieht sich also auf die Logits (die logarithmierten Odds):</p>
-<div class="inter">
-<p>Es besteht ein am 0,001-Niveau signifikanter Zusammenhang zwischen dem Einkommen und der Wahrscheinlichkeit, im Freien zu arbeiten. Mit einem um 100 Euro höheren Einkommen gehen um 0.038612 niedrigere <em>Logits</em> einher, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.</p>
-</div>
-</section>
-<section id="average-marginal-effects" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="average-marginal-effects"><span class="header-section-number">9.3</span> average marginal effects</h2>
-<p>Logits sind aber sehr unhandlich - wie verändert sich jetzt aber die <em>Wahrscheinlichkeit</em> für <span class="math inline">\(\texttt{outside} = 1\)</span> mit <code>inc100</code>? Hier haben wir das Problem, dass die Ableitung der “rücktransformierten Funktion” nicht so einfach ist wie im Fall der OLS. Verändern wir nämlich auch die <a href="#logmod">Regressionsgleichung von oben</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> mit <code>exp()</code> und <span class="math inline">\(p=\frac{Odds}{1+Odds}\)</span>, so landen wir bei</p>
-<p><span class="math display">\[\begin{equation*}
-\widehat{P(outside=1)} = \frac{e^{\hat\beta0+\hat\beta1 \times \texttt{inc100}}}{1+e^{\hat\beta0+\hat{\beta1}\times \texttt{inc100}}}
-\end{equation*}\]</span></p>
-<p>Diesen Ausdruck müssten wir nach <code>inc100</code> ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für <span class="math inline">\(\texttt{outside} = 1\)</span> mit einem um einen Euro höheren Befragteneinkommen verändert. Durch die Tatsache dass inc hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor (“oben und unten”) steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen <code>lm()</code>-Modellen der Fall war. Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket <code>{marginaleffects}</code> brauchen. Darin findet sich der Befehl , welcher uns erlaubt ein <span class="math inline">\(\beta\)</span> zwischen dem Einkommen und der Wahrscheinlichkeit, dass der*die Befragte sich outside fühlt, zu berechnen. Dieses wird auch als average marginal effect bezeichnet, da sie den <em>durchschnittlichen marginalen Effekt</em> der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"marginaleffects"</span>) <span class="co"># nur einmal nötig</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mfx <span class="ot">&lt;-</span> <span class="fu">marginaleffects</span>(m2)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mfx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    Term    Effect Std. Error z value   Pr(&gt;|z|)     2.5 %    97.5 %
-1 inc100 -0.004263  0.0002405  -17.73 &lt; 2.22e-16 -0.004734 -0.003792
-
-Model type:  glm 
-Prediction type:  response </code></pre>
-</div>
-</div>
-<div class="cell">
-
-</div>
-<div class="inter">
-<p>Mit einem um 100 Euro (inc100 ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um 0.0043 (0.43 Prozentpunkte) geringere Wahrscheinlichkeit einher, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.</p>
-</div>
-</section>
-<section id="übung-1" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="übung-1"><span class="header-section-number">9.4</span> <a href="#ame1">Übung 1</a></h2>
-</section>
-<section id="kategoriale-unabhängige-variablen" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="kategoriale-unabhängige-variablen"><span class="header-section-number">9.5</span> Kategoriale unabhängige Variablen</h2>
-<p>Natürlich können wir auch kategoriale unabhängige Variablen in ein logistisches Regressionsmodell aufnehmen. Wichtig ist nur, dass wir die Variable als <code>factor</code> definieren:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="ot">&lt;-</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  m_etb18 <span class="sc">%&gt;%</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">m1202_fct =</span> <span class="fu">factor</span>(m1202,<span class="at">levels =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">labels =</span> <span class="fu">names</span>(<span class="fu">attributes</span>(m1202)<span class="sc">$</span>labels) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">substr</span>(.,<span class="dv">1</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">str_squish</span>()),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">m1202_fct =</span> <span class="fu">fct_relevel</span>(m1202_fct,<span class="st">"Ohne"</span>))</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="sc">%&gt;%</span> <span class="fu">count</span>(m1202,m1202_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 3
-  m1202                                                         m1202_fct     n
-  &lt;dbl+lbl&gt;                                                     &lt;fct&gt;     &lt;int&gt;
-1 -1 [keine Angabe]                                             keine         9
-2  1 [Ohne Berufsabschluss]                                     Ohne        490
-3  2 [duale o. schulische Berufsausbildung/einf.,mittl. Beamte] duale      3687
-4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)] Aufst       907
-5  4 [Fachhochschule, Universität/ geh., höhere Beamte]         Fachh      3339</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> m1202_fct <span class="sc">+</span> inc100, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = outside ~ m1202_fct + inc100, family = "binomial", 
-    data = m_etb18)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--1.0010  -0.6542  -0.3809  -0.2316   4.7433  
-
-Coefficients:
-                Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)    -0.635956   0.119779  -5.309  1.1e-07 ***
-m1202_fctkeine  0.771583   0.720510   1.071    0.284    
-m1202_fctduale  0.136499   0.119610   1.141    0.254    
-m1202_fctAufst -0.134309   0.151126  -0.889    0.374    
-m1202_fctFachh -1.271991   0.147970  -8.596  &lt; 2e-16 ***
-inc100         -0.028289   0.002402 -11.778  &lt; 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 6643.5  on 8431  degrees of freedom
-Residual deviance: 5960.8  on 8426  degrees of freedom
-AIC: 5972.8
-
-Number of Fisher Scoring iterations: 6</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>mfx3 <span class="ot">&lt;-</span> <span class="fu">marginaleffects</span>(m3)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mfx3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       Term     Contrast   Effect Std. Error  z value   Pr(&gt;|z|)     2.5 %
-1 m1202_fct keine - Ohne  0.12520  0.1380301   0.9071    0.36436 -0.145330
-2 m1202_fct duale - Ohne  0.01857  0.0157300   1.1804    0.23783 -0.012262
-3 m1202_fct Aufst - Ohne -0.01678  0.0190482  -0.8809    0.37838 -0.054113
-4 m1202_fct Fachh - Ohne -0.10857  0.0157660  -6.8862 5.7296e-12 -0.139469
-5    inc100        dY/dX -0.00304  0.0002571 -11.8217 &lt; 2.22e-16 -0.003544
-     97.5 %
-1  0.395738
-2  0.049399
-3  0.020555
-4 -0.077667
-5 -0.002536
-
-Model type:  glm 
-Prediction type:  response </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mfx3) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lab =</span> <span class="fu">paste0</span>(term,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,contrast)) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span> estimate,<span class="at">y=</span>lab)) <span class="sc">+</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"navy"</span>,<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin=</span>conf.low,<span class="at">xmax =</span> conf.high), <span class="at">color =</span> <span class="st">"navy"</span>,<span class="at">height =</span> .<span class="dv">2</span>,<span class="at">size=</span>.<span class="dv">65</span>) <span class="sc">+</span> </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="marginal-effect-at-specified-values" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="marginal-effect-at-specified-values"><span class="header-section-number">9.6</span> Marginal Effect at Specified Values</h2>
-<p>Wie groß ist der Unterschied zwischen Befragten ohne Berufsabschluss und Befragten mit Fachhochschul- oder Uni-Abschluss bei einem gewissen Alter?</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> m1202_fct<span class="sc">*</span>zpalter, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = outside ~ m1202_fct * zpalter, family = "binomial", 
-    data = m_etb18)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--1.2275  -0.6772  -0.2903  -0.2876   2.5408  
-
-Coefficients:
-                        Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)            -1.079983   0.319483  -3.380 0.000724 ***
-m1202_fctkeine          2.814318   2.812096   1.001 0.316928    
-m1202_fctduale         -0.299560   0.358718  -0.835 0.403670    
-m1202_fctAufst         -0.612686   0.544412  -1.125 0.260416    
-m1202_fctFachh         -2.045476   0.484998  -4.217 2.47e-05 ***
-zpalter                -0.004355   0.007678  -0.567 0.570565    
-m1202_fctkeine:zpalter -0.053405   0.066516  -0.803 0.422043    
-m1202_fctduale:zpalter  0.004894   0.008427   0.581 0.561431    
-m1202_fctAufst:zpalter  0.001581   0.011899   0.133 0.894326    
-m1202_fctFachh:zpalter  0.003645   0.010711   0.340 0.733635    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 6643.5  on 8431  degrees of freedom
-Residual deviance: 6138.5  on 8422  degrees of freedom
-AIC: 6158.5
-
-Number of Fisher Scoring iterations: 5</code></pre>
-</div>
-</div>
-<p><code>marginaleffects()</code> bietet die Möglichkeit, bestimmte Werte einzusetzen und dafür jeweils den marginalen Effekt zu berechnen. Dementsprechend können</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">marginaleffects</span>(m4,<span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">m1202_fct =</span> <span class="fu">levels</span>(m_etb18<span class="sc">$</span>m1202_fct),</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">zpalter =</span> <span class="fu">seq</span>(<span class="dv">20</span>,<span class="dv">60</span>,<span class="dv">2</span>) ))  <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(.) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["rowid"],"name":[1],"type":["int"],"align":["right"]},{"label":["type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["term"],"name":[3],"type":["chr"],"align":["left"]},{"label":["contrast"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dydx"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["predicted_lo"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["predicted_hi"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["m1202_fct"],"name":[13],"type":["fct"],"align":["left"]},{"label":["zpalter"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["eps"],"name":[15],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.4034874","6":"0.3605941","7":"1.118952","8":"0.2631607","9":"-0.3032641","10":"1.1102388","11":"0.2373824","12":"0.6408698","13":"Ohne","14":"20","15":"NA","_rn_":"1"},{"1":"2","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.3780638","6":"0.3439483","7":"1.099188","8":"0.2716862","9":"-0.2960625","10":"1.0521902","11":"0.2358092","12":"0.6138730","13":"Ohne","14":"22","15":"NA","_rn_":"2"},{"1":"3","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.3519141","6":"0.3247420","7":"1.083673","8":"0.2785099","9":"-0.2845686","10":"0.9883969","11":"0.2342432","12":"0.5861573","13":"Ohne","14":"24","15":"NA","_rn_":"3"},{"1":"4","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.3252006","6":"0.3035194","7":"1.071433","8":"0.2839749","9":"-0.2696864","10":"0.9200877","11":"0.2326844","12":"0.5578850","13":"Ohne","14":"26","15":"NA","_rn_":"4"},{"1":"5","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.2980996","6":"0.2809791","7":"1.060932","8":"0.2887209","9":"-0.2526093","10":"0.8488085","11":"0.2311329","12":"0.5292325","13":"Ohne","14":"28","15":"NA","_rn_":"5"},{"1":"6","2":"response","3":"m1202_fct","4":"keine - Ohne","5":"0.2707974","6":"0.2579710","7":"1.049720","8":"0.2938468","9":"-0.2348165","10":"0.7764113","11":"0.2295886","12":"0.5003860","13":"Ohne","14":"30","15":"NA","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mfx4 <span class="ot">&lt;-</span> <span class="fu">marginaleffects</span>(m4,<span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">m1202_fct =</span> <span class="fu">levels</span>(m_etb18<span class="sc">$</span>m1202_fct),</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">zpalter =</span> <span class="fu">seq</span>(<span class="dv">20</span>,<span class="dv">60</span>,<span class="dv">2</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                                              )) </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>mfx4 <span class="sc">%&gt;%</span> </span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"m1202_fct"</span>, <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"keine"</span>,contrast)) <span class="sc">%&gt;%</span> </span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span> zpalter, <span class="at">y=</span> dydx,<span class="at">color =</span> contrast)) <span class="sc">+</span> </span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low,<span class="at">ymax=</span>conf.high)) <span class="sc">+</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wahrscheinlichkeitsdifferenz für outside = 1 vs. ohne Ausb."</span>,</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Marginaler Effekt"</span>, <span class="at">x =</span>  <span class="st">"Alter"</span>, <span class="at">color =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>)[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">6</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="adjusted-predictions" class="level2" data-number="9.7">
-<h2 data-number="9.7" class="anchored" data-anchor-id="adjusted-predictions"><span class="header-section-number">9.7</span> Adjusted Predictions</h2>
-<p>Wie groß ist die vorhergesagte Wahrscheinlichkeit, mehr als die Häfte der Arbeitszeit im Freien zu arbeiten für</p>
-<ul>
-<li><p>20 Jahre Alte Befragte ohne Berufsabschluss</p></li>
-<li><p>20 Jahre Alte mit Fachhochschul- oder Uni-Abschluss</p></li>
-<li><p>50 Jahre Alte Befragte ohne Berufsabschluss</p></li>
-<li><p>50 Jahre Alte mit Fachhochschul- oder Uni-Abschluss</p></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pred4 <span class="ot">&lt;-</span> <span class="fu">predictions</span>(m4,<span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">m1202_fct =</span> <span class="fu">levels</span>(m_etb18<span class="sc">$</span>m1202_fct),</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">zpalter =</span> <span class="fu">seq</span>(<span class="dv">20</span>,<span class="dv">60</span>,<span class="dv">2</span>))) </span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>pred4 <span class="sc">%&gt;%</span> </span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"keine"</span>,m1202_fct)) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span> zpalter, <span class="at">y=</span> predicted,<span class="at">color =</span> m1202_fct)) <span class="sc">+</span> </span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low,<span class="at">ymax=</span>conf.high)) <span class="sc">+</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>)[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">6</span>)]) <span class="sc">+</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vorhergesagte Wahrscheinlichkeit für outside = 1"</span>,</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wahrscheinlichkeit"</span>, <span class="at">x =</span>  <span class="st">"Alter"</span>, <span class="at">color =</span> <span class="st">""</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="10_log_reg_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="übungen" class="level2" data-number="9.8">
-<h2 data-number="9.8" class="anchored" data-anchor-id="übungen"><span class="header-section-number">9.8</span> Übungen</h2>
-<section id="übung-1-1" class="level3" data-number="9.8.1">
-<h3 data-number="9.8.1" class="anchored" data-anchor-id="übung-1-1"><span class="header-section-number">9.8.1</span> Übung 1</h3>
-<ul>
-<li></li>
-<li></li>
-<li></li>
-</ul>
-</section>
-<section id="übung-2" class="level3" data-number="9.8.2">
-<h3 data-number="9.8.2" class="anchored" data-anchor-id="übung-2"><span class="header-section-number">9.8.2</span> Übung 2</h3>
-<ul>
-<li></li>
-<li></li>
-<li></li>
-</ul>
-</section>
-</section>
-<section id="hintergrund-zu-average-marginal-effects" class="level2" data-number="9.9">
-<h2 data-number="9.9" class="anchored" data-anchor-id="hintergrund-zu-average-marginal-effects"><span class="header-section-number">9.9</span> Hintergrund zu average marginal effects</h2>
-<section id="vorhergesagte-werte" class="level3" data-number="9.9.1">
-<h3 data-number="9.9.1" class="anchored" data-anchor-id="vorhergesagte-werte"><span class="header-section-number">9.9.1</span> Vorhergesagte Werte</h3>
+<section id="vorhergesagte-werte" class="level3" data-number="10.8.2">
+<h3 data-number="10.8.2" class="anchored" data-anchor-id="vorhergesagte-werte"><span class="header-section-number">10.8.2</span> Vorhergesagte Werte</h3>
 <p>Zunächst stellt sich die Frage, was Logits denn bedeuten. Eigentlich möchten wir ja Wahrscheinlichkeiten im Wertebereich zwischen 0 und 1 (bzw. 0% und 100%) als Interpretationseinheit haben. Die Berechnung eines vorhergesagten Werts für einen Befragten mit einem Einkommen von 1000 Euro (<code>inc100</code>=10) ergibt durch einsetzen bzw. <code>predict()</code> natürlich auch die Logits:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1203,8 +1208,8 @@ inc100      -0.03861198 0.002179513 -17.71588 3.162624e-70</code></pre>
 </div>
 </div>
 </section>
-<section id="die-idee-von-average-marginal-effects" class="level3" data-number="9.9.2">
-<h3 data-number="9.9.2" class="anchored" data-anchor-id="die-idee-von-average-marginal-effects"><span class="header-section-number">9.9.2</span> Die Idee von average marginal effects</h3>
+<section id="die-idee-von-average-marginal-effects" class="level3" data-number="10.8.3">
+<h3 data-number="10.8.3" class="anchored" data-anchor-id="die-idee-von-average-marginal-effects"><span class="header-section-number">10.8.3</span> Die Idee von average marginal effects</h3>
 <p>Wie verändern sich dann die vorhergesagten Werte, wenn wir <code>inc100</code> um eine Einheit (also 100€) erhöhen? Die Logits verändern sich pro Einheit <code>inc100</code> natürlich genau um <span class="math inline">\(\hat\beta1\)</span>, also hier -0.03861. Um sich die Steigung an einigen Werten anzusehen, berechnen wir jeweils die Abstände der vorhergesagten Werte für <span class="math inline">\(x-0.5\)</span> und <span class="math inline">\(x+0.5\)</span>:</p>
 <p><em>Um die Werte jeweils mit dem eingesetzten Wert zu beschriften, stellen wir den Wert mit </em> <code>""=</code> <em>voran:</em></p>
 <div class="cell">
@@ -1257,8 +1262,8 @@ inc100      -0.03861198 0.002179513 -17.71588 3.162624e-70</code></pre>
 <p>Diese Steigungen werden für alle Beobachtungen aus dem zu Grunde liegenden Datensatz aufsummiert und dann der Durchschnitt gebildet (<span class="math inline">\(\rightarrow\)</span> <em>average</em> marginal effects)</p>
 </section>
 </section>
-<section id="links" class="level2" data-number="9.10">
-<h2 data-number="9.10" class="anchored" data-anchor-id="links"><span class="header-section-number">9.10</span> Links</h2>
+<section id="links" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="links"><span class="header-section-number">10.9</span> Links</h2>
 <ul>
 <li><p><a href="https://vincentarelbundock.github.io/marginaleffects/articles/marginaleffects.html">Die Seite zu <code>{marginaleffects}</code></a> bietet sehr ausführliche und anschauliche Beispiele zu den verschiedenen Varianten marginaler Effekte</p></li>
 <li><p><a href="https://www.andrewheiss.com/blog/2022/05/20/marginalia/">Ausführliche Einführung zu marginalen Effekten von Andrew Heiss</a></p></li>
@@ -1377,12 +1382,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
       <a href="./09_reg2.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./14_tabellenexport.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
