@@ -102,6 +102,21 @@ modelsummary::modelsummary(m1)
 ## Quadratische Terme & Polynome
 
 
+## Gewichtetes Regressionsmodell
+```{r}
+#| message: false
+#| warning: false
+library(survey)
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta") %>% 
+  filter(F518_SUF < 99998, zpalter < 100)
+modl <- "F518_SUF ~ zpalter + I(zpalter^2)"
+m2         <- lm(modl, data = etb18)
+etb18_weighted <- svydesign(id      = ~intnr,
+                            weights = ~gew2018,
+                            data    = etb18)
+survey_m2 <- survey::svyglm(modl, family = gaussian(), data = etb18,design = etb18_weighted)
+modelsummary::modelsummary(list("glm()"=m2,"svyglm()"= survey_m2),gof_omit = "RM|IC|Log")
+```
 
 
 ## Aufgaben
