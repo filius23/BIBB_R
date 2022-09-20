@@ -1,21 +1,33 @@
-# Inferenzstatistik
+# Inferenzstatistik & Zusammenhangsmaße
 
 ```{r inf01, include=F}
-if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
-library(tidyverse)
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 ```
+
+
 ```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+Neue Pakete:
+```{r}
+#| eval: false
+install.packages("broom") # Ergebnisse in data.frame umwandeln
+install.packages("effectsize") # u.a. Cohen's D berechnen 
+install.packages("survey") # Gewichtung
 ```
 
 Bisher haben wir die Angaben aus unserem Datensatz immer als fix angesehen. 
 Ziel einer statistischen Auswertung ist aber meistens, Aussagen über die *Grundgesamtheit* oder *Population* zu treffen. 
 Im Fall der ETB 2018 wären das also alle Erwerbstätigen in Deutschland.
 
-Ohne zu sehr ins Detail zu gehen, ist eines der zentralen Werkzeuge der grundlegenden Inferenzstatistik der t-Test.
 
 ## t-Tests
 
+Eines der zentralen Werkzeuge der grundlegenden Inferenzstatistik ist der t-Test [Details im Anhang](#tdist).
 
 Ein typischer Anwendungsfall für t-Tests ist der Gruppenvergleich, dazu geben wir in `t.test()` die zu testende Variable und und nach einer `~`[^tilde2] die Gruppenvariable an. 
 Wir testen hier also auf Altersunterschiede zwischen Männern (`S1`=1, daher group1) und Frauen (`S1`=2, daher group2).
@@ -38,16 +50,13 @@ Da hier der p-Wert sehr viel kleiner ist als 0.05 ist (`p-value < 2.2e-16`)[^eho
 
 Standardmäßig bekommen wir einen beidseitigen Test (`"two.sided"`), wir können aber auch einen links- (`"less"`) oder rechtsseitigen (`"greater"`) Test anfordern [mehr dazu](#hypt):
 ```{r}
-t.test(etb18$zpalter~etb18$S1,alternative = "two.sided", var.equal = FALSE)
+t.test(etb18$zpalter~etb18$S1,alternative = "two.sided")
 t.test(etb18$zpalter~etb18$S1,alternative = "less")
 t.test(etb18$zpalter~etb18$S1,alternative = "greater")
 ```
 
 Für Effektgrößen wie Cohen's D empfiehlt sich das Paket [{effectsize}](https://easystats.github.io/effectsize/index.html):
-```{r}
-#| eval: false
-install.packages("effectsize")
-```
+
 ```{r}
 library(effectsize)
 cohens_d(etb18$zpalter~etb18$S1)
@@ -59,13 +68,13 @@ cohens_d(etb18$zpalter~etb18$S1)
 <!-- http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf -->
 
 
-## Andere Zusammenhangsmaße
+### [Übung](#ttestue)
 
-### Korrelation {#pearson}
+## Korrelation {#pearson}
 
 Zur Bestimmung eines Zusammenhangs zwischen zwei metrischen Variablen empfiehlt sich der Pearson-Korrelationskoeffizient:
 $$r = \frac{\frac{1}{n}\Sigma_{i}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\frac{1}{n}\Sigma_{i}^{n}(x_i-\bar{x})^2} \times \sqrt{\frac{1}{n}\Sigma_{i}^{n} (y_i-\bar{y})^2}} = \frac{cov_{xy}}{s_x \times s_y}$$
-In Stata können wir den Korrelationskoeffizienten mit `pwcorr` berechnen. Mit der Option `,sig` werden zudem die p-Werte ausgegeben:
+In R können wir den Korrelationskoeffizienten mit `cor.test()` berechnen:
 
 ```{r}
 attributes(etb18$F231)$label
@@ -78,7 +87,7 @@ cor.test(etb18$zpalter,etb18$F231,method = "pearson", use = "pairwise.complete.o
 c1 <- cor.test(etb18$zpalter,etb18$F231,method = "pearson", use = "pairwise.complete.obs")
 ```
 
-Es handelt sich mit `r sprintf("%.5f",c1$estimate)` also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit `r sprintf("%.5f",c1$p.value)`` liegt der p-Wert deutlich unter 0,05 $\Rightarrow$ wir würden hier die Nullhypothese verwerfen, dass die Korrelation in der Grundpopulation gleich Null ist. 
+Es handelt sich mit `r sprintf("%.5f",c1$estimate)` also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit `r sprintf("%.5f",c1$p.value)` liegt der p-Wert deutlich unter 0,05 $\Rightarrow$ wir würden hier die Nullhypothese verwerfen, dass die Korrelation in der Grundpopulation gleich Null ist. 
 
 Um eine  Korrelationsmatrix zu erhalten hilft das Paket [{correlation}](https://github.com/easystats/correlation): 
 ```{r}
@@ -94,7 +103,7 @@ etb18 %>% select(zpalter,F231,az) %>%
 ```
 
 
-## Ordinale Merkmale & Tabellenbasierte Zusammenhangsmaße      
+## Ordinale Merkmale: Rangkorrelation & Kendall's $\tau$
    
 Ein klassisches ordinales Merkmal ist die Schulbildung, die wir aus `S3` zusammenfassen können (Details im Code-Fenster unten). 
 Wir sehen uns den (möglichen) Zusammenhang zwischen der Schulbildung und `F600_12` an:
@@ -144,7 +153,108 @@ Hierfür die Werteverhältnisse gezählt, zur Berechnung in R können wir wieder
 cor.test(etb18$educ,etb18$F600_12, method = "kendall", use = "pairwise.complete.obs")
 ```
 
+
+## $\chi^2$ & Cramér's V {#chi2}
+
+$\chi^2$  basiert auf dem Vergleich der beobachteten Häufigkeit mit einer (theoretischen) Verteilung, welche statistische Unabhängigkeit abbildet (Indifferenztabelle - [mehr dazu](#indiff)). 
+Wir sehen uns `F204` (Mehrarbeitsvergütung) und `S1` (Geschlecht) an. 
+
+```{r}
+etb18$F204[etb18$F204>4] <- NA
+etb18 %>% filter(!is.na(F204)) %>% count(F204,S1)
+```
+```{r}
+attributes(etb18$F204)$label
+```
+
+
+
+Mit `chisq.test()` bekommen wir $\chi^2$ ausgegeben, diese müssen wir jedoch auf ein `xtabs()`-Objekt anwenden:
+```{r}
+xtabs(~ F204 + S1, data = etb18)
+tab1 <- xtabs(~ F204 + S1, data = etb18)
+chisq.test(tab1)
+```
+
+Für Cramér's $v$ können wir wieder auf `{effectsize}` zurückgreifen:
+```{r}
+effectsize::cramers_v(etb18$F204,etb18$S1)
+```
+
 [Weitere Maße](#corrs)
+
+### [Übung](#corr)
+
+## Ergebnisse weiterverarbeiten
+
+Die Kennzahlen aus dem Output können wir auch separat aufrufen:
+```{r}
+ttest1 <- t.test(etb18$zpalter~etb18$S1,alternative = "two.sided")
+ttest1$statistic # t-Wert
+ttest1$p.value # p-Wert
+```
+Mit `str()` können wir alle Werte ansehen:
+```{r}
+#| eval: false
+str(ttest1)
+```
+
+```{r ttest_str, message=F, out.width="100%", out.height="10%"}
+#| echo: false
+listviewer::jsonedit(ttest1, mode="view")
+```
+
+Mit dem `tidy()` aus [{broom}](https://broom.tidymodels.org/) können wir einen `data.frame()` erstellen, der die wesentlichen Parameter enthält:
+```{r}
+library(broom)
+tidy(ttest1)
+```
+
+```{r}
+corr1 <- cor.test(etb18$zpalter,etb18$F231,method = "pearson", use = "pairwise.complete.obs")
+tidy(corr1)
+```
+
+Was hilft uns das? 
+
+Wir können diesen `data.frame()` mit `{ggplot}` visualisieren, indem wir die Konfidenzintervallgrenzen in `geom_pointrange()` angeben:
+```{r}
+#| out-width: "80%"
+#| fig-height: 1.5
+library(ggplot2)
+ttest_df <- tidy(corr1)
+ggplot(ttest_df,aes(y="t.test",x=estimate)) +
+  geom_vline(aes(xintercept = 0),linetype = "dashed") +
+  geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy")
+```
+
+Wir können mit `bind_rows()` auch mehrere Tests zu einem `data.frame` zusammenfügen:
+```{r}
+ttest_m <- 
+  cor.test(etb18$zpalter[etb18$S1==1],
+           etb18$F231[etb18$S1==1],method = "pearson", use = "pairwise.complete.obs")
+
+ttest_w <- 
+  cor.test(etb18$zpalter[etb18$S1==2],
+           etb18$F231[etb18$S1==2],method = "pearson", use = "pairwise.complete.obs")
+
+test_df2 <- bind_rows(tidy(ttest_m),
+                      tidy(ttest_w), 
+                      .id = "S1") # Variable S1 erstellen als Identifikator
+
+test_df2
+```
+
+Das können wir jetzt wieder plotten:
+```{r}
+#| out-width: "80%"
+#| fig-height: 2
+ggplot(test_df2,aes(y=S1,x=estimate)) +
+  geom_vline(aes(xintercept = 0),linetype = "dashed") +
+  geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy")
+```
+
+
 
 ## Gewichtung 
 
@@ -161,11 +271,6 @@ etb18 %>%
 ```
 
 Für umfangreichere Anwendungen stehen in R stehen die Pakete [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) und das darauf aufbauende [`{srvyr}`](https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html) zur Verfügung.
-
-```{r}
-#| eval: false
-install.packages("survey")
-```
 Zunächst verwenden wir `svydesign()`, um die Gewichtung festzulegen. 
 Im weiteren stellt [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) dann zahlreiche Funktionen zur Verfügung, die eine gewichtete Variante der basis-Befehle sind - bspw. `svymean()` und `svytable()`:
 ```{r}
@@ -191,19 +296,65 @@ Für [Regressionsmodelle](#reg) gibt es bspw. `survey::svyglm()`
 
 Lektüre: [Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuch Methoden der empirischen Sozialforschung (pp. 349–356). Springer Fachmedien Wiesbaden.](https://doi.org/10.1007/978-3-531-18939-0_24)
 
-## Gewichtetes Regressionsmodell
+
+
+## Übungen
+
+### Übung 1 {#ttestue}
+Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (`az`) zwischen Männern und Frauen besteht (`S1`). Beide Variablen haben keine Missings - Sie können direkt los legen
+
+Berechnen Sie das Cohen's d für diesen Zusammenhang.
+
+
+
+### Übung 2 {#corr}
+
++ Untersuchen Sie den Zusammenhang zwischen der Wochenarbeitszeit (`az`) und dem Einkommen (`F518_SUF`) der Befragten. Welches Maß ist das richtige?
++ Denken Sie daran, die Missings in `F518_SUF` auszuschließen: `etb18$F518_SUF[etb18$F518_SUF>99990] <- NA`, `az` hat keine Missings.
+
+
++ Untersuchen Sie den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck `F411_01` und der dreistufigen Schulbildungsvariable `educ`.
 ```{r}
-modl <- "F518_SUF ~ zpalter + I(zpalter^2)"
-m2         <- lm(modl, data = etb18)
-etb18_weighted <- svydesign(id      = ~intnr,
-                            weights = ~gew2018,
-                            data    = etb18)
-survey_m2 <- survey::svyglm(modl, family = gaussian(), data = etb18,design = etb18_weighted)
-modelsummary::modelsummary(list("glm()"=m2,"svyglm()"= survey_m2),gof_omit = "RM|IC|Log")
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+vals1 <- 
+  etb18 %>% select(starts_with("F411_01")) %>% 
+    map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+    pivot_longer(-var) %>% 
+    pivot_wider(names_from = value,values_from = name) 
+    
+
+etb18 %>% select(starts_with("F411_01")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  left_join(vals1) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
 
 
 
+  + So können Sie `educ` in `etb18` erstellen und die Missings in `F411_01` überschreiben:   
+```{r, eval =F}
+etb18 <- 
+  etb18 %>% 
+  mutate(educ = case_when(S3 %in% 2:4 ~ 1,
+                          S3 %in% 5:6 ~ 2,
+                          S3 %in% 7:8 ~ 3),
+         F411_01 = ifelse(F411_01 > 4,NA,F411_01))
+```
+  + Berechnen Sie Spearman's $\rho$, Kendall's $\tau$ und Cramér's $v$.
+
+```{r}
+cor.test(etb18$educ,etb18$F411_01,method = "spearman", use = "pairwise.complete.obs")
+```
+
+
+### Übung 3 {#weight}
 
 
 ## Anhang
@@ -322,6 +473,11 @@ ki90 + ki99
 ```
 
 ### Hypothesen {#hypt}
+
+Die grundlegende Idee des Hypothesentests ist, dass wir uns nur dann für die Alternativhypothese entscheiden, wenn wir eine ausreichend große Abweichung von dem in der $H_0$ postulierten Wert feststellen. 
+Dazu berechnen wir den $t$-Wert für die Differenz der Mittelwerte und gleichen diesen dann mit der t-Verteilung ab.
+Ein t-Wert, der außerhalb der 95% weniger extremen Werte liegt, wird als statistisch signifikant bezeichnet.
+Letztlich dreht sich alles darum, welche Alternativhypothese getestet wird:
 
 + Für einen beidseitigen Test ist die **Alternativ**hypothese, dass es *keinen* Gruppenunterschied gibt:  
 
