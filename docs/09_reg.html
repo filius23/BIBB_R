@@ -121,6 +121,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/jsoneditor-5.25.6/jsoneditor.min.css" rel="stylesheet">
+<script src="site_libs/jsoneditor-5.25.6/jsoneditor.min.js"></script>
+<script src="site_libs/jsonedit-binding-3.0.0/jsonedit.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
@@ -198,7 +202,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik</span></a>
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -366,11 +370,33 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 </div>
 </div>
 </div>
+<p>Wie schon bei den Zusammenhangsmaßen können wir auch hier die einzelnen Werte mit <code>View()</code> ansehen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>listviewer<span class="sc">::</span><span class="fu">jsonedit</span>(m1, <span class="at">mode=</span><span class="st">"view"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="htmlwidget-f141acdcc3409c510b38" style="width:100%;height:10%;" class="jsonedit html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f141acdcc3409c510b38">{"x":{"data":{"coefficients":{"(Intercept)":2.13513513513513,"var1":0.581081081081081},"residuals":{"1":-0.716216216216216,"2":0.702702702702702,"3":0.797297297297297,"4":-0.783783783783784},"effects":{"(Intercept)":-9.5,"var1":3.53457822706518,"3":1.50150358330444,"4":0.047368196932926},"rank":2,"fitted.values":{"1":2.71621621621622,"2":3.2972972972973,"3":6.2027027027027,"4":6.78378378378378},"assign":[0,1],"qr":{"qr":[[-2,-9],[0.5,6.08276253029822],[0.5,-0.60279628678631],[0.5,-0.767195274091667]],"qraux":[1.5,1.21919864974048],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":2,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,4,7,6],"var1":[1,2,7,8]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Besonders hilfreich ist <code>$coefficients</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        var1 
+  2.1351351   0.5810811 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Estimate Std. Error  t value   Pr(&gt;|t|)
+(Intercept) 2.1351351  0.9485004 2.251064 0.15323790
+var1        0.5810811  0.1746331 3.327440 0.07967422</code></pre>
+</div>
+</div>
 </section>
 <section id="regressionstabellen" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="regressionstabellen"><span class="header-section-number">8.2</span> Regressionstabellen</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -441,7 +467,7 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 <section id="interaktionen" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="interaktionen"><span class="header-section-number">8.4</span> Interaktionen</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://strengejacke.github.io/ggeffects/index.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://strengejacke.github.io/ggeffects/index.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="quadratische-terme-polynome" class="level2" data-number="8.5">
@@ -450,16 +476,16 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 <section id="gewichtetes-regressionsmodell" class="level2" data-number="8.6">
 <h2 data-number="8.6" class="anchored" data-anchor-id="gewichtetes-regressionsmodell"><span class="header-section-number">8.6</span> Gewichtetes Regressionsmodell</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>etb18 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, zpalter <span class="sc">&lt;</span> <span class="dv">100</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>modl <span class="ot">&lt;-</span> <span class="st">"F518_SUF ~ zpalter + I(zpalter^2)"</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>m2         <span class="ot">&lt;-</span> <span class="fu">lm</span>(modl, <span class="at">data =</span> etb18)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>etb18_weighted <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id      =</span> <span class="sc">~</span>intnr,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">weights =</span> <span class="sc">~</span>gew2018,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data    =</span> etb18)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>survey_m2 <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyglm</span>(modl, <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="at">data =</span> etb18,<span class="at">design =</span> etb18_weighted)</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"glm()"</span><span class="ot">=</span>m2,<span class="st">"svyglm()"</span><span class="ot">=</span> survey_m2),<span class="at">gof_omit =</span> <span class="st">"RM|IC|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>etb18 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, zpalter <span class="sc">&lt;</span> <span class="dv">100</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>modl <span class="ot">&lt;-</span> <span class="st">"F518_SUF ~ zpalter + I(zpalter^2)"</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>m2         <span class="ot">&lt;-</span> <span class="fu">lm</span>(modl, <span class="at">data =</span> etb18)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>etb18_weighted <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id      =</span> <span class="sc">~</span>intnr,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">weights =</span> <span class="sc">~</span>gew2018,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data    =</span> etb18)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>survey_m2 <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyglm</span>(modl, <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="at">data =</span> etb18,<span class="at">design =</span> etb18_weighted)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"glm()"</span><span class="ot">=</span>m2,<span class="st">"svyglm()"</span><span class="ot">=</span> survey_m2),<span class="at">gof_omit =</span> <span class="st">"RM|IC|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -533,8 +559,8 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 <h3 data-number="8.7.1" class="anchored" data-anchor-id="aufgabe-1"><span class="header-section-number">8.7.1</span> Aufgabe 1</h3>
 <p>Erstellen Sie wie folgt einen Beispieldatensatz (Sie können aber gerne auch eigene, andere Werte verwenden)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat12 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">var1 =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">10</span>,<span class="dv">24</span>,<span class="dv">28</span>,<span class="dv">23</span>) ,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">var2 =</span> <span class="fu">c</span>(<span class="dv">17</span>,<span class="dv">16</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">8</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dat12 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">var1 =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">10</span>,<span class="dv">24</span>,<span class="dv">28</span>,<span class="dv">23</span>) ,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">var2 =</span> <span class="fu">c</span>(<span class="dv">17</span>,<span class="dv">16</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">8</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>Berechnen Sie das arithm. Mittel für <code>var2</code>!</li>
@@ -556,34 +582,34 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 <li>Lesen Sie den Allbus-Datensatz wie bekannt ein. Hier nochmal zu Erinnerung das Vorgehen:</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Arbeitsverzeichnis in den Ordner mit dem Datensatz setzen:</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Lehre"</span>) </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>a16 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"allbus2016.csv"</span>, <span class="at">sep =</span> <span class="st">";"</span>, <span class="at">header =</span> T) <span class="do">## einlesen</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="do">## für die Pipe und select/filter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Arbeitsverzeichnis in den Ordner mit dem Datensatz setzen:</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Lehre"</span>) </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>a16 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"allbus2016.csv"</span>, <span class="at">sep =</span> <span class="st">";"</span>, <span class="at">header =</span> T) <span class="do">## einlesen</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="do">## für die Pipe und select/filter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Zunächst müssen wir dann die Missings mit <code>NA</code> überschreiben:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>a16<span class="sc">$</span>age[a16<span class="sc">$</span>age<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>a16<span class="sc">$</span>inc[a16<span class="sc">$</span>inc<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>a16<span class="sc">$</span>age[a16<span class="sc">$</span>age<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>a16<span class="sc">$</span>inc[a16<span class="sc">$</span>inc<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mit einem <code>filter</code>-Befehl können wir dann nur die Beobachtungen auswählen, die für <code>age</code> und <code>inc</code> nicht Missing sind (also <code>is.na()</code> gleich <code>FALSE</code> ist):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>a16 <span class="ot">&lt;-</span> a16 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(inc), <span class="sc">!</span><span class="fu">is.na</span>(age))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>a16 <span class="ot">&lt;-</span> a16 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(inc), <span class="sc">!</span><span class="fu">is.na</span>(age))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>Mit folgendem Befehl können Sie ein Teildatenset <code>a16f</code> erstellen, das nur in Vollzeit erwerbstätige Frauen enthält:</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>a16f <span class="ot">&lt;-</span> a16 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="dv">2</span>, work <span class="sc">==</span> <span class="dv">1</span>) <span class="co"># a16 filtern</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>a16f <span class="ot">&lt;-</span> a16 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="dv">2</span>, work <span class="sc">==</span> <span class="dv">1</span>) <span class="co"># a16 filtern</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Für die Analyse sind nur die Variablen <code>age</code> und <code>inc</code> wichtig, also können wir den Datensatz auf diese beiden Variablen reduzieren:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>a16f <span class="ot">&lt;-</span> a16f <span class="sc">%&gt;%</span> <span class="fu">select</span>(age, inc) <span class="co">#nur Spalten inc &amp; sex  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>a16f <span class="ot">&lt;-</span> a16f <span class="sc">%&gt;%</span> <span class="fu">select</span>(age, inc) <span class="co">#nur Spalten inc &amp; sex  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mit <code>head</code> können wir uns die ersten Zeilen des Datensatzes anzeigen lassen oder mit <code>View()</code> den gesamten Datensatz ansehen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(a16f)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(a16f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(a16f)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(a16f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>Berechnen Sie das arithm. Mittel für das Einkommen</li>
@@ -604,7 +630,7 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 <h3 data-number="8.8.1" class="anchored" data-anchor-id="pred"><span class="header-section-number">8.8.1</span> Vorhergesagte Werte</h3>
 <p>Die vorhergesagten Werte von <code>lm()</code> finden sich unter <code>$fitted.values</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>fitted.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>fitted.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2        3        4 
 2.716216 3.297297 6.202703 6.783784 </code></pre>
@@ -612,7 +638,7 @@ F-statistic: 11.07 on 1 and 2 DF,  p-value: 0.07967</code></pre>
 </div>
 <p>Diese vorhergesagten Werte entsprechen einfach der Summe aus dem Wert unter <code>Intercept</code> und dem Wert unter <code>var1</code> multipliziert mit dem jeweiligen Wert für <code>var1</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>m1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -626,8 +652,8 @@ Coefficients:
 <p>Für die erste Zeile aus <code>dat1</code> ergibt sich also <code>m1</code> folgender vorhergesagter Wert: <code>2.1351+0.5811*1=</code>2.7162</p>
 <p>Die Werte unter <code>fitted.values</code> folgen der Reihenfolge im Datensatz, sodass wir sie einfach als neue Spalte in <code>dat1</code> ablegen können:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>lm_vorhersagen <span class="ot">&lt;-</span> m1<span class="sc">$</span>fitted.values</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>lm_vorhersagen <span class="ot">&lt;-</span> m1<span class="sc">$</span>fitted.values</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  var1 var2 lm_vorhersagen
 1    1    2       2.716216
@@ -640,16 +666,16 @@ Coefficients:
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>      </span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span> , <span class="at">se =</span> <span class="cn">FALSE</span>,<span class="at">size =</span>.<span class="dv">65</span>) <span class="sc">+</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>      </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span> , <span class="at">se =</span> <span class="cn">FALSE</span>,<span class="at">size =</span>.<span class="dv">65</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="09_reg_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="288"></p>
+<p><img src="09_reg_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="288"></p>
 </figure>
 </div>
 </div>
@@ -662,7 +688,7 @@ Coefficients:
 <p><span class="math display">\[\epsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}\]</span></p>
 <p>Wir können diese per Hand berechnen als Differenz zwischen dem tatsächlichen und dem vorhergesagten Wert oder einfach unter <code>m1$residuals</code> aufrufen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>residuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>residuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         1          2          3          4 
 -0.7162162  0.7027027  0.7972973 -0.7837838 </code></pre>
@@ -670,8 +696,8 @@ Coefficients:
 </div>
 <p>Auch die Residuen für <code>lm</code> können wir in <code>dat1</code> ablegen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>lm_residuen <span class="ot">&lt;-</span> m1<span class="sc">$</span>residuals</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>lm_residuen <span class="ot">&lt;-</span> m1<span class="sc">$</span>residuals</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  var1 var2 lm_vorhersagen lm_residuen
 1    1    2       2.716216  -0.7162162
@@ -684,17 +710,17 @@ Coefficients:
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span> , <span class="at">se =</span> <span class="cn">FALSE</span>,<span class="at">size =</span>.<span class="dv">65</span>) <span class="sc">+</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">xend =</span> var1, <span class="at">y =</span> var2, <span class="at">yend =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> .<span class="dv">65</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span> , <span class="at">se =</span> <span class="cn">FALSE</span>,<span class="at">size =</span>.<span class="dv">65</span>) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">xend =</span> var1, <span class="at">y =</span> var2, <span class="at">yend =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> .<span class="dv">65</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="09_reg_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="264"></p>
+<p><img src="09_reg_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="264"></p>
 </figure>
 </div>
 </div>
@@ -704,17 +730,17 @@ Coefficients:
 <h3 data-number="8.8.3" class="anchored" data-anchor-id="annahmen-checken"><span class="header-section-number">8.8.3</span> Annahmen checken</h3>
 <p><a href="https://easystats.github.io/easystats/reference/model_dashboard.html">model dashboard</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a> <span class="do">## install.packages('see')</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>mtcars<span class="sc">$</span>gear <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars<span class="sc">$</span>gear) <span class="do">## </span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> qsec, mtcars)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> qsec <span class="sc">+</span> gear, mtcars)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m2,<span class="at">panel =</span> F)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>model_test <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">check_model</span>(m2)</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a> <span class="do">## install.packages('see')</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>mtcars<span class="sc">$</span>gear <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars<span class="sc">$</span>gear) <span class="do">## </span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> qsec, mtcars)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> qsec <span class="sc">+</span> gear, mtcars)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m2,<span class="at">panel =</span> F)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>model_test <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">check_model</span>(m2)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="09_reg_files/figure-html/reg02-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -724,7 +750,7 @@ Coefficients:
 <h3 data-number="8.8.4" class="anchored" data-anchor-id="regressionsmodelle-vergleichen"><span class="header-section-number">8.8.4</span> Regressionsmodelle vergleichen</h3>
 <p>Mit dem Paket <code>{performance}</code> können wir auch einen umfassenden Modellvergleich bekommen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_performance</span>(m1,m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_performance</span>(m1,m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Comparison of Model Performance Indices
 
@@ -840,7 +866,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
       <a href="./07_inferenz.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

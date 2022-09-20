@@ -83,6 +83,19 @@ ggplot(dat1, aes(x = var1, y = var2)) +
 ```
 
 
+Wie schon bei den Zusammenhangsmaßen können wir auch hier die einzelnen Werte mit `View()` ansehen: 
+
+```{r ols1_str, message=F, out.width="100%", out.height="10%"}
+listviewer::jsonedit(m1, mode="view") 
+```
+
+Besonders hilfreich ist `$coefficients`:
+```{r}
+m1$coefficients
+summary(m1)$coefficients
+```
+
+
 ## Regressionstabellen
 
 ```{r}

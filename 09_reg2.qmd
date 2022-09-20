@@ -21,8 +21,32 @@ It's important to note that "base" R already provides all of the tools we need f
 # if (!require("pacman")) install.packages("pacman")
 pacman::p_load(mfx, tidyverse, hrbrthemes, estimatr, ivreg, fixest, sandwich, marginaleffects,
                lmtest, margins, vtable, broom, modelsummary, kableExtra)
-## My preferred ggplot2 plotting theme (optional)
-theme_set(hrbrthemes::theme_ipsum())
+
+mark_color <- "grey25"
+color1x =  "#00519E" # uol farbe
+colorhex <- "#FCFCFC" #"#FCF9F0FF"7
+colorhex <- NA #"#FCF9F0FF"7
+library(extrafont)
+windowsFonts(Nunito=windowsFont("Nunito Sans"))
+
+theme_x <- 
+  theme_minimal(base_family = "Nunito",base_size = 10) +
+  theme(
+    plot.background = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    rect = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    axis.text =  element_text(color = mark_color,face = "plain", size = rel(.75), angle = 0), 
+    axis.title = element_text(color = mark_color,face = "plain", size = rel(1), angle = 0), 
+    axis.title.y = element_text(color = mark_color,face = "plain", angle = 0,vjust = .5), 
+    axis.ticks = element_blank(),
+    axis.line = element_line(size = .1), 
+    panel.grid = element_line(colour = "grey81", linetype = 1, size = .15), 
+    panel.grid.minor.y = element_blank(), 
+    panel.grid.minor.x = element_blank(), 
+    plot.subtitle = element_text(hjust=0),
+    plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
+    plot.margin = unit(c(1, 1, 1, 1), "lines"))
+
+theme_set(theme_x)
 ```
 
 Die folgenden Beispiele basieren vornehmlich auf dem `starwars`-Datensatz aus `{dplyr}`, hier ein kurzer Blick in die Daten:
@@ -53,10 +77,7 @@ ols1
 
 The resulting object is pretty terse, but that's only because it buries most of its valuable information --- of which there is a lot --- within its internal list structure. If you're in RStudio, you can inspect this structure by typing `View(ols1)` or simply clicking on the "ols1" object in your environment pane. Doing so will prompt an interactive panel to pop up for you to play around with. That approach won't work for this knitted R Markdown document, however, so I'll use the `listviewer::jsonedit()` function that we saw in the previous lecture instead.
 
-```{r ols1_str, message=F, out.width="100%", out.height="10%"}
-# View(ols1) ## Run this instead if you're in a live session
-listviewer::jsonedit(ols1, mode="view") ## Better for R Markdown
-```
+
 
 As we can see, this `ols1` object has a bunch of important slots... containing everything from the regression coefficients, to vectors of the residuals and fitted (i.e. predicted) values, to the rank of the design matrix, to the input data, etc. etc. To summarise the key pieces of information, we can use the --- *wait for it* --- generic `summary()` function. This will look pretty similar to the default regression output from Stata that many of you will be used to.
 
@@ -64,11 +85,6 @@ As we can see, this `ols1` object has a bunch of important slots... containing e
 summary(ols1)
 ```
 
-We can then dig down further by extracting a summary of the regression coefficients:
-
-```{r ols1_coefs}
-summary(ols1)$coefficients
-```
 
 ### Get "tidy" regression coefficients with the `broom` package
 
@@ -173,7 +189,7 @@ modelsummary::modelsummary(list(m0,ols1_robust,m0,m0),vcov = c("classical","clas
 Clustered standard errors is an issue that most commonly affects panel data. As such, I'm going to hold off discussing clustering until we get to the [panel data section](#high-dimensional-fes-and-multiway-clustering) below. But here's a quick example of clustering with `estimatr::lm_robust()` just to illustrate:
 
 ```{r ols1_robust_clustered, warning = FALSE}
-lm_robust(mass ~ height, data = starwars, clusters = homeworld)
+estimatr::lm_robust(mass ~ height, data = starwars, clusters = homeworld)
 ```
 
 ## Dummy variables and interaction terms
@@ -404,7 +420,7 @@ There are loads of [different options](https://hughjonesd.github.io/huxtable/des
 msummary(list(ols1, ols_ie, ols_fe))
 ```
 
-</br>
+
 One nice thing about **modelsummary** is that it plays very well with R Markdown and will automatically coerce your tables to the format that matches your document output: HTML, LaTeX/PDF, RTF, etc. Of course, you can also [specify the output type](https://vincentarelbundock.github.io/modelsummary/#saving-and-viewing-output-formats) if you aren't using R Markdown and want to export a table for later use. Finally, you can even specify special table formats like *threepartable* for LaTeX and, provided that you have called the necessary packages in your preamble, it will render correctly (see example [here](https://github.com/grantmcdermott/lecturenotes).
 
 #### Summary tables
