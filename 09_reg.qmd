@@ -79,7 +79,7 @@ In unserer Grafik sieht diese Gerade so aus:
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
   geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
-  expand_limits(x = c(0,8),y=c(0,8)) 
+  expand_limits(x = c(0,10),y=c(0,10)) 
 ```
 
 

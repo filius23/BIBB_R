@@ -236,7 +236,7 @@ tab_ausb2 %>%
 + Erstellen Sie dafür zunächst einen `data.frame` mit den Auszählungen und legen diese als Objekt ab.
 + Nutzen Sie `as_factor()` aus `{labelled}`, um die Labels in eine separate Variable abzulegen.
 + Verändern Sie die labels nach Ihrem Geschmack: kürzen Sie, ändern Sie Bezeichungen mit `fct_recode()`
-+ 
++ Erstellen Sie einen Data-Frame mit Labels und verwenden Sie diesen für ihre Grafik.
 
 
 <!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->

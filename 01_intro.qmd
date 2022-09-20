@@ -241,6 +241,34 @@ Kommentare in R können mit `#` eingefügt werden:
 **Tipp:** Erstellen Sie sich am besten sofort einen Ordner, in dem Sie alle R Scripte und Datensätze aus dieser Veranstaltung gesammelt ablegen.
 
 
+### Skripte strukturieren
+
+```{r,eval = F}
+# Überschrift 1 ----
+
+## Abschnit 1.1 ----
+3+2*4
+3+2*3
+## Abschnit 1.2 ----
+3+2*sqrt(3)
+
+# Überschrift 2 ----
+x <- c(2,6,8,2,35)
+y <- seq(2,10,2)
+
+y/x
+```
+
+```{r}
+#| echo: false
+#| out-width: "40%"
+#| out-height: "40%"
+# knitr::include_graphics("./pic/101_skript_überschriften.png")
+```
+![](./pic/101_skript_überschriften.png){width="742"}
+
+
+
 ## Übungen
 
 -   Legen Sie die Anzahl der Studierenden an der Uni Oldenburg (15643) unter `stud` ab.

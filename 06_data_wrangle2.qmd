@@ -182,7 +182,7 @@ dat3 %>%
 <!-- + gruppiert nach `prom_recht` -->
   
 
-## `across()`: Mehrere Variablen bearbeiten
+## `across()`: Mehrere Variablen bearbeiten {#across}
 
 Eine sehr vielseitige Erweiterung für `mutate()` und `summarise()` ist `across()`.
 Hier mit können wir eine Funktion auf mehrere Spalten gleichzeitig anwenden, ohne uns zu wiederholen:
@@ -195,11 +195,12 @@ dat3 %>%
 
 Hier ist `across()` deutlich kürzer - für die Variablenauswahl können wir die [`?select_helpers`](02_intro.qmd#selecthelpers) verwenden - z.B. `matches()`:
 
+
+
 ```{r}
 dat3 %>%
   summarise(across(matches("studs|profs"), ~mean(.x)))
 ```
-
 
 Natürlich ist das auch kombinierbar mit `group_by()`:
 ```{r}
@@ -237,6 +238,14 @@ dat3 %>%
                    .names = "{.fn}_{.col}"))
 ```
 
+
+Alle gezeigten Funktionen funktionieren natürlich auch mit `mutate()`:
+
+```{r}
+dat3 %>%
+  mutate(across(matches("studs|profs"), ~mean(.x), .names = "m_{.col}"))
+```
+
 [Mehr Beispiele in der Hilfe zu across](https://dplyr.tidyverse.org/reference/across.html)
 
 
@@ -268,7 +277,7 @@ etb18_small %>% select(starts_with("F1450")) %>%
 ```
 + Verwenden Sie `across()` und denken Sie ggf. daran, dass Sie `NA`s die `na.rm = T` in `mean()` setzen müssen: `mean(....,na.rm = T)`
 + Berechnen Sie die Mittelwerte getrennt nach Geschlecht, indem Sie `group_by()` verwenden.
-+ Fügen auch die Varianz (`var()`) und die Zahl der nicht-`NA`-Fälle hinzu und nutzen sie `.names=`, um die Spaltennamen erst nach dem Schema `kennzahl.variable` zu benennen.
++ Fügen auch die Varianz (`var()`) und die Zahl der nicht-`NA`-Fälle hinzu und nutzen sie `.names=`, um die Spaltennamen nach dem Schema `kennzahl.variable` zu benennen.
 
 
 ## Hilfsfunktionen
@@ -293,6 +302,7 @@ cut(dat3$profs,breaks = seq(50,650,150))
 Diese Werte legen wir in einer neuen Variable im Datensatz `dat3` ab: 
 ```{r}
 dat3$prof_class <- cut(dat3$profs,breaks = seq(50,650,150))
+dat3
 ```
 Für diese neue Variable können wir mit `count()` eine Häufigkeitstabelle anfordern:
 ```{r}
@@ -351,7 +361,18 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
 
 <!-- [{janitor}](https://appsilon.com/data-cleaning-in-r/) -->
 
-## [Übung](#ifcase)
+`case_when()` kann aber auch außerhalb von `mutate()` mit der base-Version verwendet werden, dafür müssen aber alle Variablen mit `datensatz$` angewählt werden:
+```{r}
+#| eval: false
+case_when(dat3$gegr < 1500 & dat3$prom_recht == T ~ "sehr alte Uni",
+          dat3$gegr < 1900 & dat3$prom_recht == T ~ "alte Uni",
+          dat3$gegr > 1900 & dat3$prom_recht == T ~ "junge Uni",
+          dat3$gegr < 1900 & dat3$prom_recht == F ~ "alte Hochschule",
+          dat3$gegr > 1900 & dat3$prom_recht == F ~ "junge Hochschule")
+```
+
+
+### [Übung](#ifcase) {#ifcaseue}
 
 + Bearbeiten Sie `etb18_small`:
 ```{r}
@@ -403,7 +424,6 @@ etb18_small2 %>% select(starts_with("F1450")) %>%
 
 
 ```{r}
-#| code-fold: true
 sat_small <- 
   etb18 %>% 
   select(F1450_01,F1450_02,F1450_03) %>% 
@@ -411,7 +431,8 @@ sat_small <-
   mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) # missings ausschließen
 ```
 
-Standardisieren als Beispiel für eine Funktion
+Häufig wollen wir mehrere Variablen mit der gleichen Operation bearbeiten. Oben haben wir gesehen wie sich das mit [`across()`](#across) für existierende Funktionen erledigen lässt. 
+Was aber, wenn wir eine Berechnung durchführen wollen, die nicht einfach die Anwendung von `mean()`, `sd()` o.ä. ist?
 
 ```{r}
 sat_small %>% 
@@ -421,16 +442,15 @@ sat_small %>%
 ```
 
 ...und jetzt noch `F1450_03`?
-Dann hätten wir drei Mal das mehr oder weniger gleiche getippt und damit gegen das "DRY"-Prinzip[^dry] verstoßen.
+Dann hätten wir drei Mal das mehr oder weniger gleiche getippt und damit gegen das "DRY"-Prinzip[^dry] verstoßen. Außerdem gibt es insgesamt `r etb18 %>% select(starts_with("F1450")) %>% ncol()` Spalten mit ähnlichen Variablen. Wenn wir die alle bearbeiten möchten, ist copy & paste keine echte Option.
 
 [^dry]: Do not repeat yourself, siehe [Wickham et al](https://r4ds.had.co.nz/functions.html): "You should consider writing a function whenever you’ve copied and pasted a block of code more than twice (i.e. you now have three copies of the same code)."
 
 Eigene Funktionen helfen uns, das DRY-Prinzip in R umzusetzen.
-Wir machen die Berechnungsschritte werden Teil einer *Funktion* und wenden diese dann auf die gewünschten Variablen an.
+Wir machen die Berechnungsschritte Teil einer `function()` und wenden diese dann auf die gewünschten Variablen an.
 Eine Funktion hat einen Input, für welchen ein Platzhalter in der `()` definiert wird. 
 Dieser Platzhalter kann dann innerhalb der Funktion - zwischen den `{}` - aufgerufen und bearbeitet werden.
-Als Ergebnis erhalten wir das Objekt, das wir in `return()` angeben: 
-
+Als Ergebnis erhalten wir das Objekt, das wir in `return()` angeben. `return()` muss immer als letztes angeben werden und wir können immer nur *ein* Objekt als Output definieren:
 ```{r}
 dtomean <- function(x){
   d_x <- x - mean(x,na.rm = T)
@@ -465,7 +485,7 @@ sat_small %>%
 etb18_small2 <- etb18_small2 %>% mutate(across(matches("F1450_(01|02|03)"), ~ifelse(.x>4,NA,.x)))  
 ```
 
-+ Standardisieren Sie die Variablen F1450_01 - F1450_03 nach folgendem Muster:
++ Standardisieren Sie die Variablen F1450_01 - F1450_03 aus [`etb_small2`](#ifcaseue) nach folgendem Muster:
 ```{r}
 #| eval: false
 etb_small2 %>% 
@@ -474,13 +494,31 @@ etb_small2 %>%
 + Nutzen Sie eine Funktion, um nicht wiederholt die gleichen Schritte einzugeben.
 
 
-```{r}
-mode <- function(x) {
-  names(which.max(table(x))) 
-}
+<!-- ```{r} -->
+<!-- mode <- function(x) { -->
+<!--   names(which.max(table(x)))  -->
+<!-- } -->
 
-mode(etb18$m1202)
+<!-- mode(etb18$m1202) -->
+<!-- ``` -->
+
+
+## Variablen umbenennen
+
+
+Um Variablen umzubenennen gibt es `rename(neuer_name = alter_name)`
+
+```{r}
+sat_small %>% rename(neu=F1450_01)
 ```
+
+Für fortgeschrittene Veränderungen empfiehlt sich ein Blick in `rename_with()`. Damit können wir [Regular Expressions](https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf), bspw. aus [{stringr}](https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf) verwenden. Hier nur ein Beispiel:
+
+```{r}
+sat_small %>% rename_with(~tolower(.))
+sat_small %>% rename_with(~str_remove(.x,"1450_"))
+```
+
 
 
 <!-- ## `lapply()` und `map()` -->
@@ -521,6 +559,8 @@ cut(bsp,breaks = c(1990,2000,2010),labels = c("90er","00er"))
 
 
 ### String-Funktionen
+
+[{stringr}](https://stringr.tidyverse.org/) stellt eine ganze Reihe an sehr hilfreichen String-Funktionen mit [Regular Expressions](https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf) zur Verfügung, einen Überblick bietet das [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf)
 
 ```{r}
 dat3 %>% mutate(uni_fh = str_detect(uni,"Uni"))
