@@ -38,10 +38,11 @@ theme_set(theme_x)
 
 ```
 
-Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich vier Fällen. Mit dem `data.frame` Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2 
+Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich fünf Fällen. Mit dem `data.frame` Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2 
 ```{r}
-dat1 <- data.frame(var1 = c(1,2,7,8),
-                   var2 = c(2,4,7,6))
+dat1 <- data.frame(id   = 1:5,
+                   var1 = c(1,2,7,8,9),
+                   var2 = c(2,4,7,6,25))
 dat1
 ```
 
@@ -70,22 +71,12 @@ summary(m1)
 
 
 
-Mit `geom_smooth(method = "lm")` können wir Regressionsgerade auch in `{ggplot2}` darstellen:
-In unserer Grafik sieht diese Gerade so aus:
-```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
-#| code-fold: true
-
-
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_point(size = 2) + 
-  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
-  expand_limits(x = c(0,10),y=c(0,10)) 
-```
 
 
 Wie schon bei den Zusammenhangsmaßen können wir auch hier die einzelnen Werte mit `View()` ansehen: 
 
 ```{r ols1_str, message=F, out.width="100%", out.height="10%"}
+#| echo: false
 listviewer::jsonedit(m1, mode="view") 
 ```
 
@@ -96,10 +87,76 @@ summary(m1)$coefficients
 ```
 
 
+## Regressionsmodelle visualisieren
+
+Mit `geom_smooth(method = "lm")` können wir Regressionsgeraden auch in `{ggplot2}` darstellen:
+Unser Modell mit `var1` und `var2` können wir so darstellen:
+```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_point(size = 2) + 
+  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  
+```
+
+Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensatz ist der schnell gefunden. In größeren Datensätzen hilft uns `geom_text()`:
+```{r graph2}
+#| fig.height: 3
+#| fig.width: 3
+#| fig-align: center
+#| warning: false
+#| message: false
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_point(size = 2) + 
+  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
+  geom_text(data = dat1 %>% filter(var2 > 20), aes(y = var2+2, label = id), color = "sienna1")
+```
+
+Wir können nämlich einzelne `geom_` auch nur für ein Subset angeben - dazu vergeben wir `data =` neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl `ggplot()`) und setzen darin einen `filter()`. Außerdem verschieben wir mit `var2+2` das Label etwas über den Punkt.
+
+
+## Modelle nur für manche Fälle berechnen
+
+Wenn wir jetzt das Modell nochmal berechnen wollen, haben wir zwei Möglichkeiten:
+
+### Neuen data.frame erstellen
+
+Wir erinnern uns, dass wir in R mehrere `data.frame`-Objekte im Speicher halten können. Daher können wir leicht einen neuen `data.frame` erstellen, der nur die Beobachtungen mit `var2 < 20` enthält und diesen dann für unseren `lm()`-Befehl verwenden:
+
+```{r ols2}
+dat1_u20 <- dat1 %>% filter(var2<20)
+m2a <- lm(var2~ var1, data = dat1_u20)
+summary(m2a)
+```
+
+### Direkt in `lm()` filtern
+
+Wir können `filter()`-Befehl auch direkt in das `data=`-Argument von `lm()` bauen:
+
+```{r ols2a}
+m2b <- lm(var2~ var1, data = dat1 %>% filter(var2<20))
+summary(m2b)
+```
+
 ## Regressionstabellen
 
+Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich eine Tabelle mit den 
+
 ```{r}
-modelsummary::modelsummary(m1)
+#| eval: false
+install.packages("modelsummary")
+```
+
+```{r}
+library(modelsummary)
+modelsummary(list(m1,m2a,m2b))
+```
+
+...übrigens: wir können auch in `geom_smooth()` filtern:
+```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
+  geom_smooth(data = dat1 %>% filter(var2<20),
+    method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  +
+  geom_point(size = 2) 
 ```
 
 
@@ -256,25 +313,30 @@ ggplot(dat1, aes(x = var1, y = var2)) +
 ### Annahmen checken
 [model dashboard](https://easystats.github.io/easystats/reference/model_dashboard.html)
 
-```{r reg02, fig.height=5}
- ## install.packages('see')
+```{r}
+#| eval: false
+install.packages("performance")
+```
+
+```{r reg02, fig.height=8}
+#| warning: false
+#| message: false
 library(performance)
-data(mtcars)
-mtcars$gear <- factor(mtcars$gear) ## 
-m1 <- lm(mpg ~ qsec, mtcars)
-m2 <- lm(mpg ~ qsec + gear, mtcars)
-
-check_model(m2,panel = F)
-
+m2 <- lm(mpg ~ qsec + gear, mtcars) ## mtcars ist ein Beispieldatensatz aus R
 model_test <- performance::check_model(m2)
 plot(model_test)
-
 ```
 
 ### Regressionsmodelle vergleichen
 
 Mit dem Paket `{performance}` können wir auch einen umfassenden Modellvergleich bekommen:
 ```{r reg03}
+data(mtcars)
+mtcars$gear <- factor(mtcars$gear) ## 
+m1 <- lm(mpg ~ qsec, mtcars)
+m2 <- lm(mpg ~ qsec + gear, mtcars)
+
+check_model(m2,panel = F)
 compare_performance(m1,m2)
 ```
 
