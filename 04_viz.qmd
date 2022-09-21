@@ -706,6 +706,7 @@ ggplot(shp_df,aes(x,y)) +
   theme(plot.margin = unit(c(2,2,2,2),"lines"))
 ```
 
+[**Zusätzlicher Überblick**](https://blog.albertkuo.me/post/point-shape-options-in-ggplot/)
 
 ### Linetypes {#line}
 ```{r}
