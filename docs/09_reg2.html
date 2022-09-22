@@ -367,38 +367,14 @@ Coefficients:
    -13.8103       0.6386  </code></pre>
 </div>
 </div>
-<p>The resulting object is pretty terse, but that’s only because it buries most of its valuable information — of which there is a lot — within its internal list structure. If you’re in RStudio, you can inspect this structure by typing <code>View(ols1)</code> or simply clicking on the “ols1” object in your environment pane. Doing so will prompt an interactive panel to pop up for you to play around with. That approach won’t work for this knitted R Markdown document, however, so I’ll use the <code>listviewer::jsonedit()</code> function that we saw in the previous lecture instead.</p>
-<p>As we can see, this <code>ols1</code> object has a bunch of important slots… containing everything from the regression coefficients, to vectors of the residuals and fitted (i.e.&nbsp;predicted) values, to the rank of the design matrix, to the input data, etc. etc. To summarise the key pieces of information, we can use the — <em>wait for it</em> — generic <code>summary()</code> function. This will look pretty similar to the default regression output from Stata that many of you will be used to.</p>
-<div class="cell" data-hash="09_reg2_cache/html/ols1_summ_c237a5c4f1bfef742b81928852985dcd">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = mass ~ height, data = starwars)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
- -61.43  -30.03  -21.13  -17.73 1260.06 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept) -13.8103   111.1545  -0.124    0.902
-height        0.6386     0.6261   1.020    0.312
-
-Residual standard error: 169.4 on 57 degrees of freedom
-  (28 Beobachtungen als fehlend gelöscht)
-Multiple R-squared:  0.01792,   Adjusted R-squared:  0.0006956 
-F-statistic:  1.04 on 1 and 57 DF,  p-value: 0.312</code></pre>
-</div>
-</div>
 </section>
 <section id="get-tidy-regression-coefficients-with-the-broom-package" class="level3" data-number="9.2.2">
 <h3 data-number="9.2.2" class="anchored" data-anchor-id="get-tidy-regression-coefficients-with-the-broom-package"><span class="header-section-number">9.2.2</span> Get “tidy” regression coefficients with the <code>broom</code> package</h3>
 <p>While it’s easy to extract regression coefficients via the <code>summary()</code> function, in practice I always use the <strong>broom</strong> package (<a href="https://broom.tidyverse.org/">link</a>) to do so. <strong>broom</strong> has a bunch of neat features to convert regression (and other statistical) objects into “tidy” data frames. This is especially useful because regression output is so often used as an input to something else, e.g.&nbsp;a plot of coefficients or marginal effects. Here, I’ll use <code>broom::tidy(..., conf.int = TRUE)</code> to coerce the <code>ols1</code> regression object into a tidy data frame of coefficient values and key statistics.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols1_tidy_58ab052ffdda097e65da9fe0fbc49e49">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(broom) ## Already loaded</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ols1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(broom) ## Already loaded</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ols1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   term        estimate std.error statistic p.value conf.low conf.high
@@ -410,7 +386,7 @@ F-statistic:  1.04 on 1 and 57 DF,  p-value: 0.312</code></pre>
 <p>Again, I could now pipe this tidied coefficients data frame to a <strong>ggplot2</strong> call, using saying <code>geom_pointrange()</code> to plot the error bars. Feel free to practice doing this yourself now, but we’ll get to some explicit examples further below.</p>
 <p><strong>broom</strong> has a couple of other useful functions too. For example, <code>broom::glance()</code> summarises the model “meta” data (R<sup>2</sup>, AIC, etc.) in a data frame.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols1_glance_115f31eb2e9443105c45244d6a09ad2a">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(ols1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(ols1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
   r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
@@ -435,13 +411,13 @@ F-statistic:  1.04 on 1 and 57 DF,  p-value: 0.312</code></pre>
 <h4 data-number="9.2.3.1" class="anchored" data-anchor-id="create-a-new-data-frame"><span class="header-section-number">9.2.3.1</span> 1) Create a new data frame</h4>
 <p>Recall that we can keep multiple objects in memory in R. So we can easily create a new data frame that excludes Jabba using, say, <strong>dplyr</strong> (<a href="https://raw.githack.com/uo-ec607/lectures/master/05-tidyverse/05-tidyverse.html">lecture</a>) or <strong>data.table</strong> (<a href="https://raw.githack.com/uo-ec607/lectures/master/05-datatable/05-datatable.html">lecture</a>). For these lecture notes, I’ll stick with <strong>dplyr</strong> commands since that’s where our starwars dataset is coming from. But it would be trivial to switch to <strong>data.table</strong> if you prefer.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols2_3c012a8e4f6fe0a6fec764c95ea0752f">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>starwars2 <span class="ot">=</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  starwars <span class="sc">%&gt;%</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">!=</span> <span class="st">"Jabba Desilijic Tiure"</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(!(grepl("Jabba", name))) ## Regular expressions also work</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>ols2 <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars2)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>starwars2 <span class="ot">=</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  starwars <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">!=</span> <span class="st">"Jabba Desilijic Tiure"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(!(grepl("Jabba", name))) ## Regular expressions also work</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>ols2 <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars2)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -469,8 +445,8 @@ F-statistic: 77.18 on 1 and 56 DF,  p-value: 4.018e-12</code></pre>
 <h4 data-number="9.2.3.2" class="anchored" data-anchor-id="subset-directly-in-the-lm-call"><span class="header-section-number">9.2.3.2</span> 2) Subset directly in the <code>lm()</code> call</h4>
 <p>Running a regression directly on a subsetted data frame is equally easy.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols2a_b37bd6db080d8721ea3486bd354b1b30">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ols2a <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>(<span class="fu">grepl</span>(<span class="st">"Jabba"</span>, name))))</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols2a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ols2a <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>(<span class="fu">grepl</span>(<span class="st">"Jabba"</span>, name))))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols2a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -506,11 +482,11 @@ F-statistic: 77.18 on 1 and 56 DF,  p-value: 4.018e-12</code></pre>
 <h3 data-number="9.3.1" class="anchored" data-anchor-id="robust-standard-errors"><span class="header-section-number">9.3.1</span> Robust standard errors</h3>
 <p>You can obtain heteroskedasticity-consistent (HC) “robust” standard errors using <code>estimatr::lm_robust()</code>. Let’s illustrate by implementing a robust version of the <code>ols1</code> regression that we ran earlier. Note that <strong>estimatr</strong> models automatically print in pleasing tidied/summary format, although you can certainly pipe them to <code>tidy()</code> too.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols1_robust_ed636226aada2c47ff98502d11302a02">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(estimatr) ## Already loaded</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>ols1_robust <span class="ot">=</span> <span class="fu">lm_robust</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tidy(ols1_robust, conf.int = TRUE) ## Could tidy too</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>ols1_robust</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(estimatr) ## Already loaded</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>ols1_robust <span class="ot">=</span> <span class="fu">lm_robust</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tidy(ols1_robust, conf.int = TRUE) ## Could tidy too</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>ols1_robust</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              Estimate  Std. Error    t value     Pr(&gt;|t|)    CI Lower
 (Intercept) -13.810314 23.45557632 -0.5887859 5.583311e-01 -60.7792950
@@ -522,8 +498,8 @@ height       0.8146273 57</code></pre>
 </div>
 <p>The package defaults to using Eicker-Huber-White robust standard errors, commonly referred to as “HC2” standard errors. You can easily specify alternate methods using the <code>se_type =</code> argument.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> For example, you can specify Stata robust standard errors if you want to replicate code or results from that language. (See <a href="https://declaredesign.org/r/estimatr/articles/stata-wls-hat.html">here</a> for more details on why this isn’t the default and why Stata’s robust standard errors differ from those in R and Python.)</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols1_robust_stata_158e115a323b335f7ea56daf79e9c56b">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(<span class="fu">list</span>(m0,ols1_robust,m0,m0),<span class="at">vcov =</span> <span class="fu">c</span>(<span class="st">"classical"</span>,<span class="st">"classical"</span>,<span class="st">"HC2"</span>,<span class="st">"stata"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(<span class="fu">list</span>(m0,ols1_robust,m0,m0),<span class="at">vcov =</span> <span class="fu">c</span>(<span class="st">"classical"</span>,<span class="st">"classical"</span>,<span class="st">"HC2"</span>,<span class="st">"stata"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: When the `vcov` argument is set to "iid", "classical", or "constant",
 `modelsummary` extracts the default variance-covariance matrix from the model
@@ -646,7 +622,7 @@ to customize the standard error labels in their regression tables.</code></pre>
 <h3 data-number="9.3.2" class="anchored" data-anchor-id="geclusterte-standardfehler"><span class="header-section-number">9.3.2</span> geclusterte Standardfehler</h3>
 <p>Clustered standard errors is an issue that most commonly affects panel data. As such, I’m going to hold off discussing clustering until we get to the <a href="#high-dimensional-fes-and-multiway-clustering">panel data section</a> below. But here’s a quick example of clustering with <code>estimatr::lm_robust()</code> just to illustrate:</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols1_robust_clustered_d0f7374321c49560457d4dbeb0519861">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>estimatr<span class="sc">::</span><span class="fu">lm_robust</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars, <span class="at">clusters =</span> homeworld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>estimatr<span class="sc">::</span><span class="fu">lm_robust</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars, <span class="at">clusters =</span> homeworld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              Estimate  Std. Error    t value     Pr(&gt;|t|)    CI Lower
 (Intercept) -9.3014938 28.84436408 -0.3224718 0.7559158751 -76.6200628
@@ -662,10 +638,10 @@ height       0.8410291 8.195141</code></pre>
 <h2 data-number="9.4" class="anchored" data-anchor-id="dummy-variables-and-interaction-terms"><span class="header-section-number">9.4</span> Dummy variables and interaction terms</h2>
 <p>For the next few sections, it will prove convenient to demonstrate using a subsample of the starwars data that comprises only the human characters. Let’s quickly create this new dataset before continuing.</p>
 <div class="cell" data-hash="09_reg2_cache/html/humans_3bf21b1bb867bc802f5daabfb78b5f78">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>humans <span class="ot">=</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  starwars <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species<span class="sc">==</span><span class="st">"Human"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>humans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>humans <span class="ot">=</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  starwars <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species<span class="sc">==</span><span class="st">"Human"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>humans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 35 × 14
    name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
@@ -690,7 +666,7 @@ height       0.8410291 8.195141</code></pre>
 <p>Dummy variables are a core component of many regression models. However, these can be a pain to create in some statistical languages, since you first have to tabulate a whole new matrix of binary variables and then append it to the original data frame. In contrast, R has a very convenient framework for creating and evaluating dummy variables in a regression: Simply specify the variable of interest as a <a href="https://r4ds.had.co.nz/factors.html">factor</a>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>Here’s an example where we explicitly tell R that “gender” is a factor. Since I don’t plan on reusing this model, I’m just going to print the results to screen rather than saving it to my global environment.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols_dv_08c4cde685dcf27ee380e46a0fa5c6eb">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mass <span class="sc">~</span> height <span class="sc">+</span> <span class="fu">as.factor</span>(gender), <span class="at">data =</span> humans))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mass <span class="sc">~</span> height <span class="sc">+</span> <span class="fu">as.factor</span>(gender), <span class="at">data =</span> humans))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -716,9 +692,9 @@ F-statistic: 7.587 on 2 and 19 DF,  p-value: 0.003784</code></pre>
 </div>
 <p>Okay, I should tell you that I’m actually making things more complicated than they need to be with the heavy-handed emphasis on factors. R is “friendly” and tries to help whenever it thinks you have misspecified a function or variable. While this is something to be <a href="https://rawgit.com/grantmcdermott/R-intro/master/rIntro.html#r_tries_to_guess_what_you_meant">aware of</a>, normally It Just Works<sup>TM</sup>. A case in point is that we don’t actually <em>need</em> to specify a string (i.e.&nbsp;character) variable as a factor in a regression. R will automatically do this for you regardless, since it’s the only sensible way to include string variables in a regression.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols_dv2_e49af16e82f15dff771e46c1624b01d9">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Use the non-factored version of "gender" instead; R knows it must be ordered</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="do">## for it to be included as a regression variable</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mass <span class="sc">~</span> height <span class="sc">+</span> gender, <span class="at">data =</span> humans))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Use the non-factored version of "gender" instead; R knows it must be ordered</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="do">## for it to be included as a regression variable</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mass <span class="sc">~</span> height <span class="sc">+</span> gender, <span class="at">data =</span> humans))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -756,8 +732,8 @@ F-statistic: 7.587 on 2 and 19 DF,  p-value: 0.003784</code></pre>
 <p><span class="math display">\[Mass = \beta_0 + \beta_1 D_{Male} + \beta_2 Height + \beta_3 D_{Male} \times Height\]</span></p>
 <p>To implement this in R, we simply run the following,</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols_ie_f36b0f93dcb2a9ec0e6bb8860c1bf200">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ols_ie <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> gender <span class="sc">*</span> height, <span class="at">data =</span> humans)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols_ie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ols_ie <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> gender <span class="sc">*</span> height, <span class="at">data =</span> humans)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols_ie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -792,10 +768,10 @@ F-statistic: 4.801 on 3 and 18 DF,  p-value: 0.01254</code></pre>
 <h4 data-number="9.5.1.1" class="anchored" data-anchor-id="simple-fe-model"><span class="header-section-number">9.5.1.1</span> Simple FE model</h4>
 <p>The package’s main function is <code>fixest::feols()</code>, which is used for estimating linear fixed effects models. The syntax is such that you first specify the regression model as per normal, and then list the fixed effect(s) after a <code>|</code>. An example may help to illustrate. Let’s say that we again want to run our simple regression of mass on height, but this time control for species-level fixed effects.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <div class="cell" data-hash="09_reg2_cache/html/ols_fe_099ae4453a8e008c183c2034483986b1">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(fixest) ## Already loaded</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>ols_fe <span class="ot">=</span> <span class="fu">feols</span>(mass <span class="sc">~</span> height <span class="sc">|</span> species, <span class="at">data =</span> starwars) <span class="do">## Fixed effect(s) go after the "|"</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>ols_fe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(fixest) ## Already loaded</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>ols_fe <span class="ot">=</span> <span class="fu">feols</span>(mass <span class="sc">~</span> height <span class="sc">|</span> species, <span class="at">data =</span> starwars) <span class="do">## Fixed effect(s) go after the "|"</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>ols_fe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OLS estimation, Dep. Var.: mass
 Observations: 58 
@@ -814,8 +790,8 @@ RMSE: 9.69063     Adj. R2: 0.99282
 <div class="column" style="width:48%;">
 <p>Specify SEs at estimation time.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols_fe_standard_et_bab737596251e47e920b85d2d72f6987">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(mass <span class="sc">~</span> height <span class="sc">|</span> species, </span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> starwars, <span class="at">se =</span> <span class="st">'standard'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(mass <span class="sc">~</span> height <span class="sc">|</span> species, </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> starwars, <span class="at">se =</span> <span class="st">'standard'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OLS estimation, Dep. Var.: mass
 Observations: 58 
@@ -834,8 +810,8 @@ RMSE: 9.69063     Adj. R2: 0.99282
 </div><div class="column" style="width:48%;">
 <p>Adjust SEs of an existing model (<code>ols_fe</code>) on the fly.</p>
 <div class="cell" data-hash="09_reg2_cache/html/ols_fe_standard_otf_6dc31c0172027511f09bde3f43c6d32a">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols_fe, </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">se =</span> <span class="st">'standard'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols_fe, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">se =</span> <span class="st">'standard'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OLS estimation, Dep. Var.: mass
 Observations: 58 
@@ -854,15 +830,15 @@ RMSE: 9.69063     Adj. R2: 0.99282
 <p>&nbsp;<!-- an empty Div again to give some extra space before the next block --></p>
 <p>Before continuing, let’s quickly save a “tidied” data frame of the coefficients for later use. I’ll use iid standard errors again, if only to show you that the <code>broom::tidy()</code> method for <code>fixest</code> objects also accepts an <code>se</code> argument. This basically just provides another convenient way for you to adjust standard errors for your models on the fly.</p>
 <div class="cell" data-hash="09_reg2_cache/html/coefs_fe_20c08d5ce87ff919600df3029ab406ef">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs_fe = tidy(summary(ols_fe, se = 'standard'), conf.int = TRUE) ## same as below</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>coefs_fe <span class="ot">=</span> <span class="fu">tidy</span>(ols_fe, <span class="at">se =</span> <span class="st">'standard'</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs_fe = tidy(summary(ols_fe, se = 'standard'), conf.int = TRUE) ## same as below</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>coefs_fe <span class="ot">=</span> <span class="fu">tidy</span>(ols_fe, <span class="at">se =</span> <span class="st">'standard'</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="comparing-our-model-coefficients" class="level4" data-number="9.5.1.2">
 <h4 data-number="9.5.1.2" class="anchored" data-anchor-id="comparing-our-model-coefficients"><span class="header-section-number">9.5.1.2</span> Comparing our model coefficients</h4>
 <p>We’ll get to <a href="https://raw.githack.com/uo-ec607/lectures/master/08-regression/08-regression.html#Presentation">model presentation</a> at the very end of the lecture. For now, I want to quickly flag that <strong>fixest</strong> provides some really nice, built-in functions for comparing models. For example, you can get regression tables with <a href="https://lrberge.github.io/fixest/articles/exporting_tables.html"><code>fixest::etable()</code></a>.</p>
 <div class="cell" data-hash="09_reg2_cache/html/etable_3eb8d366357a8897e67ab4e445d8aec2">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">etable</span>(ols_fe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">etable</span>(ols_fe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                            ols_fe
 Dependent Var.:               mass
@@ -899,8 +875,8 @@ Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 data-number="9.6.1" class="anchored" data-anchor-id="generalised-linear-models-logit-etc."><span class="header-section-number">9.6.1</span> Generalised linear models (logit, etc.)</h3>
 <p>To run a generalised linear model (GLM), we use the in-built <code>glm()</code> function and simply assign an appropriate <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/family.html">family</a> (which describes the error distribution and corresponding link function). For example, here’s a simple logit model.</p>
 <div class="cell" data-hash="09_reg2_cache/html/logit_0df890db7c5b88cd6b03c9d376b9ece5">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>glm_logit <span class="ot">=</span> <span class="fu">glm</span>(am <span class="sc">~</span> cyl <span class="sc">+</span> hp <span class="sc">+</span> wt, <span class="at">data =</span> mtcars, <span class="at">family =</span> binomial)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_logit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>glm_logit <span class="ot">=</span> <span class="fu">glm</span>(am <span class="sc">~</span> cyl <span class="sc">+</span> hp <span class="sc">+</span> wt, <span class="at">data =</span> mtcars, <span class="at">family =</span> binomial)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_logit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -930,7 +906,7 @@ Number of Fisher Scoring iterations: 8</code></pre>
 </div>
 <p>Alternatively, you may recall me saying earlier that <strong>fixest</strong> supports nonlinear models. So you could (in this case, without fixed-effects) also estimate:</p>
 <div class="cell" data-hash="09_reg2_cache/html/logit_fixest_10d5adeb32a36667a6a7213f5f1015aa">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feglm</span>(am <span class="sc">~</span> cyl <span class="sc">+</span> hp <span class="sc">+</span> wt, <span class="at">data =</span> mtcars, <span class="at">family =</span> binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feglm</span>(am <span class="sc">~</span> cyl <span class="sc">+</span> hp <span class="sc">+</span> wt, <span class="at">data =</span> mtcars, <span class="at">family =</span> binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>GLM estimation, family = binomial, Dep. Var.: am
 Observations: 32 
@@ -957,14 +933,14 @@ Log-Likelihood: -4.92075   Adj. Pseudo R2: 0.633551
 <p>The <strong>margins</strong> package (<a href="https://cran.r-project.org/web/packages/margins">link</a>), which is modeled on its namesake in Stata, is great for obtaining marginal effects across an entire range of models.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> You can read more in the package <a href="https://cran.r-project.org/web/packages/margins/vignettes/Introduction.html">vignette</a>, but here’s a very simple example to illustrate.</p>
 <p>Consider our interaction effects regression <a href="#interaction-effects">from earlier</a>, where we were interested in how people’s mass varied by height and gender. To get the average marginal effect (AME) of these dependent variables, we can just use the <code>margins::margins()</code> function.</p>
 <div class="cell" data-hash="09_reg2_cache/html/margins0_6091719abea4ae57566f40e837e14a55">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(margins) ## Already loaded</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>ols_ie_marg <span class="ot">=</span> <span class="fu">margins</span>(ols_ie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(margins) ## Already loaded</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>ols_ie_marg <span class="ot">=</span> <span class="fu">margins</span>(ols_ie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Like a normal regression object, we can get a nice print-out display of the above object by summarising or tidying it.</p>
 <div class="cell" data-hash="09_reg2_cache/html/margins1_cf7666facdd776f2da78d0ae100ef1a5">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(ols_ie_marg) ## Same effect</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ols_ie_marg, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(ols_ie_marg) ## Same effect</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ols_ie_marg, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   term            estimate std.error statistic p.value conf.low conf.high
@@ -975,12 +951,12 @@ Log-Likelihood: -4.92075   Adj. Pseudo R2: 0.633551
 </div>
 <p>If we want to compare marginal effects at specific values — e.g.&nbsp;how the AME of height on mass differs across genders — then that’s easily done too.</p>
 <div class="cell" data-hash="09_reg2_cache/html/margins2_3f5e585b4e51ae48ccc8b6b74922c39a">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ols_ie <span class="sc">%&gt;%</span> </span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">margins</span>(</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">variables =</span> <span class="st">"height"</span>, <span class="do">## The main variable we're interested in</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">at =</span> <span class="fu">list</span>(<span class="at">gender =</span> <span class="fu">c</span>(<span class="st">"masculine"</span>, <span class="st">"feminine"</span>)) <span class="do">## How the main variable is modulated by at specific values of a second variable</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="do">## Tidy it (optional)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>ols_ie <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">margins</span>(</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">variables =</span> <span class="st">"height"</span>, <span class="do">## The main variable we're interested in</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">at =</span> <span class="fu">list</span>(<span class="at">gender =</span> <span class="fu">c</span>(<span class="st">"masculine"</span>, <span class="st">"feminine"</span>)) <span class="do">## How the main variable is modulated by at specific values of a second variable</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="do">## Tidy it (optional)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 9
   term   at.variable at.value  estimate std.er…¹ stati…² p.value conf.…³ conf.…⁴
@@ -993,12 +969,12 @@ Log-Likelihood: -4.92075   Adj. Pseudo R2: 0.633551
 </div>
 <p>If you’re the type of person who prefers visualizations (like me), then you should consider <code>margins::cplot()</code>, which is the package’s in-built method for constructing <em>conditional</em> effect plots.</p>
 <div class="cell" data-hash="09_reg2_cache/html/unnamed-chunk-1_9272a7c24999309553b2bc26a285c221">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot marginaleffects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot marginaleffects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In this case,it doesn’t make much sense to read a lot into the larger standard errors on the female group; that’s being driven by a very small sub-sample size.</p>
 <p>Finally, you can also use <code>cplot()</code> to plot the predicted values of your outcome variable (here: “mass”), conditional on one of your dependent variables. For example:</p>
 <div class="cell" data-hash="09_reg2_cache/html/margins4_9559c5257445e7b3e56ecc4cc2df17d3">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="nestedmarg" class="level3" data-number="9.7.2">
@@ -1006,9 +982,9 @@ Log-Likelihood: -4.92075   Adj. Pseudo R2: 0.633551
 <p>I’ll keep this one brief, but I wanted to mention one of my favourite R shortcuts: Obtaining the full marginal effects for interaction terms by using the <code>/</code> expansion operator. I’ve <a href="https://twitter.com/grant_mcdermott/status/1202084676439085056?s=20">tweeted</a> about this and even wrote an <a href="https://grantmcdermott.com/2019/12/16/interaction-effects/">whole blog post</a> about it too (which you should totally read). But the very short version is that you can switch out the normal <code>f1 * x2</code> interaction terms syntax for <code>f1 / x2</code> and it automatically returns the full marginal effects. (The formal way to describe it is that the model variables have been “nested”.)</p>
 <p>Here’s a super simple example, using the same interaction effects model from before.</p>
 <div class="cell" data-hash="09_reg2_cache/html/nested_4a1b30727b6f78a0ad32aa7e8d459f70">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ols_ie = lm(mass ~ gender * height, data = humans) ## Original model</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>ols_ie_marg2 <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> gender <span class="sc">/</span> height, <span class="at">data =</span> humans)</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ols_ie_marg2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ols_ie = lm(mass ~ gender * height, data = humans) ## Original model</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>ols_ie_marg2 <span class="ot">=</span> <span class="fu">lm</span>(mass <span class="sc">~</span> gender <span class="sc">/</span> height, <span class="at">data =</span> humans)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ols_ie_marg2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 7
   term                   estimate std.error statistic p.value  conf.low conf.h…¹
@@ -1028,275 +1004,6 @@ Log-Likelihood: -4.92075   Adj. Pseudo R2: 0.633551
 <h2 data-number="9.8" class="anchored" data-anchor-id="presentation"><span class="header-section-number">9.8</span> Presentation</h2>
 <section id="tables" class="level3" data-number="9.8.1">
 <h3 data-number="9.8.1" class="anchored" data-anchor-id="tables"><span class="header-section-number">9.8.1</span> Tables</h3>
-<section id="regression-tables" class="level4" data-number="9.8.1.1">
-<h4 data-number="9.8.1.1" class="anchored" data-anchor-id="regression-tables"><span class="header-section-number">9.8.1.1</span> Regression tables</h4>
-<p>There are loads of <a href="https://hughjonesd.github.io/huxtable/design-principles.html">different options</a> here. We’ve already seen the excellent <code>etable()</code> function from <strong>fixest</strong> above.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> However, my own personal favourite tool or creating and exporting regression tables is the <strong>modelsummary</strong> package (<a href="https://vincentarelbundock.github.io/modelsummary">link</a>). It is extremely flexible and handles all manner of models and output formats. <strong>modelsummary</strong> also supports automated coefficient plots and data summary tables, which I’ll get back to in a moment. The <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html">documentation</a> is outstanding and you should read it, but here is a bare-boned example just to demonstrate.</p>
-<div class="cell" data-hash="09_reg2_cache/html/msum_6df7710d645cb0fc041d83a17efc610a">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(modelsummary) ## Already loaded</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Note: msummary() is an alias for modelsummary()</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="fu">msummary</span>(<span class="fu">list</span>(ols1, ols_ie, ols_fe))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Model 1 </th>
-   <th style="text-align:center;"> Model 2 </th>
-   <th style="text-align:center;"> Model 3 </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:center;"> −13.810 </td>
-   <td style="text-align:center;"> −61.000 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:center;"> (111.155) </td>
-   <td style="text-align:center;"> (204.057) </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> height </td>
-   <td style="text-align:center;"> 0.639 </td>
-   <td style="text-align:center;"> 0.733 </td>
-   <td style="text-align:center;"> 0.975 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:center;"> (0.626) </td>
-   <td style="text-align:center;"> (1.274) </td>
-   <td style="text-align:center;"> (0.044) </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> gendermasculine </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> −15.722 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> (219.544) </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> gendermasculine × height </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> 0.163 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;box-shadow: 0px 1px">  </td>
-   <td style="text-align:center;box-shadow: 0px 1px">  </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> (1.349) </td>
-   <td style="text-align:center;box-shadow: 0px 1px">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Num.Obs. </td>
-   <td style="text-align:center;"> 59 </td>
-   <td style="text-align:center;"> 22 </td>
-   <td style="text-align:center;"> 58 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> R2 </td>
-   <td style="text-align:center;"> 0.018 </td>
-   <td style="text-align:center;"> 0.444 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> R2 Adj. </td>
-   <td style="text-align:center;"> 0.001 </td>
-   <td style="text-align:center;"> 0.352 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AIC </td>
-   <td style="text-align:center;"> 777.0 </td>
-   <td style="text-align:center;"> 188.9 </td>
-   <td style="text-align:center;"> 432.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> BIC </td>
-   <td style="text-align:center;"> 783.2 </td>
-   <td style="text-align:center;"> 194.4 </td>
-   <td style="text-align:center;"> 436.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Log.Lik. </td>
-   <td style="text-align:center;"> −385.503 </td>
-   <td style="text-align:center;"> −89.456 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F </td>
-   <td style="text-align:center;"> 1.040 </td>
-   <td style="text-align:center;"> 4.801 </td>
-   <td style="text-align:center;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> RMSE </td>
-   <td style="text-align:center;"> 166.50 </td>
-   <td style="text-align:center;"> 14.11 </td>
-   <td style="text-align:center;"> 9.69 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Std.Errors </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> by: species </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FE: species </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> X </td>
-  </tr>
-</tbody>
-</table>
-
-</div>
-</div>
-<p>One nice thing about <strong>modelsummary</strong> is that it plays very well with R Markdown and will automatically coerce your tables to the format that matches your document output: HTML, LaTeX/PDF, RTF, etc. Of course, you can also <a href="https://vincentarelbundock.github.io/modelsummary/#saving-and-viewing-output-formats">specify the output type</a> if you aren’t using R Markdown and want to export a table for later use. Finally, you can even specify special table formats like <em>threepartable</em> for LaTeX and, provided that you have called the necessary packages in your preamble, it will render correctly (see example <a href="https://github.com/grantmcdermott/lecturenotes">here</a>.</p>
-</section>
-<section id="summary-tables" class="level4" data-number="9.8.1.2">
-<h4 data-number="9.8.1.2" class="anchored" data-anchor-id="summary-tables"><span class="header-section-number">9.8.1.2</span> Summary tables</h4>
-<p>A variety of summary tables — balance, correlation, etc. — can be produced by the companion set of <code>modelsummary::datasummary*()</code> functions. Again, you should read the <a href="https://vincentarelbundock.github.io/modelsummary/articles/datasummary.html">documentation</a> to see all of the options. But here’s an example of a very simple balance table using a subset of our “humans” data frame.</p>
-<div class="cell" data-hash="09_reg2_cache/html/datsum_24368aeb6637c755014837f5c593938c">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datasummary_balance</span>(<span class="sc">~</span> gender,</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> humans <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(height<span class="sc">:</span>mass, birth_year, eye_color, gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
- <thead>
-<tr>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="2"></th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">feminine (N=9)</div></th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">masculine (N=26)</div></th>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="2"></th>
-</tr>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:left;">    </th>
-   <th style="text-align:right;"> Mean </th>
-   <th style="text-align:right;"> Std. Dev. </th>
-   <th style="text-align:right;"> Mean </th>
-   <th style="text-align:right;"> Std. Dev. </th>
-   <th style="text-align:right;"> Diff. in Means </th>
-   <th style="text-align:right;"> Std. Error </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> height </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:right;"> 160.2 </td>
-   <td style="text-align:right;"> 7.0 </td>
-   <td style="text-align:right;"> 182.3 </td>
-   <td style="text-align:right;"> 8.2 </td>
-   <td style="text-align:right;"> 22.1 </td>
-   <td style="text-align:right;"> 3.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> mass </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:right;"> 56.3 </td>
-   <td style="text-align:right;"> 16.3 </td>
-   <td style="text-align:right;"> 87.0 </td>
-   <td style="text-align:right;"> 16.5 </td>
-   <td style="text-align:right;"> 30.6 </td>
-   <td style="text-align:right;"> 10.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;box-shadow: 0px 1px"> birth_year </td>
-   <td style="text-align:left;box-shadow: 0px 1px">  </td>
-   <td style="text-align:right;box-shadow: 0px 1px"> 46.4 </td>
-   <td style="text-align:right;box-shadow: 0px 1px"> 18.8 </td>
-   <td style="text-align:right;box-shadow: 0px 1px"> 55.2 </td>
-   <td style="text-align:right;box-shadow: 0px 1px"> 26.0 </td>
-   <td style="text-align:right;box-shadow: 0px 1px"> 8.8 </td>
-   <td style="text-align:right;box-shadow: 0px 1px"> 10.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:right;"> N </td>
-   <td style="text-align:right;"> Pct. </td>
-   <td style="text-align:right;"> N </td>
-   <td style="text-align:right;"> Pct. </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> eye_color </td>
-   <td style="text-align:left;"> blue </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 33.3 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 34.6 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> blue-gray </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0.0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 3.8 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> brown </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 55.6 </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 46.2 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> dark </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0.0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 3.8 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> hazel </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 11.1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 3.8 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> yellow </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0.0 </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 7.7 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-  </tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</section>
 </section>
 <section id="figures" class="level3" data-number="9.8.2">
 <h3 data-number="9.8.2" class="anchored" data-anchor-id="figures"><span class="header-section-number">9.8.2</span> Figures</h3>
@@ -1304,30 +1011,30 @@ Log-Likelihood: -4.92075   Adj. Pseudo R2: 0.633551
 <h4 data-number="9.8.2.1" class="anchored" data-anchor-id="coefficient-plots"><span class="header-section-number">9.8.2.1</span> Coefficient plots</h4>
 <p>We’ve already worked through an example of how to extract and compare model coefficients <a href="#comparing-our-model-coefficients">here</a>. I use this “manual” approach to visualizing coefficient estimates all the time. However, our focus on <strong>modelsummary</strong> in the preceding section provides a nice segue to another one of the package’s features: <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html"><code>modelplot()</code></a>. Consider the following, which shows both the degree to which <code>modelplot()</code> automates everything and the fact that it readily accepts regular <strong>ggplot2</strong> syntax.</p>
 <div class="cell" data-hash="09_reg2_cache/html/modplot_03e67d294f1c1747622fe44756b7e4b5">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(modelsummary) ## Already loaded</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">=</span> <span class="fu">list</span>(<span class="st">'FE, no clustering'</span> <span class="ot">=</span> <span class="fu">summary</span>(ols_fe, <span class="at">se =</span> <span class="st">'standard'</span>))</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(mods) <span class="sc">+</span></span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">## You can further modify with normal ggplot2 commands...</span></span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"'Effect' of height on mass"</span>,</span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing fixed effect models"</span></span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(modelsummary) ## Already loaded</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">=</span> <span class="fu">list</span>(<span class="st">'FE, no clustering'</span> <span class="ot">=</span> <span class="fu">summary</span>(ols_fe, <span class="at">se =</span> <span class="st">'standard'</span>))</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(mods) <span class="sc">+</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">## You can further modify with normal ggplot2 commands...</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"'Effect' of height on mass"</span>,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing fixed effect models"</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="09_reg2_files/figure-html/modplot-1.png" class="img-fluid" width="2100"></p>
 </div>
 </div>
 <p>Or, here’s another example where we compare the (partial) Masculine × Height coefficient from our earlier interaction model, with the (full) marginal effect that we obtained later on.</p>
 <div class="cell" data-hash="09_reg2_cache/html/modplot2_26cb3f39b70336abdb163decc4b7dad0">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>ie_mods <span class="ot">=</span> <span class="fu">list</span>(<span class="st">'Partial effect'</span> <span class="ot">=</span> ols_ie, <span class="st">'Marginal effect'</span> <span class="ot">=</span> ols_ie_marg2)</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(ie_mods, <span class="at">coef_map =</span> <span class="fu">c</span>(<span class="st">"gendermasculine:height"</span> <span class="ot">=</span> <span class="st">"Masculine × Height"</span>)) <span class="sc">+</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"'Effect' of height on mass"</span>,</span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing partial vs marginal effects"</span></span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>ie_mods <span class="ot">=</span> <span class="fu">list</span>(<span class="st">'Partial effect'</span> <span class="ot">=</span> ols_ie, <span class="st">'Marginal effect'</span> <span class="ot">=</span> ols_ie_marg2)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(ie_mods, <span class="at">coef_map =</span> <span class="fu">c</span>(<span class="st">"gendermasculine:height"</span> <span class="ot">=</span> <span class="st">"Masculine × Height"</span>)) <span class="sc">+</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"'Effect' of height on mass"</span>,</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing partial vs marginal effects"</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
 Zeichensatzfamilie in der Windows Zeichensatzdatenbank nicht gefunden</code></pre>
@@ -1395,22 +1102,6 @@ Zeichensatzfamilie in der Windows Zeichensatzdatenbank nicht gefunden</code></pr
 </div>
 </div>
 </section>
-<section id="prediction-and-model-validation" class="level4" data-number="9.8.2.2">
-<h4 data-number="9.8.2.2" class="anchored" data-anchor-id="prediction-and-model-validation"><span class="header-section-number">9.8.2.2</span> Prediction and model validation</h4>
-<p>The easiest way to visually inspect model performance (i.e.&nbsp;validation and prediction) is with <strong>ggplot2</strong>. In particular, you should already be familiar with <code>geom_smooth()</code> from our earlier lectures, which allows you to feed a model type directly in the plot call. For instance, using our <code>starwars2</code> data frame that excludes that slimy outlier, Jabba the Hutt:</p>
-<div class="cell" data-hash="09_reg2_cache/html/smooth_bef9b752cc13836f217a04e2fb86f245">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(starwars2, <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">y =</span> mass)) <span class="sc">+</span> </span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="do">## See ?geom_smooth for other methods/options</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="09_reg2_files/figure-html/smooth-1.png" class="img-fluid" width="2100"></p>
-</div>
-</div>
-<p>Now, I should say that <code>geom_smooth()</code> isn’t particularly helpful when you’ve already constructed a (potentially complicated) model outside of the plot call. Similarly, it’s not useful when you want to use a model for making predictions on a <em>new</em> dataset (e.g.&nbsp;evaluating out-of-sample fit).</p>
-</section>
 </section>
 </section>
 <section id="further-resources" class="level2" data-number="9.9">
@@ -1442,7 +1133,6 @@ Zeichensatzfamilie in der Windows Zeichensatzdatenbank nicht gefunden</code></pr
 <li id="fn6" role="doc-endnote"><p>If you want a deep dive into the theory with even more simulations, then <a href="http://sandwich.r-forge.r-project.org/articles/jss_2020.html">this paper</a> by the authors of the <strong>sandwich</strong> paper is another excellent resource.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7" role="doc-endnote"><p>As I mentioned above, <strong>plm</strong> also handles fixed effects (and pooling) models. However, I prefer <strong>fixest</strong> and <strong>lfe</strong> for the reasons already discussed.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8" role="doc-endnote"><p>I do, however, want to flag that it does <a href="https://github.com/leeper/margins/issues/128">not yet support</a> <strong>fixest</strong> (or <strong>lfe</strong>) models. But there are <a href="https://github.com/leeper/margins/issues/128#issuecomment-636372023">workarounds</a> in the meantime.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9" role="doc-endnote"><p>Note that <code>etable()</code> is limited to fixest models only.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

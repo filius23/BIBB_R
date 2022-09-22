@@ -40,9 +40,12 @@ theme_set(theme_x)
 
 Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich fünf Fällen. Mit dem `data.frame` Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2 
 ```{r}
-dat1 <- data.frame(id   = 1:5,
-                   var1 = c(1,2,7,8,9),
-                   var2 = c(2,4,7,6,25))
+dat1 <- data.frame(id   = 1:8,
+                   var1 = c(2,1,2,5,7, 8, 9,5),
+                   var2 = c(2,2,1,9,7, 4,25,3),
+                   educ = c(3,1,2,2,1, 3, 2,-1),
+                   gend = c(2,1,1,2,1,2,1,2),
+                   x    = c(2,1,2,4,1,NA,NA,NA) )
 dat1
 ```
 
@@ -92,6 +95,7 @@ summary(m1)$coefficients
 Mit `geom_smooth(method = "lm")` können wir Regressionsgeraden auch in `{ggplot2}` darstellen:
 Unser Modell mit `var1` und `var2` können wir so darstellen:
 ```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+library(ggplot2)
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
   geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  
@@ -107,10 +111,13 @@ Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensa
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
   geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
-  geom_text(data = dat1 %>% filter(var2 > 20), aes(y = var2+2, label = id), color = "sienna1")
+  geom_text(data = dat1 %>% filter(var2 > 20), aes(y = var2+3, label = id), color = "sienna1")
 ```
 
-Wir können nämlich einzelne `geom_` auch nur für ein Subset angeben - dazu vergeben wir `data =` neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl `ggplot()`) und setzen darin einen `filter()`. Außerdem verschieben wir mit `var2+2` das Label etwas über den Punkt.
+Wir können nämlich einzelne `geom_` auch nur für ein Subset angeben - dazu vergeben wir `data =` neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl `ggplot()`) und setzen darin einen `filter()`. Außerdem verschieben wir mit `var2+3` das Label etwas über den Punkt.
+
+
+### [Übung](#reg1) 
 
 
 ## Modelle nur für manche Fälle berechnen
@@ -119,7 +126,7 @@ Wenn wir jetzt das Modell nochmal berechnen wollen, haben wir zwei Möglichkeite
 
 ### Neuen data.frame erstellen
 
-Wir erinnern uns, dass wir in R mehrere `data.frame`-Objekte im Speicher halten können. Daher können wir leicht einen neuen `data.frame` erstellen, der nur die Beobachtungen mit `var2 < 20` enthält und diesen dann für unseren `lm()`-Befehl verwenden:
+Wir können in R mehrere `data.frame`-Objekte im Speicher halten. Also können wir leicht einen neuen `data.frame` erstellen, der nur die Beobachtungen mit `var2 < 20` enthält und diesen dann für unseren `lm()`-Befehl verwenden:
 
 ```{r ols2}
 dat1_u20 <- dat1 %>% filter(var2<20)
@@ -136,9 +143,23 @@ m2b <- lm(var2~ var1, data = dat1 %>% filter(var2<20))
 summary(m2b)
 ```
 
+...übrigens: wir können auch in `geom_smooth()` filtern:
+```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
+  geom_smooth(data = dat1 %>% filter(var2<20),
+    method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  +
+  geom_point(size = 2) 
+```
+
+
 ## Regressionstabellen
 
-Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich eine Tabelle mit den 
+Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich eine Tabelle an. 
+
+Es gibt zahlreiche Alternativen zur Erstellung von Regressionstabellen, mein persönlicher Favorit ist `modelsummary()` aus dem gleichnamigen Paket [{modelsummary}](https://vincentarelbundock.github.io/modelsummary/).
+Es kommt mit (nahezu) allen Modellarten zurecht und bietet darüber hinaus eine breite Palette an (u.a. auch [Word-Output](#14_tabellenexport.qmd) - dazu später mehr) und auch Koeffizientenplots (auch dazu kommen wir noch).
+Außerdem ist die [Dokumentation](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html).
 
 ```{r}
 #| eval: false
@@ -150,35 +171,144 @@ library(modelsummary)
 modelsummary(list(m1,m2a,m2b))
 ```
 
-...übrigens: wir können auch in `geom_smooth()` filtern:
-```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
-  geom_smooth(data = dat1 %>% filter(var2<20),
-    method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  +
-  geom_point(size = 2) 
+Wir werden uns noch ein bisschen ausführlicher mit den Anpassungsmöglichkeiten für `{modelsummary}` befassen, hier nur schon mal zwei zentrale Optionen:
+
++ mit `stars = T` können wir uns die Signifikanz mit den gebräuchlichen Sternchen-Codes anzeigen lassen (`*`: p < .05 usw.)
++ mit `gof_omit = "IC|RM|Log"` können wir die Goodness of Fit Statistiken ausblenden die `IC`, `RM` oder `Log` im Namen haben (also `AIC`, `BIC`, `RMSE` und die `LogLikelihood`)
+
+```{r}
+modelsummary(list(m1,m2a,m2b),stars = T,gof_omit = "IC|RM|Log")
 ```
 
+### [Übung](#reg2)
 
 ## Kategoriale unabhängige Variablen
 
+Natürlich können wir auch kategoriale unabhängige Variablen in unser Modell mit aufnehmen. 
+Dazu müssen wir aber entsprechende Variable als `factor` definieren - und R so mitteilen, dass die Zahlenwerte nicht numerisch zu interpretieren sind. 
+Wenn wir `educ` aus unserem kleinen Beispiel betrachten - dann steht 1 für einen grundlegenden Bildungsabschluss, 2 für einen mittleren und 3 für einen hohen Bildungsabschluss.
+
+```{r}
+dat1
+m3 <- lm(var2~factor(educ), dat1)
+summary(m3)
+```
+
+Noch schöner ist das aber natürlich, wenn wir `educ` vorher labeln:
+```{r}
+dat1$ed_fct <- factor(dat1$educ, levels = 1:3,
+                        labels = c("basic","medium","high"))
+dat1
+```
+
+Dann verwenden den `factor` im Regressionsbefehl:
+```{r}
+m3 <- lm(var2 ~ ed_fct, dat1)
+summary(m3)
+```
+
+
++ Im Vergleich zu `educ = basic` ist der vorhergesagte Wert für `var2` bei `educ = medium` um `r round(m3$coefficients[2],2)` höher.
+
++ Im Vergleich zu `educ = basic` ist der vorhergesagte Wert für `var2` bei `educ = high` um `r round(m3$coefficients[3],2)` höher.
+
+Wir können die Referenzkategorie auch ändern:
+
+```{r}
+dat1$ed_fct <- relevel(dat1$ed_fct,ref = "medium")
+m3b <- lm(var2 ~ ed_fct, dat1)
+summary(m3b)
+```
++ Im Vergleich zu `educ = medium` ist der vorhergesagte Wert für `var2` bei `educ = basic` um `r round(abs(m3b$coefficients[2]),2)` niedriger.
+
++ Im Vergleich zu `educ = medium` ist der vorhergesagte Wert für `var2` bei `educ = high` um `r round(abs(m3b$coefficients[3]),2)` niedriger.
+
+
+### [Übung](#reg3)
+
+
+## Nur vollständige Zeilen behalten
+
+Wenn wir jetzt aber 
+
+## Mehre unabhängige Variablen
+
+Um mehrere unabhängige Variablen in unser Regressionsmodellen aufzunehmen, geben wir sie mit `+` an:
+```{r}
+m4 <- lm(var2 ~ ed_fct  + var1, dat1)
+summary(m4)
+```
+
+### [Übung](#reg4)
 
 
 ## Interaktionen
+
 ```{r}
-# https://strengejacke.github.io/ggeffects/index.html
+dat1$g_fct <- factor(dat1$gend,levels = 1:2,
+                     labels = c("women","men"))
+m5 <- lm(var2 ~ var1 * g_fct, dat1)
+summary(m5)
 ```
+
+Interaktionen sollten immer visualisiert werden.
+Dafür ist [`{ggeffects}`](https://strengejacke.github.io/ggeffects/index.html) eine große Hilfe:
+
+```{r}
+#| eval: false
+install.packages("ggeffects")
+```
+
+```{r}
+#| out-width: "60%"
+#| out-height: "60%"
+library(ggeffects)
+ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot()
+# oder nebeneinander:
+ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot(facet=TRUE)
+```
+
+Wir können diese Darstellung mit den bekannten `{ggplot2}`-Befehlen verändern:
+
+```{r}
+#| out-width: "60%"
+#| out-height: "60%"
+ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot() + 
+  scale_color_viridis_d(breaks = c("women","men"),labels=c("Frauen","Männer")) +
+  scale_fill_viridis_d(breaks = c("women","men"),labels=c("Frauen","Männer")) +
+  labs(title = "Vorhergesagte Werte für var2",
+       color = "Gender",
+       x = "Werte für var1",
+       y = "Vorhergesagte Werte für var1")
+```
+
+### [Übung](#reg5)
 
 ## Quadratische Terme & Polynome
 
+```{r}
+dat1 %>% filter(id != 7) %>% 
+  ggplot(aes(x = var1, y = var2)) + 
+  geom_smooth(method = "lm", color = "darkblue" ,formula = "y~x+I(x^2)", se=F, size = .65) +
+  geom_point()
+
+m6 <- lm(var2 ~ var1 + I(var1^2), dat1 %>% filter(id != 7))
+summary(m6)
+```
+
+```{r}
+ggpredict(m6, terms = c("var1")) %>% plot()
+```
+### [Übung](#reg6)
 
 ## Gewichtetes Regressionsmodell
 ```{r}
 #| message: false
 #| warning: false
 library(survey)
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta") %>% 
-  filter(F518_SUF < 99998, zpalter < 100)
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta") 
+
+etb18x <- etb18 %>% filter(F518_SUF < 99998, zpalter < 100)
 modl <- "F518_SUF ~ zpalter + I(zpalter^2)"
 m2         <- lm(modl, data = etb18)
 etb18_weighted <- svydesign(id      = ~intnr,
@@ -188,70 +318,53 @@ survey_m2 <- survey::svyglm(modl, family = gaussian(), data = etb18,design = etb
 modelsummary::modelsummary(list("glm()"=m2,"svyglm()"= survey_m2),gof_omit = "RM|IC|Log")
 ```
 
+### [Übung](#reg7)
 
-## Aufgaben
-### Aufgabe 1 
-Erstellen Sie wie folgt einen Beispieldatensatz (Sie können aber gerne auch eigene, andere Werte verwenden)
-```{r, eval = F, echo = T}
-dat12 <- data.frame(var1 = c(12,10,24,28,23) ,
-                  var2 = c(17,16, 3, 5, 8))
+## Übungen
+
+### Übung 1: Regression {#reg1}
+
+Verwenden Sie folgenden Subdatensatz der ETB2018:
+```{r, echo = T}
+etb_reg1 <- etb18 %>% filter(F200 <90, F518_SUF < 99990,intnr< 200000)
 ```
-+ Berechnen Sie das arithm. Mittel für `var2`!
-+ Legen Sie das arithm. Mittel als neue Variable im Datensatz `dat12` ab (siehe [S.1](#mittelwert))
-+ Berechnen Sie die Residuen für die Mittelwertsregel - wie groß ist die Abweichung vom arith. Mittel für die einzelnen Beobachtungen für `var2`? (Stichwort [Residuen](#res1))
-+ Legen Sie die Residuen der Mittelwertsregel in `dat12` ab.
-+ Wie groß ist die Summe der Resiuden, wenn Sie alle Werte zusammen zählen?
-+ Erstellen Sie ein Objekt `m2` mit einem linearen Regressionsmodell (`lm`) mit `var2` als abhängiger und `var1` als unabhängiger Variable! (siehe [hier](#lm1))
-+ Betrachten Sie Ergebnisse `m2` - was können Sie erkennen? Besteht ein positiver oder negativer Zusammenhang zwischen `var1` und `var2`?
-+ Legen Sie die vorhergesagten Werte und die Residuen aus dem Regressionsmodell `m2` jeweils in einer Spalte in `dat12` ab. 
-+ Wie hoch ist die Summe der Residuen aus `m2`? Wie hoch ist die Summe der quadrierten Residuen für `m2`?
-+ Berechnen Sie die Differenz zwischen den quadrierten Residuen der Mittelwertregel und den quadrierten Residuen für `m2`. Berechnen Sie das $R^2$ für `m2`! (siehe [hier](#r2))
 
-### Aufgabe 2
-Dieses Prinzip funktioniert natürlich genauso für größere Datensätze, zum Beispiel den Allbus 2016. Untersuchen Sie den Zusammenhang zwischen Alter (`age`) und dem Einkommen (`inc`) der weiblichen, in Vollzeit erwerbstätigen Befragten!
++ Erstellen Sie ein Objekt `mod1` mit einem linearen Regressionsmodell (`lm`) mit `F518_SUF` (Monatsbrutto in EUR) als abhängiger und `F200` (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe [hier](#lm1))
++ Betrachten Sie Ergebnisse `mod1` - was können Sie zum Zusammenhang zwischen `F518_SUF` und `F200` erkennen?
++ Visualisieren Sie Ihr Regressionsmodell mit `{ggplot2}`.
++ Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable `intnr` und `geom_text()`.
 
-+ Lesen Sie den Allbus-Datensatz wie bekannt ein. Hier nochmal zu Erinnerung das Vorgehen:
-```{r, eval = F, echo = T}
-## Arbeitsverzeichnis in den Ordner mit dem Datensatz setzen:
-setwd("C:/Lehre") 
-a16 <- read.csv("allbus2016.csv", sep = ";", header = T) ## einlesen
-library(dplyr) ## für die Pipe und select/filter
-```
-Zunächst müssen wir dann die Missings mit `NA` überschreiben:
+### Übung 2: mehrere UVs {#reg2}
+
++ Erstellen Sie ein `lm()`-Modell `mod2`, welches nur auf den Beobachtungen mit einem Monatseinkommen unter 20.000 EUR beruht.
++ Erstellen Sie eine Regressionstabelle, welche diese neue Modell `mod2` neben das Modell `mod1` aus Übung 1 stellt.
++ Erstellen Sie auch eine grafische Gegenüberstellung der beiden Modelle.
+
+### Übung 3: kat. UVs {#reg3}
+
++ Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit auch die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden.
++ Achten Sie darauf, dass m1202 als `factor` definiert ist. Vergeben Sie für die Levels 1-4 die Labels *ohne*, *dual/schulisch*, *Aufstieg*, *FH/Uni* und legen sie den `factor` als Variable `m1202_fct` in Ihrem `data.frame` ab - siehe Code-Hilfe unten:
 ```{r}
-a16$age[a16$age<0] <- NA
-a16$inc[a16$inc<0] <- NA
+#| code-fold: true
+#| eval: false
+etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","dual","Aufstieg","FH/Uni"))
 ```
-Mit einem `filter`-Befehl können wir dann nur die Beobachtungen auswählen, die für `age` und `inc` nicht Missing sind (also `is.na()` gleich `FALSE` ist):
-```{r, message = F}
-a16 <- a16 %>% filter(!is.na(inc), !is.na(age))
-```
-+ Mit folgendem Befehl können Sie ein Teildatenset `a16f` erstellen, das nur in Vollzeit erwerbstätige Frauen enthält:
-```{r, eval = T, echo = T, message = F}
-a16f <- a16 %>% filter(sex == 2, work == 1) # a16 filtern
-```
-Für die Analyse sind nur die Variablen `age` und `inc` wichtig, also können wir den Datensatz auf diese beiden Variablen reduzieren:
-```{r}
-a16f <- a16f %>% select(age, inc) #nur Spalten inc & sex  
-```
-Mit `head` können wir uns die ersten Zeilen des Datensatzes anzeigen lassen oder mit `View()` den gesamten Datensatz ansehen: 
-```{r,eval= F}
-head(a16f)
-View(a16f)
-```
++ Erstellen Sie das Regressionsmodell mit dieser neuen factor-Variable für `m1202` und `F200` als unabhängigen Variablen.
++ Ändern Sie die Referenzkategorie auf die Ausprägung *Aufstiegsfortbildung*  (`m1202` = 3) und schätzen Sie das Modell erneut.
++ Erstellen Sie eine Übersichtstabellen mit allen Modellen aus den Übungen 1 und 3.
+
+### Übung 4: mehrere UVs {#reg4}
 
 
-+ Berechnen Sie das arithm. Mittel für das Einkommen 
-+ Legen Sie das arithm. Mittel als neue Variable im Datensatz ab (siehe S.1)
-+ Berechnen Sie die Residuen für die Mittelwertregel!
-+ Wie groß ist die Summe der Residuen, wenn Sie alle Werte zusammen zählen?
-+ Erstellen Sie ein Objekt `m3` mit einem linearen Regressionsmodell (`lm`) mit dem Einkommen (`inc`) als abhängiger und dem Alter (`age`) der Frauen als unabhängiger Variable! 
-+ Welche Richtung für die Regressionsgerade können Sie erkennen?
-+ Legen Sie die vorhergesagten Werte und die Residuen aus dem Regressionsmodell `m3` jeweils in einer Spalte in `a16f` ab. `
-+ Wie hoch ist die Summe der quadrierten Residuen aus `m3`?
-+ Berechnen Sie das $R^2$ für `m3`! 
+
+### Übung 5: Interaktionen {#reg5}
 
 
+### Übung 6: quad. Terme {#reg6}
+
++ Erstellen Sie ein Modell `m4` mit einem quadratischen Term:
+
+$$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{F200} + \beta2 \times \texttt{F200}^2 + \varepsilon$$
 
 ## Anhang
 

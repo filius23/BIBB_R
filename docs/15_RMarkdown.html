@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R am BIBB - 11&nbsp; RMarkdown</title>
+<title>R am BIBB - 12&nbsp; RMarkdown</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -131,7 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">RMarkdown</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">RMarkdown</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -194,37 +194,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./17_errors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Summary</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -241,12 +246,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#wichtige-begriffe" id="toc-wichtige-begriffe" class="nav-link active" data-scroll-target="#wichtige-begriffe"> <span class="header-section-number">11.1</span> Wichtige Begriffe</a></li>
-  <li><a href="#chunks-einfügen" id="toc-chunks-einfügen" class="nav-link" data-scroll-target="#chunks-einfügen"> <span class="header-section-number">11.2</span> Chunks einfügen</a></li>
-  <li><a href="#namen-für-chunks" id="toc-namen-für-chunks" class="nav-link" data-scroll-target="#namen-für-chunks"> <span class="header-section-number">11.3</span> Namen für chunks</a></li>
-  <li><a href="#chunk-optionen" id="toc-chunk-optionen" class="nav-link" data-scroll-target="#chunk-optionen"> <span class="header-section-number">11.4</span> Chunk-Optionen</a></li>
-  <li><a href="#inline-chunks" id="toc-inline-chunks" class="nav-link" data-scroll-target="#inline-chunks"> <span class="header-section-number">11.5</span> Inline chunks</a></li>
-  <li><a href="#output-yaml" id="toc-output-yaml" class="nav-link" data-scroll-target="#output-yaml"> <span class="header-section-number">11.6</span> Output &amp; <code>yaml</code></a></li>
+  <li><a href="#rmarkdown-dokument-einrichten" id="toc-rmarkdown-dokument-einrichten" class="nav-link active" data-scroll-target="#rmarkdown-dokument-einrichten"> <span class="header-section-number">12.1</span> RMarkdown Dokument einrichten</a></li>
+  <li><a href="#wichtige-begriffe" id="toc-wichtige-begriffe" class="nav-link" data-scroll-target="#wichtige-begriffe"> <span class="header-section-number">12.2</span> Wichtige Begriffe</a></li>
+  <li><a href="#chunks-einfügen" id="toc-chunks-einfügen" class="nav-link" data-scroll-target="#chunks-einfügen"> <span class="header-section-number">12.3</span> Chunks einfügen</a></li>
+  <li><a href="#namen-für-chunks" id="toc-namen-für-chunks" class="nav-link" data-scroll-target="#namen-für-chunks"> <span class="header-section-number">12.4</span> Namen für chunks</a></li>
+  <li><a href="#chunk-optionen" id="toc-chunk-optionen" class="nav-link" data-scroll-target="#chunk-optionen"> <span class="header-section-number">12.5</span> Chunk-Optionen</a></li>
+  <li><a href="#inline-chunks" id="toc-inline-chunks" class="nav-link" data-scroll-target="#inline-chunks"> <span class="header-section-number">12.6</span> Inline chunks</a></li>
+  <li><a href="#output-yaml" id="toc-output-yaml" class="nav-link" data-scroll-target="#output-yaml"> <span class="header-section-number">12.7</span> Output &amp; <code>yaml</code></a></li>
   </ul>
 </nav>
     </div>
@@ -255,7 +261,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">RMarkdown</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">RMarkdown</span></h1>
 </div>
 
 
@@ -304,8 +310,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<section id="wichtige-begriffe" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="wichtige-begriffe"><span class="header-section-number">11.1</span> Wichtige Begriffe</h2>
+<section id="rmarkdown-dokument-einrichten" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="rmarkdown-dokument-einrichten"><span class="header-section-number">12.1</span> RMarkdown Dokument einrichten</h2>
+<p>Ein RMarkdown-Dokument können wir entweder einrichten, indem wir über das <em>Menü File</em> -&gt; <em>R Markdown…</em> das Einrichtungsmenü aufrufen. Hier können wir den Titel, Autorennamen und das Datum sowie das Output-Format angeben:</p>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_step1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_step2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Alternativ können wir auch rechts unten ein R Skript in RMarkdown-Dokument umformatieren:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_stepX.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>RMarkdown-Dateien haben die Dateiendung <code>.rmd</code>.</p>
+</section>
+<section id="wichtige-begriffe" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="wichtige-begriffe"><span class="header-section-number">12.2</span> Wichtige Begriffe</h2>
 <ul>
 <li><p><strong>Chunk</strong>: Abschnitt mit R-Code innerhalb eines RMarkdown-Dokuments.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
@@ -313,11 +352,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a># hier kommt der R Code hin</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
-<p>Vor und nach dem Teilstück muss eine Leerzeile stehen. Die letzten drei Backticks müssen das Einzige sein, was in der Zeile steht. Wenn Sie weiteren Text hinzufügen, die Backticks vergessen oder sie versehentlich löschen, wird Ihr Dokument nicht korrekt in das Zielformat übersetzt.</p>
+<p>Vor und nach dem Chunk muss eine Leerzeile stehen. Die letzten drei Backticks müssen alleine in der letzten Zeile eines chunks stehen.</p>
 <ul>
 <li><strong>Knit</strong>: Beim “knitten” eines RMarkdown Dokuments, werden zuerst alle chunks ausgeführt und der jeweilige Output in Markdown konvertiert. Im Anschluss ruft R <a href="https://pandoc.org/">pandoc</a> auf um, den Markdown-Text in HTML, PDF oder Word zu konvertieren.</li>
 </ul>
-<p>Knitten kann entweder über das “Knit”-Symbol oben im Editor mit der Tastenkombination <code>⌘⇧K</code> auf macOS oder STRG + shift + k in Windows</p>
+<p>Knitten kann entweder über das “Knit”-Symbol oben im Editor mit der Tastenkombination <code>⌘⇧K</code> auf macOS oder STRG + <code>⇧</code> + k in Windows</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -328,9 +367,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="chunks-einfügen" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="chunks-einfügen"><span class="header-section-number">11.2</span> Chunks einfügen</h2>
-<p>Wir können neue chunks auf drei Arten erstellen</p>
+<section id="chunks-einfügen" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="chunks-einfügen"><span class="header-section-number">12.3</span> Chunks einfügen</h2>
+<p>Wir können neue chunks auf zwei Arten erstellen</p>
 <ul>
 <li><p>Mit <code>⌘⌥I</code> auf macOS oder <code>STRG + alt + I</code> auf Windows-Rechnern. Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.</p></li>
 <li><p>Mit dem “Insert” Button oben im Editor:</p></li>
@@ -344,12 +383,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<ul>
-<li>Selbst eintippen (besser nicht)</li>
-</ul>
 </section>
-<section id="namen-für-chunks" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="namen-für-chunks"><span class="header-section-number">11.3</span> Namen für chunks</h2>
+<section id="namen-für-chunks" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="namen-für-chunks"><span class="header-section-number">12.4</span> Namen für chunks</h2>
 <p>Wir können den Abschnitten Namen hinzufügen, um die Navigation innerhalb des Dokument zu erleichtern. Wenn wir in RStudio auf das kleine Dropdown-Menü (mit dem <code>#</code>) am unteren Rand des Editors klicken, bekommen wir ein Inhaltsverzeichnis, das alle Überschriften und Abschnitte anzeigt. Wenn wir die Abschnitte benennen, werden sie in der Liste angezeigt. Wenn Sie keinen Namen angeben, wird der Chunk trotzdem angezeigt, aber Sie wissen nicht, was er tut.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -365,8 +401,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a># R Code</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="chunk-optionen" class="level2" data-number="11.4">
-<h2 data-number="11.4" class="anchored" data-anchor-id="chunk-optionen"><span class="header-section-number">11.4</span> Chunk-Optionen</h2>
+<section id="chunk-optionen" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="chunk-optionen"><span class="header-section-number">12.5</span> Chunk-Optionen</h2>
 <p>Wir haben eine Reihe an Möglichkeiten festzulegen, wie RMarkdown mit Chunks umgehen soll. Eine vollständige Übersicht findest sich im <a href="https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">RMarkdown Reference Guide</a> oder auf der Webseite von <a href="https://yihui.org/knitr/options/"><strong>knitr</strong></a>.</p>
 <p>Optionen werden in der ersten Zeile eines chunks nach dem <code>{r}</code> festgelegt:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>```{r name-of-this-chunk, warning=FALSE, message=FALSE}</span>
@@ -392,8 +428,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="inline-chunks" class="level2" data-number="11.5">
-<h2 data-number="11.5" class="anchored" data-anchor-id="inline-chunks"><span class="header-section-number">11.5</span> Inline chunks</h2>
+<section id="inline-chunks" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="inline-chunks"><span class="header-section-number">12.6</span> Inline chunks</h2>
 <p>Eine weitere Stärke von RMarkdown ist, dass Ergebnisse direkt im Text dargestellt werden können. Dazu dienen “inline chunks”, um bspw. Kennzahlen aus einer Analyse einzufügen <code>`r R Code`</code>.</p>
 <p>So können wir bspw. Werte in einem Chunk berechnen und dann in den Text einfügen.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>```{r find-avg-mpg, echo=FALSE}</span>
@@ -406,8 +442,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Im Median haben die Fahrzeuge einen Verbrauch von 19.2 miles per gallon.</p>
 </blockquote>
 </section>
-<section id="output-yaml" class="level2" data-number="11.6">
-<h2 data-number="11.6" class="anchored" data-anchor-id="output-yaml"><span class="header-section-number">11.6</span> Output &amp; <code>yaml</code></h2>
+<section id="output-yaml" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="output-yaml"><span class="header-section-number">12.7</span> Output &amp; <code>yaml</code></h2>
 <p>Als yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen, insbesondere das Zieldateiformat.</p>
 <p>Das erste unter <code>output</code> aufgeführte Dateiformat ist der, der erzeugt wird, wenn wir auf die Schaltfläche “knit” klicken oder das Tastaturkürzel (⌘⇧K” unter macOS; ” STRG + Umschalt + K” unter Windows) drücken.</p>
 <p>Die Einrückung im YAML-Abschnitts ist von Bedeutung, insbesondere dann, wenn unter den einzelnen Ausgabetypen verschachtelte Einstellungen vorhanden sind. So könnte ein typischer <code>Output</code>-Abschnitt aussehen, unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:</p>
@@ -545,12 +581,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
       <a href="./14_tabellenexport.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./17_errors.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Häufige Fehlermeldungen</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

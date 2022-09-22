@@ -9,6 +9,10 @@ library(gt)
 
 ## `{flextable}`
 
+```{r}
+modelsummary::datasummary_skim(data = starwars %>% dplyr::select(height:mass, birth_year, eye_color, gender))
+```
+
 
 ## Layout-Tipps für Tabellen
 

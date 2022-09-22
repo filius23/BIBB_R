@@ -75,17 +75,6 @@ ols1 = lm(mass ~ height, data = starwars)
 ols1
 ```
 
-The resulting object is pretty terse, but that's only because it buries most of its valuable information --- of which there is a lot --- within its internal list structure. If you're in RStudio, you can inspect this structure by typing `View(ols1)` or simply clicking on the "ols1" object in your environment pane. Doing so will prompt an interactive panel to pop up for you to play around with. That approach won't work for this knitted R Markdown document, however, so I'll use the `listviewer::jsonedit()` function that we saw in the previous lecture instead.
-
-
-
-As we can see, this `ols1` object has a bunch of important slots... containing everything from the regression coefficients, to vectors of the residuals and fitted (i.e. predicted) values, to the rank of the design matrix, to the input data, etc. etc. To summarise the key pieces of information, we can use the --- *wait for it* --- generic `summary()` function. This will look pretty similar to the default regression output from Stata that many of you will be used to.
-
-```{r ols1_summ}
-summary(ols1)
-```
-
-
 ### Get "tidy" regression coefficients with the `broom` package
 
 While it's easy to extract regression coefficients via the `summary()` function, in practice I always use the **broom** package ([link ](https://broom.tidyverse.org/)) to do so. **broom** has a bunch of neat features to convert regression (and other statistical) objects into "tidy" data frames. This is especially useful because regression output is so often used as an input to something else, e.g. a plot of coefficients or marginal effects. Here, I'll use `broom::tidy(..., conf.int = TRUE)` to coerce the `ols1` regression object into a tidy data frame of coefficient values and key statistics.
@@ -409,29 +398,6 @@ Where this approach really shines is when you are estimating interaction terms i
 
 ### Tables
 
-#### Regression tables
-
-There are loads of [different options](https://hughjonesd.github.io/huxtable/design-principles.html) here. We've already seen the excellent `etable()` function from **fixest** above.^[Note that `etable()` is limited to fixest models only.] However, my own personal favourite tool or creating and exporting regression tables is the **modelsummary** package ([link](https://vincentarelbundock.github.io/modelsummary)). It is extremely flexible and handles all manner of models and output formats. **modelsummary** also supports automated coefficient plots and data summary tables, which I'll get back to in a moment. The [documentation](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html) is outstanding and you should read it, but here is a bare-boned example just to demonstrate.
-
-```{r msum, warning=FALSE}
-# library(modelsummary) ## Already loaded
-
-## Note: msummary() is an alias for modelsummary()
-msummary(list(ols1, ols_ie, ols_fe))
-```
-
-
-One nice thing about **modelsummary** is that it plays very well with R Markdown and will automatically coerce your tables to the format that matches your document output: HTML, LaTeX/PDF, RTF, etc. Of course, you can also [specify the output type](https://vincentarelbundock.github.io/modelsummary/#saving-and-viewing-output-formats) if you aren't using R Markdown and want to export a table for later use. Finally, you can even specify special table formats like *threepartable* for LaTeX and, provided that you have called the necessary packages in your preamble, it will render correctly (see example [here](https://github.com/grantmcdermott/lecturenotes).
-
-#### Summary tables
-
-A variety of summary tables --- balance, correlation, etc. --- can be produced by the companion set of `modelsummary::datasummary*()` functions. Again, you should read the [documentation](https://vincentarelbundock.github.io/modelsummary/articles/datasummary.html) to see all of the options. But here's an example of a very simple balance table using a subset of our "humans" data frame.
-
-```{r datsum}
-datasummary_balance(~ gender,
-                    data = humans %>% dplyr::select(height:mass, birth_year, eye_color, gender))
-```
-
 
 ### Figures
 
@@ -466,17 +432,6 @@ modelplot(ie_mods, coef_map = c("gendermasculine:height" = "Masculine × Height"
 ```
 
 
-#### Prediction and model validation
-
-The easiest way to visually inspect model performance (i.e. validation and prediction) is with **ggplot2**. In particular, you should already be familiar with `geom_smooth()` from our earlier lectures, which allows you to feed a model type directly in the plot call. For instance, using our `starwars2` data frame that excludes that slimy outlier, Jabba the Hutt:
-
-```{r smooth, warning=FALSE}
-ggplot(starwars2, aes(x = height, y = mass)) + 
-    geom_point(alpha = 0.7) +
-    geom_smooth(method = "lm") ## See ?geom_smooth for other methods/options
-```
-
-Now, I should say that `geom_smooth()` isn't particularly helpful when you've already constructed a (potentially complicated) model outside of the plot call. Similarly, it's not useful when you want to use a model for making predictions on a *new* dataset (e.g. evaluating out-of-sample fit). 
 
 ## Further resources
 

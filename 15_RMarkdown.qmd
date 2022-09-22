@@ -1,6 +1,7 @@
 # RMarkdown
 
 ```{r setup, include=FALSE}
+
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 knitr::opts_chunk$set(fig.align = "center")
 ```
@@ -50,6 +51,27 @@ summary(mtcars$qsec)
 knitr::include_graphics("./pic/115_rmd_demo.png")
 ```
 
+## RMarkdown Dokument einrichten
+
+Ein RMarkdown-Dokument können wir entweder einrichten, indem wir über das *Menü File* -> *R Markdown...* das Einrichtungsmenü aufrufen. Hier können wir den Titel, Autorennamen und das Datum sowie das Output-Format angeben:
+
+```{r, out.width="50%", out.width="50%"}
+#| echo: false
+#| layout-ncol: 2
+
+knitr::include_graphics("./pic/115_rmd_step1.png")
+knitr::include_graphics("./pic/115_rmd_step2.png")
+
+```
+
+Alternativ können wir auch rechts unten ein R Skript in RMarkdown-Dokument umformatieren:
+
+```{r, out.width="25%", out.width="30%"}
+#| echo: false
+knitr::include_graphics("./pic/115_rmd_stepX.png")
+```
+
+RMarkdown-Dateien haben die Dateiendung `.rmd`.
 
 
 ## Wichtige Begriffe
@@ -62,14 +84,14 @@ knitr::include_graphics("./pic/115_rmd_demo.png")
 ```
 ````
 
-Vor und nach dem Teilstück muss eine Leerzeile stehen. Die letzten drei Backticks müssen das Einzige sein, was in der Zeile steht. Wenn Sie weiteren Text hinzufügen, die Backticks vergessen oder sie versehentlich löschen, wird Ihr Dokument nicht korrekt in das Zielformat übersetzt.
+Vor und nach dem Chunk muss eine Leerzeile stehen. Die letzten drei Backticks müssen alleine in der letzten Zeile eines chunks stehen.
 
 
 - **Knit**: Beim  "knitten" eines RMarkdown Dokuments, werden zuerst alle chunks ausgeführt und der jeweilige Output in Markdown konvertiert. Im Anschluss ruft R [pandoc](https://pandoc.org/) auf um, den Markdown-Text in HTML, PDF oder Word zu konvertieren.
 
 Knitten kann entweder über das "Knit"-Symbol oben im Editor mit der Tastenkombination `⌘⇧K` 
 auf macOS
-oder STRG + shift + k in Windows
+oder STRG + `⇧` + k in Windows
 
 
 ```{r knit-button, echo=FALSE, out.width="30%"}
@@ -79,7 +101,7 @@ knitr::include_graphics("./pic/115_knit-button.png", error = FALSE)
 
 ## Chunks einfügen
 
-Wir können neue chunks auf drei Arten erstellen
+Wir können neue chunks auf zwei Arten erstellen
 
 - Mit `⌘⌥I` auf macOS oder `STRG + alt + I` auf Windows-Rechnern.
 Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.
@@ -90,7 +112,6 @@ Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.
 knitr::include_graphics("./pic/115_insert_chunk.png", error = FALSE)
 ```
 
-- Selbst eintippen (besser nicht)
 
 
 ## Namen für chunks
