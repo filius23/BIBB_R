@@ -38,17 +38,22 @@ Die Fehlermeldung `could not find function "XXX"` weist darauf hin, dass R die g
 
 Lösungsvorschläge:
 
-1. Did you spell the function name correctly? Maybe you made a typo.
-1. If the function is in a package, did you load the package? Remember, the package must be re-loaded every time you restart R. If you're working in RMarkdown, you must load the package inside of your RMarkdown script, since RMarkdown starts from a blank slate.
+1. Tippfehler? Ist die Funktion richtig geschrieben?
+1. Ist die Funktion aus einem Paket? Ist das Paket richtig geladen? Pakete müssen nach jedem Neustart von R neu geladen werden. Und: Das Knitten einer RMarkdown-Datei findet in einer neuen Umgebung statt - d.h. hier müssen alle Pakete und Daten geladen werden, auch wenn Sie in der Session bereits geladen sind.
 
 ## Object not found
 
-If you get an error like `object 'objectname' not found`, that means that you've made a reference to an object called `objectname`, but there is no such object to refer to.
+`object 'NAME' not found` weißt darauf hin, dass ein Objekt aufgerufen wurde, das nicht existiert.
 
 Lösungsvorschläge:
 
-1. Did you spell the object's name correctly? Maybe you made a typo.
-1. Did you remember to create the object before referring to it? For example, the code `mean(x); x <- 1:10` would not work, because you try to take the mean of `x` before it's been created. If you're working in RMarkdown, remember that it will start from a blank slate, so you must create all objects inside of your Rmarkdown script.
+1. Tippfehler? Ist der Objektname richtig geschrieben?
+1. Fehler in der Reihenfolge? Wird das Objekt wirklich *erst* erstellt, bevor es weiterverwendet wird? Das hier wird nicht funktionieren:
+```{r}
+#| eval: false
+max(x)
+x <- c(2.54,2,5,12,2,3,412,23,12)
+```
 
 ## Object of type 'closure' is not subsettable
 
@@ -99,8 +104,8 @@ If you load a package and get a warning that looks like `Warning: packagename wa
 
 Lösungsvorschläge:
 
-1. Ignore it
-1. If you want it to go away, update your R installation.
+1. Ignorieren
+1. R auf die neueste Version updaten 
 
 ## Rtools is required to build packages from source
 
