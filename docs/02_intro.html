@@ -197,7 +197,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik</span></a>
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Note
+
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -338,9 +338,9 @@ Note
 <li>Funktionen kommen aus “packages”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, aber wir werden auch eigene Funktionen schreiben.</li>
 </ol>
 <p>Punkt 1. und 2. wird als <a href="https://de.wikipedia.org/wiki/Objektorientierte_Programmierung">Objektorientierte Programmierung (object-orientated programming, OOP)</a> bezeichnet. Wir werden in diesem Kurs also objektorientierte Programmierung lernen.</p>
+</div>
+</div>
 <p>Klingt gut, oder?</p>
-</div>
-</div>
 <ul>
 <li>Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. <code>colnames()</code>, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable oder ein Datensatz sein</li>
 <li>Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: <code>read.csv(datei.csv, header = T, sep = ",")</code></li>
@@ -356,6 +356,7 @@ Note
 <li>Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit <code>name &lt;- ...</code> das Ergebnis unter <code>name</code> abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit <code>name &lt;- funktion(name)</code>. Hier im Skript werde ich sehr häufig den Schritt des Ablegens weglassen, weil wir ja direkt sehen wollen, was passiert. Wenn wir aber mit bisherigen Operationen weiterarbeiten wollen, dann müssen wir sie in R unter einem Objektnamen ablegen.</li>
 <li>Optionen innerhalb einer <code>()</code> können auch einfach auf Basis der Reihenfolge angegeben werden</li>
 <li>Mit <code>?funktion()</code> ist die Hilfe aufrufbar, bspw. <code>?colnames()</code></li>
+<li>R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. <em>Aber:</em> RStudio stoppt ab <a href="https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357">Version 2022.07</a> bei einem Syntaxfehler.</li>
 </ul>
 <p>In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los geht’s.</p>
 <section id="datenstrukturen-in-r-data.frame" class="level2" data-number="2.1">

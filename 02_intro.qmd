@@ -11,6 +11,7 @@ library(kableExtra)
 
 
 ::: callout-note
+#
 
 1.  Alles ist ein Objekt.
 2.  Alles hat einen Namen.
@@ -20,10 +21,10 @@ library(kableExtra)
 [^pkg]: In vielen anderen Programmiersprachen ist auch von Bibliotheken/"libraries" die Rede.
 
 Punkt 1. und 2. wird als [Objektorientierte Programmierung (object-orientated programming, OOP)](https://de.wikipedia.org/wiki/Objektorientierte_Programmierung) bezeichnet. Wir werden in diesem Kurs also objektorientierte Programmierung lernen.
+:::
 
 Klingt gut, oder?
 
-:::
 
 -   Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. `colnames()`, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable oder ein Datensatz sein 
 -  Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: `read.csv(datei.csv, header = T, sep = ",")`
@@ -40,6 +41,8 @@ funktion(objektname1,
 -  Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit `name <- ...` das Ergebnis unter `name` abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit `name <- funktion(name)`. Hier im Skript werde ich sehr häufig den Schritt des Ablegens weglassen, weil wir ja direkt sehen wollen, was passiert. Wenn wir aber mit bisherigen Operationen weiterarbeiten wollen, dann müssen wir sie in R unter einem Objektnamen ablegen.
 - Optionen innerhalb einer `()` können auch einfach auf Basis der Reihenfolge angegeben werden
 - Mit `?funktion()` ist die Hilfe aufrufbar, bspw. `?colnames()`
+- R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. *Aber:* RStudio stoppt ab [Version 2022.07](https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357) bei einem Syntaxfehler.
+
 
 In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los geht's.
 
