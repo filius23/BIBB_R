@@ -6,8 +6,6 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 library(patchwork)
 library(tidyverse)
-if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
-a16 <- read.csv(paste0(path,"allbus2016.csv"), sep = ";", header = T) # einlesen
 mark_color <- "grey25"
 color1x =  "#00519E" # uol farbe
 colorhex <- "#FCFCFC" #"#FCF9F0FF"7
@@ -18,7 +16,7 @@ windowsFonts(Nunito=windowsFont("Nunito Sans"))
 # embed_fonts("newfont.pdat1")
 
 theme_x <- 
-  theme_minimal(base_family = "Nunito",base_size = 10) +
+  theme_minimal(base_family = "Nunito",base_size = 13) +
   theme(
     plot.background = element_rect(fill = colorhex, linetype = 1, colour = NA),
     rect = element_rect(fill = colorhex, linetype = 1, colour = NA),
@@ -175,9 +173,10 @@ Wir werden uns noch ein bisschen ausführlicher mit den Anpassungsmöglichkeiten
 
 + mit `stars = T` können wir uns die Signifikanz mit den gebräuchlichen Sternchen-Codes anzeigen lassen (`*`: p < .05 usw.)
 + mit `gof_omit = "IC|RM|Log"` können wir die Goodness of Fit Statistiken ausblenden die `IC`, `RM` oder `Log` im Namen haben (also `AIC`, `BIC`, `RMSE` und die `LogLikelihood`)
++ mit `"Name" =` in `list()` können wir Namen angeben:
 
 ```{r}
-modelsummary(list(m1,m2a,m2b),stars = T,gof_omit = "IC|RM|Log")
+modelsummary(list("m1"=m1,"m2a :-)"=m2a,"m2b"=m2b),stars = T,gof_omit = "IC|RM|Log")
 ```
 
 ### [Übung](#reg2)
@@ -227,10 +226,6 @@ summary(m3b)
 ### [Übung](#reg3)
 
 
-## Nur vollständige Zeilen behalten
-
-Wenn wir jetzt aber 
-
 ## Mehre unabhängige Variablen
 
 Um mehrere unabhängige Variablen in unser Regressionsmodellen aufzunehmen, geben wir sie mit `+` an:
@@ -239,8 +234,136 @@ m4 <- lm(var2 ~ ed_fct  + var1, dat1)
 summary(m4)
 ```
 
-### [Übung](#reg4)
 
+
+
+## Nur vollständige Zeilen behalten
+
+Wenn wir jetzt aber die beiden Modelle `m1` und `m3` vergleichen, sehen wir unterschiedliche Fallzahlen:
+
+```{r}
+modelsummary(list("m1"=m1,"m4"=m4),gof_omit = "IC|RM|Log|F")
+```
+
+
+Es zeigt sich, dass in Modell 2 mit `edu_fct` 1 Fall verloren geht. Woran liegt das?
+Dazu lohnt sich ein Blick in die Daten:
+```{r}
+dat1
+```
+
+Die Angabe für `ed_fct` fehlt in für `id` = 8.
+
+Um die Modelle zu vergleichen sollten wir also nur die Zeilen verwenden, für die auch die Werte für `ed_fct` vorliegen.
+Hier können wir diese Zeilen per Hand auswählen (und `id`=8 ausschließen), in größeren Datensätzen ist das aber mühsam.
+
+### `complete.cases()`
+
+Hier hilft uns `complete.cases()`.
+Diese Funktion erstellt eine logische Variable, welche ein `TRUE` für alle vollständigen Fälle (also ohne ein `NA`). 
+Unvollständige Fälle werden mit einem `FALSE` versehen. 
+Dazu geben wir an, welche Variablen jeweils für diese Betrachtung berücksichtigt werden sollen und legen die Variable einfach im Datensatz als neue Spalte an. 
+Für Modell 1 ist ein Fall `complete`, wenn `var2` und `var1` vorliegen. 
+Wir wählen also mit `select()` die relevanten Variablen aus und wenden `complete.cases` auf diese Auswahl an:
+```{r, message = F}
+dat1 %>% select(var1,var2) %>% complete.cases(.) 
+dat1$compl_m1 <- dat1 %>% select(var1,var2) %>% complete.cases(.) 
+dat1
+```
+::: {.callout-warning collapse="true"}
+# `complete.cases()` alleine sucht in allen Variablen nach `NA`
+Achtung: wenn wir keine Variablen angeben, werden `NA` aus allen Variablen berücksichtigt, hier also auch die `NA` aus `x` - die uns hier nicht interessieren:
+```{r, message = F}
+dat1 %>% complete.cases(.) 
+dat1$compl <- dat1 %>% complete.cases(.) 
+dat1
+```
+
+```{r}
+#| echo: false
+dat1$compl <- NULL
+```
+
+:::
+
+...das gleiche machen wir für Modell `m4`, welches neben `var2` und `var1` ja auch noch `ed_fct` enthält:
+```{r}
+dat1$compl_m4 <- dat1 %>% select(var1,var2,ed_fct) %>% complete.cases(.)
+```
+
+So sieht das dann im Datensatz aus:
+```{r}
+dat1
+```
+
+
+
+
+### Fälle mit missings finden
+Jetzt können wir nach diesen Variablen filtern und uns diese Fälle genauer ansehen. Dazu filtern wir nach den Fällen, die zwar in `m1` enthalten (also `compl_m1` = `TRUE`) sind, aber nicht in `m4` (`compl_m4` = `FALSE`):
+```{r}
+dat1 %>% filter(compl_m1 == T & compl_m4 == F) 
+```
+
+### Modelle nur mit vollständigen Fällen berechnen
+Außerdem können wir jetzt auch das Modell `m1` so erstellen, dass wir nur die Fälle miteinbeziehen, die auch in Modell2 berücksichtigt werden:
+```{r}
+m1_m4vars <- lm(var2 ~ var1     , data = filter(dat1,compl_m4 == T))
+modelsummary(list("m1"=m1,"m1 mit m4vars"=m1_m4vars,"m4"=m4),gof_omit = "IC|RM|Log|F")
+```
+
+Jetzt haben wir also in `m1 mit m4vars` und `m4` die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.
+
+## Koeffizientenplots
+
+Neben Regressionstabellen stellt [`{modelsummary}`](https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html) auch die Funktion `modelplot()` zur Verfügung, mit denen einfach ein Koeffizientenplot aus einem oder mehreren Modellen erstellt werden kann:
+
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(m4)
+```
+
+Mit `coef_map` können wir Labels für die Koeffizienten vergeben (`(Intercept)` bekommt keinen Namen und wird daher weggelassen:
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(m4,coef_map = c("var1" = "Name für var1",
+                          "ed_fcthigh"  = "Höhere Bildung",
+                          "ed_fctbasic" = "Grundlegende Bildung"
+                          ))
+
+
+modelplot(m4,coef_map = c("var1" = "Name für var1",
+                          "ed_fcthigh"  = "Höhere Bildung",
+                          "ed_fctbasic" = "Grundlegende Bildung"
+                          ))
+```
+
+Für den Modellvergleich geben wir einfach die Modelle in einer named `list` an:
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(list("Modell 1"=m1_m4vars,
+               "Modell 4"=m4),
+          coef_map = c("var1" = "Name für var1",
+                       "ed_fcthigh"  = "Höhere Bildung",
+                       "ed_fctbasic" = "Grundlegende Bildung"))
+```
+
+Mit den üblichen `{ggplot2}`-Befehlen können wir die Grafik weiter anpassen:
+```{r}
+modelplot(list("Modell 1"=m1_m4vars,
+               "Modell 4"=m4),
+          coef_map = c("var1" = "Name für var1",
+                       "ed_fcthigh"  = "Höhere Bildung",
+                       "ed_fctbasic" = "Grundlegende\nBildung")) + # \n fügt einen Zeilenumbruch ein
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
+  scale_color_manual(values = c("orange","navy")) +
+  theme_bw(base_size = 15,base_family = "serif") 
+```
+
+### [Übung](#reg4)
 
 ## Interaktionen
 
@@ -258,9 +381,13 @@ Dafür ist [`{ggeffects}`](https://strengejacke.github.io/ggeffects/index.html) 
 #| eval: false
 install.packages("ggeffects")
 ```
+```{r}
+#| include: false
+theme_set(theme_grey(base_size = 15))  
+```
 
 ```{r}
-#| out-width: "60%"
+#| out-width: "80%"
 #| out-height: "60%"
 library(ggeffects)
 ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot()
@@ -307,6 +434,9 @@ ggpredict(m6, terms = c("var1")) %>% plot()
 ```
 ### [Übung](#reg6)
 
+
+
+
 ## Gewichtetes Regressionsmodell
 ```{r}
 #| message: false
@@ -327,7 +457,6 @@ survey_modx <- svyglm(F518_SUF ~ zpalter + I(zpalter^2),
 modelsummary(list("lm()"=modx,"svyglm()"= survey_modx),gof_omit = "RM|IC|Log")
 ```
 
-### [Übung](#reg7)
 
 ## Übungen
 
@@ -335,11 +464,11 @@ modelsummary(list("lm()"=modx,"svyglm()"= survey_modx),gof_omit = "RM|IC|Log")
 
 Verwenden Sie folgenden Subdatensatz der ETB2018:
 ```{r, echo = T}
-etb_reg1 <- etb18 %>% filter(F200 <90, F518_SUF < 99990,intnr< 200000)
+etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
 ```
 
-+ Erstellen Sie ein Objekt `mod1` mit einem linearen Regressionsmodell (`lm`) mit `F518_SUF` (Monatsbrutto in EUR) als abhängiger und `F200` (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe [hier](#lm1))
-+ Betrachten Sie Ergebnisse `mod1` - was können Sie zum Zusammenhang zwischen `F518_SUF` und `F200` erkennen?
++ Erstellen Sie ein Objekt `mod1` mit einem linearen Regressionsmodell (`lm`) mit `F518_SUF` (Monatsbrutto in EUR) als abhängiger und `az` (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe [hier](#lm1))
++ Betrachten Sie Ergebnisse `mod1` - was können Sie zum Zusammenhang zwischen `F518_SUF` und `az` erkennen?
 + Visualisieren Sie Ihr Regressionsmodell mit `{ggplot2}`.
 + Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable `intnr` und `geom_text()`.
 
@@ -351,19 +480,43 @@ etb_reg1 <- etb18 %>% filter(F200 <90, F518_SUF < 99990,intnr< 200000)
 
 ### Übung 3: kat. UVs {#reg3}
 
-+ Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit auch die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden.
++ Erstellen Sie ein Regressionsmodell mit dem Ausbildungsabschluss der Befragten `m1202` als unabhängiger Variable:
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+vals1 <- 
+  etb18 %>% select(starts_with("m1202")) %>% 
+    map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+    pivot_longer(-var) %>% 
+    pivot_wider(names_from = value,values_from = name) 
+    
+
+etb18 %>% select(starts_with("m1202")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  left_join(vals1) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
+
 + Achten Sie darauf, dass m1202 als `factor` definiert ist. Vergeben Sie für die Levels 1-4 die Labels *ohne*, *dual/schulisch*, *Aufstieg*, *FH/Uni* und legen sie den `factor` als Variable `m1202_fct` in Ihrem `data.frame` ab - siehe Code-Hilfe unten:
 ```{r}
 #| code-fold: true
 #| eval: false
 etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","dual","Aufstieg","FH/Uni"))
 ```
-+ Erstellen Sie das Regressionsmodell mit dieser neuen factor-Variable für `m1202` und `F200` als unabhängigen Variablen.
++ Erstellen Sie das Regressionsmodell mit dieser neuen factor-Variable für `m1202` als unabhängiger Variablen.
 + Ändern Sie die Referenzkategorie auf die Ausprägung *Aufstiegsfortbildung*  (`m1202` = 3) und schätzen Sie das Modell erneut.
-+ Erstellen Sie eine Übersichtstabellen mit allen Modellen aus den Übungen 1 und 3.
 
 ### Übung 4: mehrere UVs {#reg4}
 
++ Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit auch die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden.
++ Erstellen Sie eine Übersichtstabellen mit allen Modellen aus den Übungen 1 und 4.
 
 
 ### Übung 5: Interaktionen {#reg5}
@@ -373,12 +526,20 @@ etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","du
 
 + Erstellen Sie ein Modell `m4` mit einem quadratischen Term:
 
-$$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{F200} + \beta2 \times \texttt{F200}^2 + \varepsilon$$
+$$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{az} + \beta2 \times \texttt{az}^2 + \varepsilon$$
 
 
 
 
 ## Anhang
+```{r}
+dat1 <- dat1 %>% select(-matches("compl"))
+```
+```{r}
+#| include: false
+theme_set(theme_x)
+```
+
 
 ### Vorhergesagte Werte {#pred}
 
@@ -412,7 +573,7 @@ ggplot(dat1, aes(x = var1, y = var2)) +
 Die hellblauen Punkte (also die Vorhersagen von `m1`) liegen in der Nähe der tatsächlichen Punkte. Trotzdem sind auch die hellblauen Punkte nicht deckungsgleich mit den tatsächlichen Werten. 
 Diese Abweichungen zwischen den vorhergesagten und tatsächlichen Werten werden als Residuen bezeichnet:
 $$Residuum = beobachteter\, Wert \; - \; vorhergesagter\,Wert$$
-$$\epsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}$$
+$$\varepsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}$$
 Wir können diese per Hand berechnen als Differenz zwischen dem tatsächlichen und dem vorhergesagten Wert oder einfach unter `m1$residuals` aufrufen:
 ```{r}
 m1$residuals
@@ -443,26 +604,86 @@ ggplot(dat1, aes(x = var1, y = var2)) +
 install.packages("performance")
 ```
 
-```{r reg02, fig.height=8}
+```{r reg02, fig.height=9}
 #| warning: false
 #| message: false
 library(performance)
-m2 <- lm(mpg ~ qsec + gear, mtcars) ## mtcars ist ein Beispieldatensatz aus R
-model_test <- performance::check_model(m2)
+
+model_test <- check_model(m4)
 plot(model_test)
 ```
+
+
+### Test auf Normalverteilung der Residuen
+
+Grafische Überprüfung: Q-Q-Plot
+```{r}
+#| eval: false
+library(ggfortify)
+autoplot(m1,which = 2)
+```
+```{r, echo = F, fig.align="center", out.width="60%", message=F, warning =F}
+library(ggfortify)
+autoplot(m3,which = 2,ncol = 1,nrow = 1) + theme(aspect.ratio = 1)
+```
+
+Überprüfen lässt sich die NV-Annahme mit dem Shapiro-Wilk-Test & `shapiro.test()`. Dieser testet die $H_0$: "Die Residuen sind normalverteilt" gegen die $H_A$: "Die Residuen weichen signifikant von der Normalverteilung ab"
+```{r}
+shapiro.test(m1$residuals) 
+```
+
+### Test auf Homoskedastizität
+
+Homoskedastizität ist gegeben, wenn die vorhergesagten Werte über den kompletten Wertebereich (ungefähr) gleich weit von den tatsächlichen Werten (`m1\$fitted.values`) entfernt sind. Auch hier gibt es eine graphische Überprüfungsmethode sowie einen Test. Zur graphischen Überprüfung werden die vorhergesagten Werten und die Residuen als Scatterplot dargestellt. Auch hier hilft uns `autoplot()`:
+
+```{r, eval = F}
+autoplot(m1, which = 1)
+```
+```{r, fig.align="center",out.height ="50%", echo=F}
+autoplot(m1, which = 1, ncol = 1, nrow = 1)  + theme(aspect.ratio = 1)
+```
+Der dazugehörige Test ist der `Breusch-Pagan-Test`. Dieser testet die $H_0$ "Homoskedastizität" gegen die $H_A$ "Heteroskedastizität", der p-Wert gibt also an mit welcher Irrtumswahrscheinlichkeit wir die Homoskedastizitäts-Annahme verwerfen müssen. In R können wir dafür `bptest` aus dem Paket `lmtest` verwenden:
+```{r, eval = F}
+install.packages("lmtest")
+```
+```{r, message = F}
+library(lmtest)
+bptest(m3)
+```
+
+
+### Test auf Multikollinearität
+
+```{r, eval= F}
+install.packages("car")
+```
+
+```{r}
+#| message: false
+#| warning: false
+# library(car)
+etb18x <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 300)  %>% filter(F518_SUF < 99998, zpalter < 100)
+mox <- lm(F518_SUF ~ zpalter + az,data=etb18x)
+car::vif(mox)
+```
+Interpretation:
+
+<!-- + Als Daumenregel zur Beurteilung der Toleranz gilt ein Wert von 0,10 (also 10\% eigenständiger Varianzanteil), der nicht unterschritten werden sollte. Häufig wird jedoch ein strikterer Grenzwert von 0,20 bis 0,25 empfohlen. Nach unserer Beispielrechnung oben besteht also kein Problem. -->
++ Ein verbreiteter Schwellenwert des VIF beträgt 10,00. Werte des VIF über 10 deuten auf ein schwerwiegendes Multikollinearitätsproblem, oftmals werden Gegenmaßnahmen schon ab einem strikteren Grenzwert von ca. 5,00 empfohlen. Im konkreten Beispiel ist für alle UVs also nach beiden Grenzwerten alles in Ordnung.
++ Beim Vorliegen von Mulitkollinearität gibt es mehrere Möglichkeiten, das zu beheben: Wir können eine oder mehrere unabh. Variablen aus dem Modell ausschließen. Das ist letztlich eine inhaltliche Frage und kann nicht mit einem Standardrezept gelöst werden. Alternativ können wir die kollinearen unabh. Variablen zu Indexvariablen zusammenfassen. Wir würden also einen gemeinsamen Index, bspw. der Mittelwert über die jeweiligen unabh. Variablen, erstellen.
 
 ### Regressionsmodelle vergleichen
 
 Mit dem Paket `{performance}` können wir auch einen umfassenden Modellvergleich bekommen:
-```{r reg03}
-data(mtcars)
-mtcars$gear <- factor(mtcars$gear) ## 
-m1 <- lm(mpg ~ qsec, mtcars)
-m2 <- lm(mpg ~ qsec + gear, mtcars)
+```{r}
+#| eval: false
+install.packages("performance")
+```
 
-check_model(m2,panel = F)
-compare_performance(m1,m2)
+
+```{r reg03}
+library(performance)
+compare_performance(m1,m4,metrics = c("R2","R2_adj"))
 ```
 
 

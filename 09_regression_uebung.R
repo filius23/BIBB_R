@@ -69,6 +69,7 @@ ggplot(etb_reg1,aes(x= az,y = F518_SUF)) +
 ## m1202 als factor -----
 
 etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","dual","Aufstieg","FH/Uni"))
+
 mod3 <- lm(F518_SUF ~ m1202_fct, etb_reg1)
 summary(mod3)
 
@@ -83,13 +84,13 @@ modelsummary(list(mod1,mod4),stars = T)
 
 
 # Übung 6 --------
-etb_reg1$az <- as.numeric(etb_reg1$az)
-mod6 <- lm(F518_SUF ~ az + I(az^2) + S1,etb_reg1)
-mod6 <- lm(F518_SUF ~ az + I(az^2) + S1,etb_reg1)
+# etb_reg1$az <- as.numeric(etb_reg1$az)
+mod6 <- lm(F518_SUF ~ az + I(az^2),etb_reg1)
 summary(mod6)
 ggpredict(mod6, terms = c("az")) %>% plot()
 
 etb_reg1$S1_fct <- factor(etb_reg1$S1,levels = 1:2,labels =c("m","w"))
-mod6b <- lm(F518_SUF ~ S1_fct*az + I(az^2) ,etb_reg1)
+etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","dual","Aufstieg","FH/Uni"))
+mod6b <- lm(F518_SUF ~ m1202_fct*az + I(az^2) +m1202_fct ,etb_reg1)
 summary(mod6b)
-ggpredict(mod6b, terms = c("az","S1_fct[m,w]")) %>% plot()
+ggpredict(mod6b, terms = c("az","m1202_fct[ohne,dual,Aufstieg,FH/Uni]")) %>% plot()
