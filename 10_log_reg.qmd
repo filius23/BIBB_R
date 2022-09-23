@@ -247,6 +247,21 @@ pred4 %>%
        y = "Wahrscheinlichkeit", x =  "Alter", color = "") 
 ```
 
+
+## Fixed effects logistische Regression mit `{fixest}` {#feglm}
+
+
+Mit `feglm()`
+**fixest** supports nonlinear models. So you could (in this case, without fixed-effects) also estimate:
+
+```{r logit_fixest, warning = FALSE}
+library(fixest)
+feglm(outside ~ m1202_fct*zpalter |Bula, data = m_etb18, family = binomial)
+```
+
+
+
+
 ## Übungen 
 
 ### Übung 1
