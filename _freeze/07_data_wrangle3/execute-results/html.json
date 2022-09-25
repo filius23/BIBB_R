@@ -1,0 +1,14 @@
+{
+  "hash": "cb6383d82f82bdcf767fd6a599c73dbe",
+  "result": {
+    "markdown": "# Data Wrangling III {#wrang3}\n\n\n\n\n\n\n## Datensätze verbinden\n\n> A mutating join allows you to combine variables from two tables. It first matches observations by their keys, then copies across variables from one table to the other.  \n[R for Data Science: Mutating joins](http://r4ds.had.co.nz/relational-data.html#mutating-joins)\n\n\n::: {.cell layout-align=\"center\" hash='07_data_wrangle3_cache/html/intial-dfs_a29d8451dc413e70159d97572e63b27f'}\n::: {.cell-output-display}\n![](07_data_wrangle3_files/figure-html/intial-dfs-1.png){fig-align='center' width=40%}\n:::\n:::\n\n\n<!-- <img src=\"pic/static/png/original-dfs.png\" width=\"480px\" /> -->\n\n\n\n- [**Mutating Joins**](#mutating-joins) — [`inner_join()`](#inner-join), [`left_join()`](#left-join),\n  [`right_join()`](#right-join), [`full_join()`](#full-join)\n  \n- [**Filtering Joins**](#filtering-joins) — [`semi_join()`](#semi-join), [`anti_join()`](#anti-join)\n\n- [**Set Operations**](#set-operations) — [`union()`](#union), [`union_all()`](#union-all), [`intersect()`](#intersection), [`setdiff()`](#set-difference)\n\n\n\n::: {.cell hash='07_data_wrangle3_cache/html/inner-join_df18059c0dbaf42ee7e4a6deb10809e7'}\n\n:::\n\n::: {.cell hash='07_data_wrangle3_cache/html/left-join_b1c6bac35ee2c452c96000ec3556464b'}\n\n:::\n\n::: {.cell hash='07_data_wrangle3_cache/html/left-join-extra_0e905a672da8ccceec0b5bfdb7894217'}\n\n:::\n\n::: {.cell hash='07_data_wrangle3_cache/html/right-join_9219727a8d5aff7d2d906b379bbac915'}\n\n:::\n\n::: {.cell hash='07_data_wrangle3_cache/html/full-join_889de730ba0d2025535dbf46abe43cc7'}\n\n:::\n\n\n\n::: {layout-ncol=3}\n![](pic/inner-join.gif)\n\n![](pic/left-join-extra.gif)\n\n![](pic/full-join.gif) \n:::\n\nEs gibt natürlich auch [`right_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)  oder [`anti_join()`](https://dplyr.tidyverse.org/reference/filter-joins.html). \nFür eine tiefergehende Einführung lohnt sich das Kapitel [Relational Data](https://r4ds.had.co.nz/relational-data.html#relational-data) aus [R for Data Science](https://r4ds.had.co.nz/).\n\n### [Übung](#join_ue)\n\n## Reshape: `pivot_longer()` & `pivot_wider()`\n\n\n::: {.cell hash='07_data_wrangle3_cache/html/unnamed-chunk-1_9af65797162b5b7d32bdcdfd29a5a28f'}\n\n:::\n\n\n## Übungen\n\n### Übung 1 {#join_ue}\n\n\n### Übung 2 {#pivot_ue}\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
