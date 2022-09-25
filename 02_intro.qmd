@@ -5,6 +5,7 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 library(tidyverse)
 library(kableExtra)
+
 ```
 
 **(Spätes) Vorwort zu R und der Befehlsstruktur**
