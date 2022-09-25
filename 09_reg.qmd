@@ -314,7 +314,7 @@ modelsummary(list("m1"=m1,"m1 mit m4vars"=m1_m4vars,"m4"=m4),gof_omit = "IC|RM|L
 
 Jetzt haben wir also in `m1 mit m4vars` und `m4` die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.
 
-## Koeffizientenplots
+## Koeffizientenplots {#modelplot}
 
 Neben Regressionstabellen stellt [`{modelsummary}`](https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html) auch die Funktion `modelplot()` zur Verfügung, mit denen einfach ein Koeffizientenplot aus einem oder mehreren Modellen erstellt werden kann:
 

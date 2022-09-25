@@ -279,7 +279,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#fälle-mit-missings-finden" id="toc-fälle-mit-missings-finden" class="nav-link" data-scroll-target="#fälle-mit-missings-finden"> <span class="header-section-number">8.7.2</span> Fälle mit missings finden</a></li>
   <li><a href="#modelle-nur-mit-vollständigen-fällen-berechnen" id="toc-modelle-nur-mit-vollständigen-fällen-berechnen" class="nav-link" data-scroll-target="#modelle-nur-mit-vollständigen-fällen-berechnen"> <span class="header-section-number">8.7.3</span> Modelle nur mit vollständigen Fällen berechnen</a></li>
   </ul></li>
-  <li><a href="#koeffizientenplots" id="toc-koeffizientenplots" class="nav-link" data-scroll-target="#koeffizientenplots"> <span class="header-section-number">8.8</span> Koeffizientenplots</a>
+  <li><a href="#modelplot" id="toc-modelplot" class="nav-link" data-scroll-target="#modelplot"> <span class="header-section-number">8.8</span> Koeffizientenplots</a>
   <ul class="collapse">
   <li><a href="#übung-3" id="toc-übung-3" class="nav-link" data-scroll-target="#übung-3"> <span class="header-section-number">8.8.1</span> <span>Übung</span></a></li>
   </ul></li>
@@ -403,8 +403,8 @@ F-statistic: 5.664 on 1 and 6 DF,  p-value: 0.05477</code></pre>
 <p>Wie schon bei den Zusammenhangsmaßen können wir auch hier die einzelnen Werte mit <code>View()</code> ansehen:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-243cc22e8973e808a524" style="width:100%;height:10%;" class="jsonedit html-widget"></div>
-<script type="application/json" data-for="htmlwidget-243cc22e8973e808a524">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-c48e4ea2a0f84ce27d76" style="width:100%;height:10%;" class="jsonedit html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c48e4ea2a0f84ce27d76">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Besonders hilfreich ist <code>$coefficients</code>:</p>
@@ -1135,8 +1135,8 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
 <p>Jetzt haben wir also in <code>m1 mit m4vars</code> und <code>m4</code> die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.</p>
 </section>
 </section>
-<section id="koeffizientenplots" class="level2" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="koeffizientenplots"><span class="header-section-number">8.8</span> Koeffizientenplots</h2>
+<section id="modelplot" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="modelplot"><span class="header-section-number">8.8</span> Koeffizientenplots</h2>
 <p>Neben Regressionstabellen stellt <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html"><code>{modelsummary}</code></a> auch die Funktion <code>modelplot()</code> zur Verfügung, mit denen einfach ein Koeffizientenplot aus einem oder mehreren Modellen erstellt werden kann:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1408,12 +1408,12 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="uqvotozkzc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="wxekoghmku" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#uqvotozkzc .gt_table {
+#wxekoghmku .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1438,7 +1438,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_heading {
+#wxekoghmku .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1450,7 +1450,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_title {
+#wxekoghmku .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1462,7 +1462,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-bottom-width: 0;
 }
 
-#uqvotozkzc .gt_subtitle {
+#wxekoghmku .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1474,13 +1474,13 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-top-width: 0;
 }
 
-#uqvotozkzc .gt_bottom_border {
+#wxekoghmku .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_col_headings {
+#wxekoghmku .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1495,7 +1495,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_col_heading {
+#wxekoghmku .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1515,7 +1515,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   overflow-x: hidden;
 }
 
-#uqvotozkzc .gt_column_spanner_outer {
+#wxekoghmku .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1527,15 +1527,15 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   padding-right: 4px;
 }
 
-#uqvotozkzc .gt_column_spanner_outer:first-child {
+#wxekoghmku .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uqvotozkzc .gt_column_spanner_outer:last-child {
+#wxekoghmku .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uqvotozkzc .gt_column_spanner {
+#wxekoghmku .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1547,7 +1547,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   width: 100%;
 }
 
-#uqvotozkzc .gt_group_heading {
+#wxekoghmku .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1572,7 +1572,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   vertical-align: middle;
 }
 
-#uqvotozkzc .gt_empty_group_heading {
+#wxekoghmku .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1587,15 +1587,15 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   vertical-align: middle;
 }
 
-#uqvotozkzc .gt_from_md > :first-child {
+#wxekoghmku .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uqvotozkzc .gt_from_md > :last-child {
+#wxekoghmku .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uqvotozkzc .gt_row {
+#wxekoghmku .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1614,7 +1614,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   overflow-x: hidden;
 }
 
-#uqvotozkzc .gt_stub {
+#wxekoghmku .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1627,7 +1627,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   padding-right: 5px;
 }
 
-#uqvotozkzc .gt_stub_row_group {
+#wxekoghmku .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1641,11 +1641,11 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   vertical-align: top;
 }
 
-#uqvotozkzc .gt_row_group_first td {
+#wxekoghmku .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uqvotozkzc .gt_summary_row {
+#wxekoghmku .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1655,16 +1655,16 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   padding-right: 5px;
 }
 
-#uqvotozkzc .gt_first_summary_row {
+#wxekoghmku .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_first_summary_row.thick {
+#wxekoghmku .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uqvotozkzc .gt_last_summary_row {
+#wxekoghmku .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1674,7 +1674,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_grand_summary_row {
+#wxekoghmku .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1684,7 +1684,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   padding-right: 5px;
 }
 
-#uqvotozkzc .gt_first_grand_summary_row {
+#wxekoghmku .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1694,11 +1694,11 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_striped {
+#wxekoghmku .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uqvotozkzc .gt_table_body {
+#wxekoghmku .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1707,7 +1707,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_footnotes {
+#wxekoghmku .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1721,7 +1721,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_footnote {
+#wxekoghmku .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1730,7 +1730,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   padding-right: 5px;
 }
 
-#uqvotozkzc .gt_sourcenotes {
+#wxekoghmku .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1744,7 +1744,7 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uqvotozkzc .gt_sourcenote {
+#wxekoghmku .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1752,64 +1752,64 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   padding-right: 5px;
 }
 
-#uqvotozkzc .gt_left {
+#wxekoghmku .gt_left {
   text-align: left;
 }
 
-#uqvotozkzc .gt_center {
+#wxekoghmku .gt_center {
   text-align: center;
 }
 
-#uqvotozkzc .gt_right {
+#wxekoghmku .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uqvotozkzc .gt_font_normal {
+#wxekoghmku .gt_font_normal {
   font-weight: normal;
 }
 
-#uqvotozkzc .gt_font_bold {
+#wxekoghmku .gt_font_bold {
   font-weight: bold;
 }
 
-#uqvotozkzc .gt_font_italic {
+#wxekoghmku .gt_font_italic {
   font-style: italic;
 }
 
-#uqvotozkzc .gt_super {
+#wxekoghmku .gt_super {
   font-size: 65%;
 }
 
-#uqvotozkzc .gt_footnote_marks {
+#wxekoghmku .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#uqvotozkzc .gt_asterisk {
+#wxekoghmku .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uqvotozkzc .gt_indent_1 {
+#wxekoghmku .gt_indent_1 {
   text-indent: 5px;
 }
 
-#uqvotozkzc .gt_indent_2 {
+#wxekoghmku .gt_indent_2 {
   text-indent: 10px;
 }
 
-#uqvotozkzc .gt_indent_3 {
+#wxekoghmku .gt_indent_3 {
   text-indent: 15px;
 }
 
-#uqvotozkzc .gt_indent_4 {
+#wxekoghmku .gt_indent_4 {
   text-indent: 20px;
 }
 
-#uqvotozkzc .gt_indent_5 {
+#wxekoghmku .gt_indent_5 {
   text-indent: 25px;
 }
 </style>

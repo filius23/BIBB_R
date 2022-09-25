@@ -2,7 +2,7 @@
 
 ```{r setup, include=FALSE}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE, dpi=300)
+knitr::opts_chunk$set(echo = TRUE, cache = F, dpi=500)
 pacman::p_load(mfx, tidyverse, hrbrthemes, estimatr, ivreg, fixest, sandwich, marginaleffects,
                lmtest, margins, vtable, broom, modelsummary, kableExtra)
 
@@ -41,7 +41,7 @@ Nach den basics für Regressionsmodelle sehen wir uns in diesem Kapitel einige h
 Die folgenden Beispiele basieren vornehmlich auf dem `starwars`-Datensatz aus `{dplyr}`, hier ein kurzer Blick in die Daten:
 
 ```{r starwars}
-starwars
+starwars %>% select(name,height,mass,hair_color,gender)
 ```
 
 Unser Beispiel ist ein simples: der Zusammenhang zwischen Größe und Gewicht der Star Wars Helden:
@@ -51,31 +51,42 @@ mod1 <- lm(mass ~ height, data = starwars)
 
 ## "tidy" Regressionskoeffizienten mit `{broom}`
 
-While it's easy to extract regression coefficients via the `summary()` function, in practice I always use the **broom** package ([link ](https://broom.tidyverse.org/)) to do so. **broom** has a bunch of neat features to convert regression (and other statistical) objects into "tidy" data frames. This is especially useful because regression output is so often used as an input to something else, e.g. a plot of coefficients or marginal effects. Here, I'll use `broom::tidy(..., conf.int = TRUE)` to coerce the `mod1` regression object into a tidy data frame of coefficient values and key statistics.
+`summary()` bietet einen einfachen Zugriff auf Regressionstabellen, allerdings verwende ich häufig [`{broom}` ](https://broom.tidyverse.org/).
+Mit `broom::tidy(..., conf.int = TRUE)` bekommen wir einen `data.frame` mit den Ergebnissen des Regressionsmodells, die wir bspw. in einem `{ggplot2}` weiterverarbeiten können - wenn uns die Standardlösung von [`modelplot()`](09_reg.qmd#modelplot) nicht weiterhilft:
 
 ```{r mod1_tidy}
-# library(broom) ## schon geladen als Teil des tidyverse
+#| out-width: "90%"
+#| out-height: "50%"
+#| fig-align: "center"
+library(broom) ## schon geladen als Teil des tidyverse
 tidy(mod1, conf.int = TRUE)
+
+tidy(mod1, conf.int = TRUE) %>% 
+  ggplot(aes(y = term, x = estimate)) +
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "navy") +
+  geom_errorbarh(aes(xmin = conf.low, xmax  = conf.high), height = .1) + 
+  geom_point(color = "orange", shape = 17,size = 3) +
+  theme_minimal(base_size = 16)
+
 ```
 
-Again, I could now pipe this tidied coefficients data frame to a **ggplot2** call, using saying `geom_pointrange()` to plot the error bars. Feel free to practice doing this yourself now, but we'll get to some explicit examples further below.
 
-**broom** has a couple of other useful functions too. For example, `broom::glance()` summarises the model "meta" data (R<sup>2</sup>, AIC, etc.) in a data frame.
+`broom::glance()` gibt uns einen ganze Reihe an Modellgütemaßen (R<sup>2</sup>, AIC, etc.) als  `data.frame` aus:
 
 ```{r mod1_glance}
 glance(mod1)
 ```
 
-By the way, if you're wondering how to export regression results to other formats (e.g. LaTeX tables), don't worry: We'll [get to that](#regression-tables) at the end of the lecture.
-
 
 ## Nonstandard errors
 
-> Dealing with statistical irregularities (heteroskedasticity, clustering, etc.) is a fact of life for empirical researchers. [Grant McDermott](https://raw.githack.com/uo-ec607/lectures/master/08-regression/08-regression.html#Nonstandard_errors)
+> Dealing with statistical irregularities (heteroskedasticity, clustering, etc.) is a fact of life for empirical researchers.  
+[Grant McDermott](https://raw.githack.com/uo-ec607/lectures/master/08-regression/08-regression.html#Nonstandard_errors)
 
 Die gute Nachricht ist, dass R eine ganze Reihe an Möglichkeiten bietet, Standard-Fehler zu korrigieren.
-Unter anderem mit [{sandwich}](http://sandwich.r-forge.r-project.org/articles/sandwich.html) oder [{estimatr}](https://declaredesign.org/r/estimatr/articles/getting-started.html)).
-Einse sehr einfache Variante ist die Korrektur von Standardfehlern in `{modelsummary}`, die wir uns etwas genauer ansehen:
+Unter anderem mit [{sandwich}](http://sandwich.r-forge.r-project.org/articles/sandwich.html) oder [{estimatr}](https://declaredesign.org/r/estimatr/articles/getting-started.html).
+
+Eine sehr einfache Variante ist die Korrektur von Standardfehlern in `{modelsummary}`, die wir uns etwas genauer ansehen:
 
 
 Wir können sog. *heteroskedasticity-consistent* (HC) "robuste" Standardfehler mit der `vcov`-Option `HC` in `modelsummary()` anfordern. 
@@ -85,7 +96,8 @@ Eine Option ist auch `stata`, um Ergebnisse aus Statas `, robust` zu replizieren
 [Hier mehr](https://declaredesign.org/r/estimatr/articles/stata-wls-hat.html) zu den Hintergründen und Unterschieden.
 
 ```{r mod1_robust_stata}
-modelsummary::modelsummary(list(mod1,mod1,mod1,mod1),vcov = c("classical","HC","HC2","stata"))
+library(modelsummary)
+modelsummary(list(mod1,mod1,mod1,mod1),vcov = c("classical","HC","HC2","stata"),gof_omit = "RM|IC|Log")
 ```
 
 ## Fixed effects Modelle mit `{fixest}`
@@ -105,58 +117,30 @@ Wir fügen lediglich mit `|` die Variable hinzu, welche die FEs festlegt:
 
 ```{r ols_fe, message=FALSE}
 library(fixest)
-ols_fe<- feols(mass ~ height | species, data = starwars) ## Fixed effect(s) go after the "|"
-ols_fe
+fe_mod1 <- feols(mass ~ height | species, data = starwars)
+fe_mod1
 ```
 
 `{fixest}` clustert automatisch die Standardfehler entlang der FE-Variable (hier also `species`).
-
-
-ut to preview things, you can specify the standard errors you want at estimation time... or you can adjust the standard errors for any existing model via `summary.fixest()`. 
-For example, here are two equivalent ways to specify vanilla (iid) standard errors:
-
+Wenn wir das mal nicuth möchten, können wir mit der `se`-Option `= "standard"` ungeclusterte SE anfordern:
 ```{r ols_fe_standard_et, message=FALSE}
-feols(mass ~ height | species,data = starwars, se = 'standard')
-feols(mass ~ height | species,data = starwars, cluster = ~ species + homeworld)
+summary(fe_mod1, se = 'standard')
+summary(fe_mod1, cluster = ~species)
 ```
 
-
-Before continuing, let's quickly save a "tidied" data frame of the coefficients for later use. I'll use iid standard errors again, if only to show you that the `broom::tidy()` method for `fixest` objects also accepts an `se` argument. This basically just provides another convenient way for you to adjust standard errors for your models on the fly.
-
-```{r coefs_fe}
-# coefs_fe = tidy(summary(ols_fe, se = 'standard'), conf.int = TRUE) ## same as below
-coefs_fe = tidy(ols_fe, se = 'standard', conf.int = TRUE)
+`{modelsummary}` zeigt die geclusterten SE:
+```{r modsum_se, message=FALSE}
+modelsummary(list(fe_mod1),gof_omit = "R|IC|Log|F")
 ```
 
+## Abschließende Bemerkungen
 
-### geclusterte Standardfehler
+Zusammengefasst lassen uns `{fixest}` und `{modelsummary}` Standardfehler nach der eigentlichen Modellschätzung anpassen, indem wir die  `se` or `cluster` Optionen verwenden. 
 
-Clustered standard errors is an issue that most commonly affects panel data. 
-But here's a quick example of clustering with `estimatr::lm_robust()` just to illustrate:
+Ein [Blog Post von Grant Mcdermott](https://grantmcdermott.com/better-way-adjust-SEs/) argumentiert noch etwas ausführlicher, warum die nachträgliche Berechnung der Standardfehler (anstelle einer kompletten Neuschätzung des Modells) eine gute Idee ist - auch wenn es für Stata-Nutzende ein sehr ungewöhnliches Vorgehen ist.
 
-```{r mod1_robust_clustered, warning = FALSE}
-estimatr::lm_robust(mass ~ height, data = starwars, clusters = homeworld)
-modx <- lm(mass ~ height, data = starwars)
-# modelsummary(list(modx), vcov = ~homeworld)
-```
-
-
-
-
-## Standardfehler 
-
-We've now seen the various options that **fixest** has for specifying different standard error structures. 
-In short, you invoke either of the `se` or `cluster` arguments. 
-Moreover, you can choose to do so either at estimation time, or by adjusting the standard errors for an existing model post-estimation (e.g. with `summary.fixest(mod, cluster = ...)`). There are two additional points that I want to draw your attention to.
-
-First, if you're coming from another statistical language, adjusting the standard errors post-estimation (rather than always at estimation time) may seem slightly odd. But this behaviour is actually extremely powerful, because it allows us to analyse the effect of different error structures *on-the-fly* without having to rerun the entire model again. **fixest** is already the fastest game in town, but just think about the implied time savings for really large models.^[To be clear, adjusting the standard errors via, say, `summary.fixest()` completes instantaneously.] I'm a huge fan of the flexibility, safety, and speed that on-the-fly standard error adjustment offers us. 
-
-Ein [Blog Post von Grant Mcdermott](https://grantmcdermott.com/better-way-adjust-SEs/) argumentiert noch etwas ausführlicher.
-
-Second, reconciling standard errors across different software is a much more complicated process than you may realise. There are a number of unresolved theoretical issues to consider --- especially when it comes to multiway clustering --- and package maintainers have to make a number of arbitrary decisions about the best way to account for these. 
-
+Die exakte Replikation von Standardfehlern aus anderen Programmen (bspw, Stata) ist oft schwieriger als es zunächst scheint. 
 Siehe auch die Diskussion [hier](https://github.com/sgaure/lfe/issues/1#issuecomment-530643808) 
-
-`{fixest}`) has taken the time to write out a [detailed vignette](https://lrberge.github.io/fixest/articles/standard_errors.html) about how to replicate standard errors from other methods and software packages.
+[Detaillierte vignette](https://lrberge.github.io/fixest/articles/standard_errors.html) `{fixest}` wie SEs aus anderen Programmen repliziert werden können.
 [Detailliertes Paper](http://sandwich.r-forge.r-project.org/articles/jss_2020.html) von den Autoren von `{sandwich}` zu diesem Thema. 
 
