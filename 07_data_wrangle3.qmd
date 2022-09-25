@@ -28,6 +28,11 @@ windowsFonts(Roboto=windowsFont("Roboto"))
 > A mutating join allows you to combine variables from two tables. It first matches observations by their keys, then copies across variables from one table to the other.  
 [R for Data Science: Mutating joins](http://r4ds.had.co.nz/relational-data.html#mutating-joins)
 
+
+Ein Überblick zu den wichtigsten Befehlen[^tdyref]
+
+[^tdyref]: Illustrationen mit [tidyexplain](https://github.com/gadenbuie/tidyexplain)
+
 ```{r intial-dfs}
 #| echo: false
 #| out-width: "40%"
@@ -50,16 +55,6 @@ g
 ```
 
 <!-- <img src="pic/static/png/original-dfs.png" width="480px" /> -->
-
-
-
-- [**Mutating Joins**](#mutating-joins) — [`inner_join()`](#inner-join), [`left_join()`](#left-join),
-  [`right_join()`](#right-join), [`full_join()`](#full-join)
-  
-- [**Filtering Joins**](#filtering-joins) — [`semi_join()`](#semi-join), [`anti_join()`](#anti-join)
-
-- [**Set Operations**](#set-operations) — [`union()`](#union), [`union_all()`](#union-all), [`intersect()`](#intersection), [`setdiff()`](#set-difference)
-
 
 ```{r inner-join}
 #| echo: false
@@ -94,7 +89,34 @@ source("tidyexplain/full_join.R")
 Es gibt natürlich auch [`right_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)  oder [`anti_join()`](https://dplyr.tidyverse.org/reference/filter-joins.html). 
 Für eine tiefergehende Einführung lohnt sich das Kapitel [Relational Data](https://r4ds.had.co.nz/relational-data.html#relational-data) aus [R for Data Science](https://r4ds.had.co.nz/).
 
+
+Eine sehr hilfreiche Option in den `..._join()` ist die Verbindung unterschiedlicher Variablen.
+Bspw. haben wir hier einige Fälle aus der ETB18 und 
+
+```{r exmap}
+#| code-fold: true
+etb18_int_bl <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                                col_select = c("intnr","Bula") # mit col_select() können Variablen ausgewählt werden
+                                )
+
+etb_ids <-  etb18_int_bl %>% slice(c(1,125,1230,21010,8722) )
+
+alo_bula <- data.frame(bundesland = seq(1:11),
+                       Werte = sample(letters,size = 11) # mit sample() kann eine zufällige Auswahl getroffen werden 
+                       )
+```
+
+
+```{r join_by}
+etb_ids
+alo_bula
+etb_ids %>% left_join(alo_bula,by = c("Bula"="bundesland"))
+```
 ### [Übung](#join_ue)
+
+
+
+
 
 ## Reshape: `pivot_longer()` & `pivot_wider()`
 

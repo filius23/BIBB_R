@@ -197,32 +197,17 @@ Dementsprechend können
 
 ```{r headmer, eval = F}
 marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                      zpalter = seq(20,60,2) ))  %>% 
+                                      zpalter = c(20,40) ))  %>% 
   head(.) 
 ```
 ```{r, echo = F}
 marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                      zpalter = seq(20,60,2) ))  %>% 
+                                      zpalter = c(20,40) ))  %>% 
   head(.) %>% 
   rmarkdown::paged_table()
 ```
-```{r}
-mfx4 <- marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                              zpalter = seq(20,60,2)
-                                              )) 
-
-mfx4 %>% 
-  filter(term == "m1202_fct", !grepl("keine",contrast)) %>% 
-  ggplot(.,aes(x= zpalter, y= dydx,color = contrast)) + 
-  geom_point() +
-  geom_errorbar(aes(ymin = conf.low,ymax=conf.high)) +
-  labs(title = "Wahrscheinlichkeitsdifferenz für outside = 1 vs. ohne Ausb.",
-       y = "Marginaler Effekt", x =  "Alter", color = "") +
-  scale_color_manual(values = lacroix_palette("PeachPear")[c(1,5,6)])
-```
 
 ## Adjusted Predictions
-
 
 Wie groß ist die vorhergesagte Wahrscheinlichkeit, mehr als die Häfte der Arbeitszeit im Freien zu arbeiten für 
 
@@ -232,19 +217,11 @@ Wie groß ist die vorhergesagte Wahrscheinlichkeit, mehr als die Häfte der Arbe
 + 50 Jahre Alte Befragte ohne Berufsabschluss 
 + 50 Jahre Alte mit Fachhochschul- oder Uni-Abschluss
 
+
 ```{r}
-pred4 <- predictions(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                           zpalter = seq(20,60,2))) 
-
-
-pred4 %>% 
-  filter(!grepl("keine",m1202_fct)) %>% 
-  ggplot(.,aes(x= zpalter, y= predicted,color = m1202_fct)) + 
-  geom_point() +
-  geom_errorbar(aes(ymin = conf.low,ymax=conf.high)) +
-  scale_color_manual(values = lacroix_palette("PeachPear")[c(2,1,5,6)]) +
-  labs(title = "Vorhergesagte Wahrscheinlichkeit für outside = 1",
-       y = "Wahrscheinlichkeit", x =  "Alter", color = "") 
+library(ggeffects)
+ggpredict(m4, terms = c("zpalter[20,40,60]","m1202_fct[keine,duale,Aufst,Fachh]")) %>% 
+  plot()
 ```
 
 
