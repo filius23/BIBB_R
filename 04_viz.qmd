@@ -6,7 +6,7 @@ if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 library(haven)
 library(tidyverse)
 library(patchwork)
-knitr::opts_chunk$set(message = F,warning = F,highlight = "#<<",
+knitr::opts_chunk$set(message = F,warning = F,highlight = "#<<",cache = T,
                       out.height= "65%", out.width = "65%", fig.align="center")
 # https://wtoivo.github.io/SGSSS-data-viz-workshop/bar-plots.html
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
@@ -196,7 +196,6 @@ p1 + scale_color_manual(values = c("coral","orange"),
 ```
 
 
-
 ## Kombination aus allem
 ```{r}
 #| out-height: 100%
@@ -224,7 +223,64 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az,
 
 [Übersicht zu shapes](#shape1)
 
+## `ggsave()`
+
+Um eine Grafik dann zu speichern, steht uns `ggsave()` zur Verfügung.
+Wenn wir nichts anderes angeben, wird automatisch die gerade offene Grafik[^plotopen] gespeichert. 
+Besser ist es aber explizit zu sein:
+
+```{r}
+#| eval: false
+plot_objekt1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, 
+                               color = factor(S1),
+                               shape = factor(m1202))) + 
+  geom_point(size = 2) + 
+  scale_color_manual(values = c("lightskyblue3","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  scale_shape_manual(values = c(15:18),breaks = c(1:4), 
+                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  labs(color = "Geschlecht", 
+       shape = "Ausbildung",
+       fill = "Geschlecht",
+       y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: ETB 2018"
+       ) 
+ggsave(plot = plot_objekt1,filename = "./grafik/plot1.png",
+       dpi = 800, # auflösung
+       # width = 9, height = 7, # falls angepasst werden soll
+       )
+```
+Die richtige Kombination aus Auflösung, Textgröße und Gesamtgröße des Plots zu finden hat einige Fallstricke. [Hier mehr dazu.](https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/)
+
+
+[^plotopen]: im Panel **Plots** rechts
+
 ### [Übung](#pltue1) {#ue01}
+
+## Labels übernehmen
+
+Wenn(!) die labels und Variablenformate passen, dann hilft uns `easy_labs()` aus [{ggeasy}](https://jonocarroll.github.io/ggeasy/) weiter:
+```{r}
+#| eval: false
+install.packages("ggeasy")
+```
+
+
+```{r}
+library(ggeasy)
+etb18_small$S1 <- factor(etb18_small$S1)
+ggplot(data = etb18_small, aes(x = zpalter, 
+                               y = az)) + 
+  geom_point(size = 2) + 
+  easy_labs()
+```
+
+
+
+
 
 ## Verteilungen visualisieren
 
