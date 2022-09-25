@@ -72,7 +72,7 @@ knitr::include_graphics("./pic/115_rmd_stepX.png")
 ```
 
 RMarkdown-Dateien haben die Dateiendung `.rmd`.
-
+Das Knitten einer RMarkdown-Datei findet in einer neuen Umgebung statt - d.h. hier müssen alle Pakete und Daten geladen werden, auch wenn Sie in der Session bereits geladen sind.
 
 ## Wichtige Begriffe
 
