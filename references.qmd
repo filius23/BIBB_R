@@ -13,7 +13,8 @@ library(kableExtra)
 
 ## Einführungen in R
 
-Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:
+Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen: 
+
 
 [R for Data Science](r4ds.had.co.nz/) *das* Standardwerk für Datenanalysen mit `{tidyverse}` - sehr intuitive Einführung, Fokus auf Data Science
 
