@@ -58,9 +58,7 @@ Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw
 
 [`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem `easystats`-Universum unter anderem [{performance}](https://easystats.github.io/performance/)  und [{effectsize}](https://easystats.github.io/effectsize/index.html) kennengelernt.
 
-## Ereigniszeitmodelle / Event History Modellung / Survival Analysis
- 
-+ [Einführung von Emily Zabor](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)
+[Ereigniszeitmodelle / Event History Modellung / Survival Analysis](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)
 
 
 ::: {#refs}
