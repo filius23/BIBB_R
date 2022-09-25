@@ -63,6 +63,20 @@ table(etb18$F230_02)
 etb18 %>% count(F100_kldb2010_BOF) %>% add_tally()
 attributes(etb18$F230_02)
 
+etb_reg1 <- etb18 %>% filter(F200 <90, F518_SUF < 99990,intnr< 200000)
+ggplot(etb_reg1,aes(x= F200,y = F518_SUF)) + 
+  geom_smooth(method = "lm", se = F) +
+  geom_smooth(data = etb_reg1 %>% filter(F518_SUF<20000),
+              color = "sienna1",
+              method = "lm", se = F) +
+  geom_point() + 
+  geom_text(data = etb_reg1 %>% filter(F518_SUF>60000),
+            aes(label = intnr, x= F200+ 5), color = "sienna")
+attributes(etb18$F518_SUF)
+
+etb18 %>% filter(F200 <90, F518_SUF < 99990,F518_SUF>60000,intnr< 200000) %>% select(intnr) %>% slice_min(intnr,n = 10)
+
+
 
 
 # model tests ----

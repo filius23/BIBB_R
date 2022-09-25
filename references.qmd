@@ -19,7 +19,6 @@ Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum se
 
 [Stata 2 R](https://stata2r.github.io/) richtet sich alle Anwender\*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des `{tidyverse}` das Paket `{data.table}` für die Datenaufbereitung gezeigt. `{data.table}` ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das `{tidyverse}`. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, `{data.table}` auszuprobieren.
 
-für base R
 
 [Problemorientiere Einführungen in spezifische Anwendungen "do more with R"](https://www.infoworld.com/article/3411819/do-more-with-r-video-tutorials.html)
 
@@ -54,18 +53,11 @@ Damit lassen sich beispielsweise Textabschnitte nach bestimmten Zeichenfolgen du
 Der [Blog von Joshua C. Fjelstul](https://jfjelstul.github.io/regular-expressions-tutorial/) ist ein guter Einstieg.
 Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf) und das *regex* -Paket [`{stringr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf)
 
-## Twitter Accounts
+## Weiteres 
 
-+ [R Question a day]
-+ []
-+ [Daily R Sheets](https://twitter.com/daily_r_sheets) twittert jeden Tag ein zufälliges R-Cheatsheet
+[`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem `easystats`-Universum unter anderem [{performance}](https://easystats.github.io/performance/)  und [{effectsize}](https://easystats.github.io/effectsize/index.html) kennengelernt.
 
-
-[`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an.
-
-## Weitere Modellierungen
-
-### Ereigniszeitmodelle / Event History Modellung / Survival Analysis
+## Ereigniszeitmodelle / Event History Modellung / Survival Analysis
  
 + [Einführung von Emily Zabor](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)
 
