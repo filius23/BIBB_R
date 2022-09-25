@@ -63,7 +63,7 @@ Die 1 steht dabei jeweils für "ja", die `2` für "nein". Wir verändern die Cod
 
 ```{r}
 m_etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                           col_select = c("S1","F605","F518_SUF","m1202","zpalter")) %>% 
+                           col_select = c("S1","F605","F518_SUF","m1202","zpalter","Bula")) %>% 
   filter(F605 < 9, F518_SUF < 99998, zpalter < 100, S1==1) %>% 
   mutate(inc100 = F518_SUF/100,
          outside = 2-F605)
