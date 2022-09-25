@@ -1,4 +1,4 @@
-# Data Wrangling I {#wrang1}
+# Data Wrangling I: Labels {#wrang1}
 
 
 ```{r setup05, echo = F, include=FALSE}
