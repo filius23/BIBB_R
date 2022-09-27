@@ -14,7 +14,7 @@ library(Statamarkdown)
 Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:
 ```{r}
 #| eval: false
-install.packages("haven") # falls nicht schon installiert
+install.packages("haven") # falls nicht schon installiert 
 ```
 
 ```{r W04_1, eval=F, echo = T}
@@ -129,7 +129,7 @@ Wir erkennen aus dieser Tabelle beispielsweise, dass 4926 Befragte weiblich (`S1
 
 Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwende ich meistens `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
 
-### [Übung](#ue1)
+### [Übung](#descue1) {#ue_1}
 
 ## Fehlende Werte in R: `NA` {#NA03}
 
@@ -164,7 +164,7 @@ etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
 
 Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
 
-### [Übung](#ue2)
+### [Übung](#descue2)
 
 
 ## Mehrere Kennzahlen in einer Tabelle
@@ -279,7 +279,7 @@ tab_aus_gender %>%  filter(m1202 == 3)
 
 
 
-### [Übung](#ue3)
+### [Übung](#descue3)
 
 ::: callout-tip
 
@@ -405,7 +405,7 @@ etb18 %>%
 
 <!-- ::: -->
 
-### [Übung](#ue4)
+### [Übung](#descue4)
 
 
 ## Übungen
@@ -420,7 +420,7 @@ etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 [Abschnitt zum Einlesen](02_intro.qmd#import)
 
 
-### Übung 1 {#ue1}
+### Übung 1 {#descue1}
 
 Wir interessieren uns für die Variable `gkpol`, welche die Größe der Wohngemeinde der Befragten enthält:
 ```{r}
@@ -438,15 +438,18 @@ etb18 %>% count(gkpol) %>% pull(gkpol) %>% labelled::val_labels() %>% enframe(na
 + Erstellen Sie eine Kontingenztabelle, indem Sie neben `gkpol` auch das Geschlecht `S1` (2 = Frauen, 1 = Männer) mit einbeziehen
 + Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben? Berechnen Sie die relativen Häufigkeiten.
 
-### Übung 2 {#ue2}
+[Zurück nach oben](#ue_1)
+
+### Übung 2 {#descue2}
 
 Wir interessieren uns für die Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein). Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten.
   
   + Erstellen Sie zunächst eine Auszählung der absoluten Häufigkeiten: Hat die Variable fehlende Werte, die Sie ausschließen sollten? Nutzen Sie `count()` und `xtabs()` für die Auszählung.
   + Falls ja, ersetzen Sie diese Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben. [Siehe hier](#NA03)
   
+[Zurück nach oben](#ue_2)
   
-### Übung 3 {#ue3}
+### Übung 3 {#descue3}
   
 + Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol`, welche folgende Informationen enthält:
   + absolute Häufigkeiten 
@@ -461,7 +464,9 @@ Wir interessieren uns für die Variable `F100_wib2`. Die Variable `F100_wib1` er
   + Wie viel Prozent der Befragten, die in einer Gemeinde mit unter 2000 Einwohnern leben, sind Frauen? (`S1` = 2, `gkpol` = 1)
   + Wie viel Prozent der Frauen leben in einer Gemeinde mit unter 2000 Einwohnern leben?  
   
-### Übung 4 {#ue4}
+[Zurück nach oben](#ue_3)
+
+### Übung 4 {#descue4}
 
 Beschreiben Sie das Alter der Befragten (`zpalter`) mit `summary` und erstellen Sie selbst einen Überblick mit Hilfe von `summarise()`, der einen Vergleich des Befragtenalters nach Gemeindegrößen erlaubt.
 
@@ -474,6 +479,8 @@ etb18$zpalter[etb18$zpalter>100] <- NA
   + Erstellen Sie einen Überblick mit `summary()`
   + Erstellen Sie einen Überblick mit dem Minimum, Median, arith. Mittel, Varianz und Maximum der Alterswerte mit Hilfe von `summarise()`
   + Erweitern Sie diesen Überblick dann so, dass sie einen Vergleich der Kennzahlen für die verschieden `gkpol`-Kategorien ausgegeben bekommen.
+
+[Zurück nach oben](#ue_4)
 
 ## Hinweise 
 
@@ -506,8 +513,83 @@ t4[which(t4 == max(t4))] # Modus
 
 
 
-{{< include _03_1_gini.qmd >}}
+### Gini-Koeffizient {#gini_graph}
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(tidyverse)
+```
 
+Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
+
+```{r gini_plot1, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+#| cache: true
+gdf2 <- 
+  data.frame(id = 1:5) %>% 
+  mutate(eq = 1, ineq = id/5*5/3, w = 6-id ) %>% 
+  mutate(across( matches("eq"), ~ cumsum(.x),.names = "{col}_{fn}")) %>% 
+  uncount(w,.id = "x") %>% 
+  mutate(eq2 = ifelse(lead(id)==id | id == 5,NA,eq_1))
+
+  gdf2 %>% 
+  ggplot(.,aes(x = 6-x,y = ineq)) +
+  geom_col(color = "grey25", aes(fill = factor(id,levels=5:1))) +
+  geom_line(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), color = "#EEDA9DFF", size = .5) +
+  geom_point(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), fill = "#EEDA9DFF", size = 3, shape= 21, color = "grey25", stroke = .25)+
+  geom_text(aes(label = id,y = ineq_1-ineq/2, color = factor(id,levels=5:1) )) + 
+    scale_x_continuous(breaks = 1:5, labels = c("kleinster","2.kleinster","3","zweitgrößter","größter")) +
+    scale_y_continuous(breaks = 0:5, labels = paste0(seq(0,100,20),"%") ) +
+    scale_fill_manual(values = paletteer::palettes_d$dutchmasters$pearl_earring[2:6]) +
+    scale_color_manual(values = c("grey25","grey25","grey98","grey25","grey25")) +
+    guides(fill = "none", color = "none") +
+    labs(y = "Anteil am Gesamtwert", x = "Sortierte Beobachtungen") +
+    theme_minimal(base_size = 11) +
+    theme(panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank())
+```
+
+```{r dpi = 900, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+#| cache: true
+gdf <- a14 %>% mutate_at(vars(di05),~ifelse(.<0,NA,.)) %>%  
+  select(respid, di05) %>% 
+  na.omit() %>% 
+  arrange(di05) %>% 
+  mutate(pct_id = 1:n()/n(),
+         pct_di05 = cumsum(di05/sum(di05)),
+         sampl = runif(n = nrow(.)))
+
+gini_ann_df <- gdf %>% 
+  filter(sampl<.0151, between(pct_id,.5,.6 ) ) %>% slice(1) %>%
+  mutate(lab_lo = "Lorenzkurve", 
+         labl = paste0("Lorenzkurve (aus Beobachtungen):\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_di05*100,0),"% des gesamten HH-Einkommens\""),
+         labl1 = paste0("(Theoretische) Diagonale:\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_id*100,0),"% des gesamten HH-Einkommens\""),
+         labl2 = "Gini Koeffizient:\nFläche zwischen Diagonale und Lorenzkurve\nim Verhältnis zu Fläche unter Lorenzkurve (weiß)\n(0=Gleichverteilung,1=Maximale Konzentration)")
+
+ggplot(gdf, aes(x = pct_id, y = pct_di05)) + 
+  geom_ribbon(aes(ymin = pct_di05, ymax = pct_id, xmin = pct_id, xmax = pct_id), fill = "#1BB6AF" ) +
+  geom_line(aes(y = pct_id), linetype = 2, size = .95, color = "#172869") + # Diagonale
+  geom_line(size = .5, color = "#9ED80B") + # Lorenzkurve
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
+  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 3, 
+             color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
+  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 3, 
+             color = "grey95", fill = "#172869") + # diagonale label
+  geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
+  geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
+  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 3, 
+             color = "grey15", fill = "#1BB6AF") + # Gini Label
+  geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
+  scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
+  scale_y_continuous("Kumulierter Einkommensanteil", labels = scales::percent_format(accuracy = 1L)) +
+  theme_minimal(base_size = 11) +
+  coord_cartesian(x =c(0,1),y =c(0,1),expand = F)
+```
 
 
 
