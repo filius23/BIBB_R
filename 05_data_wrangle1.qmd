@@ -186,9 +186,9 @@ tab_dat1 %>%
 theme_set(theme_gray()) 
 ```
 
-### `as_factor()` in `{labelled}`
+### `as_factor()` in `{haven}`
 
-In `{labelled}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels einen `factor` erstellen können.
+In `{haven}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels einen `factor` erstellen können.
 
 [^2]: Nicht zu verwechseln mit `as.factor()` aus base R - der `_` macht einen Unterschied!
 
