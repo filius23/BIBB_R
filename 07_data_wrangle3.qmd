@@ -112,6 +112,14 @@ etb_ids
 alo_bula
 etb_ids %>% left_join(alo_bula,by = c("Bula"="bundesland"))
 ```
+
+Ein sehr hilfreiche Checkmöglichkeit, die ich häufig verwende:
+Für alle `Bula` in `etb_ids` findet sich eine Entsprechung in `alo$bundesland`:
+```{r tabx_in}
+table(etb_ids$Bula %in% alo_bula$bundesland)
+```
+
+
 ### [Übung](#join_ue)
 
 
