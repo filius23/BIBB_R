@@ -313,7 +313,7 @@ R und `{dplyr}` stellen uns einige weitere Operatoren zur Auswahl von Zeilen zu 
 
 filter(dat1, studs >= 10000)
 filter(dat1, studs <= 10000)
-filter(dat1,studs > 10000 | prof < 200) # mehr als 10.000 Studierende *oder* weniger als 200 Professuren
+filter(dat1,studs > 10000 | profs < 200) # mehr als 10.000 Studierende *oder* weniger als 200 Professuren
 filter(dat1, gegr %in% c(1971,1830)) # gegründet 1971 oder 1830
 filter(dat1, between(gegr,1971,1830)) # gegründet zwischen 1971 und 1830 (einschließlich)
 ```

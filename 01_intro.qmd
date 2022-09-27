@@ -182,7 +182,15 @@ Mit `c()` lassen sich mehrere Werte unter einem Objekt ablegen und auch mit dies
 x1 <- c(1,2,3)
 x1
 x1* 2
+```
 
+Mit `length()` können wir die Anzahl der abgelegten Werte nachsehen:
+```{r length}
+length(x1)
+```
+
+
+```{r calc1, include=T, echo = T}
 y1 <- c(10,11,9)
 y1
 y1/x1
