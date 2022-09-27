@@ -241,15 +241,14 @@ plot_objekt1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az,
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
   scale_shape_manual(values = c(15:18),breaks = c(1:4), 
                      labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  labs(color = "Geschlecht", 
-       shape = "Ausbildung",
-       fill = "Geschlecht",
-       y = "Arbeitszeit/Woche",
-       x = "Alter",
-       title = "Arbeitszeit und Alter",
-       subtitle = "Nach Geschlecht",
-       caption = "Quelle: ETB 2018"
-       ) 
+  labs(color = "Geschlecht",shape = "Ausbildung", fill = "Geschlecht",
+       y = "Arbeitszeit/Woche",x = "Alter",
+       title = "Arbeitszeit und Alter", subtitle = "Nach Geschlecht",caption = "Quelle: ETB 2018") 
+```
+
+
+```{r}
+#| eval: false
 ggsave(plot = plot_objekt1,filename = "./grafik/plot1.png",
        dpi = 800, # auflösung
        # width = 9, height = 7, # falls angepasst werden soll
@@ -260,7 +259,7 @@ Die richtige Kombination aus Auflösung, Textgröße und Gesamtgröße des Plots
 
 [^plotopen]: im Panel **Plots** rechts
 
-### [Übung](#pltue1) {#ue01}
+### [Übung](#pltue1)  {#ue4_01}
 
 ## Labels übernehmen
 
@@ -404,7 +403,7 @@ ggplot(data = etb18, aes(x = az,fill = factor(S1))) +
   labs(fill = "Geschlecht") 
 ```
 
-### [Übung](#pltue2) {#ue02}
+### [Übung](#pltue2) {#ue4_02}
 
 ## Kategoriale Merkmale 
 
@@ -493,15 +492,19 @@ etb18 %>%
 ```
 
 
-### [Übung](#pltue3) {#ue03}
+### [Übung](#pltue3)  {#ue4_03}
 
 ## Übungen
 Nutzen Sie für alle Aufgaben die ersten 150 Beobachtungen (`etb18_small`), um den Plot einfach zu halten. Denken Sie daran die fehlenden Werte mit `filter()` auszuschließen, Sie können dazu diesen Befehl verwenden:
 
 ```{r}
 #| eval: false
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", col_select = c("h1216d","S2_j","S1","m1202","F518_SUF"))
-etb18_small <- etb18 %>% filter(S2_j < 9999,h1216d>0,F518_SUF<99998) %>% slice(1:150)
+etb18 <-
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+    col_select = c("h1216d", "S2_j", "S1", "m1202", "F518_SUF", "nt", "gkpol")
+    )
+etb18_small <-
+  etb18 %>% filter(S2_j < 9999, h1216d > 0, F518_SUF < 99998) %>% slice(1:150)
 ```
 
 ### Übung 1 {#pltue1}
@@ -510,6 +513,9 @@ etb18_small <- etb18 %>% filter(S2_j < 9999,h1216d>0,F518_SUF<99998) %>% slice(1
 + Legen Sie die Farbe so fest, dass Männer und Frauen unterschiedliche Farben gekennzeichnet werden (`S1`)
 + Verändern Sie die Farben auf `goldenrod1` und `dodgerblue4` fest ([oder eine beliebige andere](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf))
 + Beschriften Sie die Achsen und Legende!
+
+[Zurück nach oben](#ue4_01)
+
 
 ### Übung 2 {#pltue2}
 
@@ -520,21 +526,13 @@ etb18_small <- etb18 %>% filter(S2_j < 9999,h1216d>0,F518_SUF<99998) %>% slice(1
 + Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` oder `scale_fill_brewer` oder `scale_fill_viridis` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) und [viridis](#viridis) unter "weitere Optionen")
 + Ändern Sie die Darstellung in einen density-Plot
 
+[Zurück nach oben](#ue4_02)
+
 ### Übung 3 {#pltue3}
 
 
 + Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`)
-+ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`) betrennt nach der Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein).
-
-```{r}
-#| echo: false
-etb18 %>% count(F100_wib2,gkpol) %>% filter(F100_wib2>=0) %>% 
-  ggplot(aes(x = gkpol, y = n, fill = factor(F100_wib2))) +
-  geom_col(position=position_dodge()) +
-  scale_x_continuous(breaks = 1:7,
-                   labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
-                              "50k bis <100k", "100k bis <500k", "500k und mehr"))
-```
++ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`) getrennt nach der Variable `nt` - färben Sie die Säulen nach `nt`. Die Variable `nt` erfasst, ob die Befragten einer Nebentätigkeit nachgehen (1 = ja/ 0 = nein).
 
 Kleine Hilfe: das sind die Labels für `gkpol` 1-7:
 ```{r}
@@ -554,6 +552,7 @@ scale_x_continuous(breaks = 1:7,
 
 ```
 
+[Zurück nach oben](#ue4_03)
 
 
 ## Weitere Optionen für ggplot2 

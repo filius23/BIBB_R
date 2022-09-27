@@ -7,11 +7,11 @@ library(haven)
 library(tidyverse)
 library(patchwork)
 
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", col_select = c("h1216d","S2_j","S1","m1202","F518_SUF"))
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", col_select = c("h1216d","S2_j","S1","m1202","F518_SUF","nt","gkpol"))
 etb18_small <- etb18 %>% filter(S2_j < 9999,h1216d>0,F518_SUF<99998) %>% slice(1:150)
 
 
-attributes(etb18$h1216d)
+attributes(etb18$F100_wib2)
 # Übung 1 -------
 
 
@@ -39,14 +39,52 @@ ggplot(etb18_small, aes(y = F518_SUF)) + geom_boxplot()
 # Passen Sie diesen Boxplot so an, dass die Einkommensverteilungen für Männer und Frauen getrennt dargestellt werden
 ggplot(etb18_small, aes(y = F518_SUF, x = factor(S1) )) + geom_boxplot()
 
-## übrigens
+## Knobelaufgabe:
 ggplot(etb18_small, aes(y = F518_SUF, x = factor(S1),color = factor(S1) )) + geom_boxplot()
 
 
 # Erstellen Sie ein Histogramm, ebenfalls für die Einkommensverteilung und mit getrennten Farben für Männer und Frauen
 # Was passiert wenn Sie für das Histogramm statt color = anstelle von fill = verwenden?
+
+ggplot(etb18_small, aes(x = F518_SUF,fill = factor(S1) ))  + geom_histogram(position = position_dodge())
+ggplot(etb18_small, aes(x = F518_SUF,color = factor(S1) )) + geom_histogram(position = position_dodge()) 
+
+
+ggplot(etb18_small, aes(x = F518_SUF,fill = factor(S1) ))  + geom_histogram(position = position_dodge()) +
+  scale_fill_manual(values = c("goldenrod1","dodgerblue4"),
+                     breaks = c(1,2),
+                     labels = c("M","W")) 
+
+
 # Verändern Sie die Farben der Balken mit Hilfe von scale_fill_manual oder scale_fill_brewer oder scale_fill_viridis (Siehe Abschnitte Farben und ColorBreweR und viridis unter “weitere Optionen”)
 # Ändern Sie die Darstellung in einen density-Plot
 
+ggplot(etb18_small, aes(x = F518_SUF,fill = factor(S1) ))  + geom_density(alpha = .5) +
+  scale_fill_manual(values = c("goldenrod1","dodgerblue4"),
+                    breaks = c(1,2),
+                    labels = c("M","W")) 
+
+# Übung3 ------
+etb18_small %>% count(gkpol) %>%
+  ggplot(data = ., aes(x = gkpol, y = n)) +
+  geom_col(position = position_dodge())
 
 
+etb18_small %>% count(gkpol,nt) %>%
+  ggplot(data = ., aes(x = gkpol, y = n, fill = factor(nt))) +
+  geom_col(position = position_dodge())
+
+
+# labels und farbe
+etb18_small %>% count(gkpol,nt) %>%
+  ggplot(data = ., aes(x = gkpol, y = n, fill = factor(nt))) +
+  geom_col(position = position_dodge()) +
+  scale_x_continuous(breaks = 1:7,
+                     labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
+                                "50k bis <100k", "100k bis <500k", "500k und mehr")) +
+  scale_fill_manual(values = c("slateblue4","orangered3"),
+                    breaks = c(0,1),
+                    labels = c("ja","nein"))  +
+  labs(fill = "Nebentätigkeit",
+       x = "Wohnortgröße",
+       y = "Häufigkeit")
