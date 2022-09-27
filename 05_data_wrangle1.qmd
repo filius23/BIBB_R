@@ -12,8 +12,8 @@ theme_set(theme_gray() + theme(axis.text.x = element_text(size=rel(1.45))))
 ```
 ```{r}
 library(tidyverse)
-etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-etb18_small <- etb18 %>% select(intnr,S1,m1202,Bula) # für Beispiel weiter unten
+etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                               col_select = c("intnr", "S1", "m1202", "Bula"))
 ```
 
 
@@ -116,7 +116,7 @@ Dabei soll `educ` die verschiedenen Ausbildungsniveaus entsprechend der Codierun
 ```{r}
 #| code-fold: true
 library(labelled)
-names(val_labels(etb18$m1202)[-1])
+names(val_labels(etb18_small$m1202)[-1])
 ```
 
 
@@ -139,8 +139,6 @@ So könnten wir einfach eine `educ_chr`-Spalte hinzufügen:
 tab_dat1$educ_chr <- c("k.A.","ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni")
 tab_dat1
 ```
-
-
 
 Mit `factor()` können wir `levels` und `labels` angeben - die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen. Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
 ```{r}
@@ -194,7 +192,7 @@ In `{haven}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels ei
 
 ```{r}
 library(labelled)
-tab_ausb <- etb18 %>% filter(m1202 != -1) %>% count(m1202)
+tab_ausb <- etb18_small %>% filter(m1202 != -1) %>% count(m1202)
 tab_ausb
 tab_ausb$m1202_fct <- as_factor(tab_ausb$m1202)
 tab_ausb$m1202 <- as.numeric(tab_ausb$m1202) # labels aus m1202 löschen (numeric ist nicht gelabelt)
@@ -296,7 +294,7 @@ Ein alternativer Weg geht über einen kleinen Label-`data.frame` und `left_join(
 
 
 ```{r}
-tab_ausb2 <- etb18 %>% count(m1202)
+tab_ausb2 <- etb18_small %>% count(m1202)
 tab_ausb2
 ```
 
