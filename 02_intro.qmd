@@ -168,7 +168,7 @@ Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentype
 
 
 
-### [Übung](#data1) {#ue1}
+### [Übung](#data1) {#ue_1}
 
 
 ## Pakete in R {#packages}
@@ -406,7 +406,7 @@ select(dat1,matches("s$")) # alle Spalten, die mit s enden
 
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
 
-### [Übung](#data2) {#ue2}
+### [Übung](#data2) {#ue_2}
 
 ## Arbeiten mit der Pipe: `filter()` und `select()` kombinieren  {#pipe}
 
@@ -494,7 +494,7 @@ dat1 %>% arrange(desc(uni_fct), gegr, studs)
 ```
 (Macht in diesem Beispiel aber wenig Sinn)
 
-### [Übung](#data3) {#ue3}
+### [Übung](#data3) {#ue_3}
 
 ## Datensätze einlesen {#import}
 
@@ -785,30 +785,30 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 -  Lassen Sie sich `dat2` anzeigen - in der Console oder mit `View()`
 -  Berechnen Sie das Verhältnis Studierende pro Professur und legen Sie die Ergebnisse in einer neuen Variable an. Sehen Sie sich das Ergebnis an.
 
-[Zurück nach oben](#ue1)
+[Zurück nach oben](#ue_1)
 
 ### Übung 2 {#data2}
 
 -   Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`
 -   Verwenden Sie wieder den `data.frame` `dat2` aus Übung 1
--   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{dplyr}` zu installieren und mit `library()` zu laden)
+-   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{tidyverse}` zu installieren und mit `library()` zu laden)
 -   Lassen Sie sich nur die dritte Zeile von `dat2` anzeigen.
 -   Lassen Sie sich nur die Spalte `gegr` anzeigen.
--   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die vor 1900 gegründet wurden.
 -   Lassen Sie sich nur Zeilen der Hochschulen mit Promotionsrecht anzeigen.
 
-[Zurück nach oben](#ue2)
+[Zurück nach oben](#ue_2)
 
 
 ### Übung 3 {#data3}
 
 -   Verwenden Sie weiterhin den Datensatz aus Übung 1 & 2.
--   Lassen Sie sich nur Zeilen der Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden.
+-   Lassen Sie sich nur Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden - und für diese Fälle nur den Namen und das Gründungsjahr.
 -   Sortieren Sie den Datensatz entsprechend dieser Reihenfolge. (Legen Sie dazu eine `factor`-Variable an, welche die entsprechende Reihenfolge festlegt.)
 ```{r,eval =F}
 c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 ```
 
+[Zurück nach oben](#ue_3)
 
 
 
@@ -816,17 +816,17 @@ c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 
 -   Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein [R-Projekt](#rproj)
 -   Legen Sie die Erwerbstätigenbefragung in Ihrem Verzeichnis im Unterordner *data* ab.
--   Lesen Sie den Datensatz `BIBBBAuA_2018_small.csv` [wie oben gezeigt](#import) in R ein und legen Sie den Datensatz unter dem Objektnamen `etb` ab.
+-   Lesen Sie den Datensatz `BIBBBAuA_2018_small.csv` [wie oben gezeigt](#import) in R ein und legen Sie den Datensatz unter dem Objektnamen `etb_small` ab.
 -   Nutzen Sie `head()` und `View()`, um sich einen Überblick über den Datensatz zu verschaffen.
 -   Wie viele Befragte (Zeilen) enthält der Datensatz?
--   Lassen Sie sich die Variablennamen von `etb` mit `names()` anzeigen!
+-   Lassen Sie sich die Variablennamen von `etb_small` mit `names()` anzeigen!
 -   Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte\*n mit der `intnr` 2781 enthält?
--   Wie alt ist der/die Befragte mit der `respid` 2781?
+-   Wie alt ist der/die Befragte mit der `intnr` 2781?
 -   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable `S2_j` abgelegt.)
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
 -   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen?
 
-[Zurück nach oben](#ue3)
+[Zurück nach oben](#ue_4)
 
 ## Anhang
 
