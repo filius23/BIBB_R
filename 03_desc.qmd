@@ -129,7 +129,7 @@ Wir erkennen aus dieser Tabelle beispielsweise, dass 4926 Befragte weiblich (`S1
 
 Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwende ich meistens `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
 
-### [Übung](#descue1) {#ue_1}
+### [Übung](#descue1) {#ue3_1}
 
 ## Fehlende Werte in R: `NA` {#NA03}
 
@@ -164,7 +164,7 @@ etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
 
 Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
 
-### [Übung](#descue2)
+### [Übung](#descue2) {#ue3_2}
 
 
 ## Mehrere Kennzahlen in einer Tabelle
@@ -279,7 +279,7 @@ tab_aus_gender %>%  filter(m1202 == 3)
 
 
 
-### [Übung](#descue3)
+### [Übung](#descue3) {#ue3_3}
 
 ::: callout-tip
 
@@ -405,7 +405,7 @@ etb18 %>%
 
 <!-- ::: -->
 
-### [Übung](#descue4)
+### [Übung](#descue4) {#ue3_4}
 
 
 ## Übungen
@@ -438,33 +438,27 @@ etb18 %>% count(gkpol) %>% pull(gkpol) %>% labelled::val_labels() %>% enframe(na
 + Erstellen Sie eine Kontingenztabelle, indem Sie neben `gkpol` auch das Geschlecht `S1` (2 = Frauen, 1 = Männer) mit einbeziehen
 + Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben? Berechnen Sie die relativen Häufigkeiten.
 
-[Zurück nach oben](#ue_1)
+[Zurück nach oben](#ue3_1)
 
 ### Übung 2 {#descue2}
 
-Wir interessieren uns für die Variable `F100_wib2`. Die Variable `F100_wib1` erfasst, ob die Befragten in einem wissensintensiven Beruf tätig sind (1 = ja/ 0 = nein). Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten.
+Wir interessieren uns für die Variable `S3`. Die Variable `S3` erfasst den höchsten allgemeinen Schulabschluss der Befragten. Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten.
   
-  + Erstellen Sie zunächst eine Auszählung der absoluten Häufigkeiten: Hat die Variable fehlende Werte, die Sie ausschließen sollten? Nutzen Sie `count()` und `xtabs()` für die Auszählung.
-  + Falls ja, ersetzen Sie diese Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben. [Siehe hier](#NA03)
+  + Erstellen Sie zunächst eine Auszählung mit `count()` und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu.
+  + Profi-Aufgabe: Ersetzen Sie ggf. Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben. [Siehe hier](#NA03)
   
-[Zurück nach oben](#ue_2)
+[Zurück nach oben](#ue3_2)
   
 ### Übung 3 {#descue3}
   
-+ Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol`, welche folgende Informationen enthält:
-  + absolute Häufigkeiten 
-  + relative Häufigkeiten
-  + kumulierte relative Häufigkeiten 
-  + Wie viele Befragte leben in einem Ort mit höchstens 49.999 Einwohnern?
-  + Wie groß ist der Anteil der Befragten, die in einem Ort mit höchstens 99.999 Einwohnern leben?
-  + Wie groß ist der Anteil der Befragten, die in einem Ort mit *mindestens* 100.000 Einwohnern leben?
++ Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol` und das Geschlecht (`S1`)
+  + Verwenden Sie die Befehle aus Übung 2- was müssen Sie anpassen, um die Tabelle für `gkpol`
+  + Erweitern Sie jetzt die Auszählung um `S1`
+  + Berechnen Sie die Anteile von `gkpol` innerhalb von Männern und Frauen.
+  + Wie viel Prozent der Frauen leben in einer Gemeinde mit unter 2000 Einwohnern?  
+  + Profi-Aufgabe: Wie viel Prozent der Befragten, die in einer Gemeinde mit unter 2000 Einwohnern leben, sind Frauen? (`S1` = 2, `gkpol` = 1)
   
-  
-+ Beziehen Sie neben `gkpol` auch das Geschlecht (`S1`)
-  + Wie viel Prozent der Befragten, die in einer Gemeinde mit unter 2000 Einwohnern leben, sind Frauen? (`S1` = 2, `gkpol` = 1)
-  + Wie viel Prozent der Frauen leben in einer Gemeinde mit unter 2000 Einwohnern leben?  
-  
-[Zurück nach oben](#ue_3)
+[Zurück nach oben](#ue3_3)
 
 ### Übung 4 {#descue4}
 
@@ -480,7 +474,7 @@ etb18$zpalter[etb18$zpalter>100] <- NA
   + Erstellen Sie einen Überblick mit dem Minimum, Median, arith. Mittel, Varianz und Maximum der Alterswerte mit Hilfe von `summarise()`
   + Erweitern Sie diesen Überblick dann so, dass sie einen Vergleich der Kennzahlen für die verschieden `gkpol`-Kategorien ausgegeben bekommen.
 
-[Zurück nach oben](#ue_4)
+[Zurück nach oben](#ue3_4)
 
 ## Hinweise 
 
