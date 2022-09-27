@@ -22,6 +22,15 @@ Die Liste lehnt sich stark an die die großartige Zusammenstellung von [Nick C. 
 tweetrmd::include_tweet("https://twitter.com/hioberman/status/1566699138309410817")
 ```
 
+R zeigt den Befehl immer bis zum Fehler an:
+
+```{r}
+#| error: true
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",col_select = c("F518_SUF","az","S1","m1202")) %>% 
+  mutate(across(dplyr::everything(),~ifelse(.x<0 | .x > 99998, NA, . x)))
+```
+
+Hier ist also `. x` "unerwartet" - es hat sich ein  Leerzeichen zu viel eingeschlichen. 
 
 ## There is no package called
 
