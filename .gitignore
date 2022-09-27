@@ -16,3 +16,5 @@ BIBB_BAuA - Verknüpfung.lnk
 /log/
 *.zip
 ~$*
+*.xlsx
+*.pptx
