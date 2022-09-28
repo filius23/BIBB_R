@@ -13,7 +13,8 @@ theme_set(theme_gray() + theme(axis.text.x = element_text(size=rel(1.45))))
 ```{r}
 library(tidyverse)
 etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               col_select = c("intnr", "S1", "m1202", "Bula"))
+                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01")) %>% 
+  filter(F411_01<9)
 ```
 
 
@@ -327,13 +328,43 @@ tab_ausb2 %>%
 ## Übung
 
 
-+ Bearbeiten Sie die labels ihrer Diagramme aus dem vorherigen Kapitel.
-+ Erstellen Sie dafür zunächst einen `data.frame` mit den Auszählungen durch `count()` und legen diese als Objekt ab.
-+ Erstellen Sie einen Label-`data.frame` und 
-+ Nutzen Sie `as_factor()` aus `{labelled}`, um die Labels in eine separate Variable abzulegen.
-+ Verändern Sie die labels nach Ihrem Geschmack: kürzen Sie, ändern Sie Bezeichungen mit `fct_recode()`
-+ Erstellen Sie einen Data-Frame mit Labels und verwenden Sie diesen für ihre Grafik.
+Bearbeiten Sie die labels dieses Diagramms:
 
+```{r}
+#| code-fold: show
+#| out-width: "50%"
+#| out-height: "50%"
+etb18_small %>% 
+  count(F411_01) %>%
+  ggplot(data = ., aes(x = F411_01, y = n)) +
+  geom_col(fill = "steelblue3")
+```
+
++ Erstellen Sie dafür zunächst einen `data.frame` mit der Auszählung durch `count()` und legen diese als Objekt ab.
+
++ Wenden Sie dann eine der beiden Label-Strategien an:
+  1. Labeln mit `factor`
+  + Nutzen Sie `as_factor()` aus `{haven}`, um die Labels in eine separate Variable abzulegen.
+  + Verändern Sie die labels nach Ihrem Geschmack: kürzen Sie, ändern Sie Bezeichungen mit `fct_recode()`
+  
+  1. Label-`data.frame`
+  + Erstellen Sie einen Label-`data.frame` mit den Ausprägungen und den gewünschten Beschriftungen. 
+  + Spielen Sie mit Hilfe von `left_join()` diesen Label-`data.frame` an den `data.frame` mit den Auszählungen ran.
+
++ Verwenden Sie die gelabelten Variablen für die Grafik.
+
+
+Profi-Aufgabe: Wie müssen Sie für folgende Grafik vorgehen?
+
+```{r}
+#| code-fold: show
+#| out-width: "50%"
+#| out-height: "50%"
+etb18_small %>% 
+  count(F411_01,S1) %>%
+  ggplot(data = ., aes(x = F411_01, y = n, fill = factor(S1)) ) +
+  geom_col()
+```
 
 <!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->
 
