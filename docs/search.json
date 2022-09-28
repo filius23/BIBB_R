@@ -39,7 +39,7 @@
     "href": "02_intro.html",
     "title": "2  Arbeiten mit Datensätzen in R",
     "section": "",
-    "text": "(Spätes) Vorwort zu R und der Befehlsstruktur\nKlingt gut, oder?\nEin paar allgemeine Aspekte, in denen sich das Arbeiten mit R von dem mit einigen anderen Programmen unterscheidet: - R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. Aber: RStudio stoppt ab Version 2022.07 bei einem Syntaxfehler. - Für alle Stata-Nutzenden: kein variable xyz already defined mehr. Wir können alles überschreiben, ohne , replace oder ähnliches. - Durch die Objektorientierung haben wir die Möglichkeit mehrere Datensätze gleichzeitig geöffnet zu haben - das erhöht die Flexibilität.\nIn der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los geht’s."
+    "text": "(Spätes) Vorwort zu R und der Befehlsstruktur\nKlingt gut, oder?\nEin paar allgemeine Aspekte, in denen sich das Arbeiten mit R von dem mit einigen anderen Programmen unterscheidet:\nIn der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los geht’s."
   },
   {
     "objectID": "02_intro.html#datenstrukturen-in-r-data.frame",
