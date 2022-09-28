@@ -473,6 +473,7 @@ Daumenregel zur Entscheidung, ob `mutate()` oder `...$newvar <-` besser passt: I
 ### Übung {#across_ue}
 
 + Verwenden Sie den `etb18_small`-Datensatz:
+
 ```{r}
 #| eval: false
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
