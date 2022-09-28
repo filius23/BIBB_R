@@ -337,6 +337,7 @@ etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
 Bearbeiten Sie die labels dieses Diagramms:
 
 **`F411_01`: `r attributes(etb18_small$F411_01)$label`**
+
 ```{r}
 #| code-fold: show
 #| out-width: "50%"
@@ -361,7 +362,6 @@ etb18_small %>%
 
 + Verwenden Sie die gelabelten Variablen für die Grafik.
 
-**Profi-Aufgabe: Wie können Sie mit `factor()` die Reihenfolge ändern? Tipp: verwenden Sie `fct_reorder()`**
 **Profi-Aufgabe: Wie müssen Sie für folgende Grafik vorgehen?**
 
 ```{r}
