@@ -5,7 +5,6 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 windowsFonts(mono=windowsFont("Fira Code"))
-# windowsFont()
 ```
 
 
@@ -13,8 +12,6 @@ windowsFonts(mono=windowsFont("Fira Code"))
 #| message: false
 #| warning: false
 library(tidyverse)
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-etb18_small <- etb18 %>% slice(1:10) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
 ```
 
 Wir gehen nochmal zurück zum Uni-Datensatz vom Anfang:
@@ -194,6 +191,15 @@ dat3 %>%
   summarise(across(matches("studs|profs"), list(mean = ~mean(.x), sd = ~sd(.x))))
 ```
 
+Diese `list()`auch vorab ablegen und dann verwenden:
+```{r}
+wert_liste <- list(mean = ~mean(.x), sd = ~sd(.x), max = ~max(.x,na.rm = T))
+
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), wert_liste))
+```
+
 Mit dem `.names()`-Argument können wir auch die Benennung der Spalten steuern. 
 `{.fn}` steht dabei als Platzhalter für die angewendete Funktion, `{.col}` für den Namen der bearbeiteten Variable.
 
@@ -332,6 +338,7 @@ case_when(dat3$gegr < 1500 & dat3$prom_recht == T ~ "sehr alte Uni",
 
 
 ```{r}
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 sat_small <- 
   etb18 %>% 
   select(F1450_01,F1450_02,F1450_03) %>% 
@@ -551,7 +558,7 @@ etb_small2 %>%
 ```
 + Nutzen Sie eine Funktion, um nicht wiederholt die gleichen Schritte einzugeben.
 + Verwenden Sie zusätzlich `across()`, um die Funktion auf die gewünschten Variablen anzuwenden.
-
++ Benennen Sie `S1` in `etb_small2` um 
 
 ## Anhang
 

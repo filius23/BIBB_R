@@ -1,11 +1,72 @@
+# ------------------- #
+# Kapitel 6: Data Wrangling 2
+# Lösung
+# ------------------- #
 
 
 # Übung 1 mutate/$newvar -------
 
 
+## Erstellen Sie dat3 wie oben gezeigt aus dat1 und dat2 -----
+dat1 <- data.frame(studs = c(19173,5333,15643), 
+                   profs = c(322,67,210),
+                   gegr  = c(1971,1830,1973),
+                   prom_recht = rep(TRUE,3),
+                   uni = c("Uni Bremen","Uni Vechta", "Uni Oldenburg"))
+dat2 <- data.frame(studs = c(14954,47269 ,23659,9415 ,38079), 
+                   profs = c(250,553,438 ,150,636),
+                   prom_recht = c(FALSE,TRUE,TRUE,TRUE,FALSE),
+                   gegr  = c(1971,1870,1457,1818,1995),
+                   uni = c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg"))
+dat3 <- bind_rows(dat1,dat2)
+
+
+## Berechnen Sie das Betreuungsverhältnis (Studierende pro Professur) und legen Sie die Ergebnisse in einer neuen Variable studprofs ab. -----
+## Nutzen Sie dazu mutate() oder ...$newvar <- 
+dat4 <- 
+  dat3 %>% mutate(studprofs = studs/profs)
+dat4
+
+dat3$studprofs <- dat3$studs/dat3$profs
+dat3
+
+##   Berechnen Sie außerdem das Betreuungsverhältnis an den Hochschulen relativ zum Mittelwert des Betreuungsverhältnisses (rel_studprofs). -----
+dat3$studprofs_rel_to_mean <- dat3$studprofs - mean(dat3$studprofs)
+
+
+dat3 %>% mutate(studprofs = studs/profs,
+                studprofs_rel_to_mean = studprofs - mean(studprofs))
+
+
+## Liegt das Betreuungsverhältnis über oder unter dem Mittelwert? Wie können Sie den Befehl anpassen, sodass die Variable rel_studprofs lediglich TRUE oder FALSE enthält anstelle der Zahlenwerte. -----
+
+
+dat3 %>% mutate(studprofs = studs/profs,
+                studprofs_rel_to_mean = studprofs - mean(studprofs) > 0)
+
+dat3$studprofs_rel_to_mean <- dat3$studprofs - mean(dat3$studprofs) > 0
+
+## Wandeln Sie rel_studprofs in eine Dummy-Variable mit 0/1 als Werten statt TRUE/FALSE -----
+
+dat3$studprofs_rel_to_mean <- as.numeric(dat3$studprofs - mean(dat3$studprofs) > 0)
+
+dat3$studprofs_rel_to_mean <- dat3$studprofs - mean(dat3$studprofs) > 0 %>% as.numeric(.)
+
+dat3 %>% mutate(studprofs = studs/profs,
+                studprofs_rel_to_mean = as.numeric(studprofs - mean(studprofs) > 0))
+
+dat3 %>% mutate(studprofs = studs/profs,
+                studprofs_rel_to_mean = studprofs - mean(studprofs) > 0 %>% as.numeric(.))
 
 # Übung 2 group_by() -------
 
+# berechnen Sie das Betreuungsverhältnis (studprofs) an den Hochschulen/Unis mit und ohne Promotionsrecht und fügen Sie dieses als neue Spalte ein.
+
+dat3 %>% group_by(prom_recht) %>% mutate(studprofs = studs/profs )
+
+# Wie müssen Sie ihren Code ändern, wenn die neue Variable das studprof-Verhältnis der Hochschule relativ zum Mittelwert des Betreuungsverhältnisses innerhalb mit und ohne Promotionsrecht wiedergeben soll?
+  
+dat3 %>% group_by(prom_recht) %>% mutate(studprofs = studs/profs - mean(studs/profs) )
 
 
 # Übung 3 `across` -------
