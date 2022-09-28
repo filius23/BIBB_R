@@ -334,6 +334,7 @@ Bearbeiten Sie die labels dieses Diagramms:
 #| code-fold: show
 #| out-width: "50%"
 #| out-height: "50%"
+#| warning: false
 etb18_small %>% 
   count(F411_01) %>%
   ggplot(data = ., aes(x = F411_01, y = n)) +
@@ -343,11 +344,11 @@ etb18_small %>%
 + Erstellen Sie dafür zunächst einen `data.frame` mit der Auszählung durch `count()` und legen diese als Objekt ab.
 
 + Wenden Sie dann eine der beiden Label-Strategien an:
-  1. Labeln mit `factor`
+1. Labeln mit `factor`
   + Nutzen Sie `as_factor()` aus `{haven}`, um die Labels in eine separate Variable abzulegen.
   + Verändern Sie die labels nach Ihrem Geschmack: kürzen Sie, ändern Sie Bezeichungen mit `fct_recode()`
   
-  1. Label-`data.frame`
+2. Label-`data.frame`
   + Erstellen Sie einen Label-`data.frame` mit den Ausprägungen und den gewünschten Beschriftungen. 
   + Spielen Sie mit Hilfe von `left_join()` diesen Label-`data.frame` an den `data.frame` mit den Auszählungen ran.
 
@@ -360,10 +361,11 @@ Profi-Aufgabe: Wie müssen Sie für folgende Grafik vorgehen?
 #| code-fold: show
 #| out-width: "50%"
 #| out-height: "50%"
+#| warning: false
 etb18_small %>% 
   count(F411_01,S1) %>%
   ggplot(data = ., aes(x = F411_01, y = n, fill = factor(S1)) ) +
-  geom_col()
+  geom_col(position = position_dodge())
 ```
 
 <!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->
