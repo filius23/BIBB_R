@@ -486,8 +486,10 @@ etb18_small
 #| warning: false
 #| message: false
 library(gt)
-
-etb18_small %>% select(starts_with("F1450")) %>% 
+etb18_smallx <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                                col_select = c("F1450_01", "F1450_02","F1450_03"),
+                                n_max = 1)
+etb18_smallx %>% select(starts_with("F1450")) %>% 
   map_dfr(.,~attributes(.x)$label) %>% 
       t(.) %>% data.frame() %>% 
       rownames_to_column(.,var = "var") %>% 
