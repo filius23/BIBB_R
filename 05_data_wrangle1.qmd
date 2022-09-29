@@ -119,55 +119,13 @@ tab_dat1 %>%
   geom_col(position=position_dodge(), fill = "steelblue4") 
 
 ```
-```{r}
-#| echo: false
-# reset theme
-theme_set(theme_gray()) 
-```
-
-
-
-## Labels selbst erstellen und ranspielen
-
-Ein alternativer Weg geht über einen kleinen Label-`data.frame` und `left_join()` (mehr zu `left_join()` später.)
-
-
-```{r}
-tab_ausb2 <- etb18_kap5 %>% count(m1202)
-tab_ausb2
-```
-
-
-```{r}
-lab_df <- data.frame(m1202=1:4)
-lab_df
-lab_df$m1202_lab <- factor(lab_df$m1202,levels = 1:4,
-                           labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
-lab_df
-```
-
-
-```{r}
-tab_ausb2 %>% 
-  left_join(lab_df,by = "m1202")
-```
-```{r}
-#| out-width: "80%"
-#| out-height: "50%"
-tab_ausb2 %>% 
-  left_join(lab_df,by = "m1202") %>% 
-  ggplot(data = ., aes(x = m1202_lab, y = n)) +
-  geom_col(position=position_dodge(), fill = "turquoise3")
-```
-
 
 **[Blogbeitrag zu labels in R](https://www.pipinghotdata.com/posts/2022-09-13-the-case-for-variable-labels-in-r/)**
 
 ## Übung
 
 ```{r}
-#| eval: false
-etb18_kap5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+etb18_ue5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
                                col_select = c("intnr", "S1", "m1202", "Bula","F411_01")) %>% 
   filter(F411_01<9)
 ```
@@ -190,38 +148,21 @@ data.frame(value = 1:4,
 #| out-width: "50%"
 #| out-height: "50%"
 #| warning: false
-etb18_kap5 %>% 
+etb18_ue5 %>% 
   count(F411_01) %>%
   ggplot(data = ., aes(x = F411_01, y = n)) +
   geom_col(fill = "steelblue3")
 ```
 
 + Erstellen Sie dafür zunächst einen `data.frame` mit der Auszählung durch `count()` und legen diese als Objekt ab.
-
-+ Wenden Sie dann die Label-Strategie mit `left_join()` an:
-+ Erstellen Sie einen Label-`data.frame` mit den Ausprägungen und den gewünschten Beschriftungen. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
-+ Spielen Sie mit Hilfe von `left_join()` diesen Label-`data.frame` an den `data.frame` mit den Auszählungen ran.
++ Erstellen Sie einen `factor()` Variable mit den den gewünschten Beschriftungen mit Hilfe von `labels =`. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
 + Verwenden Sie die gelabelten Variablen für die Grafik.
 
-
-
-Profi-Aufgabe: Wie müssen Sie für folgende Grafik vorgehen?
-
-```{r}
-#| code-fold: show
-#| out-width: "50%"
-#| out-height: "50%"
-#| warning: false
-etb18_kap5 %>% 
-  count(F411_01,S1) %>%
-  ggplot(data = ., aes(x = F411_01, y = n, fill = factor(S1)) ) +
-  geom_col(position = position_dodge())
-```
 
 ## Anhang
 
 
-### `as_factor()` in `{haven}`
+### `as_factor()` in `{haven}` {#as_fct}
 
 In `{haven}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels einen `factor` erstellen können.
 
@@ -279,6 +220,47 @@ tab_dat2 %>%
   geom_col(position=position_dodge(), fill = "turquoise3")
 ```
 
+
+```{r}
+#| echo: false
+# reset theme
+theme_set(theme_gray()) 
+```
+
+
+
+### Labels selbst erstellen und ranspielen
+
+Ein alternativer Weg geht über einen kleinen Label-`data.frame` und `left_join()` (mehr zu `left_join()` später.)
+
+
+```{r}
+tab_ausb2 <- etb18_kap5 %>% count(m1202)
+tab_ausb2
+```
+
+
+```{r}
+lab_df <- data.frame(m1202=1:4)
+lab_df
+lab_df$m1202_lab <- factor(lab_df$m1202,levels = 1:4,
+                           labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
+lab_df
+```
+
+
+```{r}
+tab_ausb2 %>% 
+  left_join(lab_df,by = "m1202")
+```
+```{r}
+#| out-width: "80%"
+#| out-height: "50%"
+tab_ausb2 %>% 
+  left_join(lab_df,by = "m1202") %>% 
+  ggplot(data = ., aes(x = m1202_lab, y = n)) +
+  geom_col(position=position_dodge(), fill = "turquoise3")
+```
 
 
 

@@ -134,14 +134,6 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
   scale_color_manual(values = c("lightskyblue4","navy"))
 ```
 
-```{r}
-#| code-fold: true
-#| eval: false
-ggplot(data = etb18_small, aes(x = zpalter, y = az)) + 
-  geom_point(aes(color = factor(S1))) + 
-  scale_color_manual(values = c("lightskyblue4","navy"))
-```
-
 
 ### Beschriftungen
 
@@ -163,7 +155,7 @@ Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben
 + `color`: Beschriftung für die Legende, wenn `color` in `aes()` angegeben wurde
 
 
-```{r}
+```{r fullplt}
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"),
@@ -393,7 +385,7 @@ ggplot(data = etb18, aes(x = az)) +
   scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen"))
 ```
 
-Wir können das ganze auch als Density-Plot darstellen `geom_density()`, hier empfiehlt es sich aber mit `alpha =` die Transparenz hochzusetzen:
+Wir können das ganze auch als Density-Plot darstellen `geom_density()`, hier empfiehlt es sich aber mit `alpha =` die Deckkraft herunterzusetzen:
 ```{r dens}
 #| cache: true
 ggplot(data = etb18, aes(x = az,fill = factor(S1))) + 

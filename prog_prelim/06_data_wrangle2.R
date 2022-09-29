@@ -54,7 +54,7 @@ dat4 <-
 dat4
 
 
-## Exkurs: Dummy-Variable au logischer Variable -------
+## Exkurs: Dummy-Variable aus logischer Variable -------
 dat4$above_mean 
 as.numeric(dat4$above_mean )
 dat3 %>% 

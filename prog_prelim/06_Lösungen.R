@@ -70,9 +70,10 @@ dat3 %>% group_by(prom_recht) %>% mutate(studprofs = studs/profs - mean(studs/pr
 
 
 # Übung 3 `across` -------
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-etb18_small <- etb18 %>% slice(1:10) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
-etb18_small 
+etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                               n_max = 10, # nur 10 Zeilen
+                               col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03")
+                               )
 
 ## Mittelwert für F1450 -----
 etb18_small %>% 
@@ -101,8 +102,9 @@ etb18_small %>%
 
 # Übung 4: cut -----
 
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-etb18_small2 <- etb18 %>% slice(5654:5666) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
+etb18_small2 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"))
+etb18_small2 <- etb18_small2 %>% slice(5654:5666)
 etb18_small2
 
 

@@ -7,6 +7,7 @@ knitr::opts_chunk$set(collapse = F)
 # load etb -------------
 
 etb <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta") 
+
 etb <- etb %>% 
   mutate(
          F518_SUF = ifelse(F518_SUF >= 99998,NA,F518_SUF),
@@ -39,24 +40,33 @@ xtabs(~S3,etb)
 
 
 # distinct values ----
+
+etb <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta") 
 ndis <- 
-  etb18 %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
+  etb %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
   t(.) %>% data.frame(ndis = .) %>% rownames_to_column(.,var = "var") %>% janitor::clean_names() %>% tibble() %>% 
   left_join(
-    map_dfr(etb18,~attributes(.x)$label) %>% 
+    map_dfr(etb,~attributes(.x)$label) %>% 
       t(.) %>% data.frame("lab"=.) %>% 
       rownames_to_column(.,var = "var") )
 
-ndis %>% filter(ndis %in% 3:4) %>% print(n=Inf)
-ndis %>% filter(ndis > 5) %>% print(n=Inf)
+ndis %>% filter(ndis %in% 2:4) %>% print(n=Inf)
+ndis %>% filter(ndis == 5) %>% print(n=Inf)
+
+etb %>% select(matches("F404_"))
+
+etb %>% 
+  count(Mig,gkpol) %>% 
+  ggplot(.,aes(x= gkpol,y= n, fill = factor(Mig))) + 
+  geom_col()
+
 
 
 ndis %>% filter(grepl("[A,a]lter",lab)) %>% print(n=Inf)
 
 
 
-etb18 %>% 
-  count(S1,m1202,wt = gew2018_hr17)
+etb %>%   count(F411_01)
 
 
 table(etb18$F230_02)

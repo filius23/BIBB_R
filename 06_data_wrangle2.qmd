@@ -53,7 +53,7 @@ dat3$studs_to_mean  <- dat3$studs - mean(dat3$studs)
 dat3
 ```
 
-Mit `<- NULL` können Variablen auch einfach gelöscht werden:
+Mit `<- NULL` können Variablen auch gelöscht werden:
 ```{r}
 dat3$studs_to_mean  <-  NULL
 dat3
@@ -111,7 +111,7 @@ dat3 %>%
 
 :::
 
-### [Übung](#mutate1)
+### [Übung](#mutate1) {#ue06_1}
 
 
 
@@ -154,7 +154,7 @@ dat5 %>%
   summarise(m_studs = mean(studs))
 ```
 
-### [Übung](#grpue)
+### [Übung](#grpue) {#ue06_2}
 
 
 ## `across()`: Mehrere Variablen bearbeiten {#across}
@@ -233,7 +233,7 @@ dat3 %>%
 [Mehr Beispiele in der Hilfe zu across](https://dplyr.tidyverse.org/reference/across.html)
 
 
-### [Übung](#across_ue)
+### [Übung](#across_ue) {#ue06_3}
 
 
 
@@ -329,7 +329,7 @@ case_when(dat3$gegr < 1500 & dat3$prom_recht == T ~ "sehr alte Uni",
 ```
 
 
-### [Übung](#ifcase) {#ifcaseue}
+### [Übung](#ifcase) {#ue06_4}
 
 
 
@@ -393,7 +393,7 @@ sat_small %>%
 ```
 
 
-### [Übung](#fnct)
+### [Übung](#fnct) {#ue06_5}
 
 
 <!-- ```{r} -->
@@ -444,10 +444,8 @@ sat_small %>% rename_with(~str_remove(.x,"1450_"))
 ### Übung {#mutate1}
 
 
-+ Erstellen Sie `dat3` wie [oben gezeigt](#) aus `dat1` und `dat2`
-+ Berechnen Sie das Betreuungsverhältnis (Studierende pro Professur) und legen Sie die Ergebnisse in einer neuen Variable `studprofs` ab.
-+ Nutzen Sie dazu `mutate()` oder `...$newvar <- `
-+ Berechnen Sie außerdem das Betreuungsverhältnis an den Hochschulen relativ zum Mittelwert des Betreuungsverhältnisses (`rel_studprofs`). 
++ Erstellen Sie `dat3` wie [oben gezeigt](#var) aus `dat1` und `dat2`
++ Berechnen Sie das Betreuungsverhältnis (Studierende pro Professur `studs/profs`) an den Hochschulen relativ zum Mittelwert des Betreuungsverhältnisses (`rel_studprofs`). 
 + Liegt das Betreuungsverhältnis über oder unter dem Mittelwert? Wie können Sie den Befehl anpassen, sodass die Variable `rel_studprofs` lediglich `TRUE` oder `FALSE` enthält anstelle der Zahlenwerte.
 + Wandeln Sie `rel_studprofs` in eine Dummy-Variable mit 0/1 als Werten statt `TRUE`/`FALSE`
 
@@ -457,13 +455,15 @@ Daumenregel zur Entscheidung, ob `mutate()` oder `...$newvar <-` besser passt: I
 
 :::
 
+[Zurück nach oben](#ue06_1)
+
+
 ### Übung {#grp_ue}
 
 + Verwenden Sie weiterhin den Uni-Datensatz.
-+ Berechnen Sie das Betreuungsverhältnis (`studprofs`) an den Hochschulen/Unis mit und ohne Promotionsrecht und fügen Sie dieses als neue Spalte ein.
-+ Wie müssen Sie ihren Code ändern, wenn die neue Variable das `studprof`-Verhältnis der Hochschule relativ zum Mittelwert des Betreuungsverhältnisses innerhalb mit und ohne Promotionsrecht wiedergeben soll? 
++ Berechnen Sie das Betreuungsverhältnis (`studprofs`) relativ zum Mittelwert getrennt für Hochschulen/Unis mit und ohne Promotionsrecht und fügen Sie dieses als neue Spalte ein.
 
-
+[Zurück nach oben](#ue06_2)
 
 <!-- studs/profs berechnen -> über oder unter dem Schnitt?   -->
 <!-- + studs/profs berechnen -> über oder unter dem Schnitt LABELN -->
@@ -476,9 +476,10 @@ Daumenregel zur Entscheidung, ob `mutate()` oder `...$newvar <-` besser passt: I
 
 ```{r}
 #| eval: false
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-etb18_small <- etb18 %>% slice(1:10) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
-etb18_small 
+etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                               n_max = 10, # nur 10 Zeilen
+                               col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03")
+                               )
 ```
 
 + Berechnen Sie den Mittelwert für die Variablen F1450_01, F1450_02, und F1450_03:
@@ -502,12 +503,16 @@ etb18_smallx %>% select(starts_with("F1450")) %>%
 + Berechnen Sie die Mittelwerte getrennt nach Geschlecht, indem Sie `group_by()` verwenden.
 + Fügen auch die Varianz (`var()`) und die Zahl der nicht-`NA`-Fälle hinzu und nutzen sie `.names=`, um die Spaltennamen nach dem Schema `kennzahl.variable` zu benennen.
 
+
+[Zurück nach oben](#ue06_3)
+
 ### Übung {#ifcase}
 
 + Bearbeiten Sie `etb18_small`:
 ```{r}
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-etb18_small2 <- etb18 %>% slice(5654:5666) %>% select(zpalter,S1,F1450_01,F1450_02,F1450_03)
+etb18_small2 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"))
+etb18_small2 <- etb18_small2 %>% slice(5654:5666)
 etb18_small2
 ```
 
@@ -544,9 +549,9 @@ etb18_small2 %>% select(starts_with("F1450")) %>%
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
 
+[Zurück nach oben](#ue06_4)
 
-
-### Übung {#fcnt}
+### Übung {#fnct}
 
 ```{r}
 #| echo: false
@@ -562,6 +567,9 @@ etb_small2 %>%
 + Nutzen Sie eine Funktion, um nicht wiederholt die gleichen Schritte einzugeben.
 + Verwenden Sie zusätzlich `across()`, um die Funktion auf die gewünschten Variablen anzuwenden.
 + Benennen Sie `S1` in `etb_small2` um 
+
+
+[Zurück nach oben](#ue06_5)
 
 ## Anhang
 

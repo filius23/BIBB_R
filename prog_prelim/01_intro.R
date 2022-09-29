@@ -25,20 +25,27 @@ log(exp(5)) ## log und exp heben sich gegenseitig auf
 seq(2,11,3) # Schritte angeben
 
 # Objekte  -----------
-x <- 4/2 
+x <- 4/2
 x
+
+
 y <- x * 5
 y
 
 # Objekte mit mehreren Elementen ---------
 x1 <- c(1,2,3)
 x1
+
+x2 <- c(3:9)
+x2
+
 length(x1)
 
-x1* 2
+x1 * 2
 
 # mit Objekten rechnen -----------------
 y1 <- c(10,11,9)
+x1
 y1
 y1/x1
 
@@ -68,7 +75,7 @@ rm(list = ls())
 ## Abschnit 1.2 ----
 3+2*sqrt(3)
 
-# Überschrift 2 ----
+# Überschrift 2 ------
 x <- c(2,6,8,2,35)
 y <- seq(2,10,2)
 
