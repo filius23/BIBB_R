@@ -87,12 +87,25 @@ dat5 %>%
   ungroup() %>%  # mit ungroup() aufheben
   mutate(m_profs2 = mean(profs)) 
 
+dat5_grp <- 
+dat5 %>%
+  mutate(m_studs = mean(studs),
+         m_profs = mean(profs)) %>% 
+  group_by(prom_recht) %>%
+  mutate(m_studs2 = mean(studs))
+
+dat5_grp %>%  mutate(profs = mean(profs))
+
+
 
 ## summarise statt mutate() behält nur bearbeitete und gruppierungsvariablen:
 dat5 %>%
   group_by(prom_recht) %>%
   summarise(m_studs = mean(studs))
 
+dat5 %>%
+  group_by(prom_recht) %>%
+  mutate(m_studs = mean(studs))
 
 ## Übung -----------
 
@@ -106,9 +119,22 @@ dat3 %>%
   summarise(studs = mean(studs),
             profs = mean(profs))
 
+dat3 %>%
+  summarise(studs_mean = mean(studs),
+            profs_mean = mean(profs))
+
 ## across hilft wiederholungen zu vermeiden/ funktionen schnell auf viele Variablen anzuwenden:
 dat3 %>%
-  summarise(across(.cols = matches("studs|profs"),.fns = ~mean(.x)))
+  summarise(across(
+    .cols = matches("studs|profs"),
+    .fns = ~mean(.x)
+    ))
+
+dat3 %>%
+  summarise(across(
+    .cols = matches("r"),
+    .fns = ~mean(.x)
+    ))
 
 ## auch mit group_by() ------
 dat3 %>%
@@ -119,11 +145,20 @@ dat3 %>%
 ## mehrere Werte mit list() ------
 dat3 %>%
   group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), list(mean = ~mean(.x), sd = ~sd(.x))))
+  summarise(across(matches("studs|profs"), 
+                   
+                   list(mean_wert = ~mean(.x), 
+                        sd_wert = ~sd(.x))
+                   
+                   ))
 
 
 ## list vorab definieren -------
-wert_liste <- list(mean = ~mean(.x), sd = ~sd(.x), max = ~max(.x,na.rm = T))
+wert_liste <- 
+  list(mean_wert = ~mean(.x), 
+       sd_wert = ~sd(.x),
+       max_wert = ~max(.x,na.rm = T))
+
 dat3 %>%
   group_by(prom_recht) %>%
   summarise(across(matches("studs|profs"), wert_liste))
@@ -131,9 +166,9 @@ dat3 %>%
 ## Variablennamen anpassen -------
 dat3 %>%
   group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), 
-                   list(mean = ~mean(.x), sd = ~sd(.x)),
-                   .names = "{.fn}_{.col}")) # fn -> Funktion , col -> Variablenname
+  summarise(across(.cols = matches("studs|profs"), 
+                   .fns = list(mean = ~mean(.x), sd = ~sd(.x)),
+                   .names = "{.fn}.{.col}")) # fn -> Funktion , col -> Variablenname
 
 
 dat3 %>%
@@ -146,8 +181,12 @@ dat3 %>%
 dat3 %>%
   group_by(prom_recht) %>%
   summarise(across(matches("studs|profs"), 
-                   list(mean = ~mean(.x), sd = ~sd(.x), n = ~n(), notNA = ~sum(!is.na(.x))),
+                   list(mean = ~mean(.x), 
+                        sd = ~sd(.x), 
+                        n = ~n(), 
+                        notNA = ~sum(!is.na(.x))),
                    .names = "{.fn}_{.col}"))
+
 
 ## auch mit mutate() -------
 dat3 %>%
@@ -163,7 +202,11 @@ dat3 %>%
 # Hilfsfunktionen ------------
 
 ## cut ------
+?cut()
+
 cut(dat3$profs,breaks = c(50, 200, 350, 500, 650))
+
+
 cut(dat3$profs,breaks = seq(50,650,150))
 
 dat3$prof_class <- cut(dat3$profs,breaks = seq(50,650,150))
@@ -176,11 +219,13 @@ dat3$prof_class <- NULL #
 
 
 ## ifelse() und case_when() ------------
-
+?ifelse()
 ### ifelse -----
 x1 <- 1:10
 x1
 ifelse(x1 > 5,"groß","klein" )
+ifelse(x1 > 5,-99,99 )
+
 ifelse(x1 %% 2 == 0,"gerade","ungerade")
 
 
@@ -188,6 +233,7 @@ dat3 %>% mutate(rel_to_mean = studs-mean(studs),
                 ab_mean_lab = ifelse(rel_to_mean > 0,"darüber","darunter"))
 
 ### case_when --------
+?case_when()
 dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
                                   gegr < 1900 ~ "alt"))
 
@@ -202,11 +248,11 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
                                   gegr > 1900 & prom_recht == F ~ "junge Hochschule"))
 
 
-case_when(dat3$gegr < 1500 & dat3$prom_recht == T ~ "sehr alte Uni",
-         dat3$gegr < 1900 & dat3$prom_recht == T ~ "alte Uni",
-         dat3$gegr > 1900 & dat3$prom_recht == T ~ "junge Uni",
-         dat3$gegr < 1900 & dat3$prom_recht == F ~ "alte Hochschule",
-         dat3$gegr > 1900 & dat3$prom_recht == F ~ "junge Hochschule")
+case_when( dat3$gegr < 1500 & dat3$prom_recht == T ~ "sehr alte Uni",
+           dat3$gegr < 1900 & dat3$prom_recht == T ~ "alte Uni",
+           dat3$gegr > 1900 & dat3$prom_recht == T ~ "junge Uni",
+           dat3$gegr < 1900 & dat3$prom_recht == F ~ "alte Hochschule",
+           dat3$gegr > 1900 & dat3$prom_recht == F ~ "junge Hochschule")
 
 # Übung ----------
 
@@ -232,7 +278,9 @@ sat_small %>%
 
 ## function() ------
 dtomean <- function(x){
+  
   d_x <- x - mean(x,na.rm = T)
+  
   return(d_x)
 }
 

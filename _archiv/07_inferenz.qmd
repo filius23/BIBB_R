@@ -50,7 +50,6 @@ Da hier der p-Wert sehr viel kleiner ist als 0.05 ist (`p-value < 2.2e-16`)[^eho
 
 Standardmäßig bekommen wir einen beidseitigen Test (`"two.sided"`), wir können aber auch einen links- (`"less"`) oder rechtsseitigen (`"greater"`) Test anfordern [mehr dazu](#hypt):
 ```{r}
-#| eval: false
 t.test(etb18$zpalter~etb18$S1,alternative = "two.sided")
 t.test(etb18$zpalter~etb18$S1,alternative = "less")
 t.test(etb18$zpalter~etb18$S1,alternative = "greater")
@@ -197,12 +196,12 @@ ttest1$p.value # p-Wert
 Mit `View()` können wir alle Werte ansehen:
 ```{r}
 #| eval: false
-# View(ttest1)
+View(ttest1)
 ```
 
 ```{r ttest_str, message=F, out.width="100%", out.height="10%"}
 #| echo: false
-# listviewer::jsonedit(ttest1, mode="view")
+listviewer::jsonedit(ttest1, mode="view")
 ```
 
 Mit dem `tidy()` aus [{broom}](https://broom.tidymodels.org/) können wir einen `data.frame()` erstellen, der die wesentlichen Parameter enthält:
@@ -379,8 +378,139 @@ etb18 %>% select(matches("gkpol|Mig")) %>%
   tab_options(  table.font.size = 12) %>% 
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
-
 ## Anhang
+
+### t-Verteilung {#tdist}
+Das $t$ kommt dabei aus der Student-t-Verteilung bzw. als $z$-Wert aus der Standard-Normalverteilung, die wir in der vergangenen Session kennengelernt haben. $t$ wählen wir dabei so, dass bei wiederholter Stichprobenziehung 95% der resultierenden KI den wahren Wert aus der Grundgesamtheit beinhalten würden:
+
+```{r, out.height="60%", out.width="60%", fig.align='center', echo=F}
+data1 <- data.frame(z = seq(-4,4,.01)) # dataframe erstellen mit Zahlenfolge zwischen -4 & 4
+data1$t.var <- dt(x=data1$z,df =  9999) 
+
+
+ggplot(data = data1, aes(x=z, y =t.var)) + 
+  theme_minimal(base_size = 15) +
+  labs(y = "Häufigkeitsdichte", x = "t") +
+  geom_ribbon(data=filter(data1,z <= - 1.960201), aes(ymin=0, ymax = t.var), fill = "#F5CC71") + # fläche links
+  geom_segment(data = data.frame(z = - 1.960201,y1 = dt(x=- 1.960201,df =  1757)) , 
+            aes(x=z,y=y1,xend = z, yend = 0), color = "#404040", size = .5, linetype = 2) + # grenze links
+  geom_ribbon(data=filter(data1,z >=  1.960201), aes(ymin=0, ymax = t.var), fill = "#F5CC71") + # fläche rechts
+  geom_segment(data = data.frame(z =  1.960201,y1 = dt(x= 1.960201,df =  1757)) , 
+            aes(x=z,y=y1,xend = z, yend = 0), color = "#404040", size = .5, linetype = 2) + # grenze rechts
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+            aes(x=z,y=y1,xend = z, yend = 0), color = "grey50", size = .5, linetype = 3) + # mittellinie
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+            aes(x=z,y=-0.0125,xend = -1.85, yend = -0.0125), color = "grey25", size = .5,
+            arrow = arrow(length = unit(0.5, "lines"), type = "closed")) + # pfeil nach links
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+            aes(x=z,y=-0.0125,xend = 1.85, yend = -0.0125), color = "grey25", size = .5,
+            arrow = arrow(length = unit(0.5, "lines"), type = "closed")) + #pfeil nach rechts
+  geom_label(data=data.frame(z = 0 , y1 = -0.0125, lab1 = "+/- 1.96", t.var = 0),aes(label = lab1), size = 3.5 ) +
+  geom_line(color = "navy")  +   
+  scale_x_continuous(breaks = seq(-3,3,1),minor_breaks = seq(-3,3,1))+
+  theme(aspect.ratio = 1, panel.grid = element_line(size = rel(.25))) +
+  geom_text(data=data.frame(z = c(-3,3), t.var = 0.015, label = rep(paste0(round(pt(q = -1.959964,df = 9999)*100,2),"%"),2) ), 
+                            aes(x = z, y = t.var, label = label),
+                            size = 3.25,vjust= 0, hjust = c(1,0))
+```
+Aufgrund der Symmetrie teilen wir die Irrtumswahrscheinlichkeit also auf jeweils 2,5% auf und können mit `qt()` den entsprechenden $t$-Wert nachsehen. Die gezeigte Verteilung unterstellt dabei eine Stichprobe von $n=10.000$:
+```{r}
+qt(p=.025,df = 9999) # bei welchem t-Wert liegen 2.5% links davon?
+qt(p=.975,df = 9999) # bei welchem t-Wert liegen 2.5% rechts davon?
+```
+
+Für kleine Stichproben ist der t-Wert deutlich größer, um die zusätzliche Unsicherheit der Stichprobengröße zu berücksichtigen. Mit steigendem $n$ bzw. $df$ nähert sich der t-Wert dem z-Wert der Standard-NV an:
+```{r}
+qnorm(p = .025) # z-Wert aus Standard-NV
+qt(p = .025, df = 3)
+qt(p = .025, df = 30)
+qt(p = .025, df = 300)
+qt(p = .025, df = 3000)
+```
+
+
+Es gibt auch andere Varianten, zB. 90% oder 99%:
+```{r}
+qt(p = .05, df = 9999)
+qt(p = .005, df = 9999)
+```
+
+
+
+```{r,  out.width = "70%",fig.height= 4, fig.align='center', echo=F}
+ki90 <- ggplot(data = data1, aes(x=z, y =t.var)) + 
+  theme_minimal() +
+  labs(y = "Häufigkeitsdichte", x = "t",title ="90% Konfidenzintervall") +
+  geom_ribbon(data=filter(data1,z <= qt(p = .05, df = 9999)), aes(ymin=0, ymax = t.var), fill = "#FCE8CE") + # fläche links
+  geom_segment(data = data.frame(z = qt(p = .05, df = 9999),y1 = dt(x=- qt(p = .05, df = 9999),df =  1757)) , 
+               aes(x=z,y=y1,xend = z, yend = 0), color = "#404040", size = .5, linetype = 2) + # grenze links
+  geom_ribbon(data=filter(data1,z >=  qt(p = .95, df = 9999)), aes(ymin=0, ymax = t.var), fill = "#FCE8CE") + # fläche rechts
+  geom_segment(data = data.frame(z =  qt(p = .95, df = 9999),y1 = dt(x= qt(p = .05, df = 9999),df =  1757)) , 
+               aes(x=z,y=y1,xend = z, yend = 0), color = "#404040", size = .5, linetype = 2) + # grenze rechts
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+               aes(x=z,y=y1,xend = z, yend = 0), color = "grey50", size = .5, linetype = 3) + # mittellinie
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+               aes(x=z,y=-0.0125,xend = -1.64, yend = -0.0125), color = "grey25", size = .5,
+               arrow = arrow(length = unit(0.5, "lines"), type = "closed")) + # pfeil nach links
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+               aes(x=z,y=-0.0125,xend = 1.64, yend = -0.0125), color = "grey25", size = .5,
+               arrow = arrow(length = unit(0.5, "lines"), type = "closed")) + #pfeil nach rechts
+  geom_label(data=data.frame(z = 0 , y1 = -0.0125, lab1 = paste0("+/- ",round(qt(p = .95, df = 9999),3)), t.var = 0),aes(label = lab1), size = 2.75 ) +
+  geom_line(color = "#263056")  +   
+  scale_x_continuous(breaks = seq(-3,3,1),minor_breaks = seq(-3,3,1))+
+  theme(aspect.ratio = 1, panel.grid = element_line(size = rel(.25))) +
+  geom_text(data=data.frame(z = c(-3,3), t.var = 0.015, label = rep(paste0(round(pt(q = -1.645,df = 9999)*100,3),"%"),2) ), 
+            aes(x = z, y = t.var, label = label),
+            size = 3.25,vjust= 0, hjust = c(1,0))+
+  theme(plot.margin = margin(0, 0.1, 0, 0.1, "cm"))
+
+ki99 <- ggplot(data = data1, aes(x=z, y =t.var)) + 
+  theme_minimal() +
+  labs(y = "Häufigkeitsdichte", x = "t",title ="99% Konfidenzintervall") +
+  geom_ribbon(data=filter(data1,z <= qt(p = .005, df = 9999)), aes(ymin=0, ymax = t.var), fill = "#FFABC2") + # fläche links
+  geom_segment(data = data.frame(z = qt(p = .005, df = 9999),y1 = dt(x=- qt(p = .005, df = 9999),df =  1757)) , 
+               aes(x=z,y=y1,xend = z, yend = 0), color = "#404040", size = .5, linetype = 2) + # grenze links
+  geom_ribbon(data=filter(data1,z >=  qt(p = .995, df = 9999)), aes(ymin=0, ymax = t.var), fill = "#FFABC2") + # fläche rechts
+  geom_segment(data = data.frame(z =  qt(p = .995, df = 9999),y1 = dt(x= qt(p = .005, df = 9999),df =  1757)) , 
+               aes(x=z,y=y1,xend = z, yend = 0), color = "#404040", size = .5, linetype = 2) + # grenze rechts
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+               aes(x=z,y=y1,xend = z, yend = 0), color = "grey50", size = .5, linetype = 3) + # mittellinie
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+               aes(x=z,y=-0.0125,xend = -2.55, yend = -0.0125), color = "grey25", size = .5,
+               arrow = arrow(length = unit(0.5, "lines"), type = "closed")) + # pfeil nach links
+  geom_segment(data = data.frame(z = 0,y1 = dt(x=0,df = 9999)) , 
+               aes(x=z,y=-0.0125,xend = 2.55, yend = -0.0125), color = "grey25", size = .5,
+               arrow = arrow(length = unit(0.5, "lines"), type = "closed")) + #pfeil nach rechts
+  geom_label(data=data.frame(z = 0 , y1 = -0.0125, lab1 = paste0("+/- ",round(qt(p = .995, df = 9999),3)), t.var = 0),aes(label = lab1), size = 2.75 ) +
+  geom_line(color = "#263056")  +   
+  scale_x_continuous(breaks = seq(-3,3,1),minor_breaks = seq(-3,3,1))+
+  theme(aspect.ratio = 1, panel.grid = element_line(size = rel(.25))) +
+  geom_text(data=data.frame(z = c(-3,3), t.var = 0.015, label = rep(paste0(round(pt(q = -2.576321,df = 9999)*100,3),"%"),2) ), 
+            aes(x = z, y = t.var, label = label),
+            size = 3.25,vjust= 0, hjust = c(1,0)) +
+  theme(plot.margin = margin(0, 0.1, 0, 0.1, "cm"))
+library(patchwork)
+ki90 + ki99
+```
+
+### Hypothesen {#hypt}
+
+Die grundlegende Idee des Hypothesentests ist, dass wir uns nur dann für die Alternativhypothese entscheiden, wenn wir eine ausreichend große Abweichung von dem in der $H_0$ postulierten Wert feststellen. 
+Dazu berechnen wir den $t$-Wert für die Differenz der Mittelwerte und gleichen diesen dann mit der t-Verteilung ab.
+Ein t-Wert, der außerhalb der 95% weniger extremen Werte liegt, wird als statistisch signifikant bezeichnet.
+Letztlich dreht sich alles darum, welche Alternativhypothese getestet wird:
+
++ Für einen beidseitigen Test ist die **Alternativ**hypothese, dass es *keinen* Gruppenunterschied gibt:  
+
+    $H_0: \mu_1 - \mu_2 = 0$; $H_A: \mu_1 - \mu_2 \neq 0$
+ 
++ Ein linksseitiger Test hätte entsprechend die **Alternativ**hypothese, dass der Gruppenunterschied *kleiner* 0 ist:  
+
+    $H_0: \mu_1 - \mu_2 \geqslant 0$; $H_A: \mu_1 - \mu_2 < 0$
+
++ Ein rechtssseitiger Test hätte entsprechend die **Alternativ**hypothese, dass der Gruppenunterschied *größer* 0 ist:  
+
+    $H_0: \mu_1 - \mu_2 \leqslant 0$; $H_A: \mu_1 - \mu_2 > 0$
 
 ### Weitere Korrelationsmaße {#corrs}
 

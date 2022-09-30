@@ -1,8 +1,9 @@
-
-knitr::purl(input = "04_viz.qmd",output= "04_viz.R",documentation = 0)
-
-
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+
+
+knitr::purl(input = "07_inferenz.qmd",output= "./prog_prelim/07_inferenz.R",documentation = 0)
+
+
 library(tidyverse)
 
 rmarkdown::render("demo.Rmd",output_format = "pdf_document")
