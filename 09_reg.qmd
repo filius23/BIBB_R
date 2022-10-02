@@ -92,6 +92,7 @@ summary(m1)$coefficients
 
 Mit `geom_smooth(method = "lm")` können wir Regressionsgeraden auch in `{ggplot2}` darstellen:
 Unser Modell mit `var1` und `var2` können wir so darstellen:
+
 ```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
 library(ggplot2)
 ggplot(dat1, aes(x = var1, y = var2)) + 
@@ -315,6 +316,10 @@ modelsummary(list("m1"=m1,"m1 mit m4vars"=m1_m4vars,"m4"=m4),gof_omit = "IC|RM|L
 Jetzt haben wir also in `m1 mit m4vars` und `m4` die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.
 
 ## Koeffizientenplots {#modelplot}
+```{r}
+#| include: false
+theme_set(theme_grey(base_size = 15))  
+```
 
 Neben Regressionstabellen stellt [`{modelsummary}`](https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html) auch die Funktion `modelplot()` zur Verfügung, mit denen einfach ein Koeffizientenplot aus einem oder mehreren Modellen erstellt werden kann:
 
@@ -363,99 +368,9 @@ modelplot(list("Modell 1"=m1_m4vars,
   theme_bw(base_size = 15,base_family = "serif") 
 ```
 
+Mit `{broom}` können wir auch einen `data.frame` aus den Regressionsergebnissen erstellen und den `ggplot` ganz selbst erstellen - [siehe Anhang](#broomplt).
+
 ### [Übung](#reg4)
-
-## Interaktionen
-
-```{r}
-dat1$g_fct <- factor(dat1$gend,levels = 1:2,
-                     labels = c("women","men"))
-m5 <- lm(var2 ~ var1 * g_fct, dat1)
-summary(m5)
-```
-
-Interaktionen sollten immer visualisiert werden.
-Dafür ist [`{ggeffects}`](https://strengejacke.github.io/ggeffects/index.html) eine große Hilfe:
-
-```{r}
-#| eval: false
-install.packages("ggeffects")
-```
-```{r}
-#| include: false
-theme_set(theme_grey(base_size = 15))  
-```
-
-```{r}
-#| out-width: "80%"
-#| out-height: "60%"
-library(ggeffects)
-ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot()
-# oder nebeneinander:
-ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot(facet=TRUE)
-```
-
-Wir können diese Darstellung mit den bekannten `{ggplot2}`-Befehlen verändern:
-
-```{r}
-#| out-width: "60%"
-#| out-height: "60%"
-ggpredict(m5, terms = c("var1","g_fct[women,men]")) %>% plot() + 
-  scale_color_viridis_d(breaks = c("women","men"),labels=c("Frauen","Männer")) +
-  scale_fill_viridis_d(breaks = c("women","men"),labels=c("Frauen","Männer")) +
-  labs(title = "Vorhergesagte Werte für var2",
-       color = "Gender",
-       x = "Werte für var1",
-       y = "Vorhergesagte Werte für var1")
-```
-
-### [Übung](#reg5)
-
-## Quadratische Terme & Polynome
-
-```{r}
-#| include: false
-dat1 %>% filter(id != 7) %>% 
-  ggplot(aes(x = var1, y = var2)) + 
-  geom_smooth(method = "lm", color = "darkblue" ,formula = "y~x+I(x^2)", se=F, size = .65) +
-  geom_point()
-
-```
-
-```{r}
-m6 <- lm(var2 ~ var1 + I(var1^2), dat1 %>% filter(id != 7))
-summary(m6)
-```
-
-```{r}
-#| out-width: "60%"
-#| out-height: "60%"
-ggpredict(m6, terms = c("var1")) %>% plot()
-```
-### [Übung](#reg6)
-
-
-
-
-## Gewichtetes Regressionsmodell
-```{r}
-#| message: false
-#| warning: false
-library(survey)
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta") 
-
-etb18x <- etb18 %>% filter(F518_SUF < 99998, zpalter < 100)
-modx <- lm(F518_SUF ~ zpalter + I(zpalter^2),data=etb18x)
-
-etb18_weighted <- svydesign(id      = ~intnr,
-                            weights = ~gew2018,
-                            data    = etb18x)
-# family = gaussian() bekommen wir ein lineares Regressionsmodell, wie bei lm() - mit gewichtet
-survey_modx <- svyglm(F518_SUF ~ zpalter + I(zpalter^2), 
-                    family = gaussian(), data = etb18,design = etb18_weighted)
-
-modelsummary(list("lm()"=modx,"svyglm()"= survey_modx),gof_omit = "RM|IC|Log")
-```
 
 
 ## Übungen
@@ -463,7 +378,7 @@ modelsummary(list("lm()"=modx,"svyglm()"= survey_modx),gof_omit = "RM|IC|Log")
 ### Übung 1: Regression {#reg1}
 
 Verwenden Sie folgenden Subdatensatz der ETB2018:
-```{r, echo = T}
+```{r, echo = T, eval=FALSE}
 etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
 ```
 
@@ -488,13 +403,15 @@ etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
 #| message: false
 library(gt)
 vals1 <- 
-  etb18 %>% select(starts_with("m1202")) %>% 
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1)  %>% 
+  select(starts_with("m1202")) %>% 
     map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
     pivot_longer(-var) %>% 
     pivot_wider(names_from = value,values_from = name) 
     
 
-etb18 %>% select(starts_with("m1202")) %>% 
+haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1)  %>% 
+  select(starts_with("m1202")) %>% 
   map_dfr(.,~attributes(.x)$label) %>% 
       t(.) %>% data.frame() %>% 
       rownames_to_column(.,var = "var") %>% 
@@ -513,20 +430,20 @@ etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","du
 + Erstellen Sie das Regressionsmodell mit dieser neuen factor-Variable für `m1202` als unabhängiger Variablen.
 + Ändern Sie die Referenzkategorie auf die Ausprägung *Aufstiegsfortbildung*  (`m1202` = 3) und schätzen Sie das Modell erneut.
 
-### Übung 4: mehrere UVs {#reg4}
+<!-- ### Übung 4: mehrere UVs {#reg4} -->
 
-+ Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit auch die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden.
-+ Erstellen Sie eine Übersichtstabellen mit allen Modellen aus den Übungen 1 und 4.
-
-
-### Übung 5: Interaktionen {#reg5}
+<!-- + Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit auch die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden. -->
+<!-- + Erstellen Sie eine Übersichtstabellen mit allen Modellen aus den Übungen 1 und 4. -->
 
 
-### Übung 6: quad. Terme {#reg6}
+<!-- ### Übung 5: Interaktionen {#reg5} -->
 
-+ Erstellen Sie ein Modell `m4` mit einem quadratischen Term:
 
-$$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{az} + \beta2 \times \texttt{az}^2 + \varepsilon$$
+<!-- ### Übung 6: quad. Terme {#reg6} -->
+
+<!-- + Erstellen Sie ein Modell `m4` mit einem quadratischen Term: -->
+
+<!-- $$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{az} + \beta2 \times \texttt{az}^2 + \varepsilon$$ -->
 
 
 
@@ -688,3 +605,30 @@ compare_performance(m1,m4,metrics = c("R2","R2_adj"))
 
 
 
+### Individuellere Koeffizientenplots mit `{broom}` {#broomplt}
+
+`summary()` bietet einen einfachen Zugriff auf Regressionstabellen, allerdings verwende ich häufig [`{broom}` ](https://broom.tidyverse.org/).
+Mit `broom::tidy(..., conf.int = TRUE)` bekommen wir einen `data.frame` mit den Ergebnissen des Regressionsmodells, die wir bspw. in einem `{ggplot2}` weiterverarbeiten können - wenn uns die Standardlösung von [`modelplot()`](09_reg.qmd#modelplot) nicht weiterhilft:
+
+```{r mod1_tidy}
+#| out-width: "90%"
+#| out-height: "50%"
+#| fig-align: "center"
+library(broom) ## schon geladen als Teil des tidyverse
+tidy(m3, conf.int = TRUE)
+
+tidy(m3, conf.int = TRUE) %>% 
+  mutate(term = str_replace(term, "ed_fct", "Education: ")) %>% 
+  ggplot(aes(y = term, x = estimate)) +
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "navy") +
+  geom_errorbarh(aes(xmin = conf.low, xmax  = conf.high), height = .1) + 
+  geom_point(color = "orange", shape = 17,size = 3) +
+  theme_minimal(base_size = 16)
+```
+
+
+`broom::glance()` gibt uns einen ganze Reihe an Modellgütemaßen (R<sup>2</sup>, AIC, etc.) als  `data.frame` aus:
+
+```{r mod1_glance}
+glance(m3)
+```

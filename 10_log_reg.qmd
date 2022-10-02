@@ -133,98 +133,6 @@ Mit einem um 100 Euro (inc100 ist in 100 EUR gemessen) höheren Einkommen geht i
 ## [Übung 1](#ame1)
 
 
-## Kategoriale unabhängige Variablen
-
-Natürlich können wir auch kategoriale unabhängige Variablen in ein logistisches Regressionsmodell aufnehmen. 
-Wichtig ist nur, dass wir die Variable als `factor` definieren:
-
-```{r}
-m_etb18 <- 
-  m_etb18 %>% 
-  mutate(m1202_fct = factor(m1202,levels = c(-1,1:4), 
-                            labels = names(attributes(m1202)$labels) %>% 
-                              substr(.,1,5) %>% str_squish()),
-         m1202_fct = fct_relevel(m1202_fct,"Ohne"))
-
-m_etb18 %>% count(m1202,m1202_fct)
-m3 <- glm(outside ~ m1202_fct + inc100, family = "binomial", data = m_etb18)
-summary(m3)
-```
-
-```{r, warning=F}
-mfx3 <- marginaleffects(m3)
-summary(mfx3)
-```
-
-```{r}
-tidy(mfx3) %>% 
-  mutate(lab = paste0(term,"\n",contrast)) %>% 
-  ggplot(.,aes(x= estimate,y=lab)) +
-  geom_vline(aes(xintercept = 0), linetype = 2) +
-  geom_point(color = "navy",size = 2) + 
-  geom_errorbarh(aes(xmin=conf.low,xmax = conf.high), color = "navy",height = .2,size=.65) + 
-  labs(y="")
-```
-
-## Marginal Effect at Specified Values 
-
-Wie groß ist der Unterschied zwischen Befragten ohne Berufsabschluss und Befragten mit Fachhochschul- oder Uni-Abschluss bei einem gewissen Alter?
-
-```{r}
-#| echo: false
-m4 <- glm(outside ~ m1202_fct*zpalter, family = "binomial", data = m_etb18)
-mfx4 <- marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                              zpalter = seq(20,60,2))) 
-
-mfx4 %>% 
-  filter(term == "m1202_fct", !grepl("kein",contrast)) %>% 
-  ggplot(.,aes(x= zpalter, y= dydx,color = contrast)) + 
-  geom_point() +
-  geom_errorbar(aes(ymin = conf.low,ymax=conf.high)) +
-  labs(title = "Wahrscheinlichkeitsdifferenz für outside = 1 vs. ohne Ausb.",
-       y = "Marginaler Effekt", x =  "Alter", color = "") +
-  scale_color_manual(values = lacroix_palette("PeachPear")[c(1,5,6)])
-```
-
-
-```{r}
-m4 <- glm(outside ~ m1202_fct*zpalter, family = "binomial", data = m_etb18)
-summary(m4)
-```
-`marginaleffects()` bietet die Möglichkeit, bestimmte Werte einzusetzen und dafür jeweils den marginalen Effekt zu berechnen. 
-Dementsprechend können 
-
-
-```{r headmer, eval = F}
-marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                      zpalter = c(20,40) ))  %>% 
-  head(.) 
-```
-```{r, echo = F}
-marginaleffects(m4,newdata = datagrid(m1202_fct = levels(m_etb18$m1202_fct),
-                                      zpalter = c(20,40) ))  %>% 
-  head(.) %>% 
-  rmarkdown::paged_table()
-```
-
-## Adjusted Predictions
-
-Wie groß ist die vorhergesagte Wahrscheinlichkeit, mehr als die Häfte der Arbeitszeit im Freien zu arbeiten für 
-
-+ 20 Jahre Alte Befragte ohne Berufsabschluss 
-+ 20 Jahre Alte mit Fachhochschul- oder Uni-Abschluss
-
-+ 50 Jahre Alte Befragte ohne Berufsabschluss 
-+ 50 Jahre Alte mit Fachhochschul- oder Uni-Abschluss
-
-
-```{r}
-library(ggeffects)
-ggpredict(m4, terms = c("zpalter[20,40,60]","m1202_fct[keine,duale,Aufst,Fachh]")) %>% 
-  plot()
-```
-
-
 ## Fixed effects logistische Regression mit `{fixest}` {#feglm}
 
 
@@ -233,27 +141,18 @@ Mit `feglm()`
 
 ```{r logit_fixest, warning = FALSE}
 library(fixest)
+m_etb18 <-
+  m_etb18 %>%
+  mutate(m1202_fct = factor(m1202,levels = c(-1,1:4),
+                            labels = names(attributes(m1202)$labels) %>%
+                              substr(.,1,5) %>% str_squish()),
+         m1202_fct = fct_relevel(m1202_fct,"Ohne"))
+
 feglm(outside ~ m1202_fct*zpalter |Bula, data = m_etb18, family = binomial)
 ```
 
 
-
-
-## Übungen 
-
-### Übung 1
-
-
-+ 
-+ 
-+ 
-
-
-### Übung 2
-
-+ 
-+ 
-+ 
+## Übung 
 
 
 
