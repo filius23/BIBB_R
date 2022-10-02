@@ -237,84 +237,6 @@ summary(m4)
 
 
 
-
-## Nur vollständige Zeilen behalten
-
-Wenn wir jetzt aber die beiden Modelle `m1` und `m3` vergleichen, sehen wir unterschiedliche Fallzahlen:
-
-```{r}
-modelsummary(list("m1"=m1,"m4"=m4),gof_omit = "IC|RM|Log|F")
-```
-
-
-Es zeigt sich, dass in Modell 2 mit `edu_fct` 1 Fall verloren geht. Woran liegt das?
-Dazu lohnt sich ein Blick in die Daten:
-```{r}
-dat1
-```
-
-Die Angabe für `ed_fct` fehlt in für `id` = 8.
-
-Um die Modelle zu vergleichen sollten wir also nur die Zeilen verwenden, für die auch die Werte für `ed_fct` vorliegen.
-Hier können wir diese Zeilen per Hand auswählen (und `id`=8 ausschließen), in größeren Datensätzen ist das aber mühsam.
-
-### `complete.cases()`
-
-Hier hilft uns `complete.cases()`.
-Diese Funktion erstellt eine logische Variable, welche ein `TRUE` für alle vollständigen Fälle (also ohne ein `NA`). 
-Unvollständige Fälle werden mit einem `FALSE` versehen. 
-Dazu geben wir an, welche Variablen jeweils für diese Betrachtung berücksichtigt werden sollen und legen die Variable einfach im Datensatz als neue Spalte an. 
-Für Modell 1 ist ein Fall `complete`, wenn `var2` und `var1` vorliegen. 
-Wir wählen also mit `select()` die relevanten Variablen aus und wenden `complete.cases` auf diese Auswahl an:
-```{r, message = F}
-dat1 %>% select(var1,var2) %>% complete.cases(.) 
-dat1$compl_m1 <- dat1 %>% select(var1,var2) %>% complete.cases(.) 
-dat1
-```
-::: {.callout-warning collapse="true"}
-# `complete.cases()` alleine sucht in allen Variablen nach `NA`
-Achtung: wenn wir keine Variablen angeben, werden `NA` aus allen Variablen berücksichtigt, hier also auch die `NA` aus `x` - die uns hier nicht interessieren:
-```{r, message = F}
-dat1 %>% complete.cases(.) 
-dat1$compl <- dat1 %>% complete.cases(.) 
-dat1
-```
-
-```{r}
-#| echo: false
-dat1$compl <- NULL
-```
-
-:::
-
-...das gleiche machen wir für Modell `m4`, welches neben `var2` und `var1` ja auch noch `ed_fct` enthält:
-```{r}
-dat1$compl_m4 <- dat1 %>% select(var1,var2,ed_fct) %>% complete.cases(.)
-```
-
-So sieht das dann im Datensatz aus:
-```{r}
-dat1
-```
-
-
-
-
-### Fälle mit missings finden
-Jetzt können wir nach diesen Variablen filtern und uns diese Fälle genauer ansehen. Dazu filtern wir nach den Fällen, die zwar in `m1` enthalten (also `compl_m1` = `TRUE`) sind, aber nicht in `m4` (`compl_m4` = `FALSE`):
-```{r}
-dat1 %>% filter(compl_m1 == T & compl_m4 == F) 
-```
-
-### Modelle nur mit vollständigen Fällen berechnen
-Außerdem können wir jetzt auch das Modell `m1` so erstellen, dass wir nur die Fälle miteinbeziehen, die auch in Modell2 berücksichtigt werden:
-```{r}
-m1_m4vars <- lm(var2 ~ var1     , data = filter(dat1,compl_m4 == T))
-modelsummary(list("m1"=m1,"m1 mit m4vars"=m1_m4vars,"m4"=m4),gof_omit = "IC|RM|Log|F")
-```
-
-Jetzt haben wir also in `m1 mit m4vars` und `m4` die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.
-
 ## Koeffizientenplots {#modelplot}
 ```{r}
 #| include: false
@@ -349,7 +271,7 @@ Für den Modellvergleich geben wir einfach die Modelle in einer named `list` an:
 ```{r}
 #| out-width: "50%"
 #| out-height: "50%"
-modelplot(list("Modell 1"=m1_m4vars,
+modelplot(list("Modell 1"=m1,
                "Modell 4"=m4),
           coef_map = c("var1" = "Name für var1",
                        "ed_fcthigh"  = "Höhere Bildung",
@@ -358,7 +280,7 @@ modelplot(list("Modell 1"=m1_m4vars,
 
 Mit den üblichen `{ggplot2}`-Befehlen können wir die Grafik weiter anpassen:
 ```{r}
-modelplot(list("Modell 1"=m1_m4vars,
+modelplot(list("Modell 1"=m1,
                "Modell 4"=m4),
           coef_map = c("var1" = "Name für var1",
                        "ed_fcthigh"  = "Höhere Bildung",
