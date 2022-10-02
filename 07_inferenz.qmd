@@ -46,9 +46,9 @@ t.test(etb18_kap7$zpalter~etb18_kap7$S1)
 
 Es hat sich als Konvention etabliert, von einem signifikanten Unterschied zu sprechen wenn die Irrtumswahrscheinlichkeit unter 5% liegt. Das bedeutet:
 
-> *Assuming that the null hypothesis is true and the study is repeated an infinite number times by drawing random samples from the same populations(s), less than 5% of these results will be more extreme than the current result.*[^1]
+<!-- > *Assuming that the null hypothesis is true and the study is repeated an infinite number times by drawing random samples from the same populations(s), less than 5% of these results will be more extreme than the current result.*[^1] -->
 
-[^1]: [Failing Grade: 89% of Introduction-to-Psychology Textbooks That Define or Explain Statistical Significance Do So Incorrectly. Advances in Methods and Practices in Psychological Science, 2515245919858072.](https://doi.org/10.1177/2515245919858072)
+<!-- [^1]: [Failing Grade: 89% of Introduction-to-Psychology Textbooks That Define or Explain Statistical Significance Do So Incorrectly. Advances in Methods and Practices in Psychological Science, 2515245919858072.](https://doi.org/10.1177/2515245919858072) -->
 
 Da hier der p-Wert sehr viel kleiner ist als 0.05 ist (`p-value < 2.2e-16`)[^ehoch], können wir von einen statistisch signifikanten Unterschied sprechen.  
 
@@ -91,7 +91,7 @@ cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson", use = "pairwise.
 c1 <- cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson", use = "pairwise.complete.obs")
 ```
 
-Es handelt sich mit `r sprintf("%.5f",c1$estimate)` also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit `r sprintf("%.5f",c1$p.value)` liegt der p-Wert deutlich unter 0,05.
+Es handelt sich mit `r sprintf("%.4f",c1$estimate)` also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit `r sprintf("%.5f",c1$p.value)` liegt der p-Wert deutlich unter 0,05.
 
 Um eine  Korrelationsmatrix zu erhalten hilft das Paket [{correlation}](https://github.com/easystats/correlation): 
 ```{r}
