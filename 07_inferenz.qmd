@@ -341,7 +341,7 @@ haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>%
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
 
-+ Berechnen Sie die Rangkorrelation getrennt für Männer und Frauen (Hinweis: die Rangkorrelation können Sie mit in `{correlation}` mit `correlation(method = "spearman")` berechnen) 
+<!-- + Berechnen Sie die Rangkorrelation getrennt für Männer und Frauen (Hinweis: die Rangkorrelation können Sie mit in `{correlation}` mit `correlation(method = "spearman")` berechnen)  -->
 
 
 <!--   + So können Sie `educ` in `etb18_kap7` erstellen und die Missings in `F411_01` überschreiben und Erstellen Sie einen kleineren Datensatz, indem Sie die ersten 300 Zeilen auswählen: -->

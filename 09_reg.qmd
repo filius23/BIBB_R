@@ -32,7 +32,7 @@ theme_x <-
     plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
     plot.margin = unit(c(1, 1, 1, 1), "lines"))
 
-theme_set(theme_x)
+# theme_set(theme_x)
 
 ```
 
@@ -155,7 +155,7 @@ Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich ein
 
 Es gibt zahlreiche Alternativen zur Erstellung von Regressionstabellen, mein persönlicher Favorit ist `modelsummary()` aus dem gleichnamigen Paket [{modelsummary}](https://vincentarelbundock.github.io/modelsummary/).
 Es kommt mit (nahezu) allen Modellarten zurecht und bietet darüber hinaus eine breite Palette an (u.a. auch [Word-Output](#14_tabellenexport.qmd) - dazu später mehr) und auch Koeffizientenplots (auch dazu kommen wir noch).
-Außerdem ist die [Dokumentation](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html).
+Außerdem ist die [Dokumentation](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html) hervorragend.
 
 ```{r}
 #| eval: false
@@ -279,7 +279,7 @@ modelplot(list("Modell 1"=m1,
                        "ed_fctbasic" = "Grundlegende\nBildung")) + # \n fügt einen Zeilenumbruch ein
   geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
   scale_color_manual(values = c("orange","navy")) +
-  theme_bw(base_size = 15,base_family = "serif") 
+  theme_minimal(base_size = 15,base_family = "mono") 
 ```
 
 Mit `{broom}` können wir auch einen `data.frame` aus den Regressionsergebnissen erstellen und den `ggplot` ganz selbst erstellen - [siehe Anhang](#broomplt).

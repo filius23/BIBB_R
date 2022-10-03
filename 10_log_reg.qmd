@@ -152,7 +152,10 @@ feglm(outside ~ m1202_fct*zpalter |Bula, data = m_etb18, family = binomial)
 ```
 
 
-## Übung 
+## Übung {#ame1}
+
++ Erstellen Sie ein logistisches Regressionsmodell mit 
+
 
 
 

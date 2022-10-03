@@ -292,7 +292,7 @@ modelsummary(list(fe_mod1),gof_omit = "R|IC|Log|F")
 ## Mehrebenenmodelle mit `{lme4}`
 
 
-Mit `lmer()` können wir ein 
+Mit `lmer()` können wir ein Random Intercept Modell berechnen, indem wir mit `( 1 | species)` angeben, dass für `species` jeweils ine eigenes Random Intercept berechnet werden soll:
 ```{r}
 library(lme4)
 ml_m3 <- lmer(mass ~ height + ( 1 | species), data=starwars)
@@ -303,14 +303,14 @@ modelsummary(list(ml_m3),gof_omit = "R|IC|Log|F")
 Mehr zu Mehrebenenmodellen und `{lme4}` in Blogposts von [Rense Nieuwenhuis ](http://www.rensenieuwenhuis.nl/r-sessions-16-multilevel-model-specification-lme4/) und [Tristan Mahr](https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/).
 
 
-## Abschließende Bemerkungen
+<!-- ## Abschließende Bemerkungen -->
 
-Zusammengefasst lassen uns `{fixest}` und `{modelsummary}` Standardfehler nach der eigentlichen Modellschätzung anpassen, indem wir die  `se` or `cluster` Optionen verwenden. 
+<!-- Zusammengefasst lassen uns `{fixest}` und `{modelsummary}` Standardfehler nach der eigentlichen Modellschätzung anpassen, indem wir die  `se` or `cluster` Optionen verwenden.  -->
 
-Ein [Blog Post von Grant Mcdermott](https://grantmcdermott.com/better-way-adjust-SEs/) argumentiert noch etwas ausführlicher, warum die nachträgliche Berechnung der Standardfehler (anstelle einer kompletten Neuschätzung des Modells) eine gute Idee ist - auch wenn es für Stata-Nutzende ein sehr ungewöhnliches Vorgehen ist.
+<!-- Ein [Blog Post von Grant Mcdermott](https://grantmcdermott.com/better-way-adjust-SEs/) argumentiert noch etwas ausführlicher, warum die nachträgliche Berechnung der Standardfehler (anstelle einer kompletten Neuschätzung des Modells) eine gute Idee ist - auch wenn es für Stata-Nutzende ein sehr ungewöhnliches Vorgehen ist. -->
 
-Die exakte Replikation von Standardfehlern aus anderen Programmen (bspw, Stata) ist oft schwieriger als es zunächst scheint. 
-Siehe auch die Diskussion [hier](https://github.com/sgaure/lfe/issues/1#issuecomment-530643808) 
-[Detaillierte vignette](https://lrberge.github.io/fixest/articles/standard_errors.html) `{fixest}` wie SEs aus anderen Programmen repliziert werden können.
-[Detailliertes Paper](http://sandwich.r-forge.r-project.org/articles/jss_2020.html) von den Autoren von `{sandwich}` zu diesem Thema. 
+<!-- Die exakte Replikation von Standardfehlern aus anderen Programmen (bspw, Stata) ist oft schwieriger als es zunächst scheint.  -->
+<!-- Siehe auch die Diskussion [hier](https://github.com/sgaure/lfe/issues/1#issuecomment-530643808)  -->
+<!-- [Detaillierte vignette](https://lrberge.github.io/fixest/articles/standard_errors.html) `{fixest}` wie SEs aus anderen Programmen repliziert werden können. -->
+<!-- [Detailliertes Paper](http://sandwich.r-forge.r-project.org/articles/jss_2020.html) von den Autoren von `{sandwich}` zu diesem Thema.  -->
 
