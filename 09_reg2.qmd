@@ -44,6 +44,8 @@ dat1 <- data.frame(id   = 1:8,
                    educ = c(3,1,2,2,1, 3, 2,-1),
                    gend = c(2,1,1,2,1,2,1,2),
                    x    = c(2,1,2,4,1,NA,NA,NA) )
+dat1$ed_fct <- factor(dat1$educ, levels = 1:3,
+                        labels = c("basic","medium","high"))
 dat1
 ```
 
@@ -51,14 +53,16 @@ dat1
 
 ## Nur vollständige Zeilen behalten
 
-Wenn wir jetzt aber die beiden Modelle `m1` und `m3` vergleichen, sehen wir unterschiedliche Fallzahlen:
+Wenn wir die beiden Modelle `m1` und `m3` vergleichen, sehen wir unterschiedliche Fallzahlen:
 
 ```{r}
+m1 <- lm(var2~ var1, data = dat1)  
+m4 <- lm(var2 ~ ed_fct  + var1, dat1)
 modelsummary(list("m1"=m1,"m4"=m4),gof_omit = "IC|RM|Log|F")
 ```
 
 
-Es zeigt sich, dass in Modell 2 mit `edu_fct` 1 Fall verloren geht. Woran liegt das?
+Es zeigt sich, dass in Modell `m4` mit `edu_fct` 1 Fall verloren geht. Woran liegt das?
 Dazu lohnt sich ein Blick in die Daten:
 ```{r}
 dat1
