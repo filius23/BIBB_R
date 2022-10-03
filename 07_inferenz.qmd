@@ -23,7 +23,6 @@ etb18_kap7 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
 Neue Pakete:
 ```{r pckgs}
 #| eval: false
-install.packages("broom") # Ergebnisse in data.frame umwandeln
 install.packages("effectsize") # u.a. Cohen's D berechnen 
 install.packages("survey") # Gewichtung
 ```
@@ -115,6 +114,81 @@ corr_df <-
 data.frame(corr_df)
 ```
 
+<!-- ## Ergebnisse weiterverarbeiten -->
+
+<!-- Die Kennzahlen aus dem Output können wir auch separat aufrufen: -->
+<!-- ```{r} -->
+<!-- ttest1 <- t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "two.sided") -->
+<!-- ttest1$statistic # t-Wert -->
+<!-- ttest1$p.value # p-Wert -->
+<!-- ``` -->
+<!-- Mit `tidy()` aus [{broom}](https://broom.tidymodels.org/) können wir einen `data.frame()` erstellen, der die wesentlichen Parameter enthält: -->
+<!-- ```{r} -->
+<!-- #| eval: false -->
+<!-- library(broom) -->
+<!-- tidy(ttest1) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- library(broom) -->
+<!-- tidy(ttest1) %>%  -->
+<!--   rmarkdown::paged_table() -->
+<!-- ``` -->
+
+<!-- Was hilft uns das?  -->
+
+<!-- Wir können diesen `data.frame()` mit `{ggplot}` visualisieren, indem wir die Konfidenzintervallgrenzen in `geom_pointrange()` angeben: -->
+<!-- ```{r} -->
+<!-- #| out-width: "80%" -->
+<!-- #| fig-height: 1.5 -->
+<!-- library(ggplot2) -->
+<!-- tidy(ttest1) %>%  -->
+<!-- ggplot(aes(y=method,x=estimate)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_errorbarh(aes(xmin = conf.low,xmax = conf.high), color = "navy", height = .2) +  -->
+<!--   geom_point(color = "navy", size = 2) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+
+<!-- data.frame(corr_df) %>%  -->
+<!--   ggplot(aes(y=Parameter1,x=r, color = Parameter2)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_errorbarh(aes(xmin = CI_low,xmax = CI_high), height = .2) +  -->
+<!--   geom_point(size = 2) + -->
+<!--   facet_wrap(~Group) -->
+<!-- ``` -->
+
+<!-- Wir können mit `bind_rows()` auch mehrere Tests zu einem `data.frame` zusammenfügen: -->
+<!-- ```{r} -->
+<!-- ttest_m <-  -->
+<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==1], -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson", use = "pairwise.complete.obs") -->
+
+<!-- ttest_w <-  -->
+<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==2], -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson", use = "pairwise.complete.obs") -->
+
+<!-- test_df2 <- bind_rows(tidy(ttest_m), -->
+<!--                       tidy(ttest_w),  -->
+<!--                       .id = "S1") # Variable S1 erstellen als Identifikator -->
+
+<!-- test_df2 -->
+<!-- ``` -->
+
+<!-- Das können wir jetzt wieder plotten: -->
+<!-- ```{r} -->
+<!-- #| out-width: "80%" -->
+<!-- #| fig-height: 2 -->
+<!-- ggplot(test_df2,aes(y=S1,x=estimate)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy") -->
+<!-- ``` -->
+
+
 
 ## Weitere Zusammenshangsmaße:
 
@@ -171,71 +245,7 @@ effectsize::cramers_v(etb18_kap7$F204,etb18_kap7$S1)
 
 [Weitere Maße](#corrs)
 
-<!-- ### [Übung](#corr) -->
-
-## Ergebnisse weiterverarbeiten
-
-Die Kennzahlen aus dem Output können wir auch separat aufrufen:
-```{r}
-ttest1 <- t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "two.sided")
-ttest1$statistic # t-Wert
-ttest1$p.value # p-Wert
-```
-Mit `tidy()` aus [{broom}](https://broom.tidymodels.org/) können wir einen `data.frame()` erstellen, der die wesentlichen Parameter enthält:
-```{r}
-#| eval: false
-library(broom)
-tidy(ttest1)
-```
-
-
-```{r}
-#| echo: false
-library(broom)
-tidy(ttest1) %>% 
-  rmarkdown::paged_table()
-```
-
-Was hilft uns das? 
-
-Wir können diesen `data.frame()` mit `{ggplot}` visualisieren, indem wir die Konfidenzintervallgrenzen in `geom_pointrange()` angeben:
-```{r}
-#| out-width: "80%"
-#| fig-height: 1.5
-library(ggplot2)
-tidy(ttest1) %>% 
-ggplot(aes(y="t.test",x=estimate)) +
-  geom_vline(aes(xintercept = 0),linetype = "dashed") +
-  geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy")
-```
-
-<!-- Wir können mit `bind_rows()` auch mehrere Tests zu einem `data.frame` zusammenfügen: -->
-<!-- ```{r} -->
-<!-- ttest_m <-  -->
-<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==1], -->
-<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson", use = "pairwise.complete.obs") -->
-
-<!-- ttest_w <-  -->
-<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==2], -->
-<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson", use = "pairwise.complete.obs") -->
-
-<!-- test_df2 <- bind_rows(tidy(ttest_m), -->
-<!--                       tidy(ttest_w),  -->
-<!--                       .id = "S1") # Variable S1 erstellen als Identifikator -->
-
-<!-- test_df2 -->
-<!-- ``` -->
-
-<!-- Das können wir jetzt wieder plotten: -->
-<!-- ```{r} -->
-<!-- #| out-width: "80%" -->
-<!-- #| fig-height: 2 -->
-<!-- ggplot(test_df2,aes(y=S1,x=estimate)) + -->
-<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
-<!--   geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy") -->
-<!-- ``` -->
-
-
+### [Übung](#corr)
 
 ## Gewichtung 
 
@@ -252,12 +262,17 @@ etb18_kap7 %>%
 ```
 
 Für umfangreichere Anwendungen stehen in R stehen die Pakete [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) und das darauf aufbauende [`{srvyr}`](https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html) zur Verfügung.
+```{r}
+#| eval: false
+install.packages("survey")
+```
+
+
 Zunächst verwenden wir `svydesign()`, um die Gewichtung festzulegen. 
 Im weiteren stellt [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) dann zahlreiche Funktionen zur Verfügung, die eine gewichtete Variante der basis-Befehle sind - bspw. `svymean()` und `svytable()`:
 ```{r}
 #| include: false
 etb18_kap7 %>% summarise(mean = weighted.mean(zpalter,w = gew2018))
-
 ```
 
 ```{r}
@@ -296,12 +311,12 @@ Berechnen Sie das Cohen's d für diesen Zusammenhang.
 
 
 
-### *Übung 2* {#corr}
+### Übung 2 {#corr}
 
 + Untersuchen Sie die Korrelation zwischen der Wochenarbeitszeit (`az`) und dem Einkommen (`F518_SUF`) der Befragten.
 
 + Denken Sie daran, die Missings in `F518_SUF` auszuschließen: `etb18_kap7$F518_SUF[etb18_kap7$F518_SUF>99990] <- NA`, `az` hat keine Missings.
-+ Berechnen Sie die Rangkorreation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck `F411_01` und der Ausbildungsvariable `m1202`.
++ Berechnen Sie die Rangkorrelation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck `F411_01` und der Ausbildungsvariable `m1202`.
 ```{r}
 #| echo: false
 #| warning: false
@@ -326,6 +341,7 @@ haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>%
   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
 ```
 
++ Berechnen Sie die Rangkorrelation getrennt für Männer und Frauen (Hinweis: die Rangkorrelation können Sie mit in `{correlation}` mit `correlation(method = "spearman")` berechnen) 
 
 
 <!--   + So können Sie `educ` in `etb18_kap7` erstellen und die Missings in `F411_01` überschreiben und Erstellen Sie einen kleineren Datensatz, indem Sie die ersten 300 Zeilen auswählen: -->
@@ -345,28 +361,28 @@ haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>%
 ### Übung 3 {#weight}
 
 + Legen Sie die Gewichtung auf Basis von `gew2018` an.
-+ Erstellen Sie eine Kontingenztabelle für `gkpol` und `Mig` - einmal gewichtet und einmal ohne Gewichte. Sehen Sie die Unterschiede?
-
++ Berechnen Sie den Mittelwert für den Bruttoverdienst `F518_SUF` (Schließen Sie die Missings ggf. mit `etb18_kap7$F518_SUF[etb18_kap7$F518_SUF>99990] <- NA` - sie können mit `max(etb18_kap7$F518_SUF,na.rm = T)` überprüfen ob das Maximum bei `r max(etb18_kap7$F518_SUF,na.rm = T)` liegt)
 ```{r}
 #| echo: false
 etb18_kap7$F518_SUF[etb18_kap7$F518_SUF>99990] <- NA
 ```
 
-+ Berechnen Sie den Mittelwert für den Bruttoverdienst `F518_SUF` (Schließen Sie die Missings ggf. mit `etb18_kap7$F518_SUF[etb18_kap7$F518_SUF>99990] <- NA` - sie können mit `max(etb18_kap7$F518_SUF,na.rm = T)` überprüfen ob das Maximum bei `r max(etb18_kap7$F518_SUF,na.rm = T)` liegt)
 
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-library(gt)
-etb18_kap7 %>% select(matches("gkpol|Mig")) %>% 
-  map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
-  pivot_longer(-var) %>% 
-  filter(!is.na(value)) %>% 
-  gt() %>% 
-  tab_options(  table.font.size = 12) %>% 
-  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
-```
+<!-- + Erstellen Sie eine Kontingenztabelle für `gkpol` und `Mig` - einmal gewichtet und einmal ohne Gewichte. Sehen Sie die Unterschiede? -->
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- #| warning: false -->
+<!-- #| message: false -->
+<!-- library(gt) -->
+<!-- etb18_kap7 %>% select(matches("gkpol|Mig")) %>%  -->
+<!--   map_dfr(.,~attributes(.x)$labels,.id = "var") %>%  -->
+<!--   pivot_longer(-var) %>%  -->
+<!--   filter(!is.na(value)) %>%  -->
+<!--   gt() %>%  -->
+<!--   tab_options(  table.font.size = 12) %>%  -->
+<!--   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var)) -->
+<!-- ``` -->
 
 ## Anhang
 
