@@ -1,7 +1,7 @@
 project:
   type: book
-  # output-dir: docs
-  # output-file: docs
+  output-dir: docs
+  output-file: docs
   # 
 book:
   title: "R am BIBB"
@@ -23,7 +23,7 @@ book:
     - 12_apply_loop.qmd
     - 14_tabellenexport.qmd
     # - 15_markdown.qmd
-    # - 15_RMarkdown.qmd
+    - 15_RMarkdown.qmd
     # - 17_errors.qmd
     - references.qmd
   language: de-DE
