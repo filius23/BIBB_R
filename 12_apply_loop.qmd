@@ -21,10 +21,10 @@ Schleifen im Sinne von `for()`-Loops werden in R selten verwendet. Stattdessen w
 Ein typisches Beispiel ist eine Modellserie.
 Wir möchten folgende Modelle schätzen:
 
-+ Modell1 = `F518_SUF ~ az`
-+ Modell2 = `F518_SUF ~ az + S1`
-+ Modell3 = `F518_SUF ~ az + S1 + m1202`
-+ Modell4 = `F518_SUF ~ az + S1 + m1202 + zpalter`
++ Modell 1 = `F518_SUF ~ az`
++ Modell 2 = `F518_SUF ~ az + S1`
++ Modell 3 = `F518_SUF ~ az + S1 + m1202`
++ Modell 4 = `F518_SUF ~ az + S1 + m1202 + zpalter`
 
 ## Modell funktion
 
@@ -152,6 +152,26 @@ for(i in 1:8){
 
 
 ## Übungen
+
+```{r}
+etb_ue12 <- 
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                  col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
++ Erstellen Sie eine Funktion, welche den `data.frame` `etb_ue12` für ein `lm()` verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel: `az ~ S1 + ausb + zpalter` (Denken Sie daran, die Formula in `""` zu setzen).
+
++ Erstellen Sie eine Liste mit folgenden Modellen:
+    +  Modell 1 `"az ~ S1",`
+    +  Modell 2 `"az ~ S1 + ausb",`
+    +  Modell 3 `"az ~ S1 + ausb + zpalter"`
+
++ Verwenden Sie `lapply()` und die erstellte Funktion, um die Modelle zu schätzen und in `modelsummary()` anzuzeigen
+
++ Erweitern Sie Ihre Funktion um ein zweites Argument `only_women`, welches über ein `TRUE` / `FALSE` steuert ob lediglich die Beobachtungen von weiblichen Befragten verwendet werden: `etb_ue12 %>% filter(S1 == "w")`. Legen Sie innerhalb der Funktion die entsprechenden Schritt mit einer `if`-Bedingung versehen.
 
 
 ### Übung 
