@@ -299,10 +299,11 @@ Lektüre: [Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuc
 ### Übung 1 {#ttestue}
 
 ```{r}
+#| eval: false
 etb18_ue7 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
                          n_max = 1000,
-                         col_select = c("S1","az","F518_SUF","m1202","F411_01")) %>% 
-  mutate(across(matches("m1202|F411_01"), ~ifelse(.x > 4,NA,.x))) # missings in m1202 mit NA überschreiben
+                         col_select = c("intnr","S1","az","F518_SUF","m1202","F411_01","gew2018")) %>% 
+  mutate(across(matches("m1202|F411_01"), ~ifelse(.x > 4|.x<0,NA,.x))) # missings in m1202 mit NA überschreiben
 ```
 
 Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (`az`) zwischen Männern und Frauen besteht (`S1`). Beide Variablen haben keine Missings - Sie können direkt los legen

@@ -1,50 +1,57 @@
+# ------------------- #
+# Kapitel 7: t-Test, Korrelation 
+# Lösung
+# ------------------- #
+library(tidyverse)
+etb18_ue7 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                             n_max = 1000,
+                             col_select = c("intnr","S1","az","F518_SUF","m1202","F411_01","gew2018")) %>% 
+  mutate(across(matches("m1202|F411_01"), ~ifelse(.x > 4|.x<0,NA,.x))) # missings in m1202 mit NA überschreiben
+
 
 # Übung 1 ---------
 # Unterschied in der Arbeitszeit (`az`) zwischen Männern und Frauen besteht (`S1`)
-t.test(etb18$az~etb18$S1)
+t.test(etb18_ue7$az~etb18_ue7$S1)
 
 
 # Berechnen Sie das Cohen's d für diesen Zusammenhang.
 library(effectsize)
-cohens_d(etb18$az~etb18$S1)
+cohens_d(etb18_ue7$az~etb18_ue7$S1)
 
 # Übung 2 ---------
 
 ## Korrelation az & F518_SUF ----
-etb18$F518_SUF[etb18$F518_SUF>99990] <- NA
+etb18_ue7$F518_SUF[etb18_ue7$F518_SUF>99990] <- NA
 
-cor.test(etb18$F518_SUF,etb18$az,method = "pearson", use = "pairwise.complete.obs")
+cor.test(etb18_ue7$F518_SUF,etb18_ue7$az,method = "pearson", use = "pairwise.complete.obs")
 
-## educ & F411_01 -----
-etb18_small <- 
-  etb18 %>% 
-  mutate(educ = case_when(S3 %in% 2:4 ~ 1,
-                          S3 %in% 5:6 ~ 2,
-                          S3 %in% 7:8 ~ 3),
-         F411_01 = ifelse(F411_01 > 4,NA,F411_01)) %>% 
-  slice(1:300)
+## Rangkorrelation starker Termin- oder Leistungsdruck F411_01 und der Ausbildungsvariable m1202 -------
+cor.test(etb18_ue7$m1202,etb18_ue7$F411_01,method = "spearman", use = "pairwise.complete.obs")
 
-## Kreuztabelle
-xtabs(~educ+F411_01,etb18_small)
-tab2 <- xtabs(~educ+F411_01,etb18_small)
-chisq.test(tab2)
 
-cor.test(etb18_small$educ,etb18_small$F411_01,method = "spearman", use = "pairwise.complete.obs")
-cor.test(etb18_small$educ,etb18_small$F411_01,method = "kendall", use = "pairwise.complete.obs")
+effectsize::cramers_v(etb18_ue7$m1202,etb18_ue7$F411_01)
 
-effectsize::cramers_v(etb18_small$educ,etb18_small$F411_01)
 
+## Bonus: Korrelation nach Geschlechtern
+library(correlation)
+etb18_ue7 %>%
+  group_by(S1) %>%
+  select(F518_SUF,F411_01,az) %>% 
+  correlation() 
 
 # Übung 3 ----------
 
 library(survey)
-etb18$F518_SUF[etb18$F518_SUF>99990] <- NA
+etb18_ue7$F518_SUF[etb18_ue7$F518_SUF>99990] <- NA
 
-etb18_weighted <- svydesign(id      = ~intnr,
+etb18_ue7_weighted <- svydesign(id      = ~intnr,
                             weights = ~gew2018,
-                            data    = etb18)
-svytable(~Mig+gkpol,etb18_weighted) # syntax wie xtabs()
-xtabs(~Mig+gkpol,etb18)
+                            data    = etb18_ue7)
 
-svymean(~F518_SUF, etb18_weighted, na.rm = TRUE)
-mean(etb18$F518_SUF, na.rm = TRUE)
+svymean(~F518_SUF, etb18_ue7_weighted, na.rm = TRUE)
+mean(etb18_ue7$F518_SUF, na.rm = TRUE) # zum Vergleich
+
+
+# Bonus: Kreuztabelle mit Gewichtung
+svytable(~m1202+F411_01,etb18_ue7_weighted) # syntax wie xtabs()
+xtabs(~m1202+F411_01,etb18_ue7) # zum Vergleich
