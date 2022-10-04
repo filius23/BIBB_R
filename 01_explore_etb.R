@@ -55,6 +55,8 @@ ndis %>% filter(ndis == 5) %>% print(n=Inf)
 
 etb %>% select(matches("F404_"))
 
+etb %>% count(F1605e,S1)
+
 etb %>% 
   count(Mig,gkpol) %>% 
   ggplot(.,aes(x= gkpol,y= n, fill = factor(Mig))) + 

@@ -66,12 +66,13 @@ library(officer)
 ```
 
 ```{r}
-data.frame(x1= c(2,2), y1 = c(0,1))
+df1 <- data.frame(x1= c(2,2), y1 = c(0,1))
+df1
 ```
 
 `{flextable}` stellt uns eine Reihe an Funktionen zur Formatierung zur Verfügung, um die Darstellung des `data.frame` zu anzupassen:
 ```{r}
-flextable(data.frame(x1= c(2,2), y1 = c(0,1)) ) %>% 
+flextable(df1) %>% 
   border_remove() %>% 
   hline_top(border = fp_border(color = "orange")) %>%
   hline(i=1,border = fp_border(color = "blue",style = "dotted")) %>% 

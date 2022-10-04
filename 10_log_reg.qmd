@@ -83,7 +83,7 @@ Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise
 In R können wir ein solches Modell mit `glm()` und der Option `family="binomial"` berechnen:[^log_fam]
 
 
-[^log_fam]: `family="binomial"` ist dabei entscheidend: `glm(outside ~ inc100, data = m_etb18)` oder `glm(outside ~ inc100, family = gaussian(), data = m_etb18)` ist gleichbedeutend mit `lm(outside ~ inc100, data = m_etb18)`
+[^log_fam]: `family="binomial"` ist dabei entscheidend: `glm(outside ~ inc100, data = m_etb18)` oder `glm(outside ~ inc100, family = gaussian(), data = m_etb18)` ist gleichbedeutend mit `lm(outside ~ inc100, data = m_etb18)`: es wird ein lineares OLS-Modell berechnet.
 ```{r}
 m2 <- glm(outside ~ inc100, family = "binomial", data = m_etb18)
 summary(m2)
@@ -153,13 +153,26 @@ feglm(outside ~ m1202_fct*zpalter |Bula, data = m_etb18, family = binomial)
 
 
 ## Übung {#ame1}
+```{r}
 
-+ Erstellen Sie ein logistisches Regressionsmodell mit 
+etb_ue10 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                            col_select = c("F1605e","m1202")) %>% 
+  filter(F1605e < 4, !is.na(F1605e), m1202 %in% 1:4) %>% 
+  mutate(fam_beruf = 2-F1605e,
+         m1202 = factor(m1202))
+```
 
 
++ Erstellen Sie ein logistisches Regressionsmodell mit `fam_beruf` basierend auf der Frage
+
+**`r attributes(etb_ue10$F1605e)$label`nbaren?**
+
+als abhängiger Variable (1 = ja, 0 = nein.) Verwenden Sie die Ausbildung `m1202` als unabhängige Variable.
+
+Berechnen Sie die AME mit `marginaleffects`.
 
 
-## Hintergrund zu log. Regression & average marginal effects
+## Anhang: Hintergrund zu log. Regression & average marginal effects
 
 Wenn wir uns fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die "Punktewolke" zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:
 

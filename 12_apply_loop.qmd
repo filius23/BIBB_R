@@ -1,0 +1,187 @@
+# Schleifen/Funktionen
+
+```{r apply01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(marginaleffects)
+```
+
+```{r}
+etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
+Schleifen im Sinne von `for()`-Loops werden in R selten verwendet. Stattdessen werden meist Funktionen mit Hilfe von `lapply()` über eine Reihe von Werten geschleift.
+
+## Modellserien mit `lapply()`
+
+Ein typisches Beispiel ist eine Modellserie.
+Wir möchten folgende Modelle schätzen:
+
++ Modell1 = `F518_SUF ~ az`
++ Modell2 = `F518_SUF ~ az + S1`
++ Modell3 = `F518_SUF ~ az + S1 + m1202`
++ Modell4 = `F518_SUF ~ az + S1 + m1202 + zpalter`
+
+## Modell funktion
+
+Wir definieren dann eine `function()`, in der wir angeben, dass das angegebene Argument die Formel für ein `lm()` sein soll - das Ergebnis dieses `lm()` `lassen wir uns dann ausgeben.
+
+```{r}
+mod_function <- function(modx){
+  mx <- lm(formula = modx,data = etbx)
+  return(mx)
+}
+```
+
+Wenn wir jetzt in `mod_function` eine Modellformel angeben, wird ein `lm()` berechnet:
+```{r}
+mod_function("F518_SUF ~ az")
+```
+
+## Modelle als `list` erstellen
+
+Im nächsten Schritt können wir jetzt eine Liste mit verschiedenen Modellvarianten erstellen:
+```{r}
+mlst2 <- list(
+  "Modell 1" = "F518_SUF ~ az",
+  "Modell 2"  = "F518_SUF ~ az + S1",
+  "Modell 3" = "F518_SUF ~ az + S1 + m1202",
+  "Modell 4" = "F518_SUF ~ az + S1 + m1202 + zpalter"
+)
+```
+
+Wir können die Elemente einer `list()` entweder mit `[[]]` oder (ggf.) über ihren Namen aufrufen. Hier haben wir vor dem `=` einen Namen angegeben:
+
+```{r}
+mlst2[[4]]
+mlst2$`Modell 4`
+```
+
+
+
+Mit `lapply` wenden wir unsere `mod_function` jetzt auf diese Liste von Modellen an:
+```{r}
+mods2 <- lapply(mlst2,mod_function)
+mods2$`Modell 1`
+mods2$`Modell 2`
+```
+
+Außerdem können wir uns alle Modelle auch direkt in `modelsummary` ausgeben lassen:
+```{r}
+modelsummary::modelsummary(mods2,stars = T,gof_omit = "IC|RM|Log")
+```
+
+  
+## if in function
+
+Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if`-Statements einbauen. 
+Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit `=` angeben.
+Hier erweitern wir unsere Modellfunktion um einen `tidy()`-Schritt - der aber mit Hilfe einer Option `tidy_mod` ausgeschaltet werden kann, indem er auf `FALSE` gesetzt wird.
+
+```{r}
+mod_function2 <- function(modx, tidy_mod = T){
+  mx <- lm(formula = modx,data = etbx)
+  if(tidy_mod == T) mx <- tidy(mx,conf.int = T)
+  return(mx)
+}
+
+mod_function2("F518_SUF ~ az")
+mod_function2("F518_SUF ~ az",tidy_mod = F)
+```
+
+
+## List zu `data.frame`
+
+Wenn die einzelbestandteile einer `list` bereits `data.frame`s sind, können wir mit `bind_rows()` diese zu einem `data.frame` zusammenfügen.
+Mit `.id=""` können wir eine Variable erstellen, welche die Listennamen enthält:
+```{r}
+mod_l2 <- lapply(mlst2,mod_function2)
+lapply(mod_l2,class)
+```
+
+
+```{r}
+#| eval: false
+bind_rows(mod_l2,.id="Mod_name")
+```
+
+
+```{r}
+#| echo: false
+bind_rows(mod_l2,.id="Mod_name") %>% 
+  rmarkdown::paged_table()
+```
+
+
+
+## adhoc function
+
+Wir müssen aber nicht notwendigerweise erst eine Funktion definieren, um sie dann anzuwenden.
+Wir können die Funktion auch im gleichen Zug wie `lapply()` definieren:
+
+```{r}
+mods3 <- lapply(mlst2,function(modx){
+  mx <- lm(formula = modx,data = etbx)
+  return(mx)
+})
+mods3$`Modell 1`
+```
+
+
+
+## Loop mit `for`
+
+
+```{r}
+for(i in 1:8){
+  print(i)
+}
+```
+
+Kleines Beispiel: Zeile für Zeile der ersten 8 Zeilen aus etbx ausgeben:
+```{r}
+#| eval: false
+for(i in 1:8){
+  etbx %>% slice(i) %>% print()
+}
+```
+
+
+## Übungen
+
+
+### Übung 
+
++ Erstellen Sie folgende Modelle und wenden Sie diese mit Hilfe von `lapply()` auf den 
+
+
+## Anhang: Schleifen mit `{purrr}`
+
+Im `{tidyverse}` stellt das Paket `{purrr}` `map()` zur Verfügung, das `function(x) { ... x}` auf  `~` und `.x` abkürzen lässt:
+
+```{r}
+mods <- map(mlst2,~lm(formula = .x,data = etbx))
+```
+
+Wer mehr über `purrr` und `map()` erfahren möchte, findet [hier](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1) eine hervorragende Einführung. 
+
+### loop über Variablen
+
+```{r}
+#| error: true
+for(v in c("ausb","S1","F1605e")){
+  etbx %>% count(v) %>% print()
+}
+```
+
+
+```{r}
+for(v in c("ausb","S1","F1605e")){
+  etbx %>% count(!!v) %>% print()
+}
+```
+
