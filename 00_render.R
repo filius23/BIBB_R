@@ -1,7 +1,7 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 
 
-knitr::purl(input = "07_inferenz.qmd",output= "./prog_prelim/07_inferenz.R",documentation = 0)
+knitr::purl(input = "14_tabellenexport.qmd",output= "./prog_prelim/14_tabellenexport.R",documentation = 0)
 
 
 library(tidyverse)

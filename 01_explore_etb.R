@@ -37,6 +37,9 @@ xtabs(~S3,etb)
 
 
 
+etb 
+
+
 
 
 # distinct values ----
@@ -52,6 +55,9 @@ ndis <-
 
 ndis %>% filter(ndis %in% 2:4) %>% print(n=Inf)
 ndis %>% filter(ndis == 5) %>% print(n=Inf)
+
+ndis %>% slice_max(ndis,n = 12)
+
 
 etb %>% select(matches("F404_"))
 
