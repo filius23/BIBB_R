@@ -107,7 +107,7 @@ Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensa
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
   geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
-  geom_text(data = dat1 %>% filter(var2 > 20), aes(y = var2+3, label = id), color = "sienna1")
+  geom_text(data = . %>% filter(var2 > 20), aes(y = var2+3, label = id), color = "sienna1")
 ```
 
 Wir können nämlich einzelne `geom_` auch nur für ein Subset angeben - dazu vergeben wir `data =` neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl `ggplot()`) und setzen darin einen `filter()`. Außerdem verschieben wir mit `var2+3` das Label etwas über den Punkt.
