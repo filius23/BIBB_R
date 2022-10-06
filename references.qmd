@@ -36,6 +36,10 @@ Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum se
 
 [Stata 2 R](https://stata2r.github.io/) richtet sich alle Anwender\*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des `{tidyverse}` das Paket `{data.table}` für die Datenaufbereitung gezeigt. `{data.table}` ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das `{tidyverse}`. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, `{data.table}` auszuprobieren.
 
+## Beispiele
+
+[Paper zu einem Beispieldatensatz, komplett in R Markdown geschrieben](https://allisonhorst.github.io/penguins_paper_distill/rjarticle/penguins.html)
+[Hier findet ihr den Source-Code](https://github.com/allisonhorst/penguins_paper_distill/blob/46342ebf450dfdb49741ae9f7059c6e3c266af70/rjarticle/penguins.Rmd)
 
 
 ## Cheatsheets
@@ -59,6 +63,10 @@ Eine große Stärke von `ggplot2` sind die zahlreichen Erweiterungen, welche bei
 Eine Übersicht zu Erweiterungspakteten für `{ggplot2}` findet sich [hier](https://exts.ggplot2.tidyverse.org/gallery/)
 
 Auch [The R Graph Gallery](https://r-graph-gallery.com/) bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für `{ggplot2}`.
+
++ [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/)
+
++ [Session zu intuitiveren Grafiken von Cara Thompson](https://www.youtube.com/watch?v=_indbXPXUw8)
 
 ## regex
 

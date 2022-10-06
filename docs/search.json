@@ -851,7 +851,7 @@
     "href": "references.html#ggplot2",
     "title": "Links & Weiterführendes",
     "section": "{ggplot2}",
-    "text": "{ggplot2}\nEine große Stärke von ggplot2 sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen\n\nmehrere Grafiken zu kombinieren mit {patchwork}\nKarten zu erstellen mit sf, weitere Link\nfortgeschrittene Textformatierungen zu verwenden mit {ggtext}\nGrafiken als Animation zu erstellen {gganimate} - eine Einführung oder hier\nLogos in in {ggplot2} einfügen mit {ggpath}\n\nEine Übersicht zu Erweiterungspakteten für {ggplot2} findet sich hier\nAuch The R Graph Gallery bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für {ggplot2}."
+    "text": "{ggplot2}\nEine große Stärke von ggplot2 sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen\n\nmehrere Grafiken zu kombinieren mit {patchwork}\nKarten zu erstellen mit sf, weitere Link\nfortgeschrittene Textformatierungen zu verwenden mit {ggtext}\nGrafiken als Animation zu erstellen {gganimate} - eine Einführung oder hier\nLogos in in {ggplot2} einfügen mit {ggpath}\n\nEine Übersicht zu Erweiterungspakteten für {ggplot2} findet sich hier\nAuch The R Graph Gallery bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für {ggplot2}.\n\nTutorial von Cédric Scherer\nSession zu intuitiveren Grafiken von Cara Thompson"
   },
   {
     "objectID": "references.html#regex",
@@ -880,5 +880,12 @@
     "title": "14  RMarkdown",
     "section": "14.8 Übung",
     "text": "14.8 Übung\n\nVerwenden Sie das 14_Markdown.Rmd-Datei als Vorlage\nPassen Sie den Verfasser:innen-Namen und Datum an\nPassen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss\nFügen Sie einen chunk mit einer Auszählung von ausb ein\nFügen Sie einen chunk mit einem summarise()-Befehl ein - bspw.: ::: {.cell layout-align=“center”}\n\netbx %>% \n  group_by(S1,ausb) %>% \n  summarise(min =  min(F518_SUF,na.rm = T),\n            mean = mean(F518_SUF,na.rm = T),\n            max =  max(F518_SUF,na.rm = T))\n:::\n\nSetzen Sie include, echo usw. nach Wunsch.\nFügen nach Geschmack auch {flextable}-Befehle ein (Denken Sie an library(flextable) zu laden)\nKnitten Sie das Dokument zu einer Word-Dokument."
+  },
+  {
+    "objectID": "references.html#beispiele",
+    "href": "references.html#beispiele",
+    "title": "Links & Weiterführendes",
+    "section": "Beispiele",
+    "text": "Beispiele\nPaper zu einem Beispieldatensatz, komplett in R Markdown geschrieben Hier findet ihr den Source-Code"
   }
 ]
