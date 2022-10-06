@@ -241,6 +241,10 @@ etbx %>%
             mean = mean(F518_SUF,na.rm = T),
             max =  max(F518_SUF,na.rm = T))
 ```
+
+
 + Setzen Sie `include`, `echo` usw. nach Wunsch.
+
 + Fügen nach Geschmack auch `{flextable}`-Befehle ein (Denken Sie an `library(flextable)` zu laden)
+
 + Knitten Sie das Dokument zu einer Word-Dokument.

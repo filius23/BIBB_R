@@ -2,6 +2,8 @@ project:
   type: book
   output-dir: docs
   output-file: docs
+  # output-dir: pdf_doc
+  # output-file: pdf_doc
   # 
 book:
   title: "R am BIBB"
