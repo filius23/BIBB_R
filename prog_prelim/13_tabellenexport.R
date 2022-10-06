@@ -1,6 +1,5 @@
 # ------------------- #
 # Kapitel 14: Tabellenexport
-# Lösung
 # ------------------- #
 library(tidyverse) # für die Datenvorbereitung
 library(modelsummary) # Tabellen vorbereiten
