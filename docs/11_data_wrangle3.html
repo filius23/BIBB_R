@@ -285,7 +285,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a href="http://r4ds.had.co.nz/relational-data.html#mutating-joins">R for Data Science: Mutating joins</a></p>
 </blockquote>
 <p>Ein Überblick zu den wichtigsten Befehlen:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="cell" data-layout-align="center" data-hash="11_data_wrangle3_cache/html/intial-dfs_e83c30db23bd94f39cf505e1cdf58b3e">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -295,19 +295,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <!-- <img src="pic/static/png/original-dfs.png" width="480px" /> -->
-<div class="cell" data-hash="11_data_wrangle3_cache/html/inner-join_53b9a4ccdc679717e0fcce94acb2e305">
+<div class="cell">
 
 </div>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/left-join_7fe87b963649a579963f606cf77ad3ee">
+<div class="cell">
 
 </div>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/left-join-extra_186db03a8b7fd0975901eb2f44d7e7a4">
+<div class="cell">
 
 </div>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/right-join_43098b44b9a502907e1e025164a20b49">
+<div class="cell">
 
 </div>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/full-join_e3f6e21e14ef78796e939e6b11b945d5">
+<div class="cell">
 
 </div>
 <div class="quarto-layout-panel">
@@ -325,7 +325,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Es gibt natürlich auch <a href="https://dplyr.tidyverse.org/reference/mutate-joins.html"><code>right_join()</code></a> oder <a href="https://dplyr.tidyverse.org/reference/filter-joins.html"><code>anti_join()</code></a>. Für eine tiefergehende Einführung lohnt sich das Kapitel <a href="https://r4ds.had.co.nz/relational-data.html#relational-data">Relational Data</a> aus <a href="https://r4ds.had.co.nz/">R for Data Science</a>.</p>
 <p>Eine sehr hilfreiche Option in den <code>..._join()</code> ist die Verbindung unterschiedlicher Variablen. Bspw. haben wir hier einige Fälle aus der ETB18 und</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/exmap_e6c64908ff272e50ed799a502303a26d">
+<div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>etb18_int_bl <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
@@ -340,7 +340,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                       )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/join_by_e911e63a9e43429190d2aa5c989e8e28">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>etb_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 4 × 2
@@ -353,37 +353,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>alo_bula</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt;    bundesland Werte
-#&gt; 1           1     e
-#&gt; 2           2     l
-#&gt; 3           3     k
-#&gt; 4           4     f
-#&gt; 5           5     g
-#&gt; 6           6     u
-#&gt; 7           7     r
-#&gt; 8           8     m
-#&gt; 9           9     z
-#&gt; 10         10     y
-#&gt; 11         11     w</code></pre>
+<pre><code>#&gt;   bundesland Werte
+#&gt; 1          1     g
+#&gt; 2          2     m
+#&gt; 3          3     n
+#&gt; 4          4     z
+#&gt; 5          5     w
+#&gt; 6          6     r
+#&gt; 7          7     t
+#&gt; 8          8     h</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>etb_ids <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_bula,<span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Bula"</span><span class="ot">=</span><span class="st">"bundesland"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 4 × 3
 #&gt;     intnr Bula                     Werte
 #&gt;     &lt;dbl&gt; &lt;dbl+lbl&gt;                &lt;chr&gt;
-#&gt; 1     260 11 [Berlin]              w    
-#&gt; 2   30699  5 [Nordrhein-Westfalen] g    
-#&gt; 3  209604  6 [Hessen]              u    
-#&gt; 4 1540064  8 [Baden-Württemberg]   m</code></pre>
+#&gt; 1     260 11 [Berlin]              &lt;NA&gt; 
+#&gt; 2   30699  5 [Nordrhein-Westfalen] w    
+#&gt; 3  209604  6 [Hessen]              r    
+#&gt; 4 1540064  8 [Baden-Württemberg]   h</code></pre>
 </div>
 </div>
 <p>Ein sehr hilfreiche Checkmöglichkeit, die ich häufig verwende: Für alle <code>Bula</code> in <code>etb_ids</code> findet sich eine Entsprechung in <code>alo$bundesland</code>:</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/tabx_in_902d8828ca87f43573398e1053fa7d0b">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(etb_ids<span class="sc">$</span>Bula <span class="sc">%in%</span> alo_bula<span class="sc">$</span>bundesland)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; 
-#&gt; TRUE 
-#&gt;    4</code></pre>
+#&gt; FALSE  TRUE 
+#&gt;     1     3</code></pre>
 </div>
 </div>
 <section id="übung" class="level3" data-number="11.1.1">
@@ -392,7 +389,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="reshape-pivot_longer-pivot_wider" class="level2" data-number="11.2">
 <h2 data-number="11.2" class="anchored" data-anchor-id="reshape-pivot_longer-pivot_wider"><span class="header-section-number">11.2</span> Reshape: <code>pivot_longer()</code> &amp; <code>pivot_wider()</code></h2>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/pvt1_7536dc5720471c705766fdaa0cd32fdf">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bsp_df <span class="ot">&lt;-</span> </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">bula    =</span> <span class="fu">c</span>(<span class="st">"NRW"</span>,<span class="st">"NDS"</span>),</span>
@@ -408,7 +405,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Mit <code>pivot_longer()</code> können wir aus einem wide shape <code>data.frame</code> einen long shape machen:</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/pvt2_abd2c912ffa3a508547ad380d4047fcc">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bsp_df <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"alo2018"</span>,<span class="st">"alo2017"</span>),<span class="at">names_to =</span> <span class="st">"year"</span>,<span class="at">values_to =</span> <span class="st">"alo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 4 × 3
@@ -421,7 +418,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Mit <code>names_prefix = "alo"</code> können wir das <code>alo</code> direkt löschen lassen:</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/pvt3_cf1bba4cf3d2e336124421f825d23d6a">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bsp_df <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"alo2018"</span>,<span class="st">"alo2017"</span>),<span class="at">names_to =</span> <span class="st">"year"</span>,<span class="at">values_to =</span> <span class="st">"alo"</span>,<span class="at">names_prefix =</span> <span class="st">"alo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 4 × 3
@@ -434,7 +431,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Mit <code>pivot_wider()</code> können wir den umgekehrten Weg gehen:</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/pvt4_6a50c6c42ae29a2d06e66e11631a9d6d">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bsp_df2 <span class="ot">&lt;-</span> </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">land =</span> <span class="fu">c</span>(<span class="st">"NRW"</span>,<span class="st">"NDS"</span>,<span class="st">"NRW"</span>,<span class="st">"NDS"</span>),</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">alo =</span> <span class="fu">c</span>(<span class="fl">2.1</span>,<span class="fl">1.8</span>,<span class="fl">2.4</span>,<span class="fl">2.2</span>),</span>
@@ -448,7 +445,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 #&gt; 4  NDS 2.2 age_2630</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/pvt5_222a69b6c0835c897c334ad44415b9a9">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bsp_df2 <span class="sc">%&gt;%</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> alter,<span class="at">values_from =</span> alo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2 × 3
@@ -464,7 +461,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="join_ue" class="level3" data-number="11.3.1">
 <h3 data-number="11.3.1" class="anchored" data-anchor-id="join_ue"><span class="header-section-number">11.3.1</span> Übung 1</h3>
 <p>Verknüpfen Sie die ausgewählten Beobachtungen der ETB 2018 mit <a href="https://www.regionalstatistik.de/genesis//online?operation=table&amp;code=AI008-1">Arbeitsmarktstatistiken</a> von Destatis. Lesen die ETB mit folgendem Befehl ein:</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/jnue_40ae32ce18db1e5d5de25563961cc5fb">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>etb_ue11 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"int_jahr"</span>,<span class="st">"Bula"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">34</span><span class="sc">:</span><span class="dv">35</span>,<span class="dv">68</span><span class="sc">:</span><span class="dv">69</span>,<span class="dv">62</span>,<span class="dv">687</span>,<span class="dv">625</span>,<span class="dv">684</span>,<span class="dv">599</span><span class="sc">:</span><span class="dv">600</span>)</span>
@@ -486,7 +483,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>So können Sie die aufbereiteten Arbeitslosendaten einlesen (die Zahlencodes in beiden Datensätzen stimmen überein):</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/jndat1_04cbc609c5e085e06c338c55dc9aeef6">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>alo <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"./data/alo_bula1.Rdata"</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>alo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -498,7 +495,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten?</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/jndat2_0ecf98b1ae0a4ba6a5fa86ed8430a333">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>alo_j <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"./data/alo_bula1_jahr.Rdata"</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>alo_j</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -514,7 +511,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="pivot_ue" class="level3" data-number="11.3.2">
 <h3 data-number="11.3.2" class="anchored" data-anchor-id="pivot_ue"><span class="header-section-number">11.3.2</span> Übung 2</h3>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/uepvit_0a62ee89941216b6f24ac8be356f4cfb">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>alo_wide <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"./data/alo_bula2.Rdata"</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>alo_wide</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -526,7 +523,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Bringen Sie <code>alo_wide</code> in das long shape:</p>
-<div class="cell" data-hash="11_data_wrangle3_cache/html/unnamed-chunk-1_fc9672840cb3220d0ef21a50d3bebf8e">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 4 × 4
 #&gt;   ags   name                jahr  alo_quote

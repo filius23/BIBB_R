@@ -4,6 +4,8 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 knitr::purl(input = "14_tabellenexport.qmd",output= "./prog_prelim/14_tabellenexport.R",documentation = 0)
 
 
+rstudioapi::navigateToFile("./prog_prelim/11_data_wrangle3.R")
+
 library(tidyverse)
 
 rmarkdown::render("demo.Rmd",output_format = "pdf_document")
