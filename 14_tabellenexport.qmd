@@ -100,7 +100,7 @@ etb18_kap14 %>%
   group_by(variable) %>% 
   summarise(min = min(value,na.rm = T),
             mean = mean(value,na.rm = T),
-            max = mean(value,na.rm = T))
+            max = max(value,na.rm = T))
 ```
 
 <!-- ```{r} -->

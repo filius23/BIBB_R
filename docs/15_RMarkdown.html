@@ -253,6 +253,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#chunk-optionen" id="toc-chunk-optionen" class="nav-link" data-scroll-target="#chunk-optionen"> <span class="header-section-number">14.5</span> Chunk-Optionen</a></li>
   <li><a href="#inline-chunks" id="toc-inline-chunks" class="nav-link" data-scroll-target="#inline-chunks"> <span class="header-section-number">14.6</span> Inline chunks</a></li>
   <li><a href="#output-yaml" id="toc-output-yaml" class="nav-link" data-scroll-target="#output-yaml"> <span class="header-section-number">14.7</span> Output &amp; <code>yaml</code></a></li>
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">14.8</span> Übung</a></li>
   </ul>
 </nav>
     </div>
@@ -476,6 +477,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
+</section>
+<section id="übung" class="level2" data-number="14.8">
+<h2 data-number="14.8" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.8</span> Übung</h2>
+<ul>
+<li>Verwenden Sie das <code>14_Markdown.Rmd</code>-Datei als Vorlage</li>
+<li>Passen Sie den Verfasser:innen-Namen und Datum an</li>
+<li>Passen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss</li>
+<li>Fügen Sie einen chunk mit einer Auszählung von <code>ausb</code> ein</li>
+<li>Fügen Sie einen chunk mit einem <code>summarise()</code>-Befehl ein - bspw.: ::: {.cell layout-align=“center”}</li>
+</ul>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>etbx <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(S1,ausb) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">min =</span>  <span class="fu">min</span>(F518_SUF,<span class="at">na.rm =</span> T),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(F518_SUF,<span class="at">na.rm =</span> T),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">max =</span>  <span class="fu">max</span>(F518_SUF,<span class="at">na.rm =</span> T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>::: + Setzen Sie <code>include</code>, <code>echo</code> usw. nach Wunsch. + Fügen nach Geschmack auch <code>{flextable}</code>-Befehle ein (Denken Sie an <code>library(flextable)</code> zu laden) + Knitten Sie das Dokument zu einer Word-Dokument.</p>
 
 
 </section>

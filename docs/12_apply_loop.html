@@ -252,16 +252,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#modellserien-mit-lapply" id="toc-modellserien-mit-lapply" class="nav-link active" data-scroll-target="#modellserien-mit-lapply"> <span class="header-section-number">12.1</span> Modellserien mit <code>lapply()</code></a></li>
-  <li><a href="#modell-funktion" id="toc-modell-funktion" class="nav-link" data-scroll-target="#modell-funktion"> <span class="header-section-number">12.2</span> Modell funktion</a></li>
+  <li><a href="#modell-function" id="toc-modell-function" class="nav-link" data-scroll-target="#modell-function"> <span class="header-section-number">12.2</span> Modell <code>function()</code></a></li>
   <li><a href="#modelle-als-list-erstellen" id="toc-modelle-als-list-erstellen" class="nav-link" data-scroll-target="#modelle-als-list-erstellen"> <span class="header-section-number">12.3</span> Modelle als <code>list</code> erstellen</a></li>
-  <li><a href="#if-in-function" id="toc-if-in-function" class="nav-link" data-scroll-target="#if-in-function"> <span class="header-section-number">12.4</span> if in function</a></li>
+  <li><a href="#if-in-function" id="toc-if-in-function" class="nav-link" data-scroll-target="#if-in-function"> <span class="header-section-number">12.4</span> if in <code>function()</code></a></li>
   <li><a href="#list-zu-data.frame" id="toc-list-zu-data.frame" class="nav-link" data-scroll-target="#list-zu-data.frame"> <span class="header-section-number">12.5</span> List zu <code>data.frame</code></a></li>
   <li><a href="#adhoc-function" id="toc-adhoc-function" class="nav-link" data-scroll-target="#adhoc-function"> <span class="header-section-number">12.6</span> adhoc function</a></li>
   <li><a href="#loop-mit-for" id="toc-loop-mit-for" class="nav-link" data-scroll-target="#loop-mit-for"> <span class="header-section-number">12.7</span> Loop mit <code>for</code></a></li>
-  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">12.8</span> Übungen</a>
-  <ul class="collapse">
-  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">12.8.1</span> Übung</a></li>
-  </ul></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">12.8</span> Übungen</a></li>
   <li><a href="#anhang-schleifen-mit-purrr" id="toc-anhang-schleifen-mit-purrr" class="nav-link" data-scroll-target="#anhang-schleifen-mit-purrr"> <span class="header-section-number">12.9</span> Anhang: Schleifen mit <code>{purrr}</code></a>
   <ul class="collapse">
   <li><a href="#loop-über-variablen" id="toc-loop-über-variablen" class="nav-link" data-scroll-target="#loop-über-variablen"> <span class="header-section-number">12.9.1</span> loop über Variablen</a></li>
@@ -306,8 +303,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Modell 4 = <code>F518_SUF ~ az + S1 + m1202 + zpalter</code></li>
 </ul>
 </section>
-<section id="modell-funktion" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="modell-funktion"><span class="header-section-number">12.2</span> Modell funktion</h2>
+<section id="modell-function" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="modell-function"><span class="header-section-number">12.2</span> Modell <code>function()</code></h2>
 <p>Wir definieren dann eine <code>function()</code>, in der wir angeben, dass das angegebene Argument die Formel für ein <code>lm()</code> sein soll - das Ergebnis dieses <code>lm()</code> `lassen wir uns dann ausgeben.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mod_function <span class="ot">&lt;-</span> <span class="cf">function</span>(modx){</span>
@@ -333,7 +330,7 @@ Coefficients:
 <h2 data-number="12.3" class="anchored" data-anchor-id="modelle-als-list-erstellen"><span class="header-section-number">12.3</span> Modelle als <code>list</code> erstellen</h2>
 <p>Im nächsten Schritt können wir jetzt eine Liste mit verschiedenen Modellvarianten erstellen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mlst2 <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mlst <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Modell 1"</span> <span class="ot">=</span> <span class="st">"F518_SUF ~ az"</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Modell 2"</span>  <span class="ot">=</span> <span class="st">"F518_SUF ~ az + S1"</span>,</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Modell 3"</span> <span class="ot">=</span> <span class="st">"F518_SUF ~ az + S1 + m1202"</span>,</span>
@@ -342,19 +339,19 @@ Coefficients:
 </div>
 <p>Wir können die Elemente einer <code>list()</code> entweder mit <code>[[]]</code> oder (ggf.) über ihren Namen aufrufen. Hier haben wir vor dem <code>=</code> einen Namen angegeben:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mlst2[[<span class="dv">4</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mlst[[<span class="dv">4</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "F518_SUF ~ az + S1 + m1202 + zpalter"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mlst2<span class="sc">$</span><span class="st">`</span><span class="at">Modell 4</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mlst<span class="sc">$</span><span class="st">`</span><span class="at">Modell 4</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "F518_SUF ~ az + S1 + m1202 + zpalter"</code></pre>
 </div>
 </div>
 <p>Mit <code>lapply</code> wenden wir unsere <code>mod_function</code> jetzt auf diese Liste von Modellen an:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mods2 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mlst2,mod_function)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mods2<span class="sc">$</span><span class="st">`</span><span class="at">Modell 1</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mlst,mod_function)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mods<span class="sc">$</span><span class="st">`</span><span class="at">Modell 1</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -364,7 +361,7 @@ Coefficients:
 (Intercept)           az  
      -371.3        102.1  </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mods2<span class="sc">$</span><span class="st">`</span><span class="at">Modell 2</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mods<span class="sc">$</span><span class="st">`</span><span class="at">Modell 2</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -377,7 +374,7 @@ Coefficients:
 </div>
 <p>Außerdem können wir uns alle Modelle auch direkt in <code>modelsummary</code> ausgeben lassen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(mods2,<span class="at">stars =</span> T,<span class="at">gof_omit =</span> <span class="st">"IC|RM|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(mods,<span class="at">stars =</span> T,<span class="at">gof_omit =</span> <span class="st">"IC|RM|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
@@ -498,16 +495,50 @@ Coefficients:
 </div>
 </section>
 <section id="if-in-function" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="if-in-function"><span class="header-section-number">12.4</span> if in function</h2>
-<p>Wir können unsere <code>function()</code> auch weitere Argumente aufnehmen und auch <code>if</code>-Statements einbauen. Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit <code>=</code> angeben. Hier erweitern wir unsere Modellfunktion um einen <code>tidy()</code>-Schritt - der aber mit Hilfe einer Option <code>tidy_mod</code> ausgeschaltet werden kann, indem er auf <code>FALSE</code> gesetzt wird.</p>
+<h2 data-number="12.4" class="anchored" data-anchor-id="if-in-function"><span class="header-section-number">12.4</span> if in <code>function()</code></h2>
+<p>Wir können unsere <code>function()</code> auch weitere Argumente aufnehmen und auch <code>if</code> und <code>else</code>-Statements einbauen. Hier ein Beispiel: wenn wir das zweite Argument <code>add_age</code> auf <code>TRUE</code> setzen, wird der <code>add_controls</code> hinzugefügt:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mod_function2 <span class="ot">&lt;-</span> <span class="cf">function</span>(modx, <span class="at">tidy_mod =</span> T){</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  mx <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> modx,<span class="at">data =</span> etbx)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(tidy_mod <span class="sc">==</span> T) mx <span class="ot">&lt;-</span> <span class="fu">tidy</span>(mx,<span class="at">conf.int =</span> T)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mx)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_function2</span>(<span class="st">"F518_SUF ~ az"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>add_controls <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"+ zpalter + I(zpalter^2)"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>mod_function2 <span class="ot">&lt;-</span> <span class="cf">function</span>(modx, add_age){</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(add_age <span class="sc">==</span> T) {</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        mx <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> <span class="fu">paste0</span>(modx,add_controls),<span class="at">data =</span> etbx)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        mx <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> <span class="fu">paste0</span>(modx),<span class="at">data =</span> etbx)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mx)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_function2</span>(<span class="st">"F518_SUF ~ az"</span>,<span class="at">add_age=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = paste0(modx), data = etbx)
+
+Coefficients:
+(Intercept)           az  
+     -371.3        102.1  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_function2</span>(<span class="st">"F518_SUF ~ az"</span>,<span class="at">add_age=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = paste0(modx, add_controls), data = etbx)
+
+Coefficients:
+ (Intercept)            az       zpalter  I(zpalter^2)  
+  -2498.4123      102.5538       66.6746       -0.4356  </code></pre>
+</div>
+</div>
+<p>Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit <code>=</code> angeben. Hier erweitern wir unsere Modellfunktion um einen <code>tidy()</code>-Schritt - der aber mit Hilfe einer Option <code>tidy_mod</code> ausgeschaltet werden kann, indem er auf <code>FALSE</code> gesetzt wird.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mod_function3 <span class="ot">&lt;-</span> <span class="cf">function</span>(modx, <span class="at">tidy_mod =</span> T){</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  mx <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> modx,<span class="at">data =</span> etbx)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(tidy_mod <span class="sc">==</span> T) mx <span class="ot">&lt;-</span> <span class="fu">tidy</span>(mx,<span class="at">conf.int =</span> T)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mx)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_function3</span>(<span class="st">"F518_SUF ~ az"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   term        estimate std.error statistic   p.value conf.low conf.high
@@ -515,7 +546,7 @@ Coefficients:
 1 (Intercept)    -371.     89.3      -4.16 0.0000323   -546.      -196.
 2 az              102.      2.23     45.7  0             97.7      106.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_function2</span>(<span class="st">"F518_SUF ~ az"</span>,<span class="at">tidy_mod =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_function3</span>(<span class="st">"F518_SUF ~ az"</span>,<span class="at">tidy_mod =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -531,8 +562,8 @@ Coefficients:
 <h2 data-number="12.5" class="anchored" data-anchor-id="list-zu-data.frame"><span class="header-section-number">12.5</span> List zu <code>data.frame</code></h2>
 <p>Wenn die einzelbestandteile einer <code>list</code> bereits <code>data.frame</code>s sind, können wir mit <code>bind_rows()</code> diese zu einem <code>data.frame</code> zusammenfügen. Mit <code>.id=""</code> können wir eine Variable erstellen, welche die Listennamen enthält:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mod_l2 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mlst2,mod_function2)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(mod_l2,class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mod_l3 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mlst,mod_function3)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(mod_l3,class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`Modell 1`
 [1] "tbl_df"     "tbl"        "data.frame"
@@ -548,7 +579,7 @@ $`Modell 4`
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(mod_l2,<span class="at">.id=</span><span class="st">"Mod_name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(mod_l3,<span class="at">.id=</span><span class="st">"Mod_name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -560,16 +591,19 @@ $`Modell 4`
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(mlst,mod_function3) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>(<span class="at">.id=</span><span class="st">"Mod_name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="adhoc-function" class="level2" data-number="12.6">
 <h2 data-number="12.6" class="anchored" data-anchor-id="adhoc-function"><span class="header-section-number">12.6</span> adhoc function</h2>
 <p>Wir müssen aber nicht notwendigerweise erst eine Funktion definieren, um sie dann anzuwenden. Wir können die Funktion auch im gleichen Zug wie <code>lapply()</code> definieren:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mods3 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mlst2,<span class="cf">function</span>(modx){</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  mx <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> modx,<span class="at">data =</span> etbx)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mx)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>mods3<span class="sc">$</span><span class="st">`</span><span class="at">Modell 1</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mods3 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mlst,<span class="cf">function</span>(modx){</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  mx <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> modx,<span class="at">data =</span> etbx)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mx)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>mods3<span class="sc">$</span><span class="st">`</span><span class="at">Modell 1</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -584,9 +618,9 @@ Coefficients:
 <section id="loop-mit-for" class="level2" data-number="12.7">
 <h2 data-number="12.7" class="anchored" data-anchor-id="loop-mit-for"><span class="header-section-number">12.7</span> Loop mit <code>for</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>){</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>){</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1
 [1] 2
@@ -600,20 +634,20 @@ Coefficients:
 </div>
 <p>Kleines Beispiel: Zeile für Zeile der ersten 8 Zeilen aus etbx ausgeben:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>){</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  etbx <span class="sc">%&gt;%</span> <span class="fu">slice</span>(i) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>){</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  etbx <span class="sc">%&gt;%</span> <span class="fu">slice</span>(i) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="übungen" class="level2" data-number="12.8">
 <h2 data-number="12.8" class="anchored" data-anchor-id="übungen"><span class="header-section-number">12.8</span> Übungen</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>etb_ue12 <span class="ot">&lt;-</span> </span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"S1"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"az"</span>,<span class="st">"zpalter"</span>,<span class="st">"F1605e"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, m1202 <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, zpalter <span class="sc">&lt;</span> <span class="dv">9999</span> ) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ausb =</span> <span class="fu">factor</span>(m1202, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"ohne"</span>,<span class="st">"dual/schul."</span>,<span class="st">"Aufst."</span>,<span class="st">"FH/Uni"</span>)),</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">S1 =</span> <span class="fu">factor</span>(S1,<span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="at">labels =</span><span class="fu">c</span>(<span class="st">"m"</span>,<span class="st">"w"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>etb_ue12 <span class="ot">&lt;-</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"S1"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"az"</span>,<span class="st">"zpalter"</span>,<span class="st">"F1605e"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, m1202 <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, zpalter <span class="sc">&lt;</span> <span class="dv">9999</span> ) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ausb =</span> <span class="fu">factor</span>(m1202, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"ohne"</span>,<span class="st">"dual/schul."</span>,<span class="st">"Aufst."</span>,<span class="st">"FH/Uni"</span>)),</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">S1 =</span> <span class="fu">factor</span>(S1,<span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="at">labels =</span><span class="fu">c</span>(<span class="st">"m"</span>,<span class="st">"w"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><p>Erstellen Sie eine Funktion, welche den <code>data.frame</code> <code>etb_ue12</code> für ein <code>lm()</code> verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel: <code>az ~ S1 + ausb + zpalter</code> (Denken Sie daran, die Formula in <code>""</code> zu setzen).</p></li>
@@ -626,26 +660,45 @@ Coefficients:
 <li><p>Verwenden Sie <code>lapply()</code> und die erstellte Funktion, um die Modelle zu schätzen und in <code>modelsummary()</code> anzuzeigen</p></li>
 <li><p>Erweitern Sie Ihre Funktion um ein zweites Argument <code>only_women</code>, welches über ein <code>TRUE</code> / <code>FALSE</code> steuert ob lediglich die Beobachtungen von weiblichen Befragten verwendet werden: <code>etb_ue12 %&gt;% filter(S1 == "w")</code>. Legen Sie innerhalb der Funktion die entsprechenden Schritt mit einer <code>if</code>-Bedingung versehen.</p></li>
 </ul>
-<section id="übung" class="level3" data-number="12.8.1">
-<h3 data-number="12.8.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">12.8.1</span> Übung</h3>
-<ul>
-<li>Erstellen Sie folgende Modelle und wenden Sie diese mit Hilfe von <code>lapply()</code> auf den</li>
-</ul>
-</section>
+<!-- ### Übung  -->
+<!-- + Erstellen Sie folgende Modelle und wenden Sie diese mit Hilfe von `lapply()` auf den  -->
 </section>
 <section id="anhang-schleifen-mit-purrr" class="level2" data-number="12.9">
 <h2 data-number="12.9" class="anchored" data-anchor-id="anhang-schleifen-mit-purrr"><span class="header-section-number">12.9</span> Anhang: Schleifen mit <code>{purrr}</code></h2>
 <p>Im <code>{tidyverse}</code> stellt das Paket <code>{purrr}</code> <code>map()</code> zur Verfügung, das <code>function(x) { ... x}</code> auf <code>~</code> und <code>.x</code> abkürzen lässt:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">map</span>(mlst2,<span class="sc">~</span><span class="fu">lm</span>(<span class="at">formula =</span> .x,<span class="at">data =</span> etbx))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">map</span>(mlst,<span class="sc">~</span><span class="fu">lm</span>(<span class="at">formula =</span> .x,<span class="at">data =</span> etbx))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Sehr hilfreich ist <code>map_dfr</code>: hier wir aus dem Ergebnis der Schleife ein <code>data.frame</code>” mit <code>row_bind()</code> erstellt. Mit <code>.id =</code> können wir eine Spalte erstellen, welche die Namen der Liste enthält (Hier die Modellnamen):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dfr</span>(mlst,<span class="sc">~</span><span class="fu">lm</span>(<span class="at">formula =</span> .x,<span class="at">data =</span> etbx) <span class="sc">%&gt;%</span> <span class="fu">tidy</span>(.),<span class="at">.id =</span> <span class="st">"mod"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 6
+   mod      term        estimate std.error statistic   p.value
+   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Modell 1 (Intercept)   -371.      89.3      -4.16 3.23e-  5
+ 2 Modell 1 az             102.       2.23     45.7  0        
+ 3 Modell 2 (Intercept)    360.     107.        3.37 7.54e-  4
+ 4 Modell 2 az              91.7      2.38     38.6  2.08e-312
+ 5 Modell 2 S1w           -684.      55.2     -12.4  4.41e- 35
+ 6 Modell 3 (Intercept)  -1526.     119.      -12.8  1.44e- 37
+ 7 Modell 3 az              82.7      2.32     35.6  4.57e-268
+ 8 Modell 3 S1w           -725.      53.5     -13.5  1.47e- 41
+ 9 Modell 3 m1202          798.      24.7      32.3  1.79e-221
+10 Modell 4 (Intercept)  -2610.     154.      -17.0  3.57e- 64
+11 Modell 4 az              83.2      2.31     36.0  1.33e-272
+12 Modell 4 S1w           -755.      53.4     -14.1  4.06e- 45
+13 Modell 4 m1202          778.      24.7      31.5  1.28e-211
+14 Modell 4 zpalter         24.3      2.19     11.1  2.21e- 28</code></pre>
+</div>
 </div>
 <p>Wer mehr über <code>purrr</code> und <code>map()</code> erfahren möchte, findet <a href="https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1">hier</a> eine hervorragende Einführung.</p>
 <section id="loop-über-variablen" class="level3" data-number="12.9.1">
 <h3 data-number="12.9.1" class="anchored" data-anchor-id="loop-über-variablen"><span class="header-section-number">12.9.1</span> loop über Variablen</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"ausb"</span>,<span class="st">"S1"</span>,<span class="st">"F1605e"</span>)){</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  etbx <span class="sc">%&gt;%</span> <span class="fu">count</span>(v) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"ausb"</span>,<span class="st">"S1"</span>,<span class="st">"F1605e"</span>)){</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  etbx <span class="sc">%&gt;%</span> <span class="fu">count</span>(v) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `group_by()`:
 ! Must group by variables found in `.data`.
@@ -653,9 +706,9 @@ Coefficients:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"ausb"</span>,<span class="st">"S1"</span>,<span class="st">"F1605e"</span>)){</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  etbx <span class="sc">%&gt;%</span> <span class="fu">count</span>(<span class="sc">!!</span>v) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"ausb"</span>,<span class="st">"S1"</span>,<span class="st">"F1605e"</span>)){</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  etbx <span class="sc">%&gt;%</span> <span class="fu">count</span>(<span class="sc">!!</span>v) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   `"ausb"`     n

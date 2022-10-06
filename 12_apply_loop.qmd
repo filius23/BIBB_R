@@ -26,7 +26,7 @@ Wir möchten folgende Modelle schätzen:
 + Modell 3 = `F518_SUF ~ az + S1 + m1202`
 + Modell 4 = `F518_SUF ~ az + S1 + m1202 + zpalter`
 
-## Modell funktion
+## Modell `function()`
 
 Wir definieren dann eine `function()`, in der wir angeben, dass das angegebene Argument die Formel für ein `lm()` sein soll - das Ergebnis dieses `lm()` `lassen wir uns dann ausgeben.
 
@@ -46,7 +46,7 @@ mod_function("F518_SUF ~ az")
 
 Im nächsten Schritt können wir jetzt eine Liste mit verschiedenen Modellvarianten erstellen:
 ```{r}
-mlst2 <- list(
+mlst <- list(
   "Modell 1" = "F518_SUF ~ az",
   "Modell 2"  = "F518_SUF ~ az + S1",
   "Modell 3" = "F518_SUF ~ az + S1 + m1202",
@@ -57,41 +57,60 @@ mlst2 <- list(
 Wir können die Elemente einer `list()` entweder mit `[[]]` oder (ggf.) über ihren Namen aufrufen. Hier haben wir vor dem `=` einen Namen angegeben:
 
 ```{r}
-mlst2[[4]]
-mlst2$`Modell 4`
+mlst[[4]]
+mlst$`Modell 4`
 ```
 
 
 
 Mit `lapply` wenden wir unsere `mod_function` jetzt auf diese Liste von Modellen an:
 ```{r}
-mods2 <- lapply(mlst2,mod_function)
-mods2$`Modell 1`
-mods2$`Modell 2`
+mods <- lapply(mlst,mod_function)
+mods$`Modell 1`
+mods$`Modell 2`
 ```
 
 Außerdem können wir uns alle Modelle auch direkt in `modelsummary` ausgeben lassen:
 ```{r}
-modelsummary::modelsummary(mods2,stars = T,gof_omit = "IC|RM|Log")
+modelsummary::modelsummary(mods,stars = T,gof_omit = "IC|RM|Log")
 ```
 
   
-## if in function
+## if in `function()`
 
-Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if`-Statements einbauen. 
+Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if` und `else`-Statements einbauen. 
+Hier ein Beispiel: wenn wir das zweite Argument `add_age` auf `TRUE` setzen, wird der `add_controls` hinzugefügt:
+```{r ifelse1}
+add_controls <- c("+ zpalter + I(zpalter^2)")
+
+mod_function2 <- function(modx, add_age){
+  if(add_age == T) {
+        mx <- lm(formula = paste0(modx,add_controls),data = etbx)
+  } else {
+        mx <- lm(formula = paste0(modx),data = etbx)
+  }
+  return(mx)
+}
+
+mod_function2("F518_SUF ~ az",add_age=F)
+mod_function2("F518_SUF ~ az",add_age=T)
+```
+
+
 Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit `=` angeben.
 Hier erweitern wir unsere Modellfunktion um einen `tidy()`-Schritt - der aber mit Hilfe einer Option `tidy_mod` ausgeschaltet werden kann, indem er auf `FALSE` gesetzt wird.
 
-```{r}
-mod_function2 <- function(modx, tidy_mod = T){
+```{r ifelse_default}
+mod_function3 <- function(modx, tidy_mod = T){
   mx <- lm(formula = modx,data = etbx)
   if(tidy_mod == T) mx <- tidy(mx,conf.int = T)
   return(mx)
 }
 
-mod_function2("F518_SUF ~ az")
-mod_function2("F518_SUF ~ az",tidy_mod = F)
+mod_function3("F518_SUF ~ az")
+mod_function3("F518_SUF ~ az",tidy_mod = F)
 ```
+
 
 
 ## List zu `data.frame`
@@ -99,23 +118,27 @@ mod_function2("F518_SUF ~ az",tidy_mod = F)
 Wenn die einzelbestandteile einer `list` bereits `data.frame`s sind, können wir mit `bind_rows()` diese zu einem `data.frame` zusammenfügen.
 Mit `.id=""` können wir eine Variable erstellen, welche die Listennamen enthält:
 ```{r}
-mod_l2 <- lapply(mlst2,mod_function2)
-lapply(mod_l2,class)
+mod_l3 <- lapply(mlst,mod_function3)
+lapply(mod_l3,class)
 ```
 
 
 ```{r}
 #| eval: false
-bind_rows(mod_l2,.id="Mod_name")
+bind_rows(mod_l3,.id="Mod_name")
 ```
 
 
 ```{r}
 #| echo: false
-bind_rows(mod_l2,.id="Mod_name") %>% 
+bind_rows(mod_l3,.id="Mod_name") %>% 
   rmarkdown::paged_table()
 ```
 
+```{r}
+#| eval: false
+lapply(mlst,mod_function3) %>% bind_rows(.id="Mod_name")
+```
 
 
 ## adhoc function
@@ -124,7 +147,7 @@ Wir müssen aber nicht notwendigerweise erst eine Funktion definieren, um sie da
 Wir können die Funktion auch im gleichen Zug wie `lapply()` definieren:
 
 ```{r}
-mods3 <- lapply(mlst2,function(modx){
+mods3 <- lapply(mlst,function(modx){
   mx <- lm(formula = modx,data = etbx)
   return(mx)
 })
@@ -174,9 +197,9 @@ etb_ue12 <-
 + Erweitern Sie Ihre Funktion um ein zweites Argument `only_women`, welches über ein `TRUE` / `FALSE` steuert ob lediglich die Beobachtungen von weiblichen Befragten verwendet werden: `etb_ue12 %>% filter(S1 == "w")`. Legen Sie innerhalb der Funktion die entsprechenden Schritt mit einer `if`-Bedingung versehen.
 
 
-### Übung 
+<!-- ### Übung  -->
 
-+ Erstellen Sie folgende Modelle und wenden Sie diese mit Hilfe von `lapply()` auf den 
+<!-- + Erstellen Sie folgende Modelle und wenden Sie diese mit Hilfe von `lapply()` auf den  -->
 
 
 ## Anhang: Schleifen mit `{purrr}`
@@ -184,10 +207,17 @@ etb_ue12 <-
 Im `{tidyverse}` stellt das Paket `{purrr}` `map()` zur Verfügung, das `function(x) { ... x}` auf  `~` und `.x` abkürzen lässt:
 
 ```{r}
-mods <- map(mlst2,~lm(formula = .x,data = etbx))
+mods <- map(mlst,~lm(formula = .x,data = etbx))
+```
+
+Sehr hilfreich ist `map_dfr`: hier wir aus dem Ergebnis der Schleife ein `data.frame`" mit `row_bind()` erstellt.
+Mit `.id =`  können wir eine Spalte erstellen, welche die Namen der Liste enthält (Hier die Modellnamen):
+```{r}
+map_dfr(mlst,~lm(formula = .x,data = etbx) %>% tidy(.),.id = "mod")
 ```
 
 Wer mehr über `purrr` und `map()` erfahren möchte, findet [hier](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1) eine hervorragende Einführung. 
+
 
 ### loop über Variablen
 

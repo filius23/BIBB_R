@@ -225,3 +225,22 @@ Alternativ lassen sich auch mit den Zahnrad oben neben dem Knit-Button Einstellu
 knitr::include_graphics("./pic/115_output-opts.png", error = FALSE)
 ```
 
+
+## Übung
+
++ Verwenden Sie das `14_Markdown.Rmd`-Datei als Vorlage
++ Passen Sie den Verfasser:innen-Namen und Datum an
++ Passen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss
++ Fügen Sie einen chunk mit einer Auszählung von `ausb` ein
++ Fügen Sie einen chunk mit einem `summarise()`-Befehl ein - bspw.:
+```{r}
+#| eval: false
+etbx %>% 
+  group_by(S1,ausb) %>% 
+  summarise(min =  min(F518_SUF,na.rm = T),
+            mean = mean(F518_SUF,na.rm = T),
+            max =  max(F518_SUF,na.rm = T))
+```
++ Setzen Sie `include`, `echo` usw. nach Wunsch.
++ Fügen nach Geschmack auch `{flextable}`-Befehle ein (Denken Sie an `library(flextable)` zu laden)
++ Knitten Sie das Dokument zu einer Word-Dokument.
