@@ -20,6 +20,12 @@ Letztlich spricht aber nichts dagegen, nach einem Update auf `|>` umzusteigen - 
 Unter anderem steht [hier mehr zu den Unterschieden](https://r4ds.hadley.nz/workflow-pipes.html#vs) zwischen beiden Pipes.
 
 
+## Quarto
+
+[Quarto](https://quarto.org/) ist eine Erweiterung/Weiterentwicklung von RMarkdown. 
+Allerdings erfordert Quarto eine separate Installation, [mehr Infos](https://quarto.org/docs/get-started/).
+
+
 
 ## Einführungen in R
 
@@ -80,6 +86,8 @@ Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw
 [`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem `easystats`-Universum unter anderem [{performance}](https://easystats.github.io/performance/)  und [{effectsize}](https://easystats.github.io/effectsize/index.html) kennengelernt.
 
 [Ereigniszeitmodelle / Event History Modellung / Survival Analysis](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)
+
+
 
 
 ::: {#refs}

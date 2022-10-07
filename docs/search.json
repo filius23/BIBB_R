@@ -665,11 +665,11 @@
     "text": "12.1 Modellserien mit lapply()\nEin typisches Beispiel ist eine Modellserie. Wir möchten folgende Modelle schätzen:\n\nModell 1 = F518_SUF ~ az\nModell 2 = F518_SUF ~ az + S1\nModell 3 = F518_SUF ~ az + S1 + m1202\nModell 4 = F518_SUF ~ az + S1 + m1202 + zpalter"
   },
   {
-    "objectID": "12_apply_loop.html#modell-funktion",
-    "href": "12_apply_loop.html#modell-funktion",
+    "objectID": "12_apply_loop.html#modell-function",
+    "href": "12_apply_loop.html#modell-function",
     "title": "12  Schleifen/Funktionen",
-    "section": "12.2 Modell funktion",
-    "text": "12.2 Modell funktion\nWir definieren dann eine function(), in der wir angeben, dass das angegebene Argument die Formel für ein lm() sein soll - das Ergebnis dieses lm() `lassen wir uns dann ausgeben.\n\nmod_function <- function(modx){\n  mx <- lm(formula = modx,data = etbx)\n  return(mx)\n}\n\nWenn wir jetzt in mod_function eine Modellformel angeben, wird ein lm() berechnet:\n\nmod_function(\"F518_SUF ~ az\")\n\n\nCall:\nlm(formula = modx, data = etbx)\n\nCoefficients:\n(Intercept)           az  \n     -371.3        102.1"
+    "section": "12.2 Modell function()",
+    "text": "12.2 Modell function()\nWir definieren dann eine function(), in der wir angeben, dass das angegebene Argument die Formel für ein lm() sein soll - das Ergebnis dieses lm() `lassen wir uns dann ausgeben.\n\nmod_function <- function(modx){\n  mx <- lm(formula = modx,data = etbx)\n  return(mx)\n}\n\nWenn wir jetzt in mod_function eine Modellformel angeben, wird ein lm() berechnet:\n\nmod_function(\"F518_SUF ~ az\")\n\n\nCall:\nlm(formula = modx, data = etbx)\n\nCoefficients:\n(Intercept)           az  \n     -371.3        102.1"
   },
   {
     "objectID": "12_apply_loop.html#modelle-als-list-erstellen",
@@ -826,6 +826,13 @@
     "text": "14.7 Output & yaml\nAls yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen, insbesondere das Zieldateiformat.\nDas erste unter output aufgeführte Dateiformat ist der, der erzeugt wird, wenn wir auf die Schaltfläche “knit” klicken oder das Tastaturkürzel (⌘⇧K” unter macOS; ” STRG + Umschalt + K” unter Windows) drücken.\nDie Einrückung im YAML-Abschnitts ist von Bedeutung, insbesondere dann, wenn unter den einzelnen Ausgabetypen verschachtelte Einstellungen vorhanden sind. So könnte ein typischer Output-Abschnitt aussehen, unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:\n---\ntitle: \"Mein Worddokument\"\nauthor: \"My name\"\ndate: \"13. August 2022\"\noutput: \n  word_document: \n    reference_docx: \"Vorlage.docx\"\n    toc: yes\n    fig_caption: yes\n    fig_height: 4\n    fig_width: 5\n---\nAuch für die anderen Output-Formate gibt es einen YAML-Befehl:\ntitle: \"My document\"\noutput:\n  html_document: default\n  pdf_document: default\n  word_document: default\nEine Übersicht findet zu verschiedenen Optionen findet sich bspw. hier oder hier für Word, HTML, PDF oder Powerpoint\nAlternativ lassen sich auch mit den Zahnrad oben neben dem Knit-Button Einstellungen für den YAML-Header festlegen:"
   },
   {
+    "objectID": "15_RMarkdown.html#übung",
+    "href": "15_RMarkdown.html#übung",
+    "title": "14  RMarkdown",
+    "section": "14.8 Übung",
+    "text": "14.8 Übung\n\nVerwenden Sie das 14_Markdown.Rmd-Datei als Vorlage\nPassen Sie den Verfasser:innen-Namen und Datum an\nPassen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss\nFügen Sie einen chunk mit einer Auszählung von ausb ein\nFügen Sie einen chunk mit einem summarise()-Befehl ein - bspw.: ::: {.cell layout-align=“center”}\n\netbx %>% \n  group_by(S1,ausb) %>% \n  summarise(min =  min(F518_SUF,na.rm = T),\n            mean = mean(F518_SUF,na.rm = T),\n            max =  max(F518_SUF,na.rm = T))\n:::\n\nSetzen Sie include, echo usw. nach Wunsch.\nFügen nach Geschmack auch {flextable}-Befehle ein (Denken Sie an library(flextable) zu laden)\nKnitten Sie das Dokument zu einer Word-Dokument."
+  },
+  {
     "objectID": "references.html",
     "href": "references.html",
     "title": "Links & Weiterführendes",
@@ -833,11 +840,25 @@
     "text": "In diesem Kurs haben wir die Pipe %>% aus {tidyverse} (streng genommen aus dem Paket {magrittr}) kennen gelernt. Mit dem Update auf R 4.1 wurde in base R ebenfalls eine Pipe |> eingeführt und Hilfeseiten usw. ersetzen langsam, aber sicher %>% durch |>. Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am BIBB R die R-Version 4.0.5 zur Verfügung steht, haben wir uns an ‘alte Variante’ gehalten. Letztlich spricht aber nichts dagegen, nach einem Update auf |> umzusteigen - oder einfach bei %>% zu bleiben.\n\nUnter anderem steht hier mehr zu den Unterschieden zwischen beiden Pipes."
   },
   {
+    "objectID": "references.html#quarto",
+    "href": "references.html#quarto",
+    "title": "Links & Weiterführendes",
+    "section": "Quarto",
+    "text": "Quarto\nQuarto ist eine Erweiterung/Weiterentwicklung von RMarkdown. Allerdings erfordert Quarto eine separate Installation, mehr Infos."
+  },
+  {
     "objectID": "references.html#einführungen-in-r",
     "href": "references.html#einführungen-in-r",
     "title": "Links & Weiterführendes",
     "section": "Einführungen in R",
     "text": "Einführungen in R\nEine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:\nR for Data Science das Standardwerk für Datenanalysen mit {tidyverse} - sehr intuitive Einführung, Fokus auf Data Science\nProblemorientiere Einführungen in spezifische Anwendungen “do more with R”\nTen simple rules for teaching yourself R\nModerne Datenanalyse mit R: Deutschsprachige Einführung in {tidyverse}\nStata 2 R richtet sich alle Anwender*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des {tidyverse} das Paket {data.table} für die Datenaufbereitung gezeigt. {data.table} ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das {tidyverse}. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, {data.table} auszuprobieren."
+  },
+  {
+    "objectID": "references.html#beispiele",
+    "href": "references.html#beispiele",
+    "title": "Links & Weiterführendes",
+    "section": "Beispiele",
+    "text": "Beispiele\nPaper zu einem Beispieldatensatz, komplett in R Markdown geschrieben Hier findet ihr den Source-Code"
   },
   {
     "objectID": "references.html#cheatsheets",
@@ -866,26 +887,5 @@
     "title": "Links & Weiterführendes",
     "section": "Weiteres",
     "text": "Weiteres\n{easystats} bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem easystats-Universum unter anderem {performance} und {effectsize} kennengelernt.\nEreigniszeitmodelle / Event History Modellung / Survival Analysis"
-  },
-  {
-    "objectID": "12_apply_loop.html#modell-function",
-    "href": "12_apply_loop.html#modell-function",
-    "title": "12  Schleifen/Funktionen",
-    "section": "12.2 Modell function()",
-    "text": "12.2 Modell function()\nWir definieren dann eine function(), in der wir angeben, dass das angegebene Argument die Formel für ein lm() sein soll - das Ergebnis dieses lm() `lassen wir uns dann ausgeben.\n\nmod_function <- function(modx){\n  mx <- lm(formula = modx,data = etbx)\n  return(mx)\n}\n\nWenn wir jetzt in mod_function eine Modellformel angeben, wird ein lm() berechnet:\n\nmod_function(\"F518_SUF ~ az\")\n\n\nCall:\nlm(formula = modx, data = etbx)\n\nCoefficients:\n(Intercept)           az  \n     -371.3        102.1"
-  },
-  {
-    "objectID": "15_RMarkdown.html#übung",
-    "href": "15_RMarkdown.html#übung",
-    "title": "14  RMarkdown",
-    "section": "14.8 Übung",
-    "text": "14.8 Übung\n\nVerwenden Sie das 14_Markdown.Rmd-Datei als Vorlage\nPassen Sie den Verfasser:innen-Namen und Datum an\nPassen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss\nFügen Sie einen chunk mit einer Auszählung von ausb ein\nFügen Sie einen chunk mit einem summarise()-Befehl ein - bspw.: ::: {.cell layout-align=“center”}\n\netbx %>% \n  group_by(S1,ausb) %>% \n  summarise(min =  min(F518_SUF,na.rm = T),\n            mean = mean(F518_SUF,na.rm = T),\n            max =  max(F518_SUF,na.rm = T))\n:::\n\nSetzen Sie include, echo usw. nach Wunsch.\nFügen nach Geschmack auch {flextable}-Befehle ein (Denken Sie an library(flextable) zu laden)\nKnitten Sie das Dokument zu einer Word-Dokument."
-  },
-  {
-    "objectID": "references.html#beispiele",
-    "href": "references.html#beispiele",
-    "title": "Links & Weiterführendes",
-    "section": "Beispiele",
-    "text": "Beispiele\nPaper zu einem Beispieldatensatz, komplett in R Markdown geschrieben Hier findet ihr den Source-Code"
   }
 ]
