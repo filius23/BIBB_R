@@ -116,6 +116,7 @@ mods <- map(mlst2,~lm(formula = .x,data = etbx))
 map_dfr(mlst2,~lm(formula = .x,data = etbx) %>% tidy(.),.id = "mod")
 
 
+# Anhang: loop über Variablen --------
 for(v in c("ausb","S1","F1605e")){
   etbx %>% count(v) %>% print()
 }
