@@ -1,10 +1,10 @@
 # ------------------- #
-# Kapitel 11: Data Wrangle
-# merge/join & reshape
+# Kapitel 12: Schleifen 
+#
 # ------------------- #
 
 library(tidyverse)
-library(marginaleffects)
+library(modelsummary)
 
 # Daten einlesen ------ 
 etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
@@ -14,12 +14,19 @@ etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
          S1 = factor(S1,levels = 1:2,labels =c("m","w")))
 
 
+
+lm(formula = F518_SUF ~ az,data = etbx) %>% summary(.)
+m1 <- lm(formula = F518_SUF ~ az,data = etbx)
+
+
 # Funktion für Modelle ----- 
 mod_function <- function(modx){
   mx <- lm(formula = modx,data = etbx)
   return(mx)
 }
- # anwenden 
+
+
+# anwenden 
 mod_function("F518_SUF ~ az")
 
 ## Modell Liste ------
@@ -28,15 +35,25 @@ mlst <- list(
   "Modell 2" = "F518_SUF ~ az + S1",
   "Modell 3" = "F518_SUF ~ az + S1 + ausb",
   "Modell 4" = "F518_SUF ~ az + S1 + ausb + zpalter"
-)
+  )
 
-mlst[[4]]
-mlst$`Modell 4`
+# wie kann ich listen-elemente ansehen/aufrufen?
+mlst[[1]]
+mlst[1]
+mlst$`Modell 3`
 
 ## Modellliste anwenden: Modellserien erstellen -----
+
+lapply(mlst,mod_function)
+
 mods <- lapply(mlst,mod_function)
+
+
 mods$`Modell 1`
 mods$`Modell 2`
+
+summary(mods$`Modell 2`)
+summary(mods[[2]])
 
 ## Modelsummary ------
 modelsummary::modelsummary(mods,stars = T,gof_omit = "IC|RM|Log")
@@ -49,7 +66,7 @@ mod_function2 <- function(modx, add_age){
   if(add_age == T) {
     mx <- lm(formula = paste0(modx,add_controls),data = etbx)
   } else {
-    mx <- lm(formula = paste0(modx),data = etbx)
+    mx <- lm(formula = modx,data = etbx)
   }
   return(mx)
 }
@@ -60,27 +77,68 @@ mod_function2("F518_SUF ~ az",add_age=T)
 
 
 ## Regressionsergebnisse als data.frame -------
+
 mod_function3 <- function(modx, tidy_mod = T){
   mx <- lm(formula = modx,data = etbx)
-  if(tidy_mod == T) mx <- tidy(mx,conf.int = T)
+  if(tidy_mod == T) mx <- broom::tidy(mx,conf.int = T)
   return(mx)
 }
 
 mod_function3("F518_SUF ~ az") # output ist jetzt ein data.frame
+mod_function3("F518_SUF ~ az",tidy_mod = T)
+
 mod_function3("F518_SUF ~ az",tidy_mod = F)
 
 # als Objekt ablegen 
-mod_l3  <- lapply(mlst,mod_function3)
+mod_l3  <- lapply(mlst,mod_function3,tidy_mod = T)
+
 lapply(mod_l3 ,class)
+
+
 bind_rows(mod_l3 ,.id="Mod_name")
 
 # alles auf einmal:
 lapply(mlst,mod_function3) %>% bind_rows(.id="Mod_name")
 
 # mit purrr:
-# map_dfr(mlst,mod_function3,.id="Mod_name")
+map_dfr(mlst,mod_function3,.id="Mod_name")
 
 
+# Alternative: ------
+# erst modelle schätzen mit basis-funktion 
+mod_function5 <- function(modx){
+  mx <- lm(formula = modx,data = etbx)
+  return(mx)
+}
+mods5 <- lapply(mlst,mod_function5)
+lapply(mods5,tidy) %>% bind_rows(.,.id="id")
+
+
+# Modell-Objekte speichern: alle notwendigen Infos sind in den lm-Objekten
+# daher: wenn ihr eine list mit lm-Objekten habt, könnt ihr allein damit weiter arbeiten
+
+save(mods5,file = "./data/modelle.Rds") # Modelle speichern
+rm(list = ls())                         # alles löschen 
+
+# Bur die Modelle wieder laden:
+load("./data/modelle.Rds")              
+# Es ist alles da um bspw. ein Modelsummary zu bauen:
+modelsummary::modelsummary(mods5,output = "markdown",stars = T,gof_omit = "IC|RM|Log")
+
+# ..oder ein summary
+lapply(mods5,summary)
+
+# .... oder ein modelplot:
+modelsummary::modelplot(mods5)
+
+# ...oder einen data.frame:
+lapply(mods5,tidy) %>% bind_rows(.,.id="id")
+
+# ...oder einen eigenen ggplot:
+lapply(mods5,tidy,conf.int = T) %>% 
+  bind_rows(.,.id="id") %>% 
+  ggplot(.,aes(x=estimate,y= term, color = id)) +
+  geom_pointrange(aes(xmin = conf.low, xmax= conf.high))
 
 
 
@@ -98,7 +156,7 @@ for(i in 1:8){
 
 ## beispiel 2
 for(i in 1:8){
- etbx %>% slice(i) %>% print()
+ etb_ue12 %>% slice(i) %>% print()
 }
 
 etb_ue12 <- 

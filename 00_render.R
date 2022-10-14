@@ -8,7 +8,7 @@ rstudioapi::navigateToFile("./prog_prelim/11_data_wrangle3.R")
 
 library(tidyverse)
 
-rmarkdown::render("demo.Rmd",output_format = "pdf_document")
+rmarkdown::render("./prog/14_Markdown_ver02.Rmd",output_format = "word_document")
 
 # https://datasciencebook.ca/
 # https://towardsdatascience.com/r-programming-a-study-guide-for-beginners-732de9542aa8?gi=dce1e602d5ab 

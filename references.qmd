@@ -18,6 +18,7 @@ Letztlich spricht aber nichts dagegen, nach einem Update auf `|>` umzusteigen - 
 <img src="pic/pipe.png" height="480px" />
 
 Unter anderem steht [hier mehr zu den Unterschieden](https://r4ds.hadley.nz/workflow-pipes.html#vs) zwischen beiden Pipes.
+Außerdem bietet [dieser Blogbeitrag](https://kpress.dev/blog/2022-06-19-replacing-the-magrittr-pipe-with-native-r-pipe/) einen guten Überblick zu den Fallstricken beim Umstieg von ` %>% ` auf `|>`. 
 
 
 ## Quarto
