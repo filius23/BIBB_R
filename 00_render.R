@@ -13,6 +13,7 @@ rmarkdown::render("./prog/14_Markdown_ver02.Rmd",output_format = "word_document"
 # https://datasciencebook.ca/
 # https://towardsdatascience.com/r-programming-a-study-guide-for-beginners-732de9542aa8?gi=dce1e602d5ab 
 # https://datacarpentry.org/r-socialsci/
+# https://kdpsingh.lab.medicine.umich.edu/lhs-610
 
 # https://sta199-f22-1.github.io/
 # https://github.com/mattansb/Practical-Applications-in-R-for-Psychologists/
@@ -28,7 +29,6 @@ rmarkdown::render("./prog/14_Markdown_ver02.Rmd",output_format = "word_document"
 # Kennzahlenkapitel eindampfen -> Lagemaße usw nicht groß unterscheiden
 # summarise -funktionen aus SMART-Syntax verwenden -> summary selbst bauen
 # Variationskoeffizient function selber bauen als Beispiel
-
 
 
 
