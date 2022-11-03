@@ -191,8 +191,7 @@ STRG + Umschalt + K" unter Windows) drücken.
 Die Einrückung im YAML-Abschnitts ist von Bedeutung, insbesondere dann, wenn unter den einzelnen Ausgabetypen verschachtelte Einstellungen vorhanden sind. So könnte ein typischer `Output`-Abschnitt aussehen, unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:
 
 
-
-```yaml
+````{verbatim, lang = "markdown"}
 ---
 title: "Mein Worddokument"
 author: "My name"
@@ -205,17 +204,19 @@ output:
     fig_height: 4
     fig_width: 5
 ---
-```
+````
 
 Auch für die anderen Output-Formate gibt es einen YAML-Befehl:
 
-```yaml
+````{verbatim, lang = "markdown"}
+---
 title: "My document"
 output:
   html_document: default
   pdf_document: default
   word_document: default
-```
+---
+````
 
 [Eine Übersicht findet zu verschiedenen Optionen findet sich bspw. hier](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html) oder hier für  [Word](https://bookdown.org/yihui/rmarkdown/word-document.html), [HTML](https://bookdown.org/yihui/rmarkdown/html-document.html), [PDF](https://bookdown.org/yihui/rmarkdown/pdf-document.html) oder [Powerpoint](https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html)
 
@@ -224,6 +225,46 @@ Alternativ lassen sich auch mit den Zahnrad oben neben dem Knit-Button Einstellu
 ```{r output-options, echo=FALSE, out.width="35%"}
 knitr::include_graphics("./pic/115_output-opts.png", error = FALSE)
 ```
+
+## Fortgeschrittene Erstellung von Word-Dokumenten mit [`{officedown}`](https://ardata-fr.github.io/officeverse/officedown-for-word.html)
+
+Mit [`{officedown}`](https://ardata-fr.github.io/officeverse/officedown-for-word.html) können wir bspw. Querverweise einbauen:
+```{r, eval = FALSE}
+install.packages("officedown")
+```
+
+
+
+````{verbatim, lang = "markdown"}
+---
+title: "Mein zweites RMarkdown-Dokument"
+author: "Dein Name"
+date: "2022-09-11"
+output:
+  officedown::rdocx_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(officedown)
+etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", 
+                         n_max = 2000,
+                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
+```{r tab.cap="Eine Tabelle", echo=FALSE,  tab.id='tab2'}
+etbx %>% count(ausb)
+```
+
+Mit "\@ref(tab:tname)" können wir einen Querverweis einbauen:
+
+This is a reference to Tabelle \@ref(tab:tab2).
+
+
+````
 
 
 ## Übung
