@@ -259,9 +259,7 @@ etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
 etbx %>% count(ausb)
 ```
 
-Mit "\@ref(tab:tname)" können wir einen Querverweis einbauen:
-
-This is a reference to Tabelle \@ref(tab:tab2).
+Dies ist ein Querverweis auf Tabelle \@ref(tab:tab2).
 
 
 ````
