@@ -36,15 +36,17 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point()
 
 ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point(color = "orange")
 
+# Hier: http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf findet sich eine Übersicht mit allen Farbnamen, die verstanden werden
+
 ## Farbe nach Geschlecht ------
 # problem bei gelabelten Variablen
 # ggplot(data = etb18_small, aes(x = zpalter, y = az, color = S1 )) + geom_point()
 
 ## numerische Variablen ergeben einen Farbverlauf als Legende ------
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.numeric(S1))) +  geom_point()
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.numeric(az))) +  geom_point()
 ## factor Variablen ergeben eine diskrete Farblegende: ------
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +  geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1)))    + geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.character(S1))) + geom_point()
 
 ## scale_color_manual ------
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
@@ -76,19 +78,7 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
        caption = "Quelle: ETB 2018"
        ) 
 
-
-## plots als Objekt  ------
-p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
-  geom_point(size = 2) 
-
-p1 + scale_color_manual(values = c("lightskyblue3","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
-
-p1 + scale_color_manual(values = c("coral","orange"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
-
-
-
+# einmal alles ---------------
 etb18_small$m1202[etb18_small$m1202<0] <- NA
 ggplot(data = etb18_small, aes(x = zpalter, y = az, 
                                color = factor(S1),

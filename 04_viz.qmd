@@ -109,11 +109,12 @@ Mit `color =` können wir den Punkten auch eine andere Farbe geben:
 ```{r}
 ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point(color = "orange")
 ```
+[Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) findet sich eine Übersicht mit allen Farbnamen, die verstanden werden, es gibt aber noch viel mehr Farben - siehe [Anhang](#farben).
 
 ### `aes()` Teil II
 Das sieht soweit schon ganz gut aus, allerdings werden die Punkte noch nicht getrennt nach Geschlecht dargestellt. 
 Dazu müssen wir die Geschlechtsangabe (`S1`) in `aes()` angeben.
-Neben den Achsen werden in `aes()` nämlich auch die Variablen für das Aussehen der `geom_`s angeben - das kann neben der Farbe auch die Form, Größe oder Transparenz sein. [Hier ein Überblick](#aes)
+Neben den Achsen werden in `aes()` nämlich auch die Variablen für das Aussehen der `geom_`s angeben - das kann neben der Farbe auch die Form, Größe oder Transparenz sein. [Hier ein Überblick](#aes_list)
 
 Das Geschlecht soll die Färbung der Punkte vorgeben, diese können wir in `aes` mit `color` angeben:
 ```{r}
@@ -346,27 +347,13 @@ ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) +
 Auch hier funktionieren natürlich wieder die `scale_...manual` Befehle, allerdings hier als `scale_fill_manual` anstelle `scale_color_manual` von oben:
 ```{r hist1}
 #| cache: true
-#| layout-ncol: 2
 ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
   geom_histogram(position = position_dodge()) +
   scale_fill_manual(values = c("sienna1","dodgerblue4"),
                     breaks = 1:2, labels = c("Männer","Frauen")) +
   labs(fill = "Geschlecht")
-
-ggplot(data = etb18, aes(x = az)) + 
-  geom_histogram(aes(fill = factor(S1)), color = "grey50",position = position_dodge()) + 
-  scale_fill_viridis_d(option = "E",labels = c("Männer","Frauen"))
 ```
 
-Wir können das ganze auch als Density-Plot darstellen `geom_density()`, hier empfiehlt es sich aber mit `alpha =` die Deckkraft herunterzusetzen:
-```{r dens}
-#| cache: true
-ggplot(data = etb18, aes(x = az,fill = factor(S1))) + 
-  geom_density(alpha = .5) + 
-  scale_fill_manual(values = c("sienna1","dodgerblue4"),
-                    breaks = 1:2, labels = c("Männer","Frauen")) +
-  labs(fill = "Geschlecht") 
-```
 
 ### [Übung](#pltue2) {#ue4_02}
 
@@ -393,16 +380,6 @@ etb18 %>%
 Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweitern einfach die Pipeline vor `ggplot()` um den `prop.table()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
 ```{r scalepct}
 #| cache: true
-#| layout-ncol: 2
-etb18 %>% 
-  filter(!is.na(m1202)) %>% 
-  count(S1,m1202) %>% 
-  group_by(S1) %>% 
-  mutate(pct_gender = prop.table(n)) %>% 
-  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
-  geom_col(position=position_dodge()) 
-
-
 etb18 %>% 
   filter(!is.na(m1202)) %>% 
   count(S1,m1202) %>% 
@@ -489,7 +466,6 @@ etb18_small <-
 + Erstellen Sie ein Histogramm, ebenfalls für die Einkommensverteilung und mit getrennten Farben für Männer und Frauen.
 + Was passiert wenn Sie für das Histogramm statt `color =` anstelle von `fill =` verwenden?
 + Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` oder `scale_fill_brewer` oder `scale_fill_viridis` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) und [viridis](#viridis) unter "weitere Optionen")
-+ Ändern Sie die Darstellung in einen density-Plot
 
 [Zurück nach oben](#ue4_02)
 
@@ -522,7 +498,7 @@ scale_x_continuous(breaks = 1:7,
 
 ## Weitere Optionen für ggplot2 
 
-### Aesthetics {#aes}
+### Aesthetics {#aes_list}
 
 ```{r}
 #| fig-asp: 0.35
