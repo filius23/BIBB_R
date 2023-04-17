@@ -13,12 +13,14 @@ theme_set(theme_gray() + theme(axis.text.x = element_text(size=rel(1.45))))
 ```{r}
 library(tidyverse)
 etb18_kap5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01")) %>% 
-  filter(F411_01<9)
+                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01","az","zpalter")) %>% 
+  filter(F411_01<9, zpalter < 100)
 ```
 
 
 ## Labels aus anderen Programmen in R
+
+In vielen Programmen wie Stata oder SPSS werden die labels häufig durch die Operationen "mitgeschleift" und dann ausgegeben. Das ist in R nicht der Fall. Stattdesssen können wir mit Hilfe des Variablentyps `factor` Labels vergeben. Das Vorgehen mag für alle, die schon lange mit Stata oder SPSS gearbeitet haben, etwas ungewöhnlich sein - ist aber in der Praxis sehr hilfreich, wenn man sich den entsprechenden Workflow angewöhnt hat.
 
 Wenn wir bspw. die Ansicht mit `View()` öffnen oder eine Auszählung mit `count()` erstellen, werden uns labels angezeigt:
 
@@ -37,92 +39,111 @@ attributes(etb18_kap5$S1)
 ```{r}
 #| error: true
 library(ggplot2)
-library(ggeasy)
 
-etb18_kap5 %>% 
-  count(S1) %>% 
-  ggplot(.,aes(x=S1,y=n, fill = S1)) +
-  geom_col() + 
-  easy_labs()
+ggplot(data = etb18_kap5, aes(x = zpalter, y = az, color = S1 )) + 
+  geom_point()
 ```
-
-
-## `factor` und Labels
-
-R verfügt über einen speziellen Variablentypen namens factor, um mit kategorialen Daten umzugehen. factor Variablen sind besonders hilfreich, wenn wir Grafiken erstellen wollen oder statistische Analysen durchführen. 
-
 In den beiden vorherigen Kapiteln haben wir schon gesehen, dass Labels in R immer etwas extra Aufwand bedeuten.
 In Grafiken mussten wir mit `breaks = c(1,2), labels = c("Männer", "Frauen")` die Labels extra erstellen.
-Auch in den Auszählungen waren die Labels nur mit `count()` aufrufbar. 
 
-In vielen Programmen wie Stata oder SPSS werden die labels häufig durch die Operationen "mitgeschleift" und dann ausgegeben. Das ist in R nicht der Fall. Stattdesssen können wir mit Hilfe des Variablentyps `factor` Labels vergeben. Das Vorgehen mag für alle, die schon lange mit Stata oder SPSS gearbeitet haben, etwas ungewöhnlich sein - ist aber in der Praxis sehr hilfreich, wenn man sich den entsprechenden Workflow angewöhnt hat.
-
-factors stellen kategoriale Daten dar. Sie werden als Zahlen in Verbindung mit Bezeichnungen gespeichert und haben dazu eine festgelegte Ordnung.
-Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als `levels` bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge.
-
-Wir beginnen nochmal "ganz von vorne" und zwar mit einem `data.frame` aus `count()`:
-```{r}
-tab_dat1 <- etb18_kap5 %>% count(m1202)
-tab_dat1
-```
-
-Dabei soll `educ` die verschiedenen Ausbildungsniveaus entsprechend der Codierung von `m1202` repräsentieren:
-
+Wie können wir die Labels `attributes()` verwenden und so Tipparbeit sparen?
 ```{r}
 #| echo: false
+#| eval: false
 #| message: false
 #| warning: false
 library(labelled)
-data.frame(value = 1:4,
-           label = names(val_labels(etb18_kap5$m1202)[-1])) %>% 
-  kableExtra::kable()
-```
-Wie können wir diese jetzt hinterlegen?
-
-So könnten wir einfach eine `educ_chr`-Spalte hinzufügen:
-```{r}
-tab_dat1$m1202_chr <- c("k.A.","ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni")
-tab_dat1
+library(gt)
+tibble(value = 1:2,
+           `.` = "",
+           label = names(val_labels(unique(etb18_kap5$S1)))) %>% 
+  flextable::flextable() %>% 
+  flextable::border_remove() %>% 
+  flextable::autofit()
 ```
 
-Mit `factor()` können wir `levels` und `labels` angeben - die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen. Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
+`{haven}` enthält sich die Funktion `as_factor`[^2], mit der wir aus Labels direkt eine `factor`-Variable erstellen können:
+
+[^2]: Nicht zu verwechseln mit `as.factor()` aus base R - der `_` macht einen Unterschied!
 ```{r}
-tab_dat1$m1202_fct <- factor(tab_dat1$m1202, 
+etb18_kap5$S1_fct <- as_factor(etb18_kap5$S1)
+
+# ansehen:
+etb18_kap5 %>% select(contains("S1")) %>% head()
+```
+
+```{r}
+ggplot(data = etb18_kap5, aes(x = zpalter, y = az, color = S1_fct )) + 
+  geom_point()
+```
+
+## `factor` selbst erstellen oder bearbeiten
+
+Für `m1202` sind die Labels aber etwas lang:
+```{r}
+tab1 <- etb18_kap5 %>% count(m1202) %>% mutate(m1202_fct = as_factor(m1202))
+tab1
+```
+Alternativ können wir auch mit `factor()` und `levels` und `labels` selber labeln. Die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen. Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
+```{r}
+tab1$m1202_fct2 <- factor(tab1$m1202, 
                         levels = c(1,2,3,4), 
                         labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
-tab_dat1
-```
-Warum ist das besser als einfach ein `character`?
-Weil eine Reihenfolge festgelegt wird:
-```{r}
-levels(tab_dat1$m1202_fct)
+tab1
 ```
 
-Wenn wir dann `tab_dat1` in einen ggplot pipen, dann werden die Werte der Reihenfolge der `levels` entsprechend auf der x-Achse sortiert:
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- theme_set(theme_gray(base_size = 15) + theme(axis.title.x = element_text(size = rel(1.15),face = "bold",family = "mono")))  -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- #| out-height: 60% -->
+<!-- #| out-width: 60% -->
+<!-- #| fig-align: "center" -->
+<!-- #| layout-ncol: 2 -->
+<!-- tab1 %>%  -->
+<!--   ggplot(data = ., aes(y = m1202_fct, x = n)) + -->
+<!--   geom_col(position=position_dodge(), fill = "sienna1") + -->
+<!--   labs(y="") -->
+
+<!-- tab1 %>%  -->
+<!--   ggplot(data = ., aes(y = m1202_fct2, x = n)) + -->
+<!--   geom_col(position=position_dodge(), fill = "mediumturquoise") + -->
+<!--   labs(y="") -->
+<!-- ``` -->
+
+<!-- **[Blogbeitrag zu labels in R](https://www.pipinghotdata.com/posts/2022-09-13-the-case-for-variable-labels-in-r/)** -->
+
+Oder wir nutzen die Funktionen aus `{forcats}` zur recodierung eines `factors`.
+`{forcats}` ist Teil des `{tidyverse}`.
+Mit `fct_recode()` können wir die `levels` verändern:
+```{r}
+levels(tab1$m1202_fct)[3]
+
+tab1$m1202_fct3 <- fct_recode(tab1$m1202_fct,
+  `duale / schulische Ausb.` = "duale o. schulische Berufsausbildung/einf.,mittl. Beamte", # bei Leerzeichen `` um die Wörter
+  )
+```
+
+
+```{r}
+#| eval: false
+tab1 %>% select(m1202_fct,m1202_fct2,m1202_fct3)
+```
 ```{r}
 #| echo: false
-theme_set(theme_gray(base_size = 15) + theme(axis.title.x = element_text(size = rel(1.15),face = "bold",family = "mono"))) 
+#| warning: false
+library(systemfonts)
+library(flextable)
+tab1 %>% select(m1202_fct,m1202_fct2,m1202_fct3) %>% flextable() %>% 
+  autofit() %>% border_remove() %>% 
+  bg(i = ~m1202_fct2 == "dual/schul.",bg = "#CFFFDF") %>%
+  flextable::font(part = "header",fontname = "Azeret Mono")
+    
 ```
 
-
-```{r chr_fct_plot}
-#| out-height: 60%
-#| out-width: 60%
-#| fig-align: "center"
-#| layout-ncol: 2
-#| cache: true
-
-tab_dat1 %>% 
-  ggplot(data = ., aes(x = m1202_chr, y = n)) +
-  geom_col(position=position_dodge(), fill = "mediumturquoise")
-
-tab_dat1 %>% 
-  ggplot(data = ., aes(x = m1202_fct, y = n)) +
-  geom_col(position=position_dodge(), fill = "steelblue4") 
-
-```
-
-**[Blogbeitrag zu labels in R](https://www.pipinghotdata.com/posts/2022-09-13-the-case-for-variable-labels-in-r/)**
+[Weitere `fct_....()` Funktionen aus `{forcats}`](#fct_cats), einen Überblick gibt das [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf).
 
 ## Übung
 
@@ -139,6 +160,7 @@ Bearbeiten Sie die labels dieses Diagramms:
 
 ```{r}
 #| echo: false
+#| warning: false
 library(labelled)
 data.frame(value = 1:4,
            label = names(val_labels(etb18_kap5$F411_01)[-5])) %>% 
@@ -150,8 +172,12 @@ data.frame(value = 1:4,
 #| out-width: "50%"
 #| out-height: "50%"
 #| warning: false
-etb18_ue5 %>% 
-  count(F411_01) %>%
+tab_ue5 <- 
+  etb18_ue5 %>% 
+  count(F411_01)
+tab_ue5
+
+tab_ue5 %>%
   ggplot(data = ., aes(x = F411_01, y = n)) +
   geom_col(fill = "steelblue3")
 ```
@@ -160,13 +186,14 @@ etb18_ue5 %>%
 + Erstellen Sie einen `factor()` Variable mit den den gewünschten Beschriftungen mit Hilfe von `labels =`. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
 + Verwenden Sie die gelabelten Variablen für die Grafik.
 
+**Bonusübung:** Was müssten wir ändern, um die Grafik nach Geschlecht (`S1`) zu erstellen?
 
 ## Anhang
 
 ### Labels löschen mit `zap_...` aus `{haven}`
 
 Häufig führen die Label-`attributes()` zu Problemen in der weiteren Verarbeitung.
-Mit `haven::zap_labels()` können wir die Value labels aus einem Datensatz köschen mit `haven::zap_label()` können wir die Variable labels entfernen.
+Mit `haven::zap_labels()` können wir die Value labels aus einem Datensatz löschen mit `haven::zap_label()` können wir die Variable labels entfernen.
 ```{r}
 etb18_kap5
 etb18_kap5 %>% 
@@ -174,84 +201,13 @@ etb18_kap5 %>%
 ```
 
 
-### `as_factor()` in `{haven}` {#as_fct}
-
-In `{haven}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels einen `factor` erstellen können.
-
-[^2]: Nicht zu verwechseln mit `as.factor()` aus base R - der `_` macht einen Unterschied!
-
-```{r}
-library(labelled)
-tab_dat2 <- etb18_kap5 %>% count(Bula)
-tab_dat2$Bula_fct <- as_factor(tab_dat2$Bula)
-tab_dat2
-```
-
-Das können wir dann in den Plot pipen:
-<!-- - mit `str_wrap( , 10)` aus [{stringr}](https://stringr.tidyverse.org/) (aus [{tidyverse}](https://www.tidyverse.org/)) können wir außerdem festlegen, dass nach 10 Zeichen ein Zeilenumbruch eingefügt werden soll: -->
-```{r}
-tab_dat2 %>% 
-  ggplot(data = ., aes(y = Bula_fct, x = n)) +
-  geom_col(position=position_dodge(), fill = "sienna1")
-```
-
-
-### `factor` Variablen bearbeiten mit `{forcats}`
-
-
-`{forcats}` ist Teil des `{tidyverse}`.
-Mit `fct_recode()` können wir die `levels` verändern:
-```{r}
-tab_dat2$Bula_fct2 <- fct_recode(tab_dat2$Bula_fct,
-  NRW = "Nordrhein-Westfalen",
-  `M V` = "Mecklenburg-Vorpommern", # bei Leerzeichen `` um die Wörter
-  )
-tab_dat2 %>% print(n=Inf)
-```
-
-[Weitere `fct_....()` Funktionen aus `{forcats}`](#fct_cats), einen Überblick gibt das [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf).
-
-Eine sehr praktische Funktion ist `fct_reorder()`, mit dieser können wir die levels nach Häufigkeit (aus `tab_dat1$n`) sortieren:
-```{r}
-tab_dat2$Bula_fct3 <- fct_reorder(tab_dat2$Bula_fct2,tab_dat2$n)
-levels(tab_dat2$Bula_fct2)
-levels(tab_dat2$Bula_fct3)
-```
-```{r}
-#| echo: false
-theme_set(theme_gray(base_size = 15) + theme(axis.title.y = element_text(size = rel(1.5),face = "bold",family = "mono"))) 
-```
-```{r}
-#| layout-ncol: 2
-tab_dat2 %>% 
-  ggplot(data = ., aes(y = Bula_fct2, x = n)) +
-  geom_col(position=position_dodge(), fill = "turquoise2")
-
-tab_dat2 %>% 
-  ggplot(data = ., aes(y = Bula_fct3, x = n)) +
-  geom_col(position=position_dodge(), fill = "turquoise3")
-```
-
-
-```{r}
-#| echo: false
-# reset theme
-theme_set(theme_gray()) 
-```
-
-
-
 ### Labels selbst erstellen und ranspielen
 
 Ein alternativer Weg geht über einen kleinen Label-`data.frame` und `left_join()` (mehr zu `left_join()` später.)
 
-
 ```{r}
-tab_ausb2 <- etb18_kap5 %>% count(m1202)
-tab_ausb2
+tab2 <- etb18_kap5 %>% count(m1202)
 ```
-
-
 ```{r}
 lab_df <- data.frame(m1202=1:4)
 lab_df
@@ -262,13 +218,14 @@ lab_df
 
 
 ```{r}
-tab_ausb2 %>% 
+tab2 %>% 
   left_join(lab_df,by = "m1202")
 ```
+In `ggplot()` geben wir dann `m1202_lab` an, um diese auf die x-Achse zu setzen:
 ```{r}
 #| out-width: "80%"
 #| out-height: "50%"
-tab_ausb2 %>% 
+tab2 %>% 
   left_join(lab_df,by = "m1202") %>% 
   ggplot(data = ., aes(x = m1202_lab, y = n)) +
   geom_col(position=position_dodge(), fill = "turquoise3")
@@ -303,7 +260,6 @@ tab S1_num2
 ```
 
 [Mehr zu `labels` in `{labelled}`](https://joseph.larmarange.net/intro_labelled.html).
-
 
 <!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->
 
