@@ -461,10 +461,9 @@ etb18_small <-
 
 ### Übung 2 {#pltue2}
 
-+ Erstellen Sie einen Boxplot für die Verteilung des Einkommens (`F518_SUF`).
-+ Passen Sie diesen Boxplot so an, dass die Einkommensverteilungen für Männer und Frauen getrennt dargestellt werden. (Profi-Knobelfrage: wie können Sie die Boxen nach `S1` einfärben?)
-+ Erstellen Sie ein Histogramm, ebenfalls für die Einkommensverteilung und mit getrennten Farben für Männer und Frauen.
-+ Was passiert wenn Sie für das Histogramm statt `color =` anstelle von `fill =` verwenden?
++ Erstellen Sie einen Boxplot oder Histogramm für die Verteilung des Einkommens (`F518_SUF`).
++ Passen Sie diese Grafik so an, dass die Einkommensverteilungen für Männer und Frauen getrennt dargestellt werden. 
++ Wie können Sie auch die Farben nach dem Geschlecht getrennt anlegen? (Denken Sie an `color =` und `fill =`) 
 + Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` oder `scale_fill_brewer` oder `scale_fill_viridis` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) und [viridis](#viridis) unter "weitere Optionen")
 
 [Zurück nach oben](#ue4_02)
