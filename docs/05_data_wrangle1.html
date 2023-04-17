@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am BIBB - 5&nbsp; Data Wrangling I: Labels</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06_data_wrangle2.html" rel="next">
+<link href="./04_viz.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am BIBB</a> 
+        <div class="sidebar-tools-main">
+    <a href="./R-am-BIBB.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Willkommen</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_data_wrangle3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Links &amp; Weiterführendes</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#labels-aus-anderen-programmen-in-r" id="toc-labels-aus-anderen-programmen-in-r" class="nav-link active" data-scroll-target="#labels-aus-anderen-programmen-in-r"> <span class="header-section-number">5.1</span> Labels aus anderen Programmen in R</a></li>
+  <li><a href="#factor-und-labels" id="toc-factor-und-labels" class="nav-link" data-scroll-target="#factor-und-labels"> <span class="header-section-number">5.2</span> <code>factor</code> und Labels</a></li>
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">5.3</span> Übung</a></li>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"> <span class="header-section-number">5.4</span> Anhang</a>
+  <ul class="collapse">
+  <li><a href="#labels-löschen-mit-zap_...-aus-haven" id="toc-labels-löschen-mit-zap_...-aus-haven" class="nav-link" data-scroll-target="#labels-löschen-mit-zap_...-aus-haven"> <span class="header-section-number">5.4.1</span> Labels löschen mit <code>zap_...</code> aus <code>{haven}</code></a></li>
+  <li><a href="#as_fct" id="toc-as_fct" class="nav-link" data-scroll-target="#as_fct"> <span class="header-section-number">5.4.2</span> <code>as_factor()</code> in <code>{haven}</code></a></li>
+  <li><a href="#factor-variablen-bearbeiten-mit-forcats" id="toc-factor-variablen-bearbeiten-mit-forcats" class="nav-link" data-scroll-target="#factor-variablen-bearbeiten-mit-forcats"> <span class="header-section-number">5.4.3</span> <code>factor</code> Variablen bearbeiten mit <code>{forcats}</code></a></li>
+  <li><a href="#labels-selbst-erstellen-und-ranspielen" id="toc-labels-selbst-erstellen-und-ranspielen" class="nav-link" data-scroll-target="#labels-selbst-erstellen-und-ranspielen"> <span class="header-section-number">5.4.4</span> Labels selbst erstellen und ranspielen</a></li>
+  <li><a href="#labels-exportieren" id="toc-labels-exportieren" class="nav-link" data-scroll-target="#labels-exportieren"> <span class="header-section-number">5.4.5</span> Labels exportieren</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="wrang1" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>etb18_kap5 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>, <span class="st">"S1"</span>, <span class="st">"m1202"</span>, <span class="st">"Bula"</span>,<span class="st">"F411_01"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F411_01<span class="sc">&lt;</span><span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="labels-aus-anderen-programmen-in-r" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="labels-aus-anderen-programmen-in-r"><span class="header-section-number">5.1</span> Labels aus anderen Programmen in R</h2>
+<p>Wenn wir bspw. die Ansicht mit <code>View()</code> öffnen oder eine Auszählung mit <code>count()</code> erstellen, werden uns labels angezeigt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(etb18_kap5)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>etb18_kap5 <span class="sc">%&gt;%</span> <span class="fu">count</span>(S1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Diese sind als <code>attributes()</code> Variablen zugeordnet:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(etb18_kap5<span class="sc">$</span>S1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$label
+[1] "Geschlecht"
+
+$format.stata
+[1] "%8.0g"
+
+$labels
+männlich weiblich 
+       1        2 
+
+$class
+[1] "haven_labelled" "vctrs_vctr"     "double"        </code></pre>
+</div>
+</div>
+<p>…leider machen die <code>attributes()</code> immer wieder Probleme:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeasy)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>etb18_kap5 <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(S1) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span>S1,<span class="at">y=</span>n, <span class="at">fill =</span> S1)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">easy_labs</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Don't know how to automatically pick scale for object of type
+&lt;haven_labelled/vctrs_vctr/double&gt;. Defaulting to continuous.
+Don't know how to automatically pick scale for object of type
+&lt;haven_labelled/vctrs_vctr/double&gt;. Defaulting to continuous.</code></pre>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in UseMethod("rescale"): nicht anwendbare Methode für 'rescale' auf Objekt der Klasse "c('haven_labelled', 'vctrs_vctr', 'double')" angewendet</code></pre>
+</div>
+</div>
+</section>
+<section id="factor-und-labels" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="factor-und-labels"><span class="header-section-number">5.2</span> <code>factor</code> und Labels</h2>
+<p>R verfügt über einen speziellen Variablentypen namens factor, um mit kategorialen Daten umzugehen. factor Variablen sind besonders hilfreich, wenn wir Grafiken erstellen wollen oder statistische Analysen durchführen.</p>
+<p>In den beiden vorherigen Kapiteln haben wir schon gesehen, dass Labels in R immer etwas extra Aufwand bedeuten. In Grafiken mussten wir mit <code>breaks = c(1,2), labels = c("Männer", "Frauen")</code> die Labels extra erstellen. Auch in den Auszählungen waren die Labels nur mit <code>count()</code> aufrufbar.</p>
+<p>In vielen Programmen wie Stata oder SPSS werden die labels häufig durch die Operationen “mitgeschleift” und dann ausgegeben. Das ist in R nicht der Fall. Stattdesssen können wir mit Hilfe des Variablentyps <code>factor</code> Labels vergeben. Das Vorgehen mag für alle, die schon lange mit Stata oder SPSS gearbeitet haben, etwas ungewöhnlich sein - ist aber in der Praxis sehr hilfreich, wenn man sich den entsprechenden Workflow angewöhnt hat.</p>
+<p>factors stellen kategoriale Daten dar. Sie werden als Zahlen in Verbindung mit Bezeichnungen gespeichert und haben dazu eine festgelegte Ordnung. Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als <code>levels</code> bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge.</p>
+<p>Wir beginnen nochmal “ganz von vorne” und zwar mit einem <code>data.frame</code> aus <code>count()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tab_dat1 <span class="ot">&lt;-</span> etb18_kap5 <span class="sc">%&gt;%</span> <span class="fu">count</span>(m1202)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tab_dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  m1202                                                             n
+  &lt;dbl+lbl&gt;                                                     &lt;int&gt;
+1 -1 [keine Angabe]                                                44
+2  1 [Ohne Berufsabschluss]                                      1089
+3  2 [duale o. schulische Berufsausbildung/einf.,mittl. Beamte]  9294
+4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)]  1725
+5  4 [Fachhochschule, Universität/ geh., höhere Beamte]          7851</code></pre>
+</div>
+</div>
+<p>Dabei soll <code>educ</code> die verschiedenen Ausbildungsniveaus entsprechend der Codierung von <code>m1202</code> repräsentieren:</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Paket 'labelled' wurde unter R Version 4.2.2 erstellt</code></pre>
+</div>
+<div class="cell-output-display">
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> value </th>
+   <th style="text-align:left;"> label </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> Ohne Berufsabschluss </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> duale o. schulische Berufsausbildung/einf.,mittl. Beamte </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.) </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> Fachhochschule, Universität/ geh., höhere Beamte </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Wie können wir diese jetzt hinterlegen?</p>
+<p>So könnten wir einfach eine <code>educ_chr</code>-Spalte hinzufügen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tab_dat1<span class="sc">$</span>m1202_chr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"k.A."</span>,<span class="st">"ohne Abs."</span>, <span class="st">"dual/schul."</span>, <span class="st">"Aufstiegsfortb."</span>, <span class="st">"FH/Uni"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>tab_dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  m1202                                                             n m1202_chr 
+  &lt;dbl+lbl&gt;                                                     &lt;int&gt; &lt;chr&gt;     
+1 -1 [keine Angabe]                                                44 k.A.      
+2  1 [Ohne Berufsabschluss]                                      1089 ohne Abs. 
+3  2 [duale o. schulische Berufsausbildung/einf.,mittl. Beamte]  9294 dual/schu…
+4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)]  1725 Aufstiegs…
+5  4 [Fachhochschule, Universität/ geh., höhere Beamte]          7851 FH/Uni    </code></pre>
+</div>
+</div>
+<p>Mit <code>factor()</code> können wir <code>levels</code> und <code>labels</code> angeben - die <code>labels</code> werden dann der Reihenfolge nach den Zahlen aus <code>levels</code> zugewiesen. Außerdem wird aus allen nicht angegebenen <code>levels</code> automatisch <code>NA</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tab_dat1<span class="sc">$</span>m1202_fct <span class="ot">&lt;-</span> <span class="fu">factor</span>(tab_dat1<span class="sc">$</span>m1202, </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"ohne Abs."</span>, <span class="st">"dual/schul."</span>, <span class="st">"Aufstiegsfortb."</span>, <span class="st">"FH/Uni"</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>tab_dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  m1202                                                        n m1202…¹ m1202…²
+  &lt;dbl+lbl&gt;                                                &lt;int&gt; &lt;chr&gt;   &lt;fct&gt;  
+1 -1 [keine Angabe]                                           44 k.A.    &lt;NA&gt;   
+2  1 [Ohne Berufsabschluss]                                 1089 ohne A… ohne A…
+3  2 [duale o. schulische Berufsausbildung/einf.,mittl. B…  9294 dual/s… dual/s…
+4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB …  1725 Aufsti… Aufsti…
+5  4 [Fachhochschule, Universität/ geh., höhere Beamte]     7851 FH/Uni  FH/Uni 
+# … with abbreviated variable names ¹​m1202_chr, ²​m1202_fct</code></pre>
+</div>
+</div>
+<p>Warum ist das besser als einfach ein <code>character</code>? Weil eine Reihenfolge festgelegt wird:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(tab_dat1<span class="sc">$</span>m1202_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ohne Abs."       "dual/schul."     "Aufstiegsfortb." "FH/Uni"         </code></pre>
+</div>
+</div>
+<p>Wenn wir dann <code>tab_dat1</code> in einen ggplot pipen, dann werden die Werte der Reihenfolge der <code>levels</code> entsprechend auf der x-Achse sortiert:</p>
+<div class="cell">
+
+</div>
+<div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tab_dat1 <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> m1202_chr, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position=</span><span class="fu">position_dodge</span>(), <span class="at">fill =</span> <span class="st">"mediumturquoise"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>tab_dat1 <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> m1202_fct, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position=</span><span class="fu">position_dodge</span>(), <span class="at">fill =</span> <span class="st">"steelblue4"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-hash="05_data_wrangle1_cache/html/chr_fct_plot_3ec609a584dab0c715fff72f0d32dfcb">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="05_data_wrangle1_files/figure-html/chr_fct_plot-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="05_data_wrangle1_files/figure-html/chr_fct_plot-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong><a href="https://www.pipinghotdata.com/posts/2022-09-13-the-case-for-variable-labels-in-r/">Blogbeitrag zu labels in R</a></strong></p>
+</section>
+<section id="übung" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="übung"><span class="header-section-number">5.3</span> Übung</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>etb18_ue5 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>, <span class="st">"S1"</span>, <span class="st">"m1202"</span>, <span class="st">"Bula"</span>,<span class="st">"F411_01"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F411_01<span class="sc">&lt;</span><span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Bearbeiten Sie die labels dieses Diagramms:</p>
+<p><strong><code>F411_01</code>: Wie häufig kommt es vor, dass Sie unter starkem Termin- oder Leistungsdruck arbeiten?</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> value </th>
+   <th style="text-align:left;"> label </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> häufig </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> manchmal </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> selten </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> nie </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>etb18_ue5 <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(F411_01) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> F411_01, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="05_data_wrangle1_files/figure-html/unnamed-chunk-13-1.png" style="width:50.0%;height:50.0%"></p>
+</div>
+</div>
+<ul>
+<li>Erstellen Sie dafür zunächst einen <code>data.frame</code> mit der Auszählung durch <code>count()</code> und legen diese als Objekt ab.</li>
+<li>Erstellen Sie einen <code>factor()</code> Variable mit den den gewünschten Beschriftungen mit Hilfe von <code>labels =</code>. (Sie können die Labels der Variable <code>F411_01</code> mit <code>attributes(etb18_kap5$F411_01)$labels</code> nachsehen.)</li>
+<li>Verwenden Sie die gelabelten Variablen für die Grafik.</li>
+</ul>
+</section>
+<section id="anhang" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="anhang"><span class="header-section-number">5.4</span> Anhang</h2>
+<section id="labels-löschen-mit-zap_...-aus-haven" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="labels-löschen-mit-zap_...-aus-haven"><span class="header-section-number">5.4.1</span> Labels löschen mit <code>zap_...</code> aus <code>{haven}</code></h3>
+<p>Häufig führen die Label-<code>attributes()</code> zu Problemen in der weiteren Verarbeitung. Mit <code>haven::zap_labels()</code> können wir die Value labels aus einem Datensatz köschen mit <code>haven::zap_label()</code> können wir die Variable labels entfernen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>etb18_kap5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20,003 × 5
+   intnr Bula        S1           F411_01      m1202                            
+   &lt;dbl&gt; &lt;dbl+lbl&gt;   &lt;dbl+lbl&gt;    &lt;dbl+lbl&gt;    &lt;dbl+lbl&gt;                        
+ 1   260 11 [Berlin] 1 [männlich] 1 [häufig]   4 [Fachhochschule, Universität/ …
+ 2   361 11 [Berlin] 2 [weiblich] 2 [manchmal] 2 [duale o. schulische Berufsaus…
+ 3   491 11 [Berlin] 1 [männlich] 2 [manchmal] 4 [Fachhochschule, Universität/ …
+ 4   690 11 [Berlin] 2 [weiblich] 2 [manchmal] 4 [Fachhochschule, Universität/ …
+ 5   919 11 [Berlin] 2 [weiblich] 2 [manchmal] 2 [duale o. schulische Berufsaus…
+ 6  1041 11 [Berlin] 1 [männlich] 1 [häufig]   2 [duale o. schulische Berufsaus…
+ 7  1077 11 [Berlin] 1 [männlich] 2 [manchmal] 4 [Fachhochschule, Universität/ …
+ 8  1306 11 [Berlin] 2 [weiblich] 3 [selten]   2 [duale o. schulische Berufsaus…
+ 9  1357 11 [Berlin] 2 [weiblich] 1 [häufig]   4 [Fachhochschule, Universität/ …
+10  1488 11 [Berlin] 2 [weiblich] 1 [häufig]   4 [Fachhochschule, Universität/ …
+# … with 19,993 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>etb18_kap5 <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  haven<span class="sc">::</span><span class="fu">zap_labels</span>() <span class="co"># value labels raus</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20,003 × 5
+   intnr  Bula    S1 F411_01 m1202
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+ 1   260    11     1       1     4
+ 2   361    11     2       2     2
+ 3   491    11     1       2     4
+ 4   690    11     2       2     4
+ 5   919    11     2       2     2
+ 6  1041    11     1       1     2
+ 7  1077    11     1       2     4
+ 8  1306    11     2       3     2
+ 9  1357    11     2       1     4
+10  1488    11     2       1     4
+# … with 19,993 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="as_fct" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="as_fct"><span class="header-section-number">5.4.2</span> <code>as_factor()</code> in <code>{haven}</code></h3>
+<p>In <code>{haven}</code> findet sich die Funktion <code>as_factor</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, mit der wir aus Labels einen <code>factor</code> erstellen können.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(labelled)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>tab_dat2 <span class="ot">&lt;-</span> etb18_kap5 <span class="sc">%&gt;%</span> <span class="fu">count</span>(Bula)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>tab_dat2<span class="sc">$</span>Bula_fct <span class="ot">&lt;-</span> <span class="fu">as_factor</span>(tab_dat2<span class="sc">$</span>Bula)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>tab_dat2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 3
+   Bula                            n Bula_fct              
+   &lt;dbl+lbl&gt;                   &lt;int&gt; &lt;fct&gt;                 
+ 1  1 [Schleswig-Holstein]       687 Schleswig-Holstein    
+ 2  2 [Hamburg]                  553 Hamburg               
+ 3  3 [Niedersachsen]           1863 Niedersachsen         
+ 4  4 [Bremen]                   172 Bremen                
+ 5  5 [Nordrhein-Westfalen]     3661 Nordrhein-Westfalen   
+ 6  6 [Hessen]                  1404 Hessen                
+ 7  7 [Rheinland-Pfalz]          851 Rheinland-Pfalz       
+ 8  8 [Baden-Württemberg]       2402 Baden-Württemberg     
+ 9  9 [Bayern]                  4049 Bayern                
+10 10 [Saarland]                 207 Saarland              
+11 11 [Berlin]                  1198 Berlin                
+12 12 [Brandenburg]              589 Brandenburg           
+13 13 [Mecklenburg-Vorpommern]   358 Mecklenburg-Vorpommern
+14 14 [Sachsen]                 1003 Sachsen               
+15 15 [Sachsen-Anhalt]           500 Sachsen-Anhalt        
+16 16 [Thüringen]                506 Thüringen             </code></pre>
+</div>
+</div>
+<p>Das können wir dann in den Plot pipen: <!-- - mit `str_wrap( , 10)` aus [{stringr}](https://stringr.tidyverse.org/) (aus [{tidyverse}](https://www.tidyverse.org/)) können wir außerdem festlegen, dass nach 10 Zeichen ein Zeilenumbruch eingefügt werden soll: --></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>tab_dat2 <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> Bula_fct, <span class="at">x =</span> n)) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position=</span><span class="fu">position_dodge</span>(), <span class="at">fill =</span> <span class="st">"sienna1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="05_data_wrangle1_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="factor-variablen-bearbeiten-mit-forcats" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="factor-variablen-bearbeiten-mit-forcats"><span class="header-section-number">5.4.3</span> <code>factor</code> Variablen bearbeiten mit <code>{forcats}</code></h3>
+<p><code>{forcats}</code> ist Teil des <code>{tidyverse}</code>. Mit <code>fct_recode()</code> können wir die <code>levels</code> verändern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tab_dat2<span class="sc">$</span>Bula_fct2 <span class="ot">&lt;-</span> <span class="fu">fct_recode</span>(tab_dat2<span class="sc">$</span>Bula_fct,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">NRW =</span> <span class="st">"Nordrhein-Westfalen"</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">M V</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Mecklenburg-Vorpommern"</span>, <span class="co"># bei Leerzeichen `` um die Wörter</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>tab_dat2 <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">n=</span><span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 4
+   Bula                            n Bula_fct               Bula_fct2         
+   &lt;dbl+lbl&gt;                   &lt;int&gt; &lt;fct&gt;                  &lt;fct&gt;             
+ 1  1 [Schleswig-Holstein]       687 Schleswig-Holstein     Schleswig-Holstein
+ 2  2 [Hamburg]                  553 Hamburg                Hamburg           
+ 3  3 [Niedersachsen]           1863 Niedersachsen          Niedersachsen     
+ 4  4 [Bremen]                   172 Bremen                 Bremen            
+ 5  5 [Nordrhein-Westfalen]     3661 Nordrhein-Westfalen    NRW               
+ 6  6 [Hessen]                  1404 Hessen                 Hessen            
+ 7  7 [Rheinland-Pfalz]          851 Rheinland-Pfalz        Rheinland-Pfalz   
+ 8  8 [Baden-Württemberg]       2402 Baden-Württemberg      Baden-Württemberg 
+ 9  9 [Bayern]                  4049 Bayern                 Bayern            
+10 10 [Saarland]                 207 Saarland               Saarland          
+11 11 [Berlin]                  1198 Berlin                 Berlin            
+12 12 [Brandenburg]              589 Brandenburg            Brandenburg       
+13 13 [Mecklenburg-Vorpommern]   358 Mecklenburg-Vorpommern M V               
+14 14 [Sachsen]                 1003 Sachsen                Sachsen           
+15 15 [Sachsen-Anhalt]           500 Sachsen-Anhalt         Sachsen-Anhalt    
+16 16 [Thüringen]                506 Thüringen              Thüringen         </code></pre>
+</div>
+</div>
+<p><a href="#fct_cats">Weitere <code>fct_....()</code> Funktionen aus <code>{forcats}</code></a>, einen Überblick gibt das <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf">Cheatsheet</a>.</p>
+<p>Eine sehr praktische Funktion ist <code>fct_reorder()</code>, mit dieser können wir die levels nach Häufigkeit (aus <code>tab_dat1$n</code>) sortieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tab_dat2<span class="sc">$</span>Bula_fct3 <span class="ot">&lt;-</span> <span class="fu">fct_reorder</span>(tab_dat2<span class="sc">$</span>Bula_fct2,tab_dat2<span class="sc">$</span>n)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(tab_dat2<span class="sc">$</span>Bula_fct2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Schleswig-Holstein" "Hamburg"            "Niedersachsen"     
+ [4] "Bremen"             "NRW"                "Hessen"            
+ [7] "Rheinland-Pfalz"    "Baden-Württemberg"  "Bayern"            
+[10] "Saarland"           "Berlin"             "Brandenburg"       
+[13] "M V"                "Sachsen"            "Sachsen-Anhalt"    
+[16] "Thüringen"         </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(tab_dat2<span class="sc">$</span>Bula_fct3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Bremen"             "Saarland"           "M V"               
+ [4] "Sachsen-Anhalt"     "Thüringen"          "Hamburg"           
+ [7] "Brandenburg"        "Schleswig-Holstein" "Rheinland-Pfalz"   
+[10] "Sachsen"            "Berlin"             "Hessen"            
+[13] "Niedersachsen"      "Baden-Württemberg"  "NRW"               
+[16] "Bayern"            </code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tab_dat2 <span class="sc">%&gt;%</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> Bula_fct2, <span class="at">x =</span> n)) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position=</span><span class="fu">position_dodge</span>(), <span class="at">fill =</span> <span class="st">"turquoise2"</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>tab_dat2 <span class="sc">%&gt;%</span> </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> Bula_fct3, <span class="at">x =</span> n)) <span class="sc">+</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position=</span><span class="fu">position_dodge</span>(), <span class="at">fill =</span> <span class="st">"turquoise3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="05_data_wrangle1_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="05_data_wrangle1_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+
+</div>
+</section>
+<section id="labels-selbst-erstellen-und-ranspielen" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="labels-selbst-erstellen-und-ranspielen"><span class="header-section-number">5.4.4</span> Labels selbst erstellen und ranspielen</h3>
+<p>Ein alternativer Weg geht über einen kleinen Label-<code>data.frame</code> und <code>left_join()</code> (mehr zu <code>left_join()</code> später.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tab_ausb2 <span class="ot">&lt;-</span> etb18_kap5 <span class="sc">%&gt;%</span> <span class="fu">count</span>(m1202)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>tab_ausb2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  m1202                                                             n
+  &lt;dbl+lbl&gt;                                                     &lt;int&gt;
+1 -1 [keine Angabe]                                                44
+2  1 [Ohne Berufsabschluss]                                      1089
+3  2 [duale o. schulische Berufsausbildung/einf.,mittl. Beamte]  9294
+4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)]  1725
+5  4 [Fachhochschule, Universität/ geh., höhere Beamte]          7851</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>lab_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">m1202=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>lab_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  m1202
+1     1
+2     2
+3     3
+4     4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>lab_df<span class="sc">$</span>m1202_lab <span class="ot">&lt;-</span> <span class="fu">factor</span>(lab_df<span class="sc">$</span>m1202,<span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"ohne Abs."</span>, <span class="st">"dual/schul."</span>, <span class="st">"Aufstiegsfortb."</span>, <span class="st">"FH/Uni"</span>))</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>lab_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  m1202       m1202_lab
+1     1       ohne Abs.
+2     2     dual/schul.
+3     3 Aufstiegsfortb.
+4     4          FH/Uni</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>tab_ausb2 <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(lab_df,<span class="at">by =</span> <span class="st">"m1202"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  m1202                                                             n m1202_lab 
+  &lt;dbl+lbl&gt;                                                     &lt;int&gt; &lt;fct&gt;     
+1 -1 [keine Angabe]                                                44 &lt;NA&gt;      
+2  1 [Ohne Berufsabschluss]                                      1089 ohne Abs. 
+3  2 [duale o. schulische Berufsausbildung/einf.,mittl. Beamte]  9294 dual/schu…
+4  3 [Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)]  1725 Aufstiegs…
+5  4 [Fachhochschule, Universität/ geh., höhere Beamte]          7851 FH/Uni    </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>tab_ausb2 <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(lab_df,<span class="at">by =</span> <span class="st">"m1202"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> m1202_lab, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position=</span><span class="fu">position_dodge</span>(), <span class="at">fill =</span> <span class="st">"turquoise3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="05_data_wrangle1_files/figure-html/unnamed-chunk-25-1.png" style="width:80.0%;height:50.0%"></p>
+</div>
+</div>
+</section>
+<section id="labels-exportieren" class="level3" data-number="5.4.5">
+<h3 data-number="5.4.5" class="anchored" data-anchor-id="labels-exportieren"><span class="header-section-number">5.4.5</span> Labels exportieren</h3>
+<p>Wenn wir aber beispielsweise einen Datensatz für Stata labeln wollen, hilft uns wieder <code>{labelled}</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(labelled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>etb18_kap5<span class="sc">$</span>S1_num2 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(etb18_kap5<span class="sc">$</span>S1)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(etb18_kap5<span class="sc">$</span>S1_num2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">val_labels</span>(etb18_kap5<span class="sc">$</span>S1_num2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Mann"</span><span class="ot">=</span><span class="dv">1</span>,<span class="st">"Frau"</span><span class="ot">=</span><span class="dv">2</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(etb18_kap5<span class="sc">$</span>S1_num2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$labels
+Mann Frau 
+   1    2 
+
+$class
+[1] "haven_labelled" "vctrs_vctr"     "double"        </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>etb18_kap5 <span class="sc">%&gt;%</span> <span class="fu">count</span>(S1_num2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  S1_num2       n
+  &lt;dbl+lbl&gt; &lt;int&gt;
+1 1 [Mann]  10068
+2 2 [Frau]   9935</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>etb18_kap5 <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(S1_num2) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  haven<span class="sc">::</span><span class="fu">write_dta</span>(.,<span class="at">path =</span> <span class="st">"./data/etb18_kap5.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>…in <em>Stata</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="st">"./data/etb18_kap5.dta"</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="kw">tab</span> S1_num2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    S1_num2 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       Mann |     10,068       50.33       50.33
+       Frau |      9,935       49.67      100.00
+------------+-----------------------------------
+      Total |     20,003      100.00</code></pre>
+</div>
+</div>
+<p><a href="https://joseph.larmarange.net/intro_labelled.html">Mehr zu <code>labels</code> in <code>{labelled}</code></a>.</p>
+<!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->
+<!-- Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als Ebenen bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge. Wenn Sie zum Beispiel einen Faktor mit 2 Ebenen haben: -->
+
+
+</section>
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Nicht zu verwechseln mit <code>as.factor()</code> aus base R - der <code>_</code> macht einen Unterschied!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./04_viz.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06_data_wrangle2.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2022-2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/BIBB_R">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
+  </div>
+</footer>
+
+
+
+</body></html>

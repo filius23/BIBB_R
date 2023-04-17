@@ -1,0 +1,5 @@
+if (!dir.exists(here::here("pic"))) dir.create(here::here("pic"))
+png_path <- here::here("pic", "static", "png")
+svg_path <- here::here("pic", "static", "svg")
+if (!dir.exists(png_path)) dir.create(png_path, recursive = TRUE)
+if (!dir.exists(svg_path)) dir.create(svg_path, recursive = TRUE)

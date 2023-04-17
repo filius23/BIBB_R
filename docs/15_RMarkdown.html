@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am BIBB - 14&nbsp; RMarkdown</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./14_tabellenexport.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am BIBB</a> 
+        <div class="sidebar-tools-main">
+    <a href="./R-am-BIBB.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Willkommen</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_data_wrangle3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Links &amp; Weiterführendes</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#rmarkdown-dokument-einrichten" id="toc-rmarkdown-dokument-einrichten" class="nav-link active" data-scroll-target="#rmarkdown-dokument-einrichten"> <span class="header-section-number">14.1</span> RMarkdown Dokument einrichten</a></li>
+  <li><a href="#wichtige-begriffe" id="toc-wichtige-begriffe" class="nav-link" data-scroll-target="#wichtige-begriffe"> <span class="header-section-number">14.2</span> Wichtige Begriffe</a></li>
+  <li><a href="#chunks-einfügen" id="toc-chunks-einfügen" class="nav-link" data-scroll-target="#chunks-einfügen"> <span class="header-section-number">14.3</span> Chunks einfügen</a></li>
+  <li><a href="#namen-für-chunks" id="toc-namen-für-chunks" class="nav-link" data-scroll-target="#namen-für-chunks"> <span class="header-section-number">14.4</span> Namen für chunks</a></li>
+  <li><a href="#chunk-optionen" id="toc-chunk-optionen" class="nav-link" data-scroll-target="#chunk-optionen"> <span class="header-section-number">14.5</span> Chunk-Optionen</a></li>
+  <li><a href="#inline-chunks" id="toc-inline-chunks" class="nav-link" data-scroll-target="#inline-chunks"> <span class="header-section-number">14.6</span> Inline chunks</a></li>
+  <li><a href="#output-yaml" id="toc-output-yaml" class="nav-link" data-scroll-target="#output-yaml"> <span class="header-section-number">14.7</span> Output &amp; <code>yaml</code></a></li>
+  <li><a href="#fortgeschrittene-erstellung-von-word-dokumenten-mit-officedown" id="toc-fortgeschrittene-erstellung-von-word-dokumenten-mit-officedown" class="nav-link" data-scroll-target="#fortgeschrittene-erstellung-von-word-dokumenten-mit-officedown"> <span class="header-section-number">14.8</span> Fortgeschrittene Erstellung von Word-Dokumenten mit <span><code>{officedown}</code></span></a></li>
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">14.9</span> Übung</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p><a href="https://rmarkdown.rstudio.com/">{rmarkdown}</a> erlaubt, formatierte Textelemente mit <a href="https://www.markdownguide.org/cheat-sheet/">Markdown</a> und R code bzw. Output zu kombinieren. Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von <a href="https://www.markdownguide.org/cheat-sheet/">Markdown</a>-Befehlen formatiert werden kann. So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden. Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen. Diese gesamte Webseite wurde mit <a href="https://bookdown.org/yihui/rmarkdown-cookbook/">{R Markdown}</a> bzw. dem verwandten Paket <a href="www.quarto.org/">{Quarto}</a> erstellt.</p>
+<p>Dieses Kapitel kann lediglich eine kleine Einführung in RMarkdown sein. Die <a href="https://rmarkdown.rstudio.com/">Hilfeseiten und Dokumentation für R Markdown</a> ist extrem umfangreich und auch die <a href="https://rmarkdown.rstudio.com/lesson-1.html">Tutorials</a> und <a href="https://rmarkdown.rstudio.com/lesson-15.html">Cheatsheets</a> sind hervorragend. Daher hier nur eine kleiner Überblick.</p>
+<p>Ein RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Mein erstes RMarkdown-Dokument"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Mein Name"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-09-11"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> pdf_document</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu"># Überschrift 1</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unterüberschrift 2</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Dies ist ein R Markdown-Dokument. </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>Text kann **fett** und *kursiv* geschrieben werden. </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Ein R-Code-Baustein ("chunk") sieht so aus:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r cars}</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># hier kommt der R Code hin</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mtcars<span class="sc">$</span>qsec)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_demo.png" class="img-fluid figure-img" style="width:75.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="rmarkdown-dokument-einrichten" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="rmarkdown-dokument-einrichten"><span class="header-section-number">14.1</span> RMarkdown Dokument einrichten</h2>
+<p>Ein RMarkdown-Dokument können wir entweder einrichten, indem wir über das <em>Menü File</em> -&gt; <em>R Markdown…</em> das Einrichtungsmenü aufrufen. Hier können wir den Titel, Autorennamen und das Datum sowie das Output-Format angeben:</p>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_step1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_step2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Alternativ können wir auch rechts unten ein R Skript in RMarkdown-Dokument umformatieren:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_rmd_stepX.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>RMarkdown-Dateien haben die Dateiendung <code>.rmd</code>. Das Knitten einer RMarkdown-Datei findet in einer neuen Umgebung statt - d.h. hier müssen alle Pakete und Daten geladen werden, auch wenn Sie in der Session bereits geladen sind.</p>
+</section>
+<section id="wichtige-begriffe" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="wichtige-begriffe"><span class="header-section-number">14.2</span> Wichtige Begriffe</h2>
+<ul>
+<li><p><strong>Chunk</strong>: Abschnitt mit R-Code innerhalb eines RMarkdown-Dokuments.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a># hier kommt der R Code hin</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+<p>Vor und nach dem Chunk muss eine Leerzeile stehen. Die letzten drei Backticks müssen alleine in der letzten Zeile eines chunks stehen.</p>
+<ul>
+<li><strong>Knit</strong>: Beim “knitten” eines RMarkdown Dokuments, werden zuerst alle chunks ausgeführt und der jeweilige Output in Markdown konvertiert. Im Anschluss ruft R <a href="https://pandoc.org/">pandoc</a> auf um, den Markdown-Text in HTML, PDF oder Word zu konvertieren.</li>
+</ul>
+<p>Knitten kann entweder über das “Knit”-Symbol oben im Editor mit der Tastenkombination <code>⌘⇧K</code> auf macOS oder STRG + <code>⇧</code> + k in Windows</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_knit-button.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="chunks-einfügen" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="chunks-einfügen"><span class="header-section-number">14.3</span> Chunks einfügen</h2>
+<p>Wir können neue chunks auf zwei Arten erstellen</p>
+<ul>
+<li><p>Mit <code>⌘⌥I</code> auf macOS oder <code>STRG + alt + I</code> auf Windows-Rechnern. Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.</p></li>
+<li><p>Mit dem “Insert” Button oben im Editor:</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_insert_chunk.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="namen-für-chunks" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="namen-für-chunks"><span class="header-section-number">14.4</span> Namen für chunks</h2>
+<p>Wir können den Abschnitten Namen hinzufügen, um die Navigation innerhalb des Dokument zu erleichtern. Wenn wir in RStudio auf das kleine Dropdown-Menü (mit dem <code>#</code>) am unteren Rand des Editors klicken, bekommen wir ein Inhaltsverzeichnis, das alle Überschriften und Abschnitte anzeigt. Wenn wir die Abschnitte benennen, werden sie in der Liste angezeigt. Wenn Sie keinen Namen angeben, wird der Chunk trotzdem angezeigt, aber Sie wissen nicht, was er tut.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_chunk-toc.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Namen werden direkt nach dem <code>{r</code> in der ersten Zeile des chunks angegeben. Leerzeichen sind in chunk-Namen nicht erlaubt, aber Unterstriche und Bindestriche. <strong>Jeder chunk-Name darf innerhalb eines Dokuments nur einmal vergeben werden.</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>```{r chunk_Name}</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a># R Code</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="chunk-optionen" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="chunk-optionen"><span class="header-section-number">14.5</span> Chunk-Optionen</h2>
+<p>Wir haben eine Reihe an Möglichkeiten festzulegen, wie RMarkdown mit Chunks umgehen soll. Eine vollständige Übersicht findest sich im <a href="https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">RMarkdown Reference Guide</a> oder auf der Webseite von <a href="https://yihui.org/knitr/options/"><strong>knitr</strong></a>.</p>
+<p>Optionen werden in der ersten Zeile eines chunks nach dem <code>{r}</code> festgelegt:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>```{r name-of-this-chunk, warning=FALSE, message=FALSE}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a># Code goes here</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Hier eine kleine Liste der wichtigsten Optionen:</p>
+<ul>
+<li><code>fig.width=5</code> &amp; <code>fig.height=4</code>: Größe von Plots</li>
+<li><code>echo=FALSE</code>: Der chunk wird zwar ausgeführt und das Ergebnis im Zieldokument gezeigt, nicht aber der Code</li>
+<li><code>include=FALSE</code>: Der chunk wird zwar ausgeführt, aber im Zieldokument werden weder der Code selbst noch das Ergebnis gezeigt</li>
+<li><code>eval=FALSE</code>: Der chunk wird nicht ausgeführt, aber im Zieldokument gezeigt</li>
+<li><code>message=FALSE</code>: messages werden ausgeblendet (bspw. alles was beim Laden von Paketen angezeigt wird)</li>
+<li><code>warning=FALSE</code>: warnings werden ausgeblendet</li>
+</ul>
+<p>Außerdem können Optionen auch mit einem Klick auf das Zahnrad rechts oben in einem Chunk gesetzt werden:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_chunk-opts.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="inline-chunks" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="inline-chunks"><span class="header-section-number">14.6</span> Inline chunks</h2>
+<p>Eine weitere Stärke von RMarkdown ist, dass Ergebnisse direkt im Text dargestellt werden können. Dazu dienen “inline chunks”, um bspw. Kennzahlen aus einer Analyse einzufügen <code>`r R Code`</code>.</p>
+<p>So können wir bspw. Werte in einem Chunk berechnen und dann in den Text einfügen.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>```{r find-avg-mpg, echo=FALSE}</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>median_mpg &lt;- mean(mtcars$mpg)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Im Median haben die Fahrzeuge einen Verbrauch von `r round(median_mpg, 1)` miles per gallon.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>… führt zu folgendem Ergebnis:</p>
+<blockquote class="blockquote">
+<p>Im Median haben die Fahrzeuge einen Verbrauch von 19.2 miles per gallon.</p>
+</blockquote>
+</section>
+<section id="output-yaml" class="level2" data-number="14.7">
+<h2 data-number="14.7" class="anchored" data-anchor-id="output-yaml"><span class="header-section-number">14.7</span> Output &amp; <code>yaml</code></h2>
+<p>Als yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen, insbesondere das Zieldateiformat.</p>
+<p>Das erste unter <code>output</code> aufgeführte Dateiformat ist der, der erzeugt wird, wenn wir auf die Schaltfläche “knit” klicken oder das Tastaturkürzel (⌘⇧K” unter macOS; ” STRG + Umschalt + K” unter Windows) drücken.</p>
+<p>Die Einrückung im YAML-Abschnitts ist von Bedeutung, insbesondere dann, wenn unter den einzelnen Ausgabetypen verschachtelte Einstellungen vorhanden sind. So könnte ein typischer <code>Output</code>-Abschnitt aussehen, unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Mein Worddokument"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "My name"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "13. August 2022"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">  word_document: </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">    reference_docx: "Vorlage.docx"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: yes</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">    fig_caption: yes</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">    fig_height: 4</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    fig_width: 5</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Auch für die anderen Output-Formate gibt es einen YAML-Befehl:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "My document"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document: default</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">  pdf_document: default</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">  word_document: default</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><a href="https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html">Eine Übersicht findet zu verschiedenen Optionen findet sich bspw. hier</a> oder hier für <a href="https://bookdown.org/yihui/rmarkdown/word-document.html">Word</a>, <a href="https://bookdown.org/yihui/rmarkdown/html-document.html">HTML</a>, <a href="https://bookdown.org/yihui/rmarkdown/pdf-document.html">PDF</a> oder <a href="https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html">Powerpoint</a></p>
+<p>Alternativ lassen sich auch mit den Zahnrad oben neben dem Knit-Button Einstellungen für den YAML-Header festlegen:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/115_output-opts.png" class="img-fluid figure-img" style="width:35.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fortgeschrittene-erstellung-von-word-dokumenten-mit-officedown" class="level2" data-number="14.8">
+<h2 data-number="14.8" class="anchored" data-anchor-id="fortgeschrittene-erstellung-von-word-dokumenten-mit-officedown"><span class="header-section-number">14.8</span> Fortgeschrittene Erstellung von Word-Dokumenten mit <a href="https://ardata-fr.github.io/officeverse/officedown-for-word.html"><code>{officedown}</code></a></h2>
+<p>Mit <a href="https://ardata-fr.github.io/officeverse/officedown-for-word.html"><code>{officedown}</code></a> können wir bspw. Querverweise einbauen:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"officedown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Mein zweites RMarkdown-Dokument"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Dein Name"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-09-11"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">  officedown::rdocx_document</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(officedown)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>etbx <span class="ot">&lt;-</span>  haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>, </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">n_max =</span> <span class="dv">2000</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"S1"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"az"</span>,<span class="st">"zpalter"</span>,<span class="st">"F1605e"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, m1202 <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, zpalter <span class="sc">&lt;</span> <span class="dv">9999</span> ) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ausb =</span> <span class="fu">factor</span>(m1202, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"ohne"</span>,<span class="st">"dual/schul."</span>,<span class="st">"Aufst."</span>,<span class="st">"FH/Uni"</span>)),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">S1 =</span> <span class="fu">factor</span>(S1,<span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="at">labels =</span><span class="fu">c</span>(<span class="st">"m"</span>,<span class="st">"w"</span>)))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tab.cap="Eine Tabelle", echo=FALSE,  tab.id='tab2'}</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>etbx <span class="sc">%&gt;%</span> <span class="fu">count</span>(ausb)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>Dies ist ein Querverweis auf Tabelle \@ref(tab:tab2).</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="übung" class="level2" data-number="14.9">
+<h2 data-number="14.9" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.9</span> Übung</h2>
+<ul>
+<li>Verwenden Sie das <code>14_Markdown.Rmd</code>-Datei als Vorlage</li>
+<li>Passen Sie den Verfasser:innen-Namen und Datum an</li>
+<li>Passen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss</li>
+<li>Fügen Sie einen chunk mit einer Auszählung von <code>ausb</code> ein</li>
+<li>Fügen Sie einen chunk mit einem <code>summarise()</code>-Befehl ein - bspw.: ::: {.cell layout-align=“center”}</li>
+</ul>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>etbx <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(S1,ausb) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">min =</span>  <span class="fu">min</span>(F518_SUF,<span class="at">na.rm =</span> T),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(F518_SUF,<span class="at">na.rm =</span> T),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">max =</span>  <span class="fu">max</span>(F518_SUF,<span class="at">na.rm =</span> T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<ul>
+<li><p>Setzen Sie <code>include</code>, <code>echo</code> usw. nach Wunsch.</p></li>
+<li><p>Fügen nach Geschmack auch <code>{flextable}</code>-Befehle ein (Denken Sie an <code>library(flextable)</code> zu laden)</p></li>
+<li><p>Knitten Sie das Dokument zu einer Word-Dokument.</p></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./14_tabellenexport.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">Links &amp; Weiterführendes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2022-2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/BIBB_R">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
+  </div>
+</footer>
+
+
+
+</body></html>

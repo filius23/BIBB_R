@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am BIBB - 7&nbsp; Inferenzstatistik &amp; Zusammenhangsmaße</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09_reg.html" rel="next">
+<link href="./06_data_wrangle2.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am BIBB</a> 
+        <div class="sidebar-tools-main">
+    <a href="./R-am-BIBB.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Willkommen</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_data_wrangle3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Links &amp; Weiterführendes</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#t-tests" id="toc-t-tests" class="nav-link active" data-scroll-target="#t-tests"> <span class="header-section-number">7.1</span> t-Tests</a>
+  <ul class="collapse">
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">7.1.1</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#pearson" id="toc-pearson" class="nav-link" data-scroll-target="#pearson"> <span class="header-section-number">7.2</span> Korrelation</a></li>
+  <li><a href="#weitere-zusammenshangsmaße" id="toc-weitere-zusammenshangsmaße" class="nav-link" data-scroll-target="#weitere-zusammenshangsmaße"> <span class="header-section-number">7.3</span> Weitere Zusammenshangsmaße:</a>
+  <ul class="collapse">
+  <li><a href="#rangkorrelation-kendalls-tau" id="toc-rangkorrelation-kendalls-tau" class="nav-link" data-scroll-target="#rangkorrelation-kendalls-tau"> <span class="header-section-number">7.3.1</span> Rangkorrelation &amp; Kendall’s <span class="math inline">\(\tau\)</span></a></li>
+  <li><a href="#chi2" id="toc-chi2" class="nav-link" data-scroll-target="#chi2"> <span class="header-section-number">7.3.2</span> <span class="math inline">\(\chi^2\)</span> &amp; Cramér’s <span class="math inline">\(v\)</span></a></li>
+  <li><a href="#übung-1" id="toc-übung-1" class="nav-link" data-scroll-target="#übung-1"> <span class="header-section-number">7.3.3</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#gewichtung" id="toc-gewichtung" class="nav-link" data-scroll-target="#gewichtung"> <span class="header-section-number">7.4</span> Gewichtung</a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">7.5</span> Übungen</a>
+  <ul class="collapse">
+  <li><a href="#ttestue" id="toc-ttestue" class="nav-link" data-scroll-target="#ttestue"> <span class="header-section-number">7.5.1</span> Übung 1</a></li>
+  <li><a href="#corr" id="toc-corr" class="nav-link" data-scroll-target="#corr"> <span class="header-section-number">7.5.2</span> Übung 2</a></li>
+  <li><a href="#weight" id="toc-weight" class="nav-link" data-scroll-target="#weight"> <span class="header-section-number">7.5.3</span> Übung 3</a></li>
+  </ul></li>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"> <span class="header-section-number">7.6</span> Anhang</a>
+  <ul class="collapse">
+  <li><a href="#corrs" id="toc-corrs" class="nav-link" data-scroll-target="#corrs"> <span class="header-section-number">7.6.1</span> Weitere Korrelationsmaße</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>etb18_kap7 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">n_max =</span> <span class="dv">1000</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"zpalter"</span>,<span class="st">"S1"</span>,<span class="st">"F231"</span>,<span class="st">"az"</span>,<span class="st">"F600_12"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"m1202"</span>,<span class="st">"F204"</span>,<span class="st">"gew2018_hr17"</span>,<span class="st">"gew2018"</span>,<span class="st">"F518_SUF"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"F411_01"</span>,<span class="st">"S3"</span>,<span class="st">"Mig"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">F600_12 =</span> <span class="fu">ifelse</span>(F600_12 <span class="sc">&gt;</span> <span class="dv">4</span>,<span class="cn">NA</span>,F600_12),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">zpalter =</span> <span class="fu">ifelse</span>(zpalter<span class="sc">&gt;</span><span class="dv">100</span>,<span class="cn">NA</span>,zpalter),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">m1202 =</span> <span class="fu">ifelse</span>(m1202 <span class="sc">&gt;</span> <span class="dv">4</span>,<span class="cn">NA</span>,m1202))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Neue Pakete:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"effectsize"</span>) <span class="co"># u.a. Cohen's D berechnen </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"survey"</span>) <span class="co"># Gewichtung</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Bisher haben wir die Angaben aus unserem Datensatz immer als fix angesehen. Ziel einer statistischen Auswertung ist aber meistens, Aussagen über die <em>Grundgesamtheit</em> oder <em>Population</em> zu treffen. Im Fall der ETB 2018 wären das also alle Erwerbstätigen in Deutschland.</p>
+<section id="t-tests" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="t-tests"><span class="header-section-number">7.1</span> t-Tests</h2>
+<p>Eines der zentralen Werkzeuge der grundlegenden Inferenzstatistik ist der t-Test.</p>
+<p>Ein typischer Anwendungsfall für t-Tests ist der Gruppenvergleich, dazu geben wir in <code>t.test()</code> die zu testende Variable und und nach einer <code>~</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> die Gruppenvariable an. Wir testen hier also auf Altersunterschiede zwischen Männern (<code>S1</code>=1, daher group1) und Frauen (<code>S1</code>=2, daher group2).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(etb18_kap7<span class="sc">$</span>zpalter<span class="sc">~</span>etb18_kap7<span class="sc">$</span>S1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  etb18_kap7$zpalter by etb18_kap7$S1
+t = -2.549, df = 974.9, p-value = 0.01095
+alternative hypothesis: true difference in means between group 1 and group 2 is not equal to 0
+95 percent confidence interval:
+ -3.1679965 -0.4119377
+sample estimates:
+mean in group 1 mean in group 2 
+       47.28484        49.07480 </code></pre>
+</div>
+</div>
+<p>Es hat sich als Konvention etabliert, von einem signifikanten Unterschied zu sprechen wenn die Irrtumswahrscheinlichkeit unter 5% liegt. Das bedeutet:</p>
+<!-- > *Assuming that the null hypothesis is true and the study is repeated an infinite number times by drawing random samples from the same populations(s), less than 5% of these results will be more extreme than the current result.*[^1] -->
+<!-- [^1]: [Failing Grade: 89% of Introduction-to-Psychology Textbooks That Define or Explain Statistical Significance Do So Incorrectly. Advances in Methods and Practices in Psychological Science, 2515245919858072.](https://doi.org/10.1177/2515245919858072) -->
+<p>Da hier der p-Wert sehr viel kleiner ist als 0.05 ist (<code>p-value &lt; 2.2e-16</code>)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, können wir von einen statistisch signifikanten Unterschied sprechen.</p>
+<p>Standardmäßig bekommen wir einen beidseitigen Test (<code>"two.sided"</code>), wir können aber auch einen links- (<code>"less"</code>) oder rechtsseitigen (<code>"greater"</code>) Test anfordern <a href="#hypt">mehr dazu</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(etb18_kap7<span class="sc">$</span>zpalter<span class="sc">~</span>etb18_kap7<span class="sc">$</span>S1,<span class="at">alternative =</span> <span class="st">"two.sided"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(etb18_kap7<span class="sc">$</span>zpalter<span class="sc">~</span>etb18_kap7<span class="sc">$</span>S1,<span class="at">alternative =</span> <span class="st">"less"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(etb18_kap7<span class="sc">$</span>zpalter<span class="sc">~</span>etb18_kap7<span class="sc">$</span>S1,<span class="at">alternative =</span> <span class="st">"greater"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Für Effektgrößen wie Cohen’s D empfiehlt sich das Paket <a href="https://easystats.github.io/effectsize/index.html">{effectsize}</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cohens_d</span>(etb18_kap7<span class="sc">$</span>zpalter<span class="sc">~</span>etb18_kap7<span class="sc">$</span>S1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cohen's d |         95% CI
+--------------------------
+-0.16     | [-0.29, -0.04]
+
+- Estimated using pooled SD.</code></pre>
+</div>
+</div>
+<!-- https://github.com/gergness/srvyr/ -->
+<!-- https://federicovegetti.github.io/teaching/heidelberg_2018/lab/sst_lab_day2.html -->
+<!-- http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf -->
+<section id="übung" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">7.1.1</span> <a href="#ttestue">Übung</a></h3>
+</section>
+</section>
+<section id="pearson" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="pearson"><span class="header-section-number">7.2</span> Korrelation</h2>
+<p>Den Korrelationskoeffizienten können wir in R mit <code>cor.test()</code> berechnen:</p>
+<p><code>F231</code>: Wie viele Stunden arbeiten Sie i.d.R. im Durchschnitt pro Woche von zu Hause aus?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>zpalter,etb18_kap7<span class="sc">$</span>F231,<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
+
+data:  etb18_kap7$zpalter and etb18_kap7$F231
+t = 0.48542, df = 286, p-value = 0.6277
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.08717658  0.14379451
+sample estimates:
+       cor 
+0.02869194 </code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>Es handelt sich mit 0.0287 also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit 0.62775 liegt der p-Wert deutlich unter 0,05.</p>
+<p>Um eine Korrelationsmatrix zu erhalten hilft das Paket <a href="https://github.com/easystats/correlation">{correlation}</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"correlation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(correlation)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>etb18_kap7 <span class="sc">%&gt;%</span> <span class="fu">select</span>(zpalter,F231,az) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">correlation</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Correlation Matrix (pearson-method)
+
+Parameter |    az | F231
+------------------------
+zpalter   | -0.05 | 0.03
+F231      | -0.10 |     
+
+p-value adjustment method: Holm (1979)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>corr_df <span class="ot">&lt;-</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  etb18_kap7 <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(S1) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(zpalter,F231,az) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">correlation</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adding missing grouping variables: `S1`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(corr_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Group Parameter1 Parameter2            r   CI      CI_low    CI_high
+1     1    zpalter       F231 -0.008016615 0.95 -0.16106862 0.14541192
+2     1    zpalter         az -0.006654458 0.95 -0.09536128 0.08215722
+3     1       F231         az -0.107424635 0.95 -0.25645259 0.04659229
+4     2    zpalter       F231  0.029864101 0.95 -0.14722774 0.20510074
+5     2    zpalter         az -0.038373166 0.95 -0.12495280 0.04878647
+6     2       F231         az  0.042311811 0.95 -0.13429355 0.21631207
+           t df_error         p              Method n_Obs
+1 -0.1020381      162 1.0000000 Pearson correlation   164
+2 -0.1467035      486 1.0000000 Pearson correlation   488
+3 -1.3752506      162 0.5128577 Pearson correlation   164
+4  0.3300070      122 1.0000000 Pearson correlation   124
+5 -0.8638192      506 1.0000000 Pearson correlation   508
+6  0.4696813      123 1.0000000 Pearson correlation   125</code></pre>
+</div>
+</div>
+<!-- ## Ergebnisse weiterverarbeiten -->
+<!-- Die Kennzahlen aus dem Output können wir auch separat aufrufen: -->
+<!-- ```{r} -->
+<!-- ttest1 <- t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "two.sided") -->
+<!-- ttest1$statistic # t-Wert -->
+<!-- ttest1$p.value # p-Wert -->
+<!-- ``` -->
+<!-- Mit `tidy()` aus [{broom}](https://broom.tidymodels.org/) können wir einen `data.frame()` erstellen, der die wesentlichen Parameter enthält: -->
+<!-- ```{r} -->
+<!-- #| eval: false -->
+<!-- library(broom) -->
+<!-- tidy(ttest1) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- library(broom) -->
+<!-- tidy(ttest1) %>%  -->
+
+<!--   rmarkdown::paged_table() -->
+<!-- ``` -->
+<!-- Was hilft uns das?  -->
+<!-- Wir können diesen `data.frame()` mit `{ggplot}` visualisieren, indem wir die Konfidenzintervallgrenzen in `geom_pointrange()` angeben: -->
+<!-- ```{r} -->
+<!-- #| out-width: "80%" -->
+<!-- #| fig-height: 1.5 -->
+<!-- library(ggplot2) -->
+<!-- tidy(ttest1) %>%  -->
+<!-- ggplot(aes(y=method,x=estimate)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_errorbarh(aes(xmin = conf.low,xmax = conf.high), color = "navy", height = .2) +  -->
+<!--   geom_point(color = "navy", size = 2) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- data.frame(corr_df) %>%  -->
+<!--   ggplot(aes(y=Parameter1,x=r, color = Parameter2)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_errorbarh(aes(xmin = CI_low,xmax = CI_high), height = .2) +  -->
+<!--   geom_point(size = 2) + -->
+<!--   facet_wrap(~Group) -->
+<!-- ``` -->
+<!-- Wir können mit `bind_rows()` auch mehrere Tests zu einem `data.frame` zusammenfügen: -->
+<!-- ```{r} -->
+<!-- ttest_m <-  -->
+<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==1], -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson", use = "pairwise.complete.obs") -->
+<!-- ttest_w <-  -->
+<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==2], -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson", use = "pairwise.complete.obs") -->
+<!-- test_df2 <- bind_rows(tidy(ttest_m), -->
+<!--                       tidy(ttest_w),  -->
+<!--                       .id = "S1") # Variable S1 erstellen als Identifikator -->
+<!-- test_df2 -->
+<!-- ``` -->
+<!-- Das können wir jetzt wieder plotten: -->
+<!-- ```{r} -->
+<!-- #| out-width: "80%" -->
+<!-- #| fig-height: 2 -->
+<!-- ggplot(test_df2,aes(y=S1,x=estimate)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy") -->
+<!-- ``` -->
+</section>
+<section id="weitere-zusammenshangsmaße" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="weitere-zusammenshangsmaße"><span class="header-section-number">7.3</span> Weitere Zusammenshangsmaße:</h2>
+<section id="rangkorrelation-kendalls-tau" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="rangkorrelation-kendalls-tau"><span class="header-section-number">7.3.1</span> Rangkorrelation &amp; Kendall’s <span class="math inline">\(\tau\)</span></h3>
+<p>Ein klassisches ordinales Merkmal ist die Schulbildung, die wir aus <code>S3</code> zusammenfassen können (Details im Code-Fenster unten). Wir sehen uns den (möglichen) Zusammenhang zwischen dem höchsten Ausbildungsabschluss <code>m1202</code> und <code>F600_12</code> an:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table table-condensed" style="font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;color: white !important;"> v </th>
+   <th style="text-align:left;color: white !important;"> l </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;font-family: monospace;font-weight: bold;background-color: rgba(242, 242, 242, 1) !important;"> F600_12 </td>
+   <td style="text-align:left;font-weight: bold;background-color: rgba(242, 242, 242, 1) !important;"> Häufigkeit: unter Lärm arbeiten </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-family: monospace;"> 1 </td>
+   <td style="text-align:left;"> häufig </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-family: monospace;"> 2 </td>
+   <td style="text-align:left;"> manchmal </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-family: monospace;"> 3 </td>
+   <td style="text-align:left;"> selten </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-family: monospace;"> 4 </td>
+   <td style="text-align:left;"> nie </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Für den Spearman-Rangkorrelationskoeffizienten können wir <code>method = "spearman"</code> nutzen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12,<span class="at">method =</span> <span class="st">"spearman"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ein weiteres Zusammenhangsmaß für ordinale Variablen sind Konkordanzmaße wie Kendall’s <span class="math inline">\(\tau\)</span>, mit der Option <code>method = "kendall"</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12, <span class="at">method =</span> <span class="st">"kendall"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="chi2" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="chi2"><span class="header-section-number">7.3.2</span> <span class="math inline">\(\chi^2\)</span> &amp; Cramér’s <span class="math inline">\(v\)</span></h3>
+<p>Mit <code>chisq.test()</code> bekommen wir <span class="math inline">\(\chi^2\)</span> ausgegeben, diese müssen wir jedoch auf ein <code>xtabs()</code>-Objekt anwenden (<code>F204</code> Mehrarbeitsvergütung und <code>S1</code> Geschlecht)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(<span class="sc">~</span> F204 <span class="sc">+</span> S1, <span class="at">data =</span> etb18_kap7)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  tab1
+X-squared = 12.541, df = 4, p-value = 0.01375</code></pre>
+</div>
+</div>
+<p>Für Cramér’s <span class="math inline">\(v\)</span> können wir wieder auf <code>{effectsize}</code> zurückgreifen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>effectsize<span class="sc">::</span><span class="fu">cramers_v</span>(etb18_kap7<span class="sc">$</span>F204,etb18_kap7<span class="sc">$</span>S1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cramer's V |       95% CI
+-------------------------
+0.17       | [0.06, 1.00]
+
+- One-sided CIs: upper bound fixed at [1.00].</code></pre>
+</div>
+</div>
+<p><a href="#corrs">Weitere Maße</a></p>
+</section>
+<section id="übung-1" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="übung-1"><span class="header-section-number">7.3.3</span> <a href="#corr">Übung</a></h3>
+</section>
+</section>
+<section id="gewichtung" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="gewichtung"><span class="header-section-number">7.4</span> Gewichtung</h2>
+<blockquote class="blockquote">
+<p>Bei der Datenanalyse ist man oft mit einer Stichprobe aus einer größeren Population konfrontiert und man möchte aus dieser Stichprobe Rückschlüsse auf die größere Population ziehen. Die meisten statistischen Verfahren für diese sog. „Inferenzstatistik“ beruhen dabei auf der Annahme, dass die Stichprobe eine einfache Zufallsstichprobe ist. Bei einer solchen Stichprobe gelangen alle Elemente der Grundgesamtheit mit der gleichen Wahrscheinlichkeit in die Stichprobe. In der Praxis sind solche Stichproben aber die große Ausnahme. Häufig haben bestimmte Gruppen von Personen höhere Auswahlwahrscheinlichkeiten als andere. <a href="https://doi.org/10.1515/9783110469509">Kohler/Kreuter, S.81</a></p>
+</blockquote>
+<p>Gewichte sind ein häufig verwendetes Gegenmittel. Die einfachste Variante für eine Gewichtung ist die Option <code>wt=</code> in <code>count()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>etb18_kap7 <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(S1,m1202,<span class="at">wt =</span> gew2018_hr17)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+   S1           m1202       n
+   &lt;dbl+lbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+ 1 1 [männlich]    -1   1988.
+ 2 1 [männlich]     1 115140.
+ 3 1 [männlich]     2 496863.
+ 4 1 [männlich]     3 127220.
+ 5 1 [männlich]     4 268891.
+ 6 2 [weiblich]    -1   1893.
+ 7 2 [weiblich]     1  70031.
+ 8 2 [weiblich]     2 459651.
+ 9 2 [weiblich]     3  55828.
+10 2 [weiblich]     4 237108.</code></pre>
+</div>
+</div>
+<p>Für umfangreichere Anwendungen stehen in R stehen die Pakete <a href="https://stylizeddata.com/how-to-use-survey-weights-in-r/"><code>{survey}</code></a> und das darauf aufbauende <a href="https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html"><code>{srvyr}</code></a> zur Verfügung.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"survey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Zunächst verwenden wir <code>svydesign()</code>, um die Gewichtung festzulegen. Im weiteren stellt <a href="https://stylizeddata.com/how-to-use-survey-weights-in-r/"><code>{survey}</code></a> dann zahlreiche Funktionen zur Verfügung, die eine gewichtete Variante der basis-Befehle sind - bspw. <code>svymean()</code> und <code>svytable()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>etb18_kap7_weighted <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id      =</span> <span class="sc">~</span>intnr,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">weights =</span> <span class="sc">~</span>gew2018,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data    =</span> etb18_kap7)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">svymean</span>(<span class="sc">~</span>zpalter, etb18_kap7_weighted, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          mean     SE
+zpalter 44.234 0.6175</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(etb18_kap7<span class="sc">$</span>zpalter, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 48.19779</code></pre>
+</div>
+</div>
+<p>Für Tabellen gibt es in <code>{survey}</code> auch eine Funktion: <code>svytable(~S1+m1202,etb18_kap7_weighted)</code></p>
+<p>Für <a href="09_reg.html">Regressionsmodelle</a> gibt es bspw. <code>survey::svyglm()</code></p>
+<p>Lektüre: <a href="https://doi.org/10.1007/978-3-531-18939-0_24">Kiesl, H. (2014). Gewichtung. In N. Baur &amp; J. Blasius (Eds.), Handbuch Methoden der empirischen Sozialforschung (pp.&nbsp;349–356). Springer Fachmedien Wiesbaden.</a></p>
+</section>
+<section id="übungen" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="übungen"><span class="header-section-number">7.5</span> Übungen</h2>
+<section id="ttestue" class="level3" data-number="7.5.1">
+<h3 data-number="7.5.1" class="anchored" data-anchor-id="ttestue"><span class="header-section-number">7.5.1</span> Übung 1</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>etb18_ue7 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">n_max =</span> <span class="dv">1000</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"S1"</span>,<span class="st">"az"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"F411_01"</span>,<span class="st">"gew2018"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">matches</span>(<span class="st">"m1202|F411_01"</span>), <span class="sc">~</span><span class="fu">ifelse</span>(.x <span class="sc">&gt;</span> <span class="dv">4</span><span class="sc">|</span>.x<span class="sc">&lt;</span><span class="dv">0</span>,<span class="cn">NA</span>,.x))) <span class="co"># missings in m1202 mit NA überschreiben</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (<code>az</code>) zwischen Männern und Frauen besteht (<code>S1</code>). Beide Variablen haben keine Missings - Sie können direkt los legen</p>
+<p>Berechnen Sie das Cohen’s d für diesen Zusammenhang.</p>
+</section>
+<section id="corr" class="level3" data-number="7.5.2">
+<h3 data-number="7.5.2" class="anchored" data-anchor-id="corr"><span class="header-section-number">7.5.2</span> Übung 2</h3>
+<ul>
+<li><p>Untersuchen Sie die Korrelation zwischen der Wochenarbeitszeit (<code>az</code>) und dem Einkommen (<code>F518_SUF</code>) der Befragten.</p></li>
+<li><p>Denken Sie daran, die Missings in <code>F518_SUF</code> auszuschließen: <code>etb18_kap7$F518_SUF[etb18_kap7$F518_SUF&gt;99990] &lt;- NA</code>, <code>az</code> hat keine Missings.</p></li>
+<li><p>Berechnen Sie die Rangkorrelation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck <code>F411_01</code> und der Ausbildungsvariable <code>m1202</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="rqbubbthqw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#rqbubbthqw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#rqbubbthqw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#rqbubbthqw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#rqbubbthqw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#rqbubbthqw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#rqbubbthqw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#rqbubbthqw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#rqbubbthqw .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rqbubbthqw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rqbubbthqw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#rqbubbthqw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#rqbubbthqw .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#rqbubbthqw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rqbubbthqw .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#rqbubbthqw .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#rqbubbthqw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rqbubbthqw .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#rqbubbthqw .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rqbubbthqw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#rqbubbthqw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rqbubbthqw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rqbubbthqw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rqbubbthqw .gt_left {
+  text-align: left;
+}
+
+#rqbubbthqw .gt_center {
+  text-align: center;
+}
+
+#rqbubbthqw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#rqbubbthqw .gt_font_normal {
+  font-weight: normal;
+}
+
+#rqbubbthqw .gt_font_bold {
+  font-weight: bold;
+}
+
+#rqbubbthqw .gt_font_italic {
+  font-style: italic;
+}
+
+#rqbubbthqw .gt_super {
+  font-size: 65%;
+}
+
+#rqbubbthqw .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#rqbubbthqw .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#rqbubbthqw .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#rqbubbthqw .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#rqbubbthqw .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#rqbubbthqw .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#rqbubbthqw .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">var</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">.</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">1</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">2</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">3</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">4</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">9</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="font-family: Roboto;">F411_01</td>
+<td class="gt_row gt_left">Wie häufig kommt es vor, dass Sie unter starkem Termin- oder Leistungsdruck arbe</td>
+<td class="gt_row gt_left">häufig</td>
+<td class="gt_row gt_left">manchmal</td>
+<td class="gt_row gt_left">selten</td>
+<td class="gt_row gt_left">nie</td>
+<td class="gt_row gt_left">keine Angabe</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<!-- + Berechnen Sie die Rangkorrelation getrennt für Männer und Frauen (Hinweis: die Rangkorrelation können Sie mit in `{correlation}` mit `correlation(method = "spearman")` berechnen)  -->
+<!--   + So können Sie `educ` in `etb18_kap7` erstellen und die Missings in `F411_01` überschreiben und Erstellen Sie einen kleineren Datensatz, indem Sie die ersten 300 Zeilen auswählen: -->
+<!-- ```{r, eval =F} -->
+<!-- etb18_kap7_small <-  -->
+<!--   etb18_kap7 %>%  -->
+<!--   mutate(educ = case_when(S3 %in% 2:4 ~ 1, -->
+<!--                           S3 %in% 5:6 ~ 2, -->
+<!--                           S3 %in% 7:8 ~ 3), -->
+<!--          F411_01 = ifelse(F411_01 > 4,NA,F411_01)) %>%  -->
+<!--   slice(1:300) -->
+<!-- ``` -->
+<!--   + Erstellen Sie eine Kreuztabelle aus `educ` und `F411_01` -->
+<!--   + Berechnen Sie Spearman's $\rho$, Kendall's $\tau$ und Cramér's $v$ auf Basis von `etb18_kap7_small`. -->
+</section>
+<section id="weight" class="level3" data-number="7.5.3">
+<h3 data-number="7.5.3" class="anchored" data-anchor-id="weight"><span class="header-section-number">7.5.3</span> Übung 3</h3>
+<ul>
+<li>Legen Sie die Gewichtung auf Basis von <code>gew2018</code> an.</li>
+<li>Berechnen Sie den Mittelwert für den Bruttoverdienst <code>F518_SUF</code> (Schließen Sie die Missings ggf. mit <code>etb18_kap7$F518_SUF[etb18_kap7$F518_SUF&gt;99990] &lt;- NA</code> - sie können mit <code>max(etb18_kap7$F518_SUF,na.rm = T)</code> überprüfen ob das Maximum bei 99999 liegt)</li>
+</ul>
+<div class="cell">
+
+</div>
+<!-- + Erstellen Sie eine Kontingenztabelle für `gkpol` und `Mig` - einmal gewichtet und einmal ohne Gewichte. Sehen Sie die Unterschiede? -->
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- #| warning: false -->
+<!-- #| message: false -->
+<!-- library(gt) -->
+<!-- etb18_kap7 %>% select(matches("gkpol|Mig")) %>%  -->
+<!--   map_dfr(.,~attributes(.x)$labels,.id = "var") %>%  -->
+<!--   pivot_longer(-var) %>%  -->
+<!--   filter(!is.na(value)) %>%  -->
+<!--   gt() %>%  -->
+
+<!--   tab_options(  table.font.size = 12) %>%  -->
+<!--   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var)) -->
+<!-- ``` -->
+</section>
+</section>
+<section id="anhang" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="anhang"><span class="header-section-number">7.6</span> Anhang</h2>
+<section id="corrs" class="level3" data-number="7.6.1">
+<h3 data-number="7.6.1" class="anchored" data-anchor-id="corrs"><span class="header-section-number">7.6.1</span> Weitere Korrelationsmaße</h3>
+<p>Kendall’s <span class="math inline">\(\tau_a\)</span>, welches im Nenner alle Paarvergleiche berücksichtigt, können wir mit <code>KendallTauA()</code> aus dem Paket <code>DescTools</code> berechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"DescTools"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">KendallTauA</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.08970494</code></pre>
+</div>
+</div>
+<p>Der Wert ist deutlich niedriger als von Kendall’s <span class="math inline">\(\tau_b\)</span>, da hier der Nenner durch die Berücksichtigung <em>aller</em> möglichen Paarvergleiche größer wird, der Zähler aber für beide Varianten von Kendall’s <span class="math inline">\(\tau\)</span> gleich definiert ist.</p>
+<p>Eine andere Alternative, welche auch beim Vorliegen von Bindungen den vollen Wertebereich [-1,1] erreichen kann ist Goodman &amp; Kruskal’s <span class="math inline">\(\gamma\)</span>. Dieses können wir mit dem Befehl <code>GoodmanKruskalGamma</code> aus dem Paket <code>{DescTools}</code> berechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">GoodmanKruskalGamma</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2064219</code></pre>
+</div>
+</div>
+<p>Auch Goodman &amp; Kruskal’s <span class="math inline">\(\gamma\)</span> deutet auf einen negativen Zusammenhang hin, hier ist die Stärke aber deutlich höher. Dies ist auf die Berücksichtigung der Bindungen zurückzuführen: hier werden alle Bindungen ausgeschlossen, also auch Paarvgleiche mit Bindungen nur auf einer Variable. Es reduziert sich also der Nenner, somit ergibt sich im Ergebnis ein höherer Koeffizient für Goodman &amp; Kruskal’s <span class="math inline">\(\gamma\)</span> als für Kendall’s <span class="math inline">\(\tau_b\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>etb18_kap7 <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(m1202,F600_12) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">correlation</span>(<span class="at">method =</span> <span class="st">"kendall"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Correlation Matrix (kendall-method)
+
+Parameter1 | Parameter2 |  tau |       95% CI |    z |         p
+----------------------------------------------------------------
+m1202      |    F600_12 | 0.14 | [0.10, 0.18] | 4.93 | &lt; .001***
+
+p-value adjustment method: Holm (1979)
+Observations: 999</code></pre>
+</div>
+</div>
+<p><a href="https://easystats.github.io/correlation/articles/types.html">Hier findet sich eine Liste weiterer Kennzahlen, die sich mit {correlate}</a> berechnen lassen.</p>
+
+
+</section>
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Tastaturbefehle: <code>Alt Gr</code> + <code>*</code> auf Windows. Auf macOS <code>Alt</code> + <code>N</code> und anschließend ein Leerzeichen, damit die Tilde erscheint.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p><code>2.2e-16</code> steht für 2.2 aber mit 16 Nullen vorweg. Das ist Rs Art zu sagen, dass der Wert sehr sehr klein ist.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./06_data_wrangle2.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09_reg.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2022-2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/BIBB_R">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
+  </div>
+</footer>
+
+
+
+</body></html>

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am BIBB - 10&nbsp; Logistische Regressionsmodelle</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./11_data_wrangle3.html" rel="next">
+<link href="./09_reg2.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am BIBB</a> 
+        <div class="sidebar-tools-main">
+    <a href="./R-am-BIBB.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Willkommen</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_data_wrangle3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Links &amp; Weiterführendes</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#logmod" id="toc-logmod" class="nav-link active" data-scroll-target="#logmod"> <span class="header-section-number">10.1</span> Das logistische Regressionsmodell</a></li>
+  <li><a href="#average-marginal-effects" id="toc-average-marginal-effects" class="nav-link" data-scroll-target="#average-marginal-effects"> <span class="header-section-number">10.2</span> average marginal effects</a></li>
+  <li><a href="#übung-1" id="toc-übung-1" class="nav-link" data-scroll-target="#übung-1"> <span class="header-section-number">10.3</span> <span>Übung 1</span></a></li>
+  <li><a href="#feglm" id="toc-feglm" class="nav-link" data-scroll-target="#feglm"> <span class="header-section-number">10.4</span> Fixed effects logistische Regression mit <code>{fixest}</code></a></li>
+  <li><a href="#ame1" id="toc-ame1" class="nav-link" data-scroll-target="#ame1"> <span class="header-section-number">10.5</span> Übung</a></li>
+  <li><a href="#anhang-hintergrund-zu-log.-regression-average-marginal-effects" id="toc-anhang-hintergrund-zu-log.-regression-average-marginal-effects" class="nav-link" data-scroll-target="#anhang-hintergrund-zu-log.-regression-average-marginal-effects"> <span class="header-section-number">10.6</span> Anhang: Hintergrund zu log. Regression &amp; average marginal effects</a>
+  <ul class="collapse">
+  <li><a href="#logistische-linkfunktion" id="toc-logistische-linkfunktion" class="nav-link" data-scroll-target="#logistische-linkfunktion"> <span class="header-section-number">10.6.1</span> Logistische Linkfunktion</a></li>
+  <li><a href="#vorhergesagte-werte" id="toc-vorhergesagte-werte" class="nav-link" data-scroll-target="#vorhergesagte-werte"> <span class="header-section-number">10.6.2</span> Vorhergesagte Werte</a></li>
+  <li><a href="#die-idee-von-average-marginal-effects" id="toc-die-idee-von-average-marginal-effects" class="nav-link" data-scroll-target="#die-idee-von-average-marginal-effects"> <span class="header-section-number">10.6.3</span> Die Idee von average marginal effects</a></li>
+  </ul></li>
+  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links"> <span class="header-section-number">10.7</span> Links</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>In diesem Kapitel widmen wir uns dem Fall einer binären abhängigen Variable/Dummyvariable. Für solche Fälle sind logistische Regressionsmodelle gebräuchlich, die sich in Ihrer Anwendung etwas von ‘normalen’, linearen Regressionsmodellen unterscheiden. Kern dieses Unterschieds ist die Link-Funktion, welche die Koeffizienten etwas schwerer interpretierbar macht - daher haben sich sog. marginal effects als Darstellungsform für Ergebnisse logistischer Regressionen etabliert. In R steht uns dafür das Paket <a href="https://vincentarelbundock.github.io/marginaleffects/"><code>{marginaleffects}</code></a>, welches sich in der Anwendung sehr dem <code>margins</code>-Befehl in Stata ähnelt.</p>
+<p>Bisher hatten wir immer Regressionsmodelle betrachtet, die eine metrisch skalierte abhängige Variable hatten.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Aber gerade Individualmerkmale sind nur selten metrisch skaliert, z.B. Erwerbstatus, Familienstand, Geschlecht, Elternstand, … Ein lineares OLS-Regressionsmodell wie wir es bisher kennen gelernt haben, hilft uns hier nicht weiter. Schauen wir uns beispielsweise die Arbeitsplatzsituation der männlichen Befragten in der ETB 2018 an (<code>F605</code>)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> :</p>
+<p><strong>Arbeiten Sie mehr als die Hälfte Ihrer Arbeitszeit im Freien?</strong></p>
+<p>Die 1 steht dabei jeweils für “ja”, die <code>2</code> für “nein”. Wir verändern die Codierung aber so, dass die “nein”-Antworten mit <code>0</code> versehen werden. Die neue Variable nennen wir <code>outside</code>. Außerdem teilen wir <code>F518_SUF</code> durch 100 und legen die so erstellte Variable “Einkommen in 100EUR” in <code>inc100</code> ab, um die Nachkommastellen des Koeffizienten zu reduzieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"S1"</span>,<span class="st">"F605"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"zpalter"</span>,<span class="st">"Bula"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F605 <span class="sc">&lt;</span> <span class="dv">9</span>, F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, zpalter <span class="sc">&lt;</span> <span class="dv">100</span>, S1<span class="sc">==</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">inc100 =</span> F518_SUF<span class="sc">/</span><span class="dv">100</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">outside =</span> <span class="dv">2</span><span class="sc">-</span>F605)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="sc">%&gt;%</span> <span class="fu">count</span>(outside,F605)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  outside F605          n
+    &lt;dbl&gt; &lt;dbl+lbl&gt; &lt;int&gt;
+1       0 2 [nein]   7302
+2       1 1 [ja]     1130</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_etb18<span class="sc">$</span>inc100)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.01   25.00   35.00   42.38   50.00  720.00 </code></pre>
+</div>
+</div>
+<section id="logmod" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="logmod"><span class="header-section-number">10.1</span> Das logistische Regressionsmodell</h2>
+<p>Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise wie folgt aus:</p>
+<p><span class="math display">\[\begin{equation*}
+\widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}
+\end{equation*}\]</span></p>
+<p>In R können wir ein solches Modell mit <code>glm()</code> und der Option <code>family="binomial"</code> berechnen:<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(outside <span class="sc">~</span> inc100, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> m_etb18)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = outside ~ inc100, family = "binomial", data = m_etb18)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-0.9580  -0.6005  -0.4841  -0.3042   5.5160  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -0.54045    0.07285  -7.419 1.18e-13 ***
+inc100      -0.03861    0.00218 -17.716  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6643.5  on 8431  degrees of freedom
+Residual deviance: 6209.8  on 8430  degrees of freedom
+AIC: 6213.8
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>Die Interpretation der <span class="math inline">\(\beta\)</span> aus einem logistischen Regressionsmodell bezieht sich also auf die Logits (die logarithmierten Odds):</p>
+<div class="inter">
+<p>Es besteht ein am 0,001-Niveau signifikanter Zusammenhang zwischen dem Einkommen und der Wahrscheinlichkeit, im Freien zu arbeiten. Mit einem um 100 Euro höheren Einkommen gehen um 0.038612 niedrigere <em>Logits</em> einher, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.</p>
+</div>
+</section>
+<section id="average-marginal-effects" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="average-marginal-effects"><span class="header-section-number">10.2</span> average marginal effects</h2>
+<p>Logits sind aber sehr unhandlich - wie verändert sich jetzt aber die <em>Wahrscheinlichkeit</em> für <span class="math inline">\(\texttt{outside} = 1\)</span> mit <code>inc100</code>? Hier haben wir das Problem, dass die Ableitung der “rücktransformierten Funktion” nicht so einfach ist wie im Fall der OLS. Verändern wir nämlich auch die <a href="#logmod">Regressionsgleichung von oben</a><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> mit <code>exp()</code> und <span class="math inline">\(p=\frac{Odds}{1+Odds}\)</span>, so landen wir bei</p>
+<p><span class="math display">\[\begin{equation*}
+\widehat{P(outside=1)} = \frac{e^{\hat\beta0+\hat\beta1 \times \texttt{inc100}}}{1+e^{\hat\beta0+\hat{\beta1}\times \texttt{inc100}}}
+\end{equation*}\]</span></p>
+<p>Diesen Ausdruck müssten wir nach <code>inc100</code> ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für <span class="math inline">\(\texttt{outside} = 1\)</span> mit einem um einen Euro höheren Befragteneinkommen verändert. Durch die Tatsache dass <code>inc</code> hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor (“oben und unten”) steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen <code>lm()</code>-Modellen der Fall war. Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket <code>{marginaleffects}</code> brauchen. Darin findet sich der Befehl <code>avg_slopes()</code>, welcher uns erlaubt ein <span class="math inline">\(\beta\)</span> zwischen dem Einkommen und der <em>Wahrscheinlichkeit</em> für <span class="math inline">\(\texttt{outside} = 1\)</span> zu berechnen. Dieses wird auch als <em>average marginal effect</em> bezeichnet, da sie den <em>durchschnittlichen marginalen Effekt</em> der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"marginaleffects"</span>) <span class="co"># nur einmal nötig</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_slopes</span>(m2, <span class="at">by =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   Term Estimate Std. Error     z Pr(&gt;|z|)    2.5 %   97.5 %
+ inc100 -0.00426    0.00024 -17.7   &lt;0.001 -0.00473 -0.00379
+
+Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<div class="inter">
+<p>Mit einem um 100 Euro (<code>inc100</code> ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um 0.00426 (0.42632 Prozentpunkte) geringere Wahrscheinlichkeit einher, mehr als die Hälfte der Arbeitszeit im Freien zu arbeiten.</p>
+</div>
+</section>
+<section id="übung-1" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="übung-1"><span class="header-section-number">10.3</span> <a href="#ame1">Übung 1</a></h2>
+</section>
+<section id="feglm" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="feglm"><span class="header-section-number">10.4</span> Fixed effects logistische Regression mit <code>{fixest}</code></h2>
+<p>Mit <code>feglm()</code> lassen sich auch logistische FE-Modelle schätzen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>m_etb18 <span class="ot">&lt;-</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  m_etb18 <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">m1202_fct =</span> <span class="fu">factor</span>(m1202,<span class="at">levels =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">labels =</span> <span class="fu">names</span>(<span class="fu">attributes</span>(m1202)<span class="sc">$</span>labels) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">substr</span>(.,<span class="dv">1</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">str_squish</span>()),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">m1202_fct =</span> <span class="fu">fct_relevel</span>(m1202_fct,<span class="st">"Ohne"</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">feglm</span>(outside <span class="sc">~</span> m1202_fct <span class="sc">+</span> zpalter <span class="sc">|</span>Bula, <span class="at">data =</span> m_etb18, <span class="at">family =</span> binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GLM estimation, family = binomial, Dep. Var.: outside
+Observations: 8,432 
+Fixed-effects: Bula: 16
+Standard-errors: Clustered (Bula) 
+                Estimate Std. Error    t value   Pr(&gt;|t|)    
+m1202_fctkeine  0.652523   0.373049   1.749164 8.0263e-02 .  
+m1202_fctduale -0.180213   0.115800  -1.556234 1.1965e-01    
+m1202_fctAufst -0.623841   0.155694  -4.006834 6.1538e-05 ***
+m1202_fctFachh -1.935948   0.121357 -15.952541  &lt; 2.2e-16 ***
+zpalter        -0.001068   0.003650  -0.292556 7.6986e-01    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Log-Likelihood: -3,023.8   Adj. Pseudo R2: 0.083676
+           BIC:  6,237.4     Squared Cor.: 0.06534 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fe_log1 <span class="ot">&lt;-</span> <span class="fu">feglm</span>(outside <span class="sc">~</span> m1202_fct <span class="sc">+</span> zpalter<span class="sc">|</span>Bula, <span class="at">data =</span> m_etb18, <span class="at">family =</span> binomial)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_slopes</span>(fe_log1,<span class="at">by =</span> <span class="cn">TRUE</span>, <span class="at">variables =</span> <span class="st">"m1202_fct"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      Term     Contrast Estimate Std. Error     z Pr(&gt;|z|)   2.5 %   97.5 %
+ m1202_fct Aufst - Ohne  -0.0907     0.0217 -4.17   &lt;0.001 -0.1333 -0.04812
+ m1202_fct Fachh - Ohne  -0.1874     0.0249 -7.52   &lt;0.001 -0.2363 -0.13861
+ m1202_fct duale - Ohne  -0.0298     0.0192 -1.55    0.120 -0.0675  0.00781
+ m1202_fct keine - Ohne   0.1316     0.0827  1.59    0.112 -0.0305  0.29361
+
+Columns: term, contrast, estimate, std.error, statistic, p.value, conf.low, conf.high </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_slopes</span>(fe_log1,<span class="at">by =</span> <span class="cn">TRUE</span>, <span class="at">variables =</span> <span class="st">"zpalter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Term  Estimate Std. Error    z Pr(&gt;|z|)    2.5 %   97.5 %
+ zpalter -0.000116   0.000385 -0.3    0.764 -0.00087 0.000639
+
+Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </code></pre>
+</div>
+</div>
+</section>
+<section id="ame1" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="ame1"><span class="header-section-number">10.5</span> Übung</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>etb_ue10 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"F1605e"</span>,<span class="st">"m1202"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(F1605e <span class="sc">&lt;</span> <span class="dv">4</span>, <span class="sc">!</span><span class="fu">is.na</span>(F1605e), m1202 <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fam_beruf =</span> <span class="dv">2</span><span class="sc">-</span>F1605e,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">m1202 =</span> <span class="fu">factor</span>(m1202))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Erstellen Sie ein logistisches Regressionsmodell mit <code>fam_beruf</code> basierend auf der Frage</li>
+</ul>
+<p><strong>Haben Sie aufgrund ihrer Kinder Abstriche gemacht, um Familie und Beruf zu vereinbaren?</strong></p>
+<p>als abhängiger Variable (1 = ja, 0 = nein.) Verwenden Sie die Ausbildung <code>m1202</code> als unabhängige Variable.</p>
+<p>Berechnen Sie die AME mit <code>marginaleffects</code>.</p>
+</section>
+<section id="anhang-hintergrund-zu-log.-regression-average-marginal-effects" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="anhang-hintergrund-zu-log.-regression-average-marginal-effects"><span class="header-section-number">10.6</span> Anhang: Hintergrund zu log. Regression &amp; average marginal effects</h2>
+<p>Wenn wir uns fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die “Punktewolke” zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:</p>
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m_etb18, <span class="fu">aes</span>(<span class="at">x =</span> inc100, <span class="at">y =</span> outside)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#172869"</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">aspect.ratio =</span> .<span class="dv">75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="336"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Um trotzdem ein Regressionsmodell zu berechnen, könnten wir die abhängige Variable uminterpretieren. <span class="math inline">\(\hat{y}\)</span> wird dann nicht mehr dichotom, sondern als metrische Wahrscheinlichkeit interpretiert, dass der Befragte mehr als die Hälfte der Arbeitszeit im Freien arbeitet (also die Wahrscheinlichkeit für outside = 1). Das können wir dann wie gehabt in eine Regressionsgleichung aufnehmen, zB. mit dem Einkommen als unabhängiger Variable:</p>
+<p><span class="math display">\[\begin{equation*}
+\widehat{y_i} = P(outside\texttt{\small{=}}1) = \hat\beta0 + \hat\beta1 * \texttt{inc100}_i
+\end{equation*}\]</span></p>
+<p>Allerdings führt das zwangsläufig zu Verstößen gegen die Annahmen bzgl. der Residuen - die Fehler werden immer heteroskedastisch und nicht normalverteilt sein. Zudem wird es vorhergesagte Werte geben, die nicht sinnvoll interpretiert werden können, weil es mit 0 und 1 Grenzen gibt, jenseits derer Wahrscheinlichkeiten nicht existieren (zB gibt es keine negativen Wahrscheinlichkeiten).</p>
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m_etb18, <span class="fu">aes</span>(<span class="at">x =</span> inc100, <span class="at">y =</span> outside)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#172869"</span>, <span class="at">size =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="fu">lacroix_palette</span>(<span class="st">"PeachPear"</span>,<span class="dv">6</span>)[<span class="dv">2</span>],<span class="at">se =</span> F ) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"P(outside = 1)"</span>, <span class="at">x =</span> <span class="st">"Einkommen (in 100 EUR)"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"lineares Wahrscheinlichkeitsmodell"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(m1,<span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="co"># Homosk. &amp; NV </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_log_reg_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="logistische-linkfunktion" class="level3" data-number="10.6.1">
+<h3 data-number="10.6.1" class="anchored" data-anchor-id="logistische-linkfunktion"><span class="header-section-number">10.6.1</span> Logistische Linkfunktion</h3>
+<p>Um diese Probleme zu umgehen, sind für dichotome abhängige Variablen logistische Regressionsmodelle ein sehr verbreitetes Vorgehen. Dafür werden neben dem bereits angesprochenen Schritt der Betrachtung von <span class="math inline">\(\hat{y}\)</span> als Wahrscheinlichkeit zwei weitere Transformationen der abhängigen Variable vorgenommen:</p>
+<ul>
+<li><p><em>Odds statt Wahrscheinlichkeiten</em>: Um die obere Grenze des Wertebereichs der abhängigen Variablen auf <span class="math inline">\(+\infty\)</span> auszudehnen, werden statt Wahrscheinlichkeiten Odds betrachtet. Odds sind definiert als der Quotient aus Wahrscheinlichkeit und der Gegenwahrscheinlichkeit für ein gegebenes Ereignis. In unserem Beispiel sind also die Odds dafür, dass ein<em>e Befragte</em>r angibt, sich nachts outside zu fühlen: <span class="math display">\[Odds(outside=1) = \frac{P(outside=1)}{P(outside=0)}= \frac{P(outside=1)}{1-P(outside=1)} \]</span> Die Odds gehen gegen 0, je unwahrscheinlicher das betrachtete Ereignis ist. Für sehr wahrscheinliche Ereignisse nehmen die Odds Werte an, die gegen <span class="math inline">\(+\infty\)</span> gehen, das Verhältnis zwischen Dividend (“Zähler”) und Divisor (“Nenner”) wird immer größer.</p></li>
+<li><p><em>Logits statt Odds</em>: Damit bleibt aber noch das Problem der negativen Werte bestehen: Auch Odds sind nur für [0;<span class="math inline">\(+\infty\)</span>] definiert. Um auch den negativen Wertebereich sinnvoll interpretierbar zu machen, werden die Odds logarithmiert, wir erhalten die sogenannten Logits: <span class="math display">\[Logit(outside=1) = log(Odds(outside=1)) = log\left(\frac{P(outside=1)}{1-P(outside=1)}\right)\]</span> Die Logarithmierung führt für Werte zwischen 0 und 1 zu negativen Werten, für Werte größer als 1 zu positiven Werten.</p></li>
+</ul>
+<p>Dementsprechend gibt es bei logistischen Regressionen drei Einheiten:</p>
+<ul>
+<li><p>Wahrscheinlichkeiten <span class="math inline">\(P = \frac{\text{Anzahl Treffer}}{\text{Anzahl aller Möglichkeiten}}\)</span></p></li>
+<li><p><span class="math inline">\(\text{Odds} = \frac{P}{1-P} = \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}}\)</span></p></li>
+<li><p><span class="math inline">\(\text{log-Odds/Logits} = log(Odds) = log( \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}})\)</span></p></li>
+</ul>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="vjemfuhzdh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#vjemfuhzdh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: hidden;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: right;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vjemfuhzdh .gt_title {
+  color: #333333;
+  font-size: small;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vjemfuhzdh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vjemfuhzdh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vjemfuhzdh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vjemfuhzdh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vjemfuhzdh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vjemfuhzdh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vjemfuhzdh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vjemfuhzdh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vjemfuhzdh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vjemfuhzdh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vjemfuhzdh .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vjemfuhzdh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vjemfuhzdh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vjemfuhzdh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vjemfuhzdh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vjemfuhzdh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vjemfuhzdh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vjemfuhzdh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vjemfuhzdh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vjemfuhzdh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vjemfuhzdh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vjemfuhzdh .gt_left {
+  text-align: left;
+}
+
+#vjemfuhzdh .gt_center {
+  text-align: center;
+}
+
+#vjemfuhzdh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vjemfuhzdh .gt_font_normal {
+  font-weight: normal;
+}
+
+#vjemfuhzdh .gt_font_bold {
+  font-weight: bold;
+}
+
+#vjemfuhzdh .gt_font_italic {
+  font-style: italic;
+}
+
+#vjemfuhzdh .gt_super {
+  font-size: 65%;
+}
+
+#vjemfuhzdh .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#vjemfuhzdh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vjemfuhzdh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vjemfuhzdh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vjemfuhzdh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vjemfuhzdh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vjemfuhzdh .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 0px">
+  <colgroup>
+    <col style="width:120px;">
+    <col style="width:200px;">
+    <col style="width:100px;">
+    <col style="width:200px;">
+  </colgroup>
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="$$P$$">$$P$$</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="$$Odds = \frac{P}{1-P}$$">$$Odds = \frac{P}{1-P}$$</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=""></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="$$Logits = log(Odds)$$">$$Logits = log(Odds)$$</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{2}$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$1$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:1</p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>0</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{3}$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$0.5$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:2</p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>-0.6931</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{4}$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$0.33$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:3</p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>-1.0986</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{5}$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$0.25$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:5</p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>-1.3863</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{2}{3}$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$2$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 2:1</p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>0.6931</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{3}{4}$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$3$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 3:1</p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>1.0986</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$1$$</p>
+</div></td>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{0}$$</p>
+</div></td>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p><em>sicher</em></p>
+</div></td>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>Inf</p>
+</div></td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="vorhergesagte-werte" class="level3" data-number="10.6.2">
+<h3 data-number="10.6.2" class="anchored" data-anchor-id="vorhergesagte-werte"><span class="header-section-number">10.6.2</span> Vorhergesagte Werte</h3>
+<p>Zunächst stellt sich die Frage, was Logits denn bedeuten. Eigentlich möchten wir ja Wahrscheinlichkeiten im Wertebereich zwischen 0 und 1 (bzw. 0% und 100%) als Interpretationseinheit haben. Die Berechnung eines vorhergesagten Werts für einen Befragten mit einem Einkommen von 1000 Euro (<code>inc100</code>=10) ergibt durch einsetzen bzw. <code>predict()</code> natürlich auch die Logits:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Estimate  Std. Error   z value     Pr(&gt;|z|)
+(Intercept) -0.54045018 0.072851290  -7.41854 1.184188e-13
+inc100      -0.03861198 0.002179513 -17.71588 3.162624e-70</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="fl">0.53856546</span>   <span class="sc">+</span> <span class="sc">-</span><span class="fl">0.03868975</span> <span class="sc">*</span> <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.925463</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m2, <span class="fu">data.frame</span>(<span class="at">inc100 =</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1 
+-0.9265699 </code></pre>
+</div>
+</div>
+<div class="inter">
+<p>Befragte mit einem Einkommen von 1000EUR haben dem Modell zu Folge Logits von -0.92657, mehr als die Hälfte der Arbeitszeit im Freien zu arbeiten.</p>
+</div>
+<p>Um an die Wahrscheinlichkeit für <code>outside</code> = 1 zu bekommen, müssen wir die Transformationsschritte sozusagen “rückabwickeln”! Dafür müssen wir zunächst mit <code>exp</code> den <code>ln()</code> vor den Odds heraus rechnen und können dann durch die die Formel <span class="math inline">\(p=\frac{Odds}{1+Odds}\)</span> die Wahrscheinlichkeit aus den odds berechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>logits <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.9254629</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(logits) <span class="co"># Odds statt Logits</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3963479</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>odds <span class="ot">&lt;-</span> <span class="fu">exp</span>(logits) </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>odds<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>odds) <span class="co"># Wahrscheinlichkeit statt Odds </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2838461</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(logits)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(logits)) <span class="co"># beide Schritte auf einmal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2838461</code></pre>
+</div>
+</div>
+<div class="inter">
+<p>Die Wahrscheinlichkeit, dass ein Befragter mit einem Einkommen von 1000 Euro angibt, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten, liegt also unserem Modell zu Folge bei 28.362%.</p>
+</div>
+<p>Mit der Option <code>type="response"</code> können wir das auch mit <code>predict()</code> direkt berechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m2, <span class="fu">data.frame</span>(<span class="at">inc100 =</span> <span class="dv">10</span>), <span class="at">type=</span><span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1 
+0.2836211 </code></pre>
+</div>
+</div>
+</section>
+<section id="die-idee-von-average-marginal-effects" class="level3" data-number="10.6.3">
+<h3 data-number="10.6.3" class="anchored" data-anchor-id="die-idee-von-average-marginal-effects"><span class="header-section-number">10.6.3</span> Die Idee von average marginal effects</h3>
+<p>Wie verändern sich dann die vorhergesagten Werte, wenn wir <code>inc100</code> um eine Einheit (also 100€) erhöhen? Die Logits verändern sich pro Einheit <code>inc100</code> natürlich genau um <span class="math inline">\(\hat\beta1\)</span>, also hier -0.03861. Um sich die Steigung an einigen Werten anzusehen, berechnen wir jeweils die Abstände der vorhergesagten Werte für <span class="math inline">\(x-0.5\)</span> und <span class="math inline">\(x+0.5\)</span>:</p>
+<p><em>Um die Werte jeweils mit dem eingesetzten Wert zu beschriften, stellen wir den Wert mit </em> <code>""=</code> <em>voran:</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m2, <span class="fu">data.frame</span>(<span class="at">inc100=</span><span class="fu">c</span>(<span class="st">"54.5"</span><span class="ot">=</span><span class="fl">54.5</span>,<span class="st">"55.5"</span><span class="ot">=</span><span class="fl">55.5</span>,<span class="st">"64.5"</span><span class="ot">=</span><span class="fl">64.5</span>,<span class="st">"65.5"</span><span class="ot">=</span><span class="fl">65.5</span>,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"74.5"</span><span class="ot">=</span><span class="fl">74.5</span>,<span class="st">"75.5"</span><span class="ot">=</span><span class="fl">75.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     54.5      55.5      64.5      65.5      74.5      75.5 
+-2.644803 -2.683415 -3.030923 -3.069535 -3.417042 -3.455654 </code></pre>
+</div>
+</div>
+<p>Die Differenzen sind immer gleich - entsprechend der Interpretation gehen mit einem um eine Einheit höheren <code>inc100</code> um 0.03861 höhere Logits einher, dass die Befragten mehr als die Hälfte Ihrer Arbeitszeit im Freien arbeiten:</p>
+<ul>
+<li><p>Steigung bei <code>inc100</code> = 55: -2.68341 <span class="math inline">\(-\)</span> -2.64480 = -0.03861 </p></li>
+<li><p>Steigung bei <code>inc100</code> = 65: -3.06953 <span class="math inline">\(-\)</span> -3.03092 = -0.03861 </p></li>
+<li><p>Steigung bei <code>inc100</code> = 75: -3.45565 <span class="math inline">\(-\)</span> -3.41704 = -0.03861 </p></li>
+</ul>
+<p>Wenn wir uns diese Schritte aber jeweils für die vorhergesagten Wahrscheinlichkeiten ansehen, sieht das aber anders aus:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m2, <span class="fu">data.frame</span>(<span class="at">inc100=</span><span class="fu">c</span>(<span class="st">"54.5"</span><span class="ot">=</span><span class="fl">54.5</span>,<span class="st">"55.5"</span><span class="ot">=</span><span class="fl">55.5</span>,<span class="st">"64.5"</span><span class="ot">=</span><span class="fl">64.5</span>,<span class="st">"65.5"</span><span class="ot">=</span><span class="fl">65.5</span>,</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"74.5"</span><span class="ot">=</span><span class="fl">74.5</span>,<span class="st">"75.5"</span><span class="ot">=</span><span class="fl">75.5</span>)), <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      54.5       55.5       64.5       65.5       74.5       75.5 
+0.06631006 0.06395913 0.04604828 0.04438156 0.03176707 0.03060068 </code></pre>
+</div>
+</div>
+<p>Hier werden die Differenzen mit zunehmendem <code>inc100</code> immer kleiner:</p>
+<ul>
+<li><p>Steigung bei <code>inc100</code> = 55: 0.06396 <span class="math inline">\(-\)</span> 0.06631 = -0.00235 </p></li>
+<li><p>Steigung bei <code>inc100</code> = 65: 0.04438 <span class="math inline">\(-\)</span> 0.04605 = -0.00167 </p></li>
+<li><p>Steigung bei <code>inc100</code> = 75: 0.03060 <span class="math inline">\(-\)</span> 0.03177 = -0.00117 </p></li>
+</ul>
+<div class="cell" data-layout-align="center" data-fig.caption="true">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_log_reg_files/figure-html/AME1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.caption="true">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="10_log_reg_files/figure-html/AME2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Diese Steigungen werden für alle Beobachtungen aus dem zu Grunde liegenden Datensatz aufsummiert und dann der Durchschnitt gebildet (<span class="math inline">\(\rightarrow\)</span> <em>average</em> marginal effects)</p>
+</section>
+</section>
+<section id="links" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="links"><span class="header-section-number">10.7</span> Links</h2>
+<ul>
+<li><p><a href="https://vincentarelbundock.github.io/marginaleffects/articles/marginaleffects.html">Die Seite zu <code>{marginaleffects}</code></a> bietet sehr ausführliche und anschauliche Beispiele zu den verschiedenen Varianten marginaler Effekte</p></li>
+<li><p><a href="https://www.andrewheiss.com/blog/2022/05/20/marginalia/">Ausführliche Einführung zu marginalen Effekten von Andrew Heiss</a></p></li>
+</ul>
+<p><a href="https://twitter.com/allison_horst/status/1554921698742468625?s=11&amp;t=Ac_YizlsYkOfUIkuWmaaWQ">Ableitungen grafisch erstellt</a></p>
+
+
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Leseempfehlung: <a href="www.doi.org/10.1007/978-3-531-92038-2_31">Logistische Regression von Henning Best &amp; Christof Wolf, S. 827-854 in “Handbuch der sozialwissenschaftlichen Datenanalyse”</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Die Einschränkung auf männliche Befragte hat hier den einfachen Grund, dass so der Koeffizient größer ist<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p><code>family="binomial"</code> ist dabei entscheidend: <code>glm(outside ~ inc100, data = m_etb18)</code> oder <code>glm(outside ~ inc100, family = gaussian(), data = m_etb18)</code> ist gleichbedeutend mit <code>lm(outside ~ inc100, data = m_etb18)</code>: es wird ein lineares OLS-Modell berechnet.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p><span class="math inline">\(\widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}\)</span><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./09_reg2.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./11_data_wrangle3.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2022-2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/BIBB_R">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
+  </div>
+</footer>
+
+
+
+</body></html>

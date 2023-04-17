@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am BIBB - 11&nbsp; Data Wrangling III</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./12_apply_loop.html" rel="next">
+<link href="./10_log_reg.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am BIBB</a> 
+        <div class="sidebar-tools-main">
+    <a href="./R-am-BIBB.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Willkommen</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_data_wrangle3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_RMarkdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">RMarkdown</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Links &amp; Weiterführendes</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#datensätze-verbinden" id="toc-datensätze-verbinden" class="nav-link active" data-scroll-target="#datensätze-verbinden"> <span class="header-section-number">11.1</span> Datensätze verbinden</a>
+  <ul class="collapse">
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">11.1.1</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#reshape-pivot_longer-pivot_wider" id="toc-reshape-pivot_longer-pivot_wider" class="nav-link" data-scroll-target="#reshape-pivot_longer-pivot_wider"> <span class="header-section-number">11.2</span> Reshape: <code>pivot_longer()</code> &amp; <code>pivot_wider()</code></a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">11.3</span> Übungen</a>
+  <ul class="collapse">
+  <li><a href="#join_ue" id="toc-join_ue" class="nav-link" data-scroll-target="#join_ue"> <span class="header-section-number">11.3.1</span> Übung 1</a></li>
+  <li><a href="#pivot_ue" id="toc-pivot_ue" class="nav-link" data-scroll-target="#pivot_ue"> <span class="header-section-number">11.3.2</span> Übung 2</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="wrang3" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="datensätze-verbinden" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="datensätze-verbinden"><span class="header-section-number">11.1</span> Datensätze verbinden</h2>
+<blockquote class="blockquote">
+<p>A mutating join allows you to combine variables from two tables. It first matches observations by their keys, then copies across variables from one table to the other.<br>
+<a href="http://r4ds.had.co.nz/relational-data.html#mutating-joins">R for Data Science: Mutating joins</a></p>
+</blockquote>
+<p>Ein Überblick zu den wichtigsten Befehlen:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="11_data_wrangle3_files/figure-html/intial-dfs-1.png" class="img-fluid figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- <img src="pic/static/png/original-dfs.png" width="480px" /> -->
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="pic/inner-join.gif" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="pic/left-join-extra.gif" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="pic/full-join.gif" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<p>Es gibt natürlich auch <a href="https://dplyr.tidyverse.org/reference/mutate-joins.html"><code>right_join()</code></a> oder <a href="https://dplyr.tidyverse.org/reference/filter-joins.html"><code>anti_join()</code></a>. Für eine tiefergehende Einführung lohnt sich das Kapitel <a href="https://r4ds.had.co.nz/relational-data.html#relational-data">Relational Data</a> aus <a href="https://r4ds.had.co.nz/">R for Data Science</a>.</p>
+<p>Eine sehr hilfreiche Option in den <code>..._join()</code> ist die Verbindung unterschiedlicher Variablen. Bspw. haben wir hier einige Fälle aus der ETB18 und</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>etb18_int_bl <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"Bula"</span>) <span class="co"># mit col_select() können Variablen ausgewählt werden</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                                )</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>etb_ids <span class="ot">&lt;-</span>  etb18_int_bl <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">125</span>,<span class="dv">1230</span>,<span class="dv">21010</span>,<span class="dv">8722</span>) )</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">90459</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>alo_bula <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">bundesland =</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">Werte =</span> <span class="fu">sample</span>(letters,<span class="at">size =</span> <span class="dv">8</span>) <span class="co"># mit sample() kann eine zufällige Auswahl getroffen werden </span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                       )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>etb_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 4 × 2
+#&gt;     intnr Bula                    
+#&gt;     &lt;dbl&gt; &lt;dbl+lbl&gt;               
+#&gt; 1     260 11 [Berlin]             
+#&gt; 2   30699  5 [Nordrhein-Westfalen]
+#&gt; 3  209604  6 [Hessen]             
+#&gt; 4 1540064  8 [Baden-Württemberg]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>alo_bula</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;   bundesland Werte
+#&gt; 1          1     g
+#&gt; 2          2     m
+#&gt; 3          3     n
+#&gt; 4          4     z
+#&gt; 5          5     w
+#&gt; 6          6     r
+#&gt; 7          7     t
+#&gt; 8          8     h</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>etb_ids <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_bula,<span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Bula"</span><span class="ot">=</span><span class="st">"bundesland"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 4 × 3
+#&gt;     intnr Bula                     Werte
+#&gt;     &lt;dbl&gt; &lt;dbl+lbl&gt;                &lt;chr&gt;
+#&gt; 1     260 11 [Berlin]              &lt;NA&gt; 
+#&gt; 2   30699  5 [Nordrhein-Westfalen] w    
+#&gt; 3  209604  6 [Hessen]              r    
+#&gt; 4 1540064  8 [Baden-Württemberg]   h</code></pre>
+</div>
+</div>
+<p>Ein sehr hilfreiche Checkmöglichkeit, die ich häufig verwende: Für alle <code>Bula</code> in <code>etb_ids</code> findet sich eine Entsprechung in <code>alo$bundesland</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(etb_ids<span class="sc">$</span>Bula <span class="sc">%in%</span> alo_bula<span class="sc">$</span>bundesland)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 
+#&gt; FALSE  TRUE 
+#&gt;     1     3</code></pre>
+</div>
+</div>
+<section id="übung" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">11.1.1</span> <a href="#join_ue">Übung</a></h3>
+</section>
+</section>
+<section id="reshape-pivot_longer-pivot_wider" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="reshape-pivot_longer-pivot_wider"><span class="header-section-number">11.2</span> Reshape: <code>pivot_longer()</code> &amp; <code>pivot_wider()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bsp_df <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">bula    =</span> <span class="fu">c</span>(<span class="st">"NRW"</span>,<span class="st">"NDS"</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">alo2018 =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alo2017 =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>bsp_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;   bula alo2018 alo2017
+#&gt; 1  NRW       2       1
+#&gt; 2  NDS       2       1</code></pre>
+</div>
+</div>
+<p>Mit <code>pivot_longer()</code> können wir aus einem wide shape <code>data.frame</code> einen long shape machen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bsp_df <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"alo2018"</span>,<span class="st">"alo2017"</span>),<span class="at">names_to =</span> <span class="st">"year"</span>,<span class="at">values_to =</span> <span class="st">"alo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 4 × 3
+#&gt;   bula  year      alo
+#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;
+#&gt; 1 NRW   alo2018     2
+#&gt; 2 NRW   alo2017     1
+#&gt; 3 NDS   alo2018     2
+#&gt; 4 NDS   alo2017     1</code></pre>
+</div>
+</div>
+<p>Mit <code>names_prefix = "alo"</code> können wir das <code>alo</code> direkt löschen lassen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bsp_df <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"alo2018"</span>,<span class="st">"alo2017"</span>),<span class="at">names_to =</span> <span class="st">"year"</span>,<span class="at">values_to =</span> <span class="st">"alo"</span>,<span class="at">names_prefix =</span> <span class="st">"alo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 4 × 3
+#&gt;   bula  year    alo
+#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+#&gt; 1 NRW   2018      2
+#&gt; 2 NRW   2017      1
+#&gt; 3 NDS   2018      2
+#&gt; 4 NDS   2017      1</code></pre>
+</div>
+</div>
+<p>Mit <code>pivot_wider()</code> können wir den umgekehrten Weg gehen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bsp_df2 <span class="ot">&lt;-</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">land =</span> <span class="fu">c</span>(<span class="st">"NRW"</span>,<span class="st">"NDS"</span>,<span class="st">"NRW"</span>,<span class="st">"NDS"</span>),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">alo =</span> <span class="fu">c</span>(<span class="fl">2.1</span>,<span class="fl">1.8</span>,<span class="fl">2.4</span>,<span class="fl">2.2</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">alter =</span> <span class="fu">c</span>(<span class="st">"age_1825"</span>,<span class="st">"age_1825"</span>,<span class="st">"age_2630"</span>,<span class="st">"age_2630"</span>))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>bsp_df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;   land alo    alter
+#&gt; 1  NRW 2.1 age_1825
+#&gt; 2  NDS 1.8 age_1825
+#&gt; 3  NRW 2.4 age_2630
+#&gt; 4  NDS 2.2 age_2630</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bsp_df2 <span class="sc">%&gt;%</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> alter,<span class="at">values_from =</span> alo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2 × 3
+#&gt;   land  age_1825 age_2630
+#&gt;   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 NRW        2.1      2.4
+#&gt; 2 NDS        1.8      2.2</code></pre>
+</div>
+</div>
+</section>
+<section id="übungen" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="übungen"><span class="header-section-number">11.3</span> Übungen</h2>
+<section id="join_ue" class="level3" data-number="11.3.1">
+<h3 data-number="11.3.1" class="anchored" data-anchor-id="join_ue"><span class="header-section-number">11.3.1</span> Übung 1</h3>
+<p>Verknüpfen Sie die ausgewählten Beobachtungen der ETB 2018 mit <a href="https://www.regionalstatistik.de/genesis//online?operation=table&amp;code=AI008-1">Arbeitsmarktstatistiken</a> von Destatis. Lesen die ETB mit folgendem Befehl ein:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>etb_ue11 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"int_jahr"</span>,<span class="st">"Bula"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">34</span><span class="sc">:</span><span class="dv">35</span>,<span class="dv">68</span><span class="sc">:</span><span class="dv">69</span>,<span class="dv">62</span>,<span class="dv">687</span>,<span class="dv">625</span>,<span class="dv">684</span>,<span class="dv">599</span><span class="sc">:</span><span class="dv">600</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>etb_ue11</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 10 × 3
+#&gt;     intnr int_jahr Bula                   
+#&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl+lbl&gt;              
+#&gt;  1   7045     2017 3 [Niedersachsen]      
+#&gt;  2   7119     2017 3 [Niedersachsen]      
+#&gt;  3  15443     2017 5 [Nordrhein-Westfalen]
+#&gt;  4  15527     2017 5 [Nordrhein-Westfalen]
+#&gt;  5  13619     2018 3 [Niedersachsen]      
+#&gt;  6 104699     2018 3 [Niedersachsen]      
+#&gt;  7  94148     2018 5 [Nordrhein-Westfalen]
+#&gt;  8 103957     2018 5 [Nordrhein-Westfalen]
+#&gt;  9  87426     2017 1 [Schleswig-Holstein] 
+#&gt; 10  87648     2017 6 [Hessen]</code></pre>
+</div>
+</div>
+<p>So können Sie die aufbereiteten Arbeitslosendaten einlesen (die Zahlencodes in beiden Datensätzen stimmen überein):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>alo <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"./data/alo_bula1.Rdata"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>alo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2 × 3
+#&gt;     ags name                aloquote
+#&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;   
+#&gt; 1     3 Niedersachsen       5.8     
+#&gt; 2     5 Nordrhein-Westfalen 7.4</code></pre>
+</div>
+</div>
+<p>Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>alo_j <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"./data/alo_bula1_jahr.Rdata"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>alo_j</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 4 × 4
+#&gt;     ags name                aloquote  jahr
+#&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;    &lt;dbl&gt;
+#&gt; 1     3 Niedersachsen       5.8       2017
+#&gt; 2     5 Nordrhein-Westfalen 7.4       2017
+#&gt; 3     3 Niedersachsen       5.3       2018
+#&gt; 4     5 Nordrhein-Westfalen 6.8       2018</code></pre>
+</div>
+</div>
+</section>
+<section id="pivot_ue" class="level3" data-number="11.3.2">
+<h3 data-number="11.3.2" class="anchored" data-anchor-id="pivot_ue"><span class="header-section-number">11.3.2</span> Übung 2</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>alo_wide <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"./data/alo_bula2.Rdata"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>alo_wide</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2 × 4
+#&gt;   ags   name                alo_2017 alo_2018
+#&gt;   &lt;chr&gt; &lt;chr&gt;               &lt;chr&gt;    &lt;chr&gt;   
+#&gt; 1 03    Niedersachsen       5.8      5.3     
+#&gt; 2 05    Nordrhein-Westfalen 7.4      6.8</code></pre>
+</div>
+</div>
+<p>Bringen Sie <code>alo_wide</code> in das long shape:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 4 × 4
+#&gt;   ags   name                jahr  alo_quote
+#&gt;   &lt;chr&gt; &lt;chr&gt;               &lt;chr&gt; &lt;chr&gt;    
+#&gt; 1 03    Niedersachsen       2017  5.8      
+#&gt; 2 03    Niedersachsen       2018  5.3      
+#&gt; 3 05    Nordrhein-Westfalen 2017  7.4      
+#&gt; 4 05    Nordrhein-Westfalen 2018  6.8</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Illustrationen mit <a href="https://github.com/gadenbuie/tidyexplain">tidyexplain</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./10_log_reg.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./12_apply_loop.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2022-2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/BIBB_R">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
+  </div>
+</footer>
+
+
+
+</body></html>

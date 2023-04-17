@@ -1,0 +1,323 @@
+# Schleifen & Funktionen
+
+```{r apply01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(marginaleffects)
+library(broom)
+```
+
+```{r}
+etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e","Bula")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
+Schleifen im Sinne von `for()`-Loops werden in R selten verwendet. 
+Stattdessen werden meist Funktionen mit Hilfe von `lapply()` bzw. `map()` aus `{purrr}` über eine Reihe von Werten geschleift.
+Die grundlegende Idee ist zunächst die gleiche wie bei klassischen `for()`-Loops: wir definieren erst eine Serie an Werten, für dann eine Operation (eine `function()`) ausgeführt werden soll.
+
+Grundsätzlich können wir in R solche Schleife auf wirklich alles anwenden: `data.frames()`, Vektoren, `list`s.
+Das macht das Vorgehen sehr flexibel und kann uns beispielsweise helfen:
+
++ alle Datensätze aus einem Verzeichnis einzulesen
+```{r}
+#| eval: false
+
+# Namen aller csv-Dateien aus einem Verzeichnis
+files <- list.files(path = "/pfad/...", pattern = ".csv$",full.names = T)
+
+daten_list <- 
+  map(files, function(x){
+    read.csv(x,header = T,sep = ";")
+  })
+```
+
++ Grafiken für unterschiedliche Jahre/Untergruppen zu erstellen
+
+```{r,out.height="45%", out.width="55%", fig.align="center"}
+#| warning: false
+#| message: false
+
+plots_nach_Bula <- 
+  map(1:16, function(bl){
+    plot_data <- etbx %>% filter(Bula == bl) # daten für Bundesland auswählen
+    title_var <- as_factor(unique(plot_data$Bula)) # Titel aus Bula-Variable 
+      # eigentlicher plot
+    plot_data %>% 
+      ggplot(aes(x=az,y=F518_SUF, color = S1)) +
+      geom_point() +
+      labs(title = title_var)
+  })
+
+plots_nach_Bula[[3]]
+```
+
+
+<!-- + Dateien zu verschieben... -->
+
+<!-- ```{r} -->
+<!-- #| eval: false -->
+
+<!-- files_to_move <- list.files(path = "C:/....",pattern = "Namensbestandteil") -->
+
+<!-- map(files_to_move,.f = function(x){ -->
+
+<!-- }) -->
+
+<!-- ``` -->
+
++ Modellserien: Ein typisches Beispiel ist eine Modellserie. Wir möchten folgende Modelle schätzen:
+
++ Modell 1 = `F518_SUF ~ az`
++ Modell 2 = `F518_SUF ~ az + S1`
++ Modell 3 = `F518_SUF ~ az + S1 + m1202`
++ Modell 4 = `F518_SUF ~ az + S1 + m1202 + zpalter`
+
+Natürlich würde so etwas funktionieren, wäre aber ein Verstoß gegen das DRY-Prinzip[^dry] und anfällig für Vertipper:
+
+```{r}
+#| eval: false
+mod1 <- lm(F518_SUF ~ az, data = etbx)
+mod2 <- lm(F518_SUF ~ az + S1, data = etbx)
+mod3 <- lm(F518_SUF ~ az + S1 + m1202, data = etbx)
+mod4 <- lm(F518_SUF ~ az + S1 + m1202 + zpalter, data = etbx)
+```
+
+
+## Modelleserie als `function()` mit `lapply()` erstellen
+
+Wir definieren dann eine `function()`, in der wir angeben, dass das angegebene Argument die Formel für ein `lm()` sein soll - das Ergebnis dieses `lm()` `lassen wir uns dann ausgeben.
+
+```{r}
+mod_function <- function(modx){
+  mx <- lm(formula = modx,data = etbx)
+  return(mx)
+}
+```
+
+Wenn wir jetzt in `mod_function` eine Modellformel angeben, wird ein `lm()` berechnet:
+```{r}
+mod_function("F518_SUF ~ az")
+```
+Im nächsten Schritt können wir jetzt eine Liste mit verschiedenen Modellvarianten erstellen:
+```{r}
+mlst <- list(
+  "Modell 1" = "F518_SUF ~ az",
+  "Modell 2" = "F518_SUF ~ az + S1",
+  "Modell 3" = "F518_SUF ~ az + S1 + m1202",
+  "Modell 4" = "F518_SUF ~ az + S1 + m1202 + zpalter"
+)
+```
+
+Wir können die Elemente einer `list()` entweder mit `[[]]` oder (ggf.) über ihren Namen aufrufen. Hier haben wir vor dem `=` einen Namen angegeben:
+
+```{r}
+mlst[[4]]
+mlst$`Modell 4`
+```
+
+
+
+Mit `lapply` wenden wir unsere `mod_function` jetzt auf diese Liste von Modellen an:
+```{r}
+mods <- lapply(mlst,mod_function)
+mods$`Modell 1`
+mods$`Modell 2`
+```
+
+Außerdem können wir uns alle Modelle auch direkt in `modelsummary` ausgeben lassen:
+```{r}
+modelsummary::modelsummary(mods,stars = T,gof_omit = "IC|RM|Log")
+```
+
+  
+## if in `function()`
+
+Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if` und `else`-Statements einbauen. 
+Hier ein Beispiel: wenn wir das zweite Argument `add_age` auf `TRUE` setzen, wird der `add_controls` hinzugefügt:
+```{r ifelse1}
+add_controls <- c("+ zpalter + I(zpalter^2)")
+
+mod_function2 <- function(modx, add_age){
+  if(add_age == T) {
+        mx <- lm(formula = paste0(modx,add_controls),data = etbx)
+  } else {
+        mx <- lm(formula = paste0(modx),data = etbx)
+  }
+  return(mx)
+}
+
+mod_function2("F518_SUF ~ az",add_age=F)
+mod_function2("F518_SUF ~ az",add_age=T)
+```
+
+
+Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit `=` angeben.
+Hier erweitern wir unsere Modellfunktion um einen `tidy()`-Schritt - der aber mit Hilfe einer Option `tidy_mod` ausgeschaltet werden kann, indem er auf `FALSE` gesetzt wird.
+
+```{r ifelse_default}
+mod_function3 <- function(modx, tidy_mod = T){
+  mx <- lm(formula = modx,data = etbx)
+  if(tidy_mod == T) mx <- tidy(mx,conf.int = T)
+  return(mx)
+}
+
+mod_function3("F518_SUF ~ az")
+mod_function3("F518_SUF ~ az",tidy_mod = F)
+```
+
+
+
+## List zu `data.frame`
+
+Wenn die Einzelbestandteile einer `list` bereits `data.frame`s sind, können wir mit `bind_rows()` diese zu einem `data.frame` zusammenfügen.
+Mit `.id=""` können wir eine Variable erstellen, welche die Listennamen enthält:
+```{r}
+mod_l3 <- lapply(mlst,mod_function3)
+lapply(mod_l3,class)
+```
+
+
+```{r}
+#| eval: false
+bind_rows(mod_l3,.id="Mod_name")
+```
+
+
+```{r}
+#| echo: false
+bind_rows(mod_l3,.id="Mod_name") %>% 
+  rmarkdown::paged_table()
+```
+
+```{r}
+#| eval: false
+lapply(mlst,mod_function3) %>% bind_rows(.id="Mod_name")
+```
+
+
+
+
+## Modelle auf Subdatensets anwenden
+
+*"Habt ihr das auch mal getrennt für Ost/West gerechnet?"*
+
+```{r}
+etbx %>%
+  mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
+  split(.$east) %>% 
+  map(.,~lm("F518_SUF ~ az + ausb + zpalter + S1",data = .x)) %>% 
+  modelsummary::modelplot(.,coef_omit = "Intercept") +
+  geom_vline(aes(xintercept = 0), linetype = 2, alpha = .5) +
+  scale_color_manual(values = c("orange","navy")) 
+  
+```
+
+
+```{r}
+etbx %>%
+  mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
+  split(.$east) %>% 
+  map(.,~lm("F518_SUF ~ az + ausb + zpalter + S1",data = .x)) %>% 
+  modelsummary::modelsummary(.,stars = T,gof_omit = "IC|RM|Log")
+```
+
+
+## adhoc function
+
+Wir müssen aber nicht notwendigerweise erst eine Funktion definieren, um sie dann anzuwenden.
+Wir können die Funktion auch im gleichen Zug wie `lapply()` definieren:
+
+```{r}
+mods3 <- lapply(mlst,function(modx){
+  mx <- lm(formula = modx,data = etbx)
+  return(mx)
+})
+mods3$`Modell 1`
+```
+
+## Loop mit `for`
+
+
+```{r}
+for(i in 1:8){
+  print(i)
+}
+```
+
+Kleines Beispiel: Zeile für Zeile der ersten 8 Zeilen aus etbx ausgeben:
+```{r}
+#| eval: false
+for(i in 1:8){
+  etbx %>% slice(i) %>% print()
+}
+```
+
+
+## Übungen
+
+```{r}
+etb_ue12 <- 
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                  col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
++ Erstellen Sie eine Funktion, welche den `data.frame` `etb_ue12` für ein `lm()` verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel: `az ~ S1 + ausb + zpalter` (Denken Sie daran, die Formula in `""` zu setzen).
+
++ Erstellen Sie eine Liste mit folgenden Modellen:
+    +  Modell 1 `"az ~ S1",`
+    +  Modell 2 `"az ~ S1 + ausb",`
+    +  Modell 3 `"az ~ S1 + ausb + zpalter"`
+
++ Verwenden Sie `lapply()` und die erstellte Funktion, um die Modelle zu schätzen und in `modelsummary()` anzuzeigen
+
++ Erweitern Sie Ihre Funktion um ein zweites Argument `only_women`, welches über ein `TRUE` / `FALSE` steuert ob lediglich die Beobachtungen von weiblichen Befragten verwendet werden: `etb_ue12 %>% filter(S1 == "w")`. Legen Sie innerhalb der Funktion die entsprechenden Schritt mit einer `if`-Bedingung versehen.
+
+
+<!-- ### Übung  -->
+
+<!-- + Erstellen Sie folgende Modelle und wenden Sie diese mit Hilfe von `lapply()` auf den  -->
+
+
+## Anhang: Schleifen mit `{purrr}`
+
+Im `{tidyverse}` stellt das Paket `{purrr}` `map()` zur Verfügung, das `function(x) { ... x}` auf  `~` und `.x` abkürzen lässt:
+
+```{r}
+mods <- map(mlst,~lm(formula = .x,data = etbx))
+```
+
+Sehr hilfreich ist `map_dfr`: hier wir aus dem Ergebnis der Schleife ein `data.frame`" mit `row_bind()` erstellt.
+Mit `.id =`  können wir eine Spalte erstellen, welche die Namen der Liste enthält (Hier die Modellnamen):
+```{r}
+map_dfr(mlst,~lm(formula = .x,data = etbx) %>% tidy(.),.id = "mod")
+```
+
+Wer mehr über `purrr` und `map()` erfahren möchte, findet [hier](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1) eine hervorragende Einführung. 
+
+
+### loop über Variablen
+
+Möchten wir über Variablen loopen, müssen wir R explizit mitteilen, dass die mitgegebenen strings als Variablen zu verstehen sind: 
+
+```{r}
+#| error: true
+for(v in c("ausb","S1","F1605e")){
+  etbx %>% count(v) %>% print()
+}
+```
+
+Das können wir mit `!!rlang::sym(v)`:
+
+```{r}
+for(v in c("ausb","S1","F1605e")){
+  etbx %>% count(!!rlang::sym(v)) %>% print()
+}
+```
+

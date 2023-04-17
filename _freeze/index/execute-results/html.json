@@ -1,0 +1,16 @@
+{
+  "hash": "b48d4b63a38b0a082b8417492c5eaf04",
+  "result": {
+    "markdown": "# Willkommen {#index .unnumbered}\n\n\n\n\n\nEine Einführung in R für Mitarbeitende am BIBB.\n\n\n::: {.cell layout-align=\"center\"}\n::: {.cell-output-display}\n![](./pic/00_frontpage.png){fig-align='center' width=70% height=70%}\n:::\n:::\n\n\nDies das Begleitskript für die R-Kurse am BIBB.\n\nMelden Sie sich gerne bei Fragen oder Wünschen unter andreas.filser[at]uol.de\n\n<!-- :::{.callout-note} -->\n<!-- Note that there are five types of callouts, including:  -->\n<!-- `note`, `tip`, `warning`, `caution`, and `important`. -->\n<!-- ::: -->\n\n**Kursinformationen**\n\n\n\n::: {.cell}\n\n:::\n\n\n\n\n::: {.g-col-12 .g-col-sm-6 .g-col-md-4}\n\n\n{{< fa calendar >}} &nbsp; Montags und Dienstags\n\n{{< fa calendar-alt >}} &nbsp; 17.04 - 18.04. und 24.04. - 25.04.2023\n\n{{< fa clock >}} &nbsp; 8:30 – 15:30 Uhr\n\n{{< fa location-dot >}} &nbsp; Webex\n\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

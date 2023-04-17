@@ -1,0 +1,310 @@
+# Data Wrangling I: Labels {#wrang1}
+
+
+```{r setup05, echo = F, include=FALSE}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+knitr::opts_chunk$set(collapse = F,cache = F)
+library(haven)
+library(tidyverse)
+library(Statamarkdown)
+theme_set(theme_gray() + theme(axis.text.x = element_text(size=rel(1.45))))
+```
+```{r}
+library(tidyverse)
+etb18_kap5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01")) %>% 
+  filter(F411_01<9)
+```
+
+
+## Labels aus anderen Programmen in R
+
+Wenn wir bspw. die Ansicht mit `View()` öffnen oder eine Auszählung mit `count()` erstellen, werden uns labels angezeigt:
+
+```{r}
+#| eval: false
+View(etb18_kap5)
+etb18_kap5 %>% count(S1)
+```
+
+Diese sind als `attributes()` Variablen zugeordnet:
+
+```{r}
+attributes(etb18_kap5$S1)
+```
+...leider machen die `attributes()` immer wieder Probleme:
+```{r}
+#| error: true
+library(ggplot2)
+library(ggeasy)
+
+etb18_kap5 %>% 
+  count(S1) %>% 
+  ggplot(.,aes(x=S1,y=n, fill = S1)) +
+  geom_col() + 
+  easy_labs()
+```
+
+
+## `factor` und Labels
+
+R verfügt über einen speziellen Variablentypen namens factor, um mit kategorialen Daten umzugehen. factor Variablen sind besonders hilfreich, wenn wir Grafiken erstellen wollen oder statistische Analysen durchführen. 
+
+In den beiden vorherigen Kapiteln haben wir schon gesehen, dass Labels in R immer etwas extra Aufwand bedeuten.
+In Grafiken mussten wir mit `breaks = c(1,2), labels = c("Männer", "Frauen")` die Labels extra erstellen.
+Auch in den Auszählungen waren die Labels nur mit `count()` aufrufbar. 
+
+In vielen Programmen wie Stata oder SPSS werden die labels häufig durch die Operationen "mitgeschleift" und dann ausgegeben. Das ist in R nicht der Fall. Stattdesssen können wir mit Hilfe des Variablentyps `factor` Labels vergeben. Das Vorgehen mag für alle, die schon lange mit Stata oder SPSS gearbeitet haben, etwas ungewöhnlich sein - ist aber in der Praxis sehr hilfreich, wenn man sich den entsprechenden Workflow angewöhnt hat.
+
+factors stellen kategoriale Daten dar. Sie werden als Zahlen in Verbindung mit Bezeichnungen gespeichert und haben dazu eine festgelegte Ordnung.
+Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als `levels` bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge.
+
+Wir beginnen nochmal "ganz von vorne" und zwar mit einem `data.frame` aus `count()`:
+```{r}
+tab_dat1 <- etb18_kap5 %>% count(m1202)
+tab_dat1
+```
+
+Dabei soll `educ` die verschiedenen Ausbildungsniveaus entsprechend der Codierung von `m1202` repräsentieren:
+
+```{r}
+#| echo: false
+library(labelled)
+data.frame(value = 1:4,
+           label = names(val_labels(etb18_kap5$m1202)[-1])) %>% 
+  kableExtra::kable()
+```
+Wie können wir diese jetzt hinterlegen?
+
+So könnten wir einfach eine `educ_chr`-Spalte hinzufügen:
+```{r}
+tab_dat1$m1202_chr <- c("k.A.","ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni")
+tab_dat1
+```
+
+Mit `factor()` können wir `levels` und `labels` angeben - die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen. Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
+```{r}
+tab_dat1$m1202_fct <- factor(tab_dat1$m1202, 
+                        levels = c(1,2,3,4), 
+                        labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
+tab_dat1
+```
+Warum ist das besser als einfach ein `character`?
+Weil eine Reihenfolge festgelegt wird:
+```{r}
+levels(tab_dat1$m1202_fct)
+```
+
+Wenn wir dann `tab_dat1` in einen ggplot pipen, dann werden die Werte der Reihenfolge der `levels` entsprechend auf der x-Achse sortiert:
+```{r}
+#| echo: false
+theme_set(theme_gray(base_size = 15) + theme(axis.title.x = element_text(size = rel(1.15),face = "bold",family = "mono"))) 
+```
+
+
+```{r chr_fct_plot}
+#| out-height: 60%
+#| out-width: 60%
+#| fig-align: "center"
+#| layout-ncol: 2
+#| cache: true
+
+tab_dat1 %>% 
+  ggplot(data = ., aes(x = m1202_chr, y = n)) +
+  geom_col(position=position_dodge(), fill = "mediumturquoise")
+
+tab_dat1 %>% 
+  ggplot(data = ., aes(x = m1202_fct, y = n)) +
+  geom_col(position=position_dodge(), fill = "steelblue4") 
+
+```
+
+**[Blogbeitrag zu labels in R](https://www.pipinghotdata.com/posts/2022-09-13-the-case-for-variable-labels-in-r/)**
+
+## Übung
+
+```{r}
+etb18_ue5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01")) %>% 
+  filter(F411_01<9)
+```
+
+Bearbeiten Sie die labels dieses Diagramms:
+
+**`F411_01`: `r str_wrap(attributes(etb18_kap5$F411_01)$label)`iten?**
+
+
+```{r}
+#| echo: false
+library(labelled)
+data.frame(value = 1:4,
+           label = names(val_labels(etb18_kap5$F411_01)[-5])) %>% 
+  kableExtra::kable()
+```
+
+```{r}
+#| code-fold: show
+#| out-width: "50%"
+#| out-height: "50%"
+#| warning: false
+etb18_ue5 %>% 
+  count(F411_01) %>%
+  ggplot(data = ., aes(x = F411_01, y = n)) +
+  geom_col(fill = "steelblue3")
+```
+
++ Erstellen Sie dafür zunächst einen `data.frame` mit der Auszählung durch `count()` und legen diese als Objekt ab.
++ Erstellen Sie einen `factor()` Variable mit den den gewünschten Beschriftungen mit Hilfe von `labels =`. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
++ Verwenden Sie die gelabelten Variablen für die Grafik.
+
+
+## Anhang
+
+### Labels löschen mit `zap_...` aus `{haven}`
+
+Häufig führen die Label-`attributes()` zu Problemen in der weiteren Verarbeitung.
+Mit `haven::zap_labels()` können wir die Value labels aus einem Datensatz köschen mit `haven::zap_label()` können wir die Variable labels entfernen.
+```{r}
+etb18_kap5
+etb18_kap5 %>% 
+  haven::zap_labels() # value labels raus
+```
+
+
+### `as_factor()` in `{haven}` {#as_fct}
+
+In `{haven}` findet sich die Funktion `as_factor`[^2], mit der wir aus Labels einen `factor` erstellen können.
+
+[^2]: Nicht zu verwechseln mit `as.factor()` aus base R - der `_` macht einen Unterschied!
+
+```{r}
+library(labelled)
+tab_dat2 <- etb18_kap5 %>% count(Bula)
+tab_dat2$Bula_fct <- as_factor(tab_dat2$Bula)
+tab_dat2
+```
+
+Das können wir dann in den Plot pipen:
+<!-- - mit `str_wrap( , 10)` aus [{stringr}](https://stringr.tidyverse.org/) (aus [{tidyverse}](https://www.tidyverse.org/)) können wir außerdem festlegen, dass nach 10 Zeichen ein Zeilenumbruch eingefügt werden soll: -->
+```{r}
+tab_dat2 %>% 
+  ggplot(data = ., aes(y = Bula_fct, x = n)) +
+  geom_col(position=position_dodge(), fill = "sienna1")
+```
+
+
+### `factor` Variablen bearbeiten mit `{forcats}`
+
+
+`{forcats}` ist Teil des `{tidyverse}`.
+Mit `fct_recode()` können wir die `levels` verändern:
+```{r}
+tab_dat2$Bula_fct2 <- fct_recode(tab_dat2$Bula_fct,
+  NRW = "Nordrhein-Westfalen",
+  `M V` = "Mecklenburg-Vorpommern", # bei Leerzeichen `` um die Wörter
+  )
+tab_dat2 %>% print(n=Inf)
+```
+
+[Weitere `fct_....()` Funktionen aus `{forcats}`](#fct_cats), einen Überblick gibt das [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf).
+
+Eine sehr praktische Funktion ist `fct_reorder()`, mit dieser können wir die levels nach Häufigkeit (aus `tab_dat1$n`) sortieren:
+```{r}
+tab_dat2$Bula_fct3 <- fct_reorder(tab_dat2$Bula_fct2,tab_dat2$n)
+levels(tab_dat2$Bula_fct2)
+levels(tab_dat2$Bula_fct3)
+```
+```{r}
+#| echo: false
+theme_set(theme_gray(base_size = 15) + theme(axis.title.y = element_text(size = rel(1.5),face = "bold",family = "mono"))) 
+```
+```{r}
+#| layout-ncol: 2
+tab_dat2 %>% 
+  ggplot(data = ., aes(y = Bula_fct2, x = n)) +
+  geom_col(position=position_dodge(), fill = "turquoise2")
+
+tab_dat2 %>% 
+  ggplot(data = ., aes(y = Bula_fct3, x = n)) +
+  geom_col(position=position_dodge(), fill = "turquoise3")
+```
+
+
+```{r}
+#| echo: false
+# reset theme
+theme_set(theme_gray()) 
+```
+
+
+
+### Labels selbst erstellen und ranspielen
+
+Ein alternativer Weg geht über einen kleinen Label-`data.frame` und `left_join()` (mehr zu `left_join()` später.)
+
+
+```{r}
+tab_ausb2 <- etb18_kap5 %>% count(m1202)
+tab_ausb2
+```
+
+
+```{r}
+lab_df <- data.frame(m1202=1:4)
+lab_df
+lab_df$m1202_lab <- factor(lab_df$m1202,levels = 1:4,
+                           labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
+lab_df
+```
+
+
+```{r}
+tab_ausb2 %>% 
+  left_join(lab_df,by = "m1202")
+```
+```{r}
+#| out-width: "80%"
+#| out-height: "50%"
+tab_ausb2 %>% 
+  left_join(lab_df,by = "m1202") %>% 
+  ggplot(data = ., aes(x = m1202_lab, y = n)) +
+  geom_col(position=position_dodge(), fill = "turquoise3")
+```
+
+
+
+### Labels exportieren
+Wenn wir aber beispielsweise einen Datensatz für Stata labeln wollen, hilft uns wieder `{labelled}`:
+```{r}
+library(labelled)
+```
+
+```{r}
+etb18_kap5$S1_num2 <- as.numeric(etb18_kap5$S1)
+attributes(etb18_kap5$S1_num2)
+val_labels(etb18_kap5$S1_num2) <- c("Mann"=1,"Frau"=2)
+attributes(etb18_kap5$S1_num2)
+etb18_kap5 %>% count(S1_num2)
+```
+```{r}
+#| eval: false
+etb18_kap5 %>% 
+  select(S1_num2) %>% 
+  haven::write_dta(.,path = "./data/etb18_kap5.dta")
+```
+
+...in *Stata*:
+```{stata}
+use "./data/etb18_kap5.dta" 
+tab S1_num2
+```
+
+[Mehr zu `labels` in `{labelled}`](https://joseph.larmarange.net/intro_labelled.html).
+
+
+<!-- factors stellen eine strukturierte Beziehung zwischen den verschiedenen Ebenen (Werten) einer kategorialen Variable her, wie z. B. Wochentage oder Antworten auf eine Frage in einer Umfrage. Auf diese Weise lässt sich leichter erkennen, wie sich ein Element zu den anderen Elementen in einer Spalte verhält. Obwohl factors wie Zeichenvektoren aussehen (und sich oft auch so verhalten), werden sie von R als Ganzzahlvektoren behandelt. Sie müssen also sehr vorsichtig sein, wenn Sie sie als Strings behandeln. -->
+
+<!-- Einmal erstellt, können factors nur einen vordefinierten Satz von Werten enthalten, die als Ebenen bezeichnet werden. Standardmäßig sortiert R die Ebenen immer in alphabetischer Reihenfolge. Wenn Sie zum Beispiel einen Faktor mit 2 Ebenen haben: -->
+
+
