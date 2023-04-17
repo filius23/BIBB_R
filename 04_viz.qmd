@@ -12,6 +12,8 @@ knitr::opts_chunk$set(message = F,warning = F,highlight = "#<<",cache = T,
 etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 tab_df <- xtabs(~S1+m1202, data = etb18) %>% data.frame()
 
+theme_set(new = theme_gray(base_size = 15))
+
 # etb18$zpalter[etb18$zpalter>100] <- NA
 # etb18$m1202[etb18$m1202<0] <- NA
 ```
@@ -64,7 +66,6 @@ etb18_small <- etb18 %>% slice(1:100)
 
 ## ggplot2 und die grammar of graphics 
 
-Nach der Installation und der Aktivierung von `{ggplot2}` können wir uns der Logik dieses Pakets widmen. 
 `ggplot2` ist die Umsetzung des Konzepts der "layered grammar of graphics" in R. Die Idee dieses Visualisierungssystems ist es, Datenvisualisierung in Parameter zu unterteilen: der zugrundeliegende Datensatz, die darzustellenden Variablen, die Wahl der darzustellenden Formen, das Koordinatensystem, Skalen und statistische Transformationen. Ein Standardbefehl in `ggplot2` sieht ungefähr so aus:
 
 ```{r,eval=F}
@@ -117,11 +118,19 @@ Neben den Achsen werden in `aes()` nämlich auch die Variablen für das Aussehen
 Das Geschlecht soll die Färbung der Punkte vorgeben, diese können wir in `aes` mit `color` angeben:
 ```{r}
 #| error=TRUE
+# ergibt einen Fehler aufgrund der Labels:
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = S1 )) + 
   geom_point()
+```
+
+Eine numerische Variable für `color =` ergibt einen Farbverlauf, eine `factor`/`character`-Variable ergibt eine diskrete Farbskala:
+```{r}
+#| layout-ncol: 2
 ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.numeric(S1))) + 
   geom_point()
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+  geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.character(S1))) + 
   geom_point()
 ```
 
@@ -129,7 +138,7 @@ Außerdem können wir mit `scale_color_manual`[^2] selbst Farben angeben, eine L
 
 [^2]: Hätten wir `color` in `aes`  angeben, wäre der entsprechende Befehl `scale_color_manual`.
 ```{r}
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"))
 ```
@@ -139,7 +148,7 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
 
 Wir können mit den Optionen `breaks` und `labels` zudem auch die Beschriftung der Legende bearbeiten. Dazu geben wir zunächst in `breaks`  die Ausprägungen der Variable Geschlecht an und dann in der gleichen Reihenfolge die zu vergebenden Labels:
 ```{r, out.height= "75%", out.width = "75%", fig.align="center"}
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") )
@@ -156,7 +165,7 @@ Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben
 
 
 ```{r fullplt}
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
@@ -171,24 +180,6 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
 
 Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme_minimal()` einen weißen Hintergrund mit grauen Markierungslinien (weitere Beispiele in den Hinweisen unter [Themes](#themes))
 
-## Plots als Objekte
-
-
-Außerdem kann ein ggplot auch ein Objekt sein:
-```{r}
-#| layout-ncol: 2
-p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
-  geom_point(size = 2) 
-
-p1 + scale_color_manual(values = c("lightskyblue3","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
-
-
-p1 + scale_color_manual(values = c("coral","orange"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
-```
-
-
 ## Kombination aus allem
 ```{r fllplt1}
 #| out-height: 100%
@@ -197,8 +188,8 @@ p1 + scale_color_manual(values = c("coral","orange"),
 
 etb18_small$m1202[etb18_small$m1202<0] <- NA
 ggplot(data = etb18_small, aes(x = zpalter, y = az, 
-                               color = factor(S1),
-                               shape = factor(m1202))) + 
+                               color = as.factor(S1),
+                               shape = as.factor(m1202))) + 
   geom_point(size = 2) + 
   scale_color_manual(values = c("lightskyblue3","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
@@ -217,11 +208,11 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az,
 
 [Übersicht zu shapes](#shape1)
 
-## `ggsave()`
+## Grafiken speichern: `ggsave()`
 
 Um eine Grafik dann zu speichern, steht uns `ggsave()` zur Verfügung.
 Wenn wir nichts anderes angeben, wird automatisch die gerade offene Grafik[^plotopen] gespeichert. 
-Besser ist es aber explizit zu sein:
+Besser ist es aber explizit zu sein und die gewünschte Grafik als Objekt abzulegen und dann in `ggsave()` anzugeben:
 
 ```{r}
 #| eval: false
@@ -241,7 +232,7 @@ plot_objekt1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az,
 
 ```{r}
 #| eval: false
-ggsave(plot = plot_objekt1,filename = "./grafik/plot1.png",
+ggsave(plot = plot_objekt1,filename = "./results/plot1.png",
        dpi = 800, # auflösung
        # width = 9, height = 7, # falls angepasst werden soll
        )
@@ -252,28 +243,6 @@ Die richtige Kombination aus Auflösung, Textgröße und Gesamtgröße des Plots
 [^plotopen]: im Panel **Plots** rechts
 
 ### [Übung](#pltue1)  {#ue4_01}
-
-## Labels übernehmen
-
-Wenn(!) die labels und Variablenformate passen, dann hilft uns `easy_labs()` aus [{ggeasy}](https://jonocarroll.github.io/ggeasy/) weiter:
-```{r}
-#| eval: false
-install.packages("ggeasy")
-```
-
-
-```{r}
-library(ggeasy)
-etb18_small$S1 <- factor(etb18_small$S1)
-ggplot(data = etb18_small, aes(x = zpalter, 
-                               y = az)) + 
-  geom_point(size = 2) + 
-  easy_labs()
-```
-
-
-
-
 
 ## Verteilungen visualisieren
 
@@ -333,6 +302,10 @@ ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) +
   theme(axis.text.x = element_blank()) +
   expand_limits(x = c(0,1.2))
 
+```
+```{r}
+#| echo: false
+theme_set(new = theme_grey(base_size = 14))
 ```
 
 Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.

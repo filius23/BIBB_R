@@ -70,6 +70,8 @@ Dabei soll `educ` die verschiedenen Ausbildungsniveaus entsprechend der Codierun
 
 ```{r}
 #| echo: false
+#| message: false
+#| warning: false
 library(labelled)
 data.frame(value = 1:4,
            label = names(val_labels(etb18_kap5$m1202)[-1])) %>% 
@@ -274,7 +276,7 @@ tab_ausb2 %>%
 
 
 
-### Labels exportieren
+### Labels in R erstellen und nach bspw. Stata exportieren
 Wenn wir aber beispielsweise einen Datensatz für Stata labeln wollen, hilft uns wieder `{labelled}`:
 ```{r}
 library(labelled)
