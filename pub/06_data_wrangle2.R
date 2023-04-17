@@ -55,11 +55,8 @@ dat4
 
 
 ## Exkurs: Dummy-Variable aus logischer Variable -------
-dat4$above_mean 
-as.numeric(dat4$above_mean )
 dat3 %>% 
-  mutate(rel_to_mean = studs-mean(studs),
-         above_mean = as.numeric(rel_to_mean > 0) )
+  mutate(prom_dummy = as.numeric(prom_recht ) )
 
 
 ## Übung -----------
@@ -87,6 +84,7 @@ dat5 %>%
   ungroup() %>%  # mit ungroup() aufheben
   mutate(m_profs2 = mean(profs)) 
 
+# achtung: gruppierung bleibt bestehen, wenn wir sie nicht aufheben
 dat5_grp <- 
 dat5 %>%
   mutate(m_studs = mean(studs),
@@ -180,24 +178,9 @@ dat3 %>%
 
 ## Übung -----
 
-# Hilfsfunktionen ------------
+# Hilfsfunktionen ifelse() und case_when() ------------
 
-## cut ------
-cut(dat3$profs,breaks = c(50, 200, 350, 500, 650))
-cut(dat3$profs,breaks = seq(50,650,150))
-
-dat3$prof_class <- cut(dat3$profs,breaks = seq(50,650,150))
-dat3
-
-# auszählen
-dat3 %>% count(prof_class)
-
-dat3$prof_class <- NULL # 
-
-
-## ifelse() und case_when() ------------
-
-### ifelse -----
+## ifelse -----
 x1 <- 1:10
 x1
 ifelse(x1 > 5,"groß","klein" )
@@ -207,7 +190,7 @@ ifelse(x1 %% 2 == 0,"gerade","ungerade")
 dat3 %>% mutate(rel_to_mean = studs-mean(studs),
                 ab_mean_lab = ifelse(rel_to_mean > 0,"darüber","darunter"))
 
-### case_when --------
+## case_when --------
 dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
                                   gegr < 1900 ~ "alt"))
 
@@ -222,11 +205,6 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
                                   gegr > 1900 & prom_recht == F ~ "junge Hochschule"))
 
 
-case_when(dat3$gegr < 1500 & dat3$prom_recht == T ~ "sehr alte Uni",
-         dat3$gegr < 1900 & dat3$prom_recht == T ~ "alte Uni",
-         dat3$gegr > 1900 & dat3$prom_recht == T ~ "junge Uni",
-         dat3$gegr < 1900 & dat3$prom_recht == F ~ "alte Hochschule",
-         dat3$gegr > 1900 & dat3$prom_recht == F ~ "junge Hochschule")
 
 # Übung ----------
 
