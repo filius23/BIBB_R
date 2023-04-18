@@ -183,7 +183,8 @@ tab_ue5 %>%
 ```
 
 + Erstellen Sie dafür zunächst einen `data.frame` mit der Auszählung durch `count()` und legen diese als Objekt ab.
-+ Erstellen Sie einen `factor()` Variable mit den den gewünschten Beschriftungen mit Hilfe von `labels =`. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
++ Wie können Sie die labels aus den `attributes()` mit `as_factor()` in eine Variable `F411_01_fct` übernehmen?
++ Erstellen Sie einen `factor()` Variable `F411_01_fct2` mit den den gewünschten Beschriftungen mit Hilfe von `labels =`. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
 + Verwenden Sie die gelabelten Variablen für die Grafik.
 
 **Bonusübung:** Was müssten wir ändern, um die Grafik nach Geschlecht (`S1`) zu erstellen?

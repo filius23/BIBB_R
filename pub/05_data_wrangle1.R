@@ -1,6 +1,5 @@
 # ------------------- #
-# Kapitel 5: labels
-# Lösung
+# Kapitel 5: labels & as_factor()
 # ------------------- #
 library(haven)
 library(tidyverse)
@@ -17,6 +16,8 @@ etb18_kap5 %>% count(S1)
 
 attributes(etb18_kap5$S1)
 
+attributes(etb18_kap5$S1)$label
+
 # leider führt das immer wieder zu Problemen
 library(ggplot2)
 ggplot(data = etb18_kap5, aes(x = zpalter, y = az, color = S1 )) + 
@@ -27,6 +28,7 @@ ggplot(data = etb18_kap5, aes(x = zpalter, y = az, color = S1 )) +
 etb18_kap5$S1_fct <- as_factor(etb18_kap5$S1)
 
 # ansehen:
+etb18_kap5 %>% select(S1,S1_fct) %>% head()
 etb18_kap5 %>% select(contains("S1")) %>% head()
 
 # in ggplot() verwenden:

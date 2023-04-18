@@ -1,7 +1,7 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 
 
-knitr::purl(input = "14_tabellenexport.qmd",output= "./prog_prelim/14_tabellenexport.R",documentation = 0)
+knitr::purl(input = "05_data_wrangle1.qmd",output= "./prog_2023/05_data_wrangle1.R",documentation = 0)
 
 
 rstudioapi::navigateToFile("./prog_prelim/11_data_wrangle3.R")

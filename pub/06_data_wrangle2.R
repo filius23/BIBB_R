@@ -86,11 +86,11 @@ dat5 %>%
 
 # achtung: gruppierung bleibt bestehen, wenn wir sie nicht aufheben
 dat5_grp <- 
-dat5 %>%
-  mutate(m_studs = mean(studs),
-         m_profs = mean(profs)) %>% 
-  group_by(prom_recht) %>%
-  mutate(m_studs2 = mean(studs))
+      dat5 %>%
+        mutate(m_studs = mean(studs),
+               m_profs = mean(profs)) %>% 
+        group_by(prom_recht) %>%
+        mutate(m_studs2 = mean(studs)) # ! Kein ungroup() am Ende!
 
 dat5_grp %>%  mutate(profs = mean(profs))
 
