@@ -611,7 +611,6 @@ etb_small2 %>%
 ```
 + Nutzen Sie eine Funktion, um nicht wiederholt die gleichen Schritte einzugeben.
 + Verwenden Sie zusätzlich `across()`, um die Funktion auf die gewünschten Variablen anzuwenden.
-+ Benennen Sie `S1` in `etb_small2` um 
 
 
 [Zurück nach oben](#ue06_4)

@@ -124,7 +124,8 @@ etb18_small %>%
   geom_col(position = position_dodge())
 
 # labels und farbe
-etb18_small %>% count(gkpol,nt) %>%
+etb18_small %>% 
+  count(gkpol,nt) %>%
   ggplot(data = ., aes(x = gkpol, y = n, fill = factor(nt))) +
   geom_col(position = position_dodge()) +
   scale_x_continuous(breaks = 1:7,

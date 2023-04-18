@@ -41,7 +41,7 @@ dat3 %>% mutate(studs_to_mean = studs-mean(studs),
 
 
 dat3 %>% mutate(rel_to_mean = studs-mean(studs),
-                above_mean = rel_to_mean > 0)
+                above_mean  = rel_to_mean > 0)
 
 
 dat3 # wird nicht in dat3 hinterlegt -> ablegen in neuem Objekt oder überschreiben
@@ -58,7 +58,10 @@ dat4
 dat3 %>% 
   mutate(prom_dummy = as.numeric(prom_recht ) )
 
-
+dat3 %>% 
+  mutate(rel_to_mean = studs-mean(studs),
+         above_mean = rel_to_mean > 0,
+         above_mean_dummy = as.numeric(above_mean)) 
 ## Übung -----------
 
 # group_by() / .by = -------
@@ -79,7 +82,7 @@ dat5 %>%
 dat5 %>%
   mutate(m_studs = mean(studs),
          m_profs = mean(profs)) %>% 
-  group_by(prom_recht) %>%
+  group_by(prom_recht) %>%   # gruppierung nach prom_recht setzen
   mutate(m_studs2 = mean(studs)) %>% 
   ungroup() %>%  # mit ungroup() aufheben
   mutate(m_profs2 = mean(profs)) 
@@ -94,12 +97,12 @@ dat5_grp <-
 
 dat5_grp %>%  mutate(profs = mean(profs))
 
+
 ## neu ab dplyr 1.1.1: .by = in mutate()
 dat5 %>%
   mutate(m_studs = mean(studs),
          m_profs = mean(profs)) %>% 
-  mutate(m_studs2 = mean(studs),
-         .by = prom_recht) %>% 
+  mutate(m_studs2 = mean(studs),.by = prom_recht) %>% 
   mutate(m_profs2 = mean(profs))
 
 
@@ -109,8 +112,12 @@ dat5 %>%
   summarise(m_studs = mean(studs))
 
 dat5 %>%
-  group_by(prom_recht) %>%
-  mutate(m_studs = mean(studs))
+  summarise(m_studs = mean(studs),.by = prom_recht) 
+
+# mehrere Gruppierungsvariablen
+dat5 %>%
+  summarise(m_studs = mean(studs),.by = c(prom_recht,profs)) 
+
 
 ## Übung -----------
 
@@ -128,10 +135,24 @@ dat3 %>%
 dat3 %>%
   summarise(across(.cols = matches("studs|profs"),.fns = ~mean(.x)))
 
+# regular expressions
+dat3 %>%
+  summarise(across(.cols = matches("^s|^p"),.fns = ~mean(.x)))
+  # summarise(across(.cols = matches("^F140|^F230"),.fns = ~mean(.x)))
+  
+# warum .cols?
+# es geht auch positionsbezogen:
+dat3 %>%
+  summarise(across(matches("^s|^p"),~mean(.x)))
+
+
 ## auch mit group_by() ------
 dat3 %>%
   group_by(prom_recht) %>%
   summarise(across(matches("studs|profs"), ~mean(.x)))
+
+dat3 %>%
+  summarise(across(matches("studs|profs"), ~mean(.x)),.by = prom_recht)
 
 
 ## mehrere Werte mit list() ------
@@ -139,9 +160,14 @@ dat3 %>%
   group_by(prom_recht) %>%
   summarise(across(matches("studs|profs"), list(mean = ~mean(.x), sd = ~sd(.x))))
 
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), list(MeAn = ~mean(.x), sd = ~sd(.x))))
+
 
 ## list vorab definieren -------
 wert_liste <- list(mean = ~mean(.x), sd = ~sd(.x), max = ~max(.x,na.rm = T))
+
 dat3 %>%
   group_by(prom_recht) %>%
   summarise(across(matches("studs|profs"), wert_liste))
@@ -152,6 +178,12 @@ dat3 %>%
   summarise(across(matches("studs|profs"), 
                    list(mean = ~mean(.x), sd = ~sd(.x)),
                    .names = "{.fn}_{.col}")) # fn -> Funktion , col -> Variablenname
+# spaltennamen auch weiter anpassbar
+dat3 %>%
+  group_by(prom_recht) %>%
+  summarise(across(matches("studs|profs"), 
+                   list(mean = ~mean(.x), sd = ~sd(.x)),
+                   .names = "{.fn}_ABS_{.col}")) # fn -> Funktion , col -> Variablenname
 
 
 dat3 %>%
@@ -188,15 +220,31 @@ sat_small %>%
          dmean_F1450_02 = F1450_02 - mean(F1450_02,na.rm = T))
 
 ## function() ------
-dtomean <- function(x){
+dtomean <- function(x) {
   d_x <- x - mean(x,na.rm = T)
   return(d_x)
 }
+## function mit anderem platzhalter oder mehreren platzhaltern
+  dtomean2 <- function(I) {
+    d_x <- I - mean(I,na.rm = T)
+    return(d_x)
+  }
+
+  teiler3 <- function(x,y) {
+    d_x <- x / y
+    return(d_x)
+  }
 
 
 var1 <- c(1,6,3,7,8,1,5)
+
 mean(var1)
+
 dtomean(var1)
+dtomean2(var1)
+
+var2 <- c(2.4,5,3,5,9,3,8)
+teiler3(x = var1,y = var2)
 
 # auf eine Variable aus sat_small anwenden
 dtomean(sat_small$F1450_04)
