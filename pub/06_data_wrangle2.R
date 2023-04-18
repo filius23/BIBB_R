@@ -160,23 +160,60 @@ dat3 %>%
                    list(mean = ~mean(.x), sd = ~sd(.x)),
                    .names = "XX_{.fn}_{.col}")) # fn -> Funktion , col -> Variablenname
 
-## n() und sum(!is.na()) ------------
-dat3 %>%
-  group_by(prom_recht) %>%
-  summarise(across(matches("studs|profs"), 
-                   list(mean = ~mean(.x), sd = ~sd(.x), n = ~n(), notNA = ~sum(!is.na(.x))),
-                   .names = "{.fn}_{.col}"))
 
 ## auch mit mutate() -------
 dat3 %>%
   mutate(across(matches("studs|profs"), ~mean(.x), .names = "m_{.col}"))
 
 
-dat3 %>%
-  mutate(across(matches("studs|profs"), ~mean(.x)))
-
-
 ## Übung -----
+
+
+# Eigene Funktionen ----------------
+
+
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+
+sat_small <- 
+  etb18 %>% 
+  select(F1450_04,F1450_05,F1450_06) %>% 
+  slice(12:16) %>% 
+  haven::zap_labels() %>% haven::zap_label() # labels entfernen
+sat_small
+
+
+# relativ zum Mittelwert
+sat_small %>% 
+  mutate(dmean_F1450_01 = F1450_01 - mean(F1450_01,na.rm = T),
+         dmean_F1450_02 = F1450_02 - mean(F1450_02,na.rm = T))
+
+## function() ------
+dtomean <- function(x){
+  d_x <- x - mean(x,na.rm = T)
+  return(d_x)
+}
+
+
+var1 <- c(1,6,3,7,8,1,5)
+mean(var1)
+dtomean(var1)
+
+# auf eine Variable aus sat_small anwenden
+dtomean(sat_small$F1450_04)
+
+#
+sat_small %>% map(.f = ~dtomean(.x))
+
+## kürzer dank function -----
+sat_small %>% 
+  mutate(std_F1450_01 = dtomean(F1450_01),
+         std_F1450_02 = dtomean(F1450_02))
+
+## noch kürzer mit across() ------
+sat_small %>% 
+  mutate(across(matches("F1450"),~dtomean(.x),.names = "dmean_{.col}"))
+
+
 
 # Hilfsfunktionen ifelse() und case_when() ------------
 
@@ -207,48 +244,6 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
 
 
 # Übung ----------
-
-# Eigene Funktionen ----------------
-
-
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"))
-
-
-sat_small <- 
-  etb18 %>% 
-  select(F1450_01,F1450_02,F1450_03) %>% 
-  slice(1:5) %>% 
-  mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) # missings ausschließen
-
-sat_small
-
-# relativ zum Mittelwert
-sat_small %>% 
-  mutate(dmean_F1450_01 = F1450_01 - mean(F1450_01,na.rm = T),
-         dmean_F1450_02 = F1450_02 - mean(F1450_02,na.rm = T))
-
-## function() ------
-dtomean <- function(x){
-  d_x <- x - mean(x,na.rm = T)
-  return(d_x)
-}
-
-
-var1 <- c(1,6,3,7,8,1,5)
-mean(var1)
-dtomean(var1)
-
-## kürzer dank function -----
-sat_small %>% 
-  mutate(std_F1450_01 = dtomean(F1450_01),
-         std_F1450_02 = dtomean(F1450_02),
-         std_F1450_03 = dtomean(F1450_03))
-
-## noch kürzer mit across() ------
-sat_small %>% 
-  mutate(across(matches("F1450"),~dtomean(.x),.names = "dmean_{.col}"))
-
 
 # rename -------
 sat_small %>% rename(neu=F1450_01)

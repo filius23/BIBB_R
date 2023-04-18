@@ -361,22 +361,15 @@ Dementsprechend können wir jetzt unsere `dtomean()` auf eine Variable (einen Ve
 dtomean(sat_small$F1450_04)
 ```
 
-Um unsere Funktion jetzt auf jede Variable eines `data.frame` anzuwenden, können wir `lapply()` aus base R verwenden - der Output ist dann eine Liste, deren Elemente nach den Variablennamen benannt werden:
+Um unsere Funktion jetzt auf jede Variable eines `data.frame` anzuwenden, können wir `map()` aus `{purrr}` (ebenfalls Teil des `{tidyverse}`) verwenden - der Output ist dann eine Liste, deren Elemente nach den Variablennamen benannt werden:
 ```{r}
-sat_small %>% lapply(FUN = dtomean)
-```
-
-Im `{tidyverse}` steht mit `{purrr}` ein Paket zur Verfügung, welches `lapply()` ersetzt:
-```{r}
-sat_small %>% map(.f = dtomean)
+sat_small %>% map(.f = ~dtomean(.x))
 ```
 
 Mit `bind_cols()` können wir die Liste spaltenweise zusammenfügen:
 ```{r}
-sat_small %>% map(.f = dtomean) %>% bind_cols()
 sat_small %>% map(~dtomean(.x)) %>% bind_cols() # formula syntax-Schreibweise
 ```
-
 Diese *formula syntax* Schreibweise findet sich dann auch in `across()` wieder - zusätzlich haben wir hier direkt über `.names =` die Möglichkeit, die Variablennamen für die Ergebnisse zu bearbeiten:
 ```{r}
 sat_small %>% 
