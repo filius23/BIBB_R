@@ -224,27 +224,27 @@ dtomean <- function(x) {
   d_x <- x - mean(x,na.rm = T)
   return(d_x)
 }
-## function mit anderem platzhalter oder mehreren platzhaltern
+var1 <- c(1,6,3,7,8,1,5)
+
+mean(var1)
+dtomean(var1)
+
+
+### function mit anderem platzhalter oder mehreren platzhaltern ------
   dtomean2 <- function(I) {
     d_x <- I - mean(I,na.rm = T)
     return(d_x)
   }
-
+  
   teiler3 <- function(x,y) {
     d_x <- x / y
     return(d_x)
   }
-
-
-var1 <- c(1,6,3,7,8,1,5)
-
-mean(var1)
-
-dtomean(var1)
-dtomean2(var1)
-
-var2 <- c(2.4,5,3,5,9,3,8)
-teiler3(x = var1,y = var2)
+  
+  dtomean2(var1)
+  
+  var2 <- c(2.4,5,3,5,9,3,8)
+  teiler3(x = var1,y = var2)
 
 # auf eine Variable aus sat_small anwenden
 dtomean(sat_small$F1450_04)
@@ -266,10 +266,15 @@ sat_small %>%
 # Hilfsfunktionen ifelse() und case_when() ------------
 
 ## ifelse -----
-x1 <- 1:10
-x1
-ifelse(x1 > 5,"groß","klein" )
-ifelse(x1 %% 2 == 0,"gerade","ungerade")
+
+var1 <- c(1,6,3,7,8,1,5)
+var1
+ifelse(var1 > 5, NA, var1)
+
+# NA in Abgleich führt immer zu NA im Ergebnis
+var3 <- ifelse(var1 > 5, NA, var1)
+var3 <- ifelse(var1 %in% c(5,6,7,8), NA, var1)
+var3 < 4
 
 
 dat3 %>% mutate(rel_to_mean = studs-mean(studs),
@@ -282,6 +287,16 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
 dat3 %>% mutate(alter = case_when(gegr < 1500 ~ "sehr alt",
                                   gegr < 1900 ~ "alt",
                                   TRUE ~ "relativ neu"))
+
+# Reihenfolge ist wichtig! -> sobald erste Bedingung erfüllt wird nicht weiter geschaut
+dat3 %>% mutate(alter = case_when(
+                                  gegr < 1900 ~ "alt",
+                                  gegr < 1500 ~ "sehr alt",
+                                  TRUE ~ "relativ neu"))
+
+dat3 %>% mutate(alter = case_when(gegr < 1500 ~ 1,
+                                  gegr < 1900 ~ 2,
+                                  TRUE ~ 3))
 
 dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni",
                                   gegr < 1900 & prom_recht == T ~ "alte Uni",
