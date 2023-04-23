@@ -397,7 +397,7 @@ mean in group 1 mean in group 2
 <p>Den Korrelationskoeffizienten können wir in R mit <code>cor.test()</code> berechnen:</p>
 <p><code>F231</code>: Wie viele Stunden arbeiten Sie i.d.R. im Durchschnitt pro Woche von zu Hause aus?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>zpalter,etb18_kap7<span class="sc">$</span>F231,<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>zpalter,etb18_kap7<span class="sc">$</span>F231,<span class="at">method =</span> <span class="st">"pearson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pearson's product-moment correlation
@@ -510,10 +510,10 @@ p-value adjustment method: Holm (1979)</code></pre>
 <!-- ```{r} -->
 <!-- ttest_m <-  -->
 <!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==1], -->
-<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson", use = "pairwise.complete.obs") -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson") -->
 <!-- ttest_w <-  -->
 <!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==2], -->
-<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson", use = "pairwise.complete.obs") -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson") -->
 <!-- test_df2 <- bind_rows(tidy(ttest_m), -->
 <!--                       tidy(ttest_w),  -->
 <!--                       .id = "S1") # Variable S1 erstellen als Identifikator -->
@@ -572,11 +572,11 @@ p-value adjustment method: Holm (1979)</code></pre>
 <p>Für den Spearman-Rangkorrelationskoeffizienten können wir <code>method = "spearman"</code> nutzen:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12,<span class="at">method =</span> <span class="st">"spearman"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12,<span class="at">method =</span> <span class="st">"spearman"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12,<span class="at">method =</span> <span class="st">"spearman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ein weiteres Zusammenhangsmaß für ordinale Variablen sind Konkordanzmaße wie Kendall’s <span class="math inline">\(\tau\)</span>, mit der Option <code>method = "kendall"</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12, <span class="at">method =</span> <span class="st">"kendall"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12, <span class="at">method =</span> <span class="st">"kendall"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Hier wird Kendall’s <span class="math inline">\(\tau_b\)</span> ausgegeben - <a href="#corss">siehe Anhang für Kendall’s <span class="math inline">\(\tau_a\)</span></a></p>
 </section>
@@ -619,21 +619,21 @@ X-squared = 12.541, df = 4, p-value = 0.01375</code></pre>
 <p>Gewichte sind ein häufig verwendetes Gegenmittel. Die einfachste Variante für eine Gewichtung ist die Option <code>wt=</code> in <code>count()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>etb18_kap7 <span class="sc">%&gt;%</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(S1,m1202,<span class="at">wt =</span> gew2018_hr17)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(S1,m1202,<span class="at">wt =</span> gew2018)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 3
-   S1           m1202       n
-   &lt;dbl+lbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
- 1 1 [männlich]    -1   1988.
- 2 1 [männlich]     1 115140.
- 3 1 [männlich]     2 496863.
- 4 1 [männlich]     3 127220.
- 5 1 [männlich]     4 268891.
- 6 2 [weiblich]    -1   1893.
- 7 2 [weiblich]     1  70031.
- 8 2 [weiblich]     2 459651.
- 9 2 [weiblich]     3  55828.
-10 2 [weiblich]     4 237108.</code></pre>
+   S1           m1202      n
+   &lt;dbl+lbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+ 1 1 [männlich]    -1   1.06
+ 2 1 [männlich]     1  61.6 
+ 3 1 [männlich]     2 266.  
+ 4 1 [männlich]     3  68.0 
+ 5 1 [männlich]     4 144.  
+ 6 2 [weiblich]    -1   1.01
+ 7 2 [weiblich]     1  37.4 
+ 8 2 [weiblich]     2 246.  
+ 9 2 [weiblich]     3  29.8 
+10 2 [weiblich]     4 127.  </code></pre>
 </div>
 </div>
 <p>Für umfangreichere Anwendungen stehen in R stehen die Pakete <a href="https://stylizeddata.com/how-to-use-survey-weights-in-r/"><code>{survey}</code></a> und das darauf aufbauende <a href="https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html"><code>{srvyr}</code></a> zur Verfügung.</p>
@@ -657,7 +657,23 @@ zpalter 44.234 0.6175</code></pre>
 <pre><code>[1] 48.19779</code></pre>
 </div>
 </div>
-<p>Für Tabellen gibt es in <code>{survey}</code> auch eine Funktion: <code>svytable(~S1+m1202,etb18_kap7_weighted)</code></p>
+<p>Für Tabellen gibt es in <code>{survey}</code> auch eine Funktion:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svytable</span>(<span class="sc">~</span>S1<span class="sc">+</span>m1202,etb18_kap7_weighted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   m1202
+S1       -1       1       2       3       4
+  1   1.063  61.553 265.619  68.011 143.747
+  2   1.012  37.438 245.726  29.845 126.756</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xtabs</span>(<span class="sc">~</span>S1<span class="sc">+</span>m1202,etb18_kap7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   m1202
+S1   -1   1   2   3   4
+  1   1  32 221  54 181
+  2   2  26 253  41 189</code></pre>
+</div>
+</div>
 <p>Für <a href="09_reg.html">Regressionsmodelle</a> gibt es bspw. <code>survey::svyglm()</code></p>
 <!-- Lektüre: [Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuch Methoden der empirischen Sozialforschung (pp. 349–356). Springer Fachmedien Wiesbaden.](https://doi.org/10.1007/978-3-531-18939-0_24) -->
 </section>
@@ -666,30 +682,27 @@ zpalter 44.234 0.6175</code></pre>
 <section id="ttestue" class="level3" data-number="7.5.1">
 <h3 data-number="7.5.1" class="anchored" data-anchor-id="ttestue"><span class="header-section-number">7.5.1</span> Übung 1</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>etb18_ue7 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">n_max =</span> <span class="dv">1000</span>,</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"S1"</span>,<span class="st">"az"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"F411_01"</span>,<span class="st">"gew2018"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">matches</span>(<span class="st">"m1202|F411_01"</span>), <span class="sc">~</span><span class="fu">ifelse</span>(.x <span class="sc">&gt;</span> <span class="dv">4</span><span class="sc">|</span>.x<span class="sc">&lt;</span><span class="dv">0</span>,<span class="cn">NA</span>,.x))) <span class="co"># missings in m1202 mit NA überschreiben</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>etb18_ue7 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">n_max =</span> <span class="dv">1000</span>,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"intnr"</span>,<span class="st">"S1"</span>,<span class="st">"az"</span>,<span class="st">"F518_SUF"</span>,<span class="st">"m1202"</span>,<span class="st">"F411_01"</span>,<span class="st">"gew2018"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">matches</span>(<span class="st">"m1202|F411_01"</span>), <span class="sc">~</span><span class="fu">ifelse</span>(.x <span class="sc">&gt;</span> <span class="dv">4</span><span class="sc">|</span>.x<span class="sc">&lt;</span><span class="dv">0</span>,<span class="cn">NA</span>,.x)),</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">F518_SUF =</span> <span class="fu">ifelse</span>(F518_SUF<span class="sc">&gt;</span><span class="dv">99990</span>,<span class="cn">NA</span>,F518_SUF)) <span class="co"># missings in m1202 mit NA überschreiben</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (<code>az</code>) zwischen Männern und Frauen besteht (<code>S1</code>). Beide Variablen haben keine Missings - Sie können direkt los legen</p>
+<p>Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (<code>az</code>) zwischen Männern und Frauen besteht (<code>S1</code>). Beide Variablen haben keine Missings - Sie können direkt los legen.</p>
+<p>Sehen Sie sich die Informationen an, welche <code>t.test()</code> erstellt: legen Sie das Ergebnis des Tests als Objekt ab (<code>test1 &lt;- ...</code>) und sehen Sie sich die Informationen unter <code>test1$</code> an (drücken Sie die <code>↹</code> Taste).</p>
 <p>Berechnen Sie das Cohen’s d für diesen Zusammenhang.</p>
 </section>
 <section id="corr" class="level3" data-number="7.5.2">
 <h3 data-number="7.5.2" class="anchored" data-anchor-id="corr"><span class="header-section-number">7.5.2</span> Übung 2</h3>
 <ul>
 <li><p>Untersuchen Sie die Korrelation zwischen der Wochenarbeitszeit (<code>az</code>) und dem Einkommen (<code>F518_SUF</code>) der Befragten.</p></li>
-<li><p>Denken Sie daran, die Missings in <code>F518_SUF</code> auszuschließen, <code>az</code> hat keine Missings.</p></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>etb18_kap7<span class="sc">$</span>F518_SUF[etb18_kap7<span class="sc">$</span>F518_SUF<span class="sc">&gt;</span><span class="dv">99990</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>Berechnen Sie die Rangkorrelation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck <code>F411_01</code> und der Ausbildungsvariable <code>m1202</code>.</li>
+<li><p>Die Missings in <code>F518_SUF</code> sind mit dem Befehl oben schon ausgeschlossen, <code>az</code> hat keine Missings.</p></li>
+<li><p>Berechnen Sie die Rangkorrelation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck <code>F411_01</code> und der Ausbildungsvariable <code>m1202</code>.</p></li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 
-<div class="tabwid"><style>.cl-33c10bcc{}.cl-33b70302{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-33b70316{font-family:'Azeret Mono';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-33b70320{font-family:'Roboto';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-33baf58e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-33baf598{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-33bb100a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.1pt solid rgba(127, 127, 127, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-33bb1014{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.1pt solid rgba(127, 127, 127, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-33bb1015{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-33bb1016{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-33bb101e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0.1pt solid rgba(127, 127, 127, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-33bb101f{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0.1pt solid rgba(127, 127, 127, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-33c10bcc"><thead><tr style="overflow-wrap:break-word;"><th class="cl-33bb100a"><p class="cl-33baf58e"><span class="cl-33b70302">var</span></p></th><th class="cl-33bb100a"><p class="cl-33baf58e"><span class="cl-33b70302">.</span></p></th><th class="cl-33bb1014"><p class="cl-33baf598"><span class="cl-33b70302">value</span></p></th><th class="cl-33bb100a"><p class="cl-33baf58e"><span class="cl-33b70302">name</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="5" class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70316">F411_01</span></p></td><td rowspan="5" class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">Wie häufig kommt es vor, dass Sie unter starkem Termin- oder Leistungsdruck arbe</span></p></td><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">1</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">häufig</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">2</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">manchmal</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">3</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">selten</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">4</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">nie</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1014"><p class="cl-33baf598"><span class="cl-33b70320">9</span></p></td><td class="cl-33bb100a"><p class="cl-33baf58e"><span class="cl-33b70320">keine Angabe</span></p></td></tr><tr style="overflow-wrap:break-word;"><td rowspan="5" class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70316">m1202</span></p></td><td rowspan="5" class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">Höchster Ausbildungsabschluss</span></p></td><td class="cl-33bb101e"><p class="cl-33baf598"><span class="cl-33b70320">-1</span></p></td><td class="cl-33bb101f"><p class="cl-33baf58e"><span class="cl-33b70320">keine Angabe</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">1</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">Ohne Berufsabschluss</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">2</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">duale o. schulische Berufsausbildung/einf.,mittl. Beamte</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1016"><p class="cl-33baf598"><span class="cl-33b70320">3</span></p></td><td class="cl-33bb1015"><p class="cl-33baf58e"><span class="cl-33b70320">Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-33bb1014"><p class="cl-33baf598"><span class="cl-33b70320">4</span></p></td><td class="cl-33bb100a"><p class="cl-33baf58e"><span class="cl-33b70320">Fachhochschule, Universität/ geh., höhere Beamte</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-adbf6d16{}.cl-adb59aa2{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-adb59ab6{font-family:'Azeret Mono';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-adb59ac0{font-family:'Roboto';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-adb98da6{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-adb98db0{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-adb9a714{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.1pt solid rgba(127, 127, 127, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-adb9a715{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.1pt solid rgba(127, 127, 127, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-adb9a732{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-adb9a733{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-adb9a734{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0.1pt solid rgba(127, 127, 127, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-adb9a73c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0.1pt solid rgba(127, 127, 127, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-adbf6d16"><thead><tr style="overflow-wrap:break-word;"><th class="cl-adb9a714"><p class="cl-adb98da6"><span class="cl-adb59aa2">var</span></p></th><th class="cl-adb9a714"><p class="cl-adb98da6"><span class="cl-adb59aa2">.</span></p></th><th class="cl-adb9a715"><p class="cl-adb98db0"><span class="cl-adb59aa2">value</span></p></th><th class="cl-adb9a714"><p class="cl-adb98da6"><span class="cl-adb59aa2">name</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="5" class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ab6">F411_01</span></p></td><td rowspan="5" class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">Wie häufig kommt es vor, dass Sie unter starkem Termin- oder Leistungsdruck arbe</span></p></td><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">1</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">häufig</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">2</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">manchmal</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">3</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">selten</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">4</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">nie</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a715"><p class="cl-adb98db0"><span class="cl-adb59ac0">9</span></p></td><td class="cl-adb9a714"><p class="cl-adb98da6"><span class="cl-adb59ac0">keine Angabe</span></p></td></tr><tr style="overflow-wrap:break-word;"><td rowspan="5" class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ab6">m1202</span></p></td><td rowspan="5" class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">Höchster Ausbildungsabschluss</span></p></td><td class="cl-adb9a734"><p class="cl-adb98db0"><span class="cl-adb59ac0">-1</span></p></td><td class="cl-adb9a73c"><p class="cl-adb98da6"><span class="cl-adb59ac0">keine Angabe</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">1</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">Ohne Berufsabschluss</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">2</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">duale o. schulische Berufsausbildung/einf.,mittl. Beamte</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a733"><p class="cl-adb98db0"><span class="cl-adb59ac0">3</span></p></td><td class="cl-adb9a732"><p class="cl-adb98da6"><span class="cl-adb59ac0">Aufstiegsfortbildung (Meister, Techniker, kfm. AFB u.ä.)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-adb9a715"><p class="cl-adb98db0"><span class="cl-adb59ac0">4</span></p></td><td class="cl-adb9a714"><p class="cl-adb98da6"><span class="cl-adb59ac0">Fachhochschule, Universität/ geh., höhere Beamte</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 <!-- + Berechnen Sie die Rangkorrelation getrennt für Männer und Frauen (Hinweis: die Rangkorrelation können Sie mit in `{correlation}` mit `correlation(method = "spearman")` berechnen)  -->
@@ -710,13 +723,8 @@ zpalter 44.234 0.6175</code></pre>
 <h3 data-number="7.5.3" class="anchored" data-anchor-id="weight"><span class="header-section-number">7.5.3</span> Übung 3</h3>
 <ul>
 <li>Legen Sie die Gewichtung auf Basis von <code>gew2018</code> an.</li>
-<li>Berechnen Sie den Mittelwert für den Bruttoverdienst <code>F518_SUF</code></li>
-<li>Schließen Sie die Missings in <code>F518_SUF</code> aus:</li>
+<li>Berechnen Sie den Mittelwert für den Bruttoverdienst <code>F518_SUF</code> mit und ohne Gewichtung.</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>etb18_kap7<span class="sc">$</span>F518_SUF[etb18_kap7<span class="sc">$</span>F518_SUF<span class="sc">&gt;</span><span class="dv">99990</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Sie können mit <code>max(etb18_kap7$F518_SUF,na.rm = T)</code> überprüfen ob das Maximum bei 71000 liegt)</p>
 <!-- + Erstellen Sie eine Kontingenztabelle für `gkpol` und `Mig` - einmal gewichtet und einmal ohne Gewichte. Sehen Sie die Unterschiede? -->
 <!-- ```{r} -->
 <!-- #| echo: false -->
@@ -740,19 +748,19 @@ zpalter 44.234 0.6175</code></pre>
 <h3 data-number="7.6.1" class="anchored" data-anchor-id="corrs"><span class="header-section-number">7.6.1</span> Weitere Korrelationsmaße</h3>
 <p>Kendall’s <span class="math inline">\(\tau_a\)</span>, welches im Nenner alle Paarvergleiche berücksichtigt, können wir mit <code>KendallTauA()</code> aus dem Paket <code>DescTools</code> berechnen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"DescTools"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"DescTools"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">KendallTauA</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">KendallTauA</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.08970494</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">KendallTauB</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12) <span class="co"># entspricht in method = "kendall" cor.test()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">KendallTauB</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12) <span class="co"># entspricht in method = "kendall" cor.test()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1367877</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12,<span class="at">method =</span> <span class="st">"kendall"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12,<span class="at">method =</span> <span class="st">"kendall"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Kendall's rank correlation tau
@@ -768,8 +776,8 @@ sample estimates:
 <p>Der Wert von Kendall’s <span class="math inline">\(\tau_a\)</span> ist niedriger als von Kendall’s <span class="math inline">\(\tau_b\)</span>, da hier der Nenner durch die Berücksichtigung <em>aller</em> möglichen Paarvergleiche größer wird, der Zähler aber für beide Varianten von Kendall’s <span class="math inline">\(\tau\)</span> gleich definiert ist.</p>
 <p>Eine andere Alternative, welche auch beim Vorliegen von Bindungen den vollen Wertebereich [-1,1] erreichen kann ist Goodman &amp; Kruskal’s <span class="math inline">\(\gamma\)</span>. Dieses können wir mit dem Befehl <code>GoodmanKruskalGamma</code> aus dem Paket <code>{DescTools}</code> berechnen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">GoodmanKruskalGamma</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">GoodmanKruskalGamma</span>(etb18_kap7<span class="sc">$</span>m1202,etb18_kap7<span class="sc">$</span>F600_12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2064219</code></pre>
 </div>

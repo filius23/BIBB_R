@@ -249,19 +249,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#nur-vollständige-zeilen-behalten" id="toc-nur-vollständige-zeilen-behalten" class="nav-link active" data-scroll-target="#nur-vollständige-zeilen-behalten"> <span class="header-section-number">9.1</span> Nur vollständige Zeilen behalten</a>
+  <li><a href="#complcses" id="toc-complcses" class="nav-link active" data-scroll-target="#complcses"> <span class="header-section-number">9.1</span> Nur vollständige Zeilen behalten</a>
   <ul class="collapse">
   <li><a href="#complete.cases" id="toc-complete.cases" class="nav-link" data-scroll-target="#complete.cases"> <span class="header-section-number">9.1.1</span> <code>complete.cases()</code></a></li>
   <li><a href="#fälle-mit-missings-finden" id="toc-fälle-mit-missings-finden" class="nav-link" data-scroll-target="#fälle-mit-missings-finden"> <span class="header-section-number">9.1.2</span> Fälle mit missings finden</a></li>
   <li><a href="#modelle-nur-mit-vollständigen-fällen-berechnen" id="toc-modelle-nur-mit-vollständigen-fällen-berechnen" class="nav-link" data-scroll-target="#modelle-nur-mit-vollständigen-fällen-berechnen"> <span class="header-section-number">9.1.3</span> Modelle nur mit vollständigen Fällen berechnen</a></li>
   </ul></li>
-  <li><a href="#interaktionen" id="toc-interaktionen" class="nav-link" data-scroll-target="#interaktionen"> <span class="header-section-number">9.2</span> Interaktionen</a></li>
-  <li><a href="#quadratische-terme-polynome" id="toc-quadratische-terme-polynome" class="nav-link" data-scroll-target="#quadratische-terme-polynome"> <span class="header-section-number">9.3</span> Quadratische Terme &amp; Polynome</a></li>
-  <li><a href="#gewichtetes-regressionsmodell" id="toc-gewichtetes-regressionsmodell" class="nav-link" data-scroll-target="#gewichtetes-regressionsmodell"> <span class="header-section-number">9.4</span> Gewichtetes Regressionsmodell</a></li>
-  <li><a href="#weitere-beispiele-mit-starwars" id="toc-weitere-beispiele-mit-starwars" class="nav-link" data-scroll-target="#weitere-beispiele-mit-starwars"> <span class="header-section-number">9.5</span> Weitere Beispiele mit <code>starwars</code></a></li>
-  <li><a href="#robuste-standardfehler" id="toc-robuste-standardfehler" class="nav-link" data-scroll-target="#robuste-standardfehler"> <span class="header-section-number">9.6</span> “Robuste” Standardfehler</a></li>
-  <li><a href="#fixed-effects-modelle-mit-fixest" id="toc-fixed-effects-modelle-mit-fixest" class="nav-link" data-scroll-target="#fixed-effects-modelle-mit-fixest"> <span class="header-section-number">9.7</span> Fixed effects Modelle mit <code>{fixest}</code></a></li>
-  <li><a href="#mehrebenenmodelle-mit-lme4" id="toc-mehrebenenmodelle-mit-lme4" class="nav-link" data-scroll-target="#mehrebenenmodelle-mit-lme4"> <span class="header-section-number">9.8</span> Mehrebenenmodelle mit <code>{lme4}</code></a></li>
+  <li><a href="#inter" id="toc-inter" class="nav-link" data-scroll-target="#inter"> <span class="header-section-number">9.2</span> Interaktionen</a></li>
+  <li><a href="#quad" id="toc-quad" class="nav-link" data-scroll-target="#quad"> <span class="header-section-number">9.3</span> Quadratische Terme &amp; Polynome</a></li>
+  <li><a href="#gew" id="toc-gew" class="nav-link" data-scroll-target="#gew"> <span class="header-section-number">9.4</span> Gewichtetes Regressionsmodell</a></li>
+  <li><a href="#rbst" id="toc-rbst" class="nav-link" data-scroll-target="#rbst"> <span class="header-section-number">9.5</span> “Robuste” Standardfehler</a></li>
+  <li><a href="#fe" id="toc-fe" class="nav-link" data-scroll-target="#fe"> <span class="header-section-number">9.6</span> Fixed effects Modelle mit <code>{fixest}</code></a></li>
+  <li><a href="#mlvl" id="toc-mlvl" class="nav-link" data-scroll-target="#mlvl"> <span class="header-section-number">9.7</span> Mehrebenenmodelle mit <code>{lme4}</code></a></li>
+  <li><a href="#anhang-predictions-mit-marginaleffects-und-manuelle-darstellung" id="toc-anhang-predictions-mit-marginaleffects-und-manuelle-darstellung" class="nav-link" data-scroll-target="#anhang-predictions-mit-marginaleffects-und-manuelle-darstellung"> <span class="header-section-number">9.8</span> Anhang: Predictions mit <code>marginaleffects</code> und “manuelle” Darstellung</a></li>
   </ul>
 </nav>
     </div>
@@ -309,8 +309,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 8  8    5    3   -1    2 NA   &lt;NA&gt;</code></pre>
 </div>
 </div>
-<section id="nur-vollständige-zeilen-behalten" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="nur-vollständige-zeilen-behalten"><span class="header-section-number">9.1</span> Nur vollständige Zeilen behalten</h2>
+<ul>
+<li><a href="#complcses">vollständige Zeilen mit <code>complete.cases()</code></a> -&gt; <code>e(sample)</code> in Stata</li>
+<li><a href="#inter">Interaktionen</a> -&gt; <code>c.var1##c.var2</code> in Stata</li>
+<li><a href="#quad">Quadratische Terme</a> -&gt; <code>c.var1##c.var1</code> in Stata</li>
+<li><a href="#gew">Gewichte anwenden</a></li>
+<li><a href="#rbst">Robuste Standardfehler</a></li>
+<li><a href="#fe">Fixed Effects Modelle</a></li>
+<li><a href="#mlvl">Mehrebenenmodelle</a></li>
+</ul>
+<section id="complcses" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="complcses"><span class="header-section-number">9.1</span> Nur vollständige Zeilen behalten</h2>
 <p>Wenn wir die beiden Modelle <code>m1</code> und <code>m3</code> vergleichen, sehen wir unterschiedliche Fallzahlen:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2<span class="sc">~</span> var1, <span class="at">data =</span> dat1)  </span>
@@ -323,14 +332,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <th style="text-align:left;">   </th>
    <th style="text-align:center;"> m1 </th>
-   <th style="text-align:center;"> m4 </th>
+   <th style="text-align:center;"> &nbsp;m4 </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:center;"> −2.340 </td>
-   <td style="text-align:center;"> −2.511 </td>
+   <td style="text-align:center;"> -2.340 </td>
+   <td style="text-align:center;"> -2.511 </td>
   </tr>
   <tr>
    <td style="text-align:left;">  </td>
@@ -360,7 +369,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <td style="text-align:left;"> ed_fcthigh </td>
    <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> −3.253 </td>
+   <td style="text-align:center;"> -3.253 </td>
   </tr>
   <tr>
    <td style="text-align:left;box-shadow: 0px 1px">  </td>
@@ -407,6 +416,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="complete.cases" class="level3" data-number="9.1.1">
 <h3 data-number="9.1.1" class="anchored" data-anchor-id="complete.cases"><span class="header-section-number">9.1.1</span> <code>complete.cases()</code></h3>
 <p>Hier hilft uns <code>complete.cases()</code>. Diese Funktion erstellt eine logische Variable, welche ein <code>TRUE</code> für alle vollständigen Fälle (also ohne ein <code>NA</code>). Unvollständige Fälle werden mit einem <code>FALSE</code> versehen. Dazu geben wir an, welche Variablen jeweils für diese Betrachtung berücksichtigt werden sollen und legen die Variable einfach im Datensatz als neue Spalte an. Für Modell 1 ist ein Fall <code>complete</code>, wenn <code>var2</code> und <code>var1</code> vorliegen. Wir wählen also mit <code>select()</code> die relevanten Variablen aus und wenden <code>complete.cases</code> auf diese Auswahl an:</p>
+<div class="cell">
+
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(var1,var2) <span class="sc">%&gt;%</span> <span class="fu">complete.cases</span>(.) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -508,16 +520,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <th style="text-align:left;">   </th>
    <th style="text-align:center;"> m1 </th>
-   <th style="text-align:center;"> m1 mit m4vars </th>
-   <th style="text-align:center;"> m4 </th>
+   <th style="text-align:center;"> &nbsp;m1 mit m4vars </th>
+   <th style="text-align:center;"> &nbsp;m4 </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:center;"> −2.340 </td>
-   <td style="text-align:center;"> −1.832 </td>
-   <td style="text-align:center;"> −2.511 </td>
+   <td style="text-align:center;"> -2.340 </td>
+   <td style="text-align:center;"> -1.832 </td>
+   <td style="text-align:center;"> -2.511 </td>
   </tr>
   <tr>
    <td style="text-align:left;">  </td>
@@ -553,7 +565,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    <td style="text-align:left;"> ed_fcthigh </td>
    <td style="text-align:center;">  </td>
    <td style="text-align:center;">  </td>
-   <td style="text-align:center;"> −3.253 </td>
+   <td style="text-align:center;"> -3.253 </td>
   </tr>
   <tr>
    <td style="text-align:left;box-shadow: 0px 1px">  </td>
@@ -587,8 +599,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Jetzt haben wir also in <code>m1 mit m4vars</code> und <code>m4</code> die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.</p>
 </section>
 </section>
-<section id="interaktionen" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="interaktionen"><span class="header-section-number">9.2</span> Interaktionen</h2>
+<section id="inter" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="inter"><span class="header-section-number">9.2</span> Interaktionen</h2>
 <p>Interaktionen zwischen zwei Variablen können wir mit <code>*</code> berechnen:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>g_fct <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat1<span class="sc">$</span>gend,<span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,</span>
@@ -623,40 +635,43 @@ F-statistic: 3.504 on 3 and 4 DF,  p-value: 0.1286</code></pre>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggeffects"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m5, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>,<span class="st">"g_fct[women,men]"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="09_reg2_files/figure-html/unnamed-chunk-14-1.png" style="width:80.0%;height:60.0%"></p>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Paket 'ggeffects' wurde unter R Version 4.2.2 erstellt</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># oder nebeneinander:</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m5, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>,<span class="st">"g_fct[women,men]"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>(<span class="at">facet=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m5, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>,<span class="st">"g_fct[women,men]"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="09_reg2_files/figure-html/unnamed-chunk-14-2.png" style="width:80.0%;height:60.0%"></p>
+<p><img src="09_reg2_files/figure-html/unnamed-chunk-15-1.png" style="width:80.0%;height:60.0%"></p>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># oder nebeneinander:</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m5, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>,<span class="st">"g_fct[women,men]"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>(<span class="at">facet=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="09_reg2_files/figure-html/unnamed-chunk-15-2.png" style="width:80.0%;height:60.0%"></p>
 </div>
 </div>
 <p>Wir können diese Darstellung mit den bekannten <code>{ggplot2}</code>-Befehlen verändern:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m5, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>,<span class="st">"g_fct[women,men]"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>() <span class="sc">+</span> </span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vorhergesagte Werte für var2"</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Gender"</span>,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Werte für var1"</span>,</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vorhergesagte Werte für var1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m5, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>,<span class="st">"g_fct[women,men]"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>() <span class="sc">+</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"lightskyblue3"</span>),<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"lightskyblue3"</span>),<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vorhergesagte Werte für var2"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Gender"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Werte für var1"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vorhergesagte Werte für var1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Scale for 'colour' is already present. Adding another scale for 'colour',
-which will replace the existing scale.</code></pre>
+<pre><code>Scale for colour is already present.
+Adding another scale for colour, which will replace the existing scale.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="09_reg2_files/figure-html/unnamed-chunk-15-1.png" style="width:60.0%;height:60.0%"></p>
+<p><img src="09_reg2_files/figure-html/unnamed-chunk-16-1.png" style="width:60.0%;height:60.0%"></p>
 </div>
 </div>
 </section>
-<section id="quadratische-terme-polynome" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="quadratische-terme-polynome"><span class="header-section-number">9.3</span> Quadratische Terme &amp; Polynome</h2>
+<section id="quad" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="quad"><span class="header-section-number">9.3</span> Quadratische Terme &amp; Polynome</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2 <span class="sc">~</span> var1 <span class="sc">+</span> <span class="fu">I</span>(var1<span class="sc">^</span><span class="dv">2</span>), dat1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(id <span class="sc">!=</span> <span class="dv">7</span>))</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2 <span class="sc">~</span> var1 <span class="sc">+</span> <span class="fu">I</span>(var1<span class="sc">^</span><span class="dv">2</span>), dat1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(id <span class="sc">!=</span> <span class="dv">7</span>))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -679,29 +694,29 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m6, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpredict</span>(m6, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"var1"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="09_reg2_files/figure-html/unnamed-chunk-18-1.png" style="width:60.0%;height:60.0%"></p>
+<p><img src="09_reg2_files/figure-html/unnamed-chunk-19-1.png" style="width:60.0%;height:60.0%"></p>
 </div>
 </div>
 </section>
-<section id="gewichtetes-regressionsmodell" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="gewichtetes-regressionsmodell"><span class="header-section-number">9.4</span> Gewichtetes Regressionsmodell</h2>
+<section id="gew" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="gew"><span class="header-section-number">9.4</span> Gewichtetes Regressionsmodell</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>etb18 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>) </span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>etb18x <span class="ot">&lt;-</span> etb18 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, zpalter <span class="sc">&lt;</span> <span class="dv">100</span>)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>modx <span class="ot">&lt;-</span> <span class="fu">lm</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>),<span class="at">data=</span>etb18x)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>etb18_weighted <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id      =</span> <span class="sc">~</span>intnr,</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">weights =</span> <span class="sc">~</span>gew2018,</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data    =</span> etb18x)</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># family = gaussian() bekommen wir ein lineares Regressionsmodell, wie bei lm() - mit gewichtet</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>survey_modx <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>), </span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="at">data =</span> etb18,<span class="at">design =</span> etb18_weighted)</span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"lm()"</span><span class="ot">=</span>modx,<span class="st">"svyglm()"</span><span class="ot">=</span> survey_modx),<span class="at">gof_omit =</span> <span class="st">"RM|IC|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>etb18 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>) </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>etb18_k9 <span class="ot">&lt;-</span> etb18 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(F518_SUF <span class="sc">&lt;</span> <span class="dv">99998</span>, zpalter <span class="sc">&lt;</span> <span class="dv">100</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>modx <span class="ot">&lt;-</span> <span class="fu">lm</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>),<span class="at">data=</span>etb18_k9)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>etb18_weighted <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id      =</span> <span class="sc">~</span>intnr,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">weights =</span> <span class="sc">~</span>gew2018,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data    =</span> etb18_k9)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co"># family = gaussian() bekommen wir ein lineares Regressionsmodell, wie bei lm() - mit gewichtet</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>survey_modx <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>), </span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="at">data =</span> etb18,<span class="at">design =</span> etb18_weighted)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"lm()"</span><span class="ot">=</span>modx,<span class="st">"svyglm()"</span><span class="ot">=</span> survey_modx),<span class="at">gof_omit =</span> <span class="st">"RM|IC|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -735,8 +750,8 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
   </tr>
   <tr>
    <td style="text-align:left;"> I(zpalter^2) </td>
-   <td style="text-align:center;"> −0.959 </td>
-   <td style="text-align:center;"> −1.116 </td>
+   <td style="text-align:center;"> -0.959 </td>
+   <td style="text-align:center;"> -1.116 </td>
   </tr>
   <tr>
    <td style="text-align:left;box-shadow: 0px 1px">  </td>
@@ -768,119 +783,118 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
 
 </div>
 </div>
+<!-- ## Weitere Beispiele mit `starwars` -->
+<!-- Die folgenden Beispiele basieren vornehmlich auf dem `starwars`-Datensatz aus `{dplyr}`, hier ein kurzer Blick in die Daten: -->
+<!-- ```{r starwars} -->
+<!-- starwars %>% select(name,height,mass,hair_color,gender) -->
+<!-- ``` -->
+<!-- Unser Beispiel ist ein simples: der Zusammenhang zwischen Größe und Gewicht der Star Wars Helden: -->
+<!-- ```{r mod1} -->
+<!-- mod1 <- lm(mass ~ height, data = starwars) -->
+<!-- ``` -->
 </section>
-<section id="weitere-beispiele-mit-starwars" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="weitere-beispiele-mit-starwars"><span class="header-section-number">9.5</span> Weitere Beispiele mit <code>starwars</code></h2>
-<p>Die folgenden Beispiele basieren vornehmlich auf dem <code>starwars</code>-Datensatz aus <code>{dplyr}</code>, hier ein kurzer Blick in die Daten:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> <span class="fu">select</span>(name,height,mass,hair_color,gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 87 × 5
-   name               height  mass hair_color    gender   
-   &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;    
- 1 Luke Skywalker        172    77 blond         masculine
- 2 C-3PO                 167    75 &lt;NA&gt;          masculine
- 3 R2-D2                  96    32 &lt;NA&gt;          masculine
- 4 Darth Vader           202   136 none          masculine
- 5 Leia Organa           150    49 brown         feminine 
- 6 Owen Lars             178   120 brown, grey   masculine
- 7 Beru Whitesun lars    165    75 brown         feminine 
- 8 R5-D4                  97    32 &lt;NA&gt;          masculine
- 9 Biggs Darklighter     183    84 black         masculine
-10 Obi-Wan Kenobi        182    77 auburn, white masculine
-# … with 77 more rows</code></pre>
-</div>
-</div>
-<p>Unser Beispiel ist ein simples: der Zusammenhang zwischen Größe und Gewicht der Star Wars Helden:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="robuste-standardfehler" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="robuste-standardfehler"><span class="header-section-number">9.6</span> “Robuste” Standardfehler</h2>
+<section id="rbst" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="rbst"><span class="header-section-number">9.5</span> “Robuste” Standardfehler</h2>
 <p>Häufig müssen die Standardfehler an Verstöße gegen die allgemeinen Annahmen (Homoskedastizität usw.) angepasst werden.</p>
 <p>Die gute Nachricht ist, dass R eine ganze Reihe an Möglichkeiten bietet, Standard-Fehler zu korrigieren. Unter anderem mit <a href="http://sandwich.r-forge.r-project.org/articles/sandwich.html">{sandwich}</a> oder <a href="https://declaredesign.org/r/estimatr/articles/getting-started.html">{estimatr}</a>.</p>
 <p>Eine sehr einfache Variante ist die Korrektur von Standardfehlern in <code>{modelsummary}</code>, die wir uns etwas genauer ansehen:</p>
 <p>Wir können sog. <em>heteroskedasticity-consistent</em> (HC) “robuste” Standardfehler mit der <code>vcov</code>-Option <code>HC</code> in <code>modelsummary()</code> anfordern. Die Hilfe-Seite für <code>{modelsummary}</code> bietet eine <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html#vcov">Liste mit allen Optionen</a>.</p>
 <p>Eine Option ist auch <code>stata</code>, um Ergebnisse aus Statas <code>, robust</code> zu replizieren. <a href="https://declaredesign.org/r/estimatr/articles/stata-wls-hat.html">Hier mehr</a> zu den Hintergründen und Unterschieden.</p>
+<p>Basierend auf <a href="#gew">den oben eingelesenen Daten</a> können wir folgendes Modell schätzen:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(mod1,mod1,mod1,mod1),<span class="at">vcov =</span> <span class="fu">c</span>(<span class="st">"classical"</span>,<span class="st">"HC"</span>,<span class="st">"HC2"</span>,<span class="st">"stata"</span>),<span class="at">gof_omit =</span> <span class="st">"RM|IC|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>),<span class="at">data=</span>etb18_k9) </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(mod1,mod1,mod1,mod1),<span class="at">vcov =</span> <span class="fu">c</span>(<span class="st">"classical"</span>,<span class="st">"HC"</span>,<span class="st">"HC2"</span>,<span class="st">"stata"</span>),<span class="at">gof_omit =</span> <span class="st">"RM|IC|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Model 1 </th>
-   <th style="text-align:center;"> Model 2 </th>
-   <th style="text-align:center;"> Model 3 </th>
-   <th style="text-align:center;"> Model 4 </th>
+   <th style="text-align:center;"> &nbsp;(1) </th>
+   <th style="text-align:center;"> &nbsp;&nbsp;(2) </th>
+   <th style="text-align:center;"> &nbsp;&nbsp;(3) </th>
+   <th style="text-align:center;"> &nbsp;&nbsp;(4) </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:center;"> −13.810 </td>
-   <td style="text-align:center;"> −13.810 </td>
-   <td style="text-align:center;"> −13.810 </td>
-   <td style="text-align:center;"> −13.810 </td>
+   <td style="text-align:center;"> 586.343 </td>
+   <td style="text-align:center;"> 586.343 </td>
+   <td style="text-align:center;"> 586.343 </td>
+   <td style="text-align:center;"> 586.343 </td>
   </tr>
   <tr>
    <td style="text-align:left;">  </td>
-   <td style="text-align:center;"> (111.155) </td>
-   <td style="text-align:center;"> (22.963) </td>
-   <td style="text-align:center;"> (23.456) </td>
-   <td style="text-align:center;"> (23.362) </td>
+   <td style="text-align:center;"> (381.240) </td>
+   <td style="text-align:center;"> (373.854) </td>
+   <td style="text-align:center;"> (373.717) </td>
+   <td style="text-align:center;"> (373.614) </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> height </td>
-   <td style="text-align:center;"> 0.639 </td>
-   <td style="text-align:center;"> 0.639 </td>
-   <td style="text-align:center;"> 0.639 </td>
-   <td style="text-align:center;"> 0.639 </td>
+   <td style="text-align:left;"> zpalter </td>
+   <td style="text-align:center;"> 110.543 </td>
+   <td style="text-align:center;"> 110.543 </td>
+   <td style="text-align:center;"> 110.543 </td>
+   <td style="text-align:center;"> 110.543 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:center;"> (17.556) </td>
+   <td style="text-align:center;"> (18.052) </td>
+   <td style="text-align:center;"> (18.045) </td>
+   <td style="text-align:center;"> (18.040) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> I(zpalter^2) </td>
+   <td style="text-align:center;"> -0.959 </td>
+   <td style="text-align:center;"> -0.959 </td>
+   <td style="text-align:center;"> -0.959 </td>
+   <td style="text-align:center;"> -0.959 </td>
   </tr>
   <tr>
    <td style="text-align:left;box-shadow: 0px 1px">  </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> (0.626) </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> (0.085) </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> (0.088) </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> (0.086) </td>
+   <td style="text-align:center;box-shadow: 0px 1px"> (0.194) </td>
+   <td style="text-align:center;box-shadow: 0px 1px"> (0.207) </td>
+   <td style="text-align:center;box-shadow: 0px 1px"> (0.207) </td>
+   <td style="text-align:center;box-shadow: 0px 1px"> (0.207) </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Num.Obs. </td>
-   <td style="text-align:center;"> 59 </td>
-   <td style="text-align:center;"> 59 </td>
-   <td style="text-align:center;"> 59 </td>
-   <td style="text-align:center;"> 59 </td>
+   <td style="text-align:center;"> 16543 </td>
+   <td style="text-align:center;"> 16543 </td>
+   <td style="text-align:center;"> 16543 </td>
+   <td style="text-align:center;"> 16543 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> R2 </td>
-   <td style="text-align:center;"> 0.018 </td>
-   <td style="text-align:center;"> 0.018 </td>
-   <td style="text-align:center;"> 0.018 </td>
-   <td style="text-align:center;"> 0.018 </td>
+   <td style="text-align:center;"> 0.008 </td>
+   <td style="text-align:center;"> 0.008 </td>
+   <td style="text-align:center;"> 0.008 </td>
+   <td style="text-align:center;"> 0.008 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> R2 Adj. </td>
-   <td style="text-align:center;"> 0.001 </td>
-   <td style="text-align:center;"> 0.001 </td>
-   <td style="text-align:center;"> 0.001 </td>
-   <td style="text-align:center;"> 0.001 </td>
+   <td style="text-align:center;"> 0.008 </td>
+   <td style="text-align:center;"> 0.008 </td>
+   <td style="text-align:center;"> 0.008 </td>
+   <td style="text-align:center;"> 0.008 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> F </td>
-   <td style="text-align:center;"> 1.040 </td>
-   <td style="text-align:center;"> 56.856 </td>
-   <td style="text-align:center;"> 52.753 </td>
-   <td style="text-align:center;"> 54.928 </td>
+   <td style="text-align:center;"> 64.956 </td>
+   <td style="text-align:center;"> 82.649 </td>
+   <td style="text-align:center;"> 82.622 </td>
+   <td style="text-align:center;"> 82.634 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Std.Errors </td>
-   <td style="text-align:center;"> Classical </td>
+   <td style="text-align:center;"> IID </td>
    <td style="text-align:center;"> HC </td>
    <td style="text-align:center;"> HC2 </td>
-   <td style="text-align:center;"> Stata </td>
+   <td style="text-align:center;"> HC1 </td>
   </tr>
 </tbody>
 </table>
@@ -888,87 +902,98 @@ F-statistic: 2.081 on 2 and 4 DF,  p-value: 0.2402</code></pre>
 </div>
 </div>
 </section>
-<section id="fixed-effects-modelle-mit-fixest" class="level2" data-number="9.7">
-<h2 data-number="9.7" class="anchored" data-anchor-id="fixed-effects-modelle-mit-fixest"><span class="header-section-number">9.7</span> Fixed effects Modelle mit <code>{fixest}</code></h2>
+<section id="fe" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="fe"><span class="header-section-number">9.6</span> Fixed effects Modelle mit <code>{fixest}</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"fixest"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"fixest"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="https://lrberge.github.io/fixest"><code>{fixest}</code></a>) ist zwar noch relativ neu, aber bietet eine große Auswahl an Möglichkeiten: <a href="#10_log_reg.qmd##feglm">logitische Modelle</a>, mehr-dimensionale Fixed Effects, Multiway clustering, … Und es ist sehr schnell, <a href="https://lrberge.github.io/fixest/#benchmarking">bspw. schneller</a> als Statas <code>reghdfe</code>. Für mehr Details empfiehlt sich die <a href="https://lrberge.github.io/fixest/articles/fixest_walkthrough.html">Vignette</a>.</p>
+<p><a href="https://lrberge.github.io/fixest"><code>{fixest}</code></a>) bietet eine große Auswahl an Möglichkeiten: <a href="#10_log_reg.qmd##feglm">logistische FE-Modelle</a>, mehr-dimensionale Fixed Effects, Multiway clustering, … Und es ist sehr schnell, <a href="https://lrberge.github.io/fixest/#benchmarking">bspw. schneller</a> als Statas <code>reghdfe</code>. Für mehr Details empfiehlt sich die <a href="https://lrberge.github.io/fixest/articles/fixest_walkthrough.html">Vignette</a>.</p>
 <p>Die zentrale Funktion zur Schätzung linearer FE-Regressionsmodelle ist <code>feols()</code> - sie funktioniert ganz ähnlich zu <code>lm()</code>. Auch hier geben wir wieder eine Formel nach dem Schema <code>abhängige Variabe ~ unabhängige Variable(n)</code> an. Wir fügen lediglich mit <code>|</code> die Variable hinzu, welche die FEs festlegt:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>fe_mod1 <span class="ot">&lt;-</span> <span class="fu">feols</span>(mass <span class="sc">~</span> height <span class="sc">|</span> species, <span class="at">data =</span> starwars)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>fe_mod1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>fe_mod1 <span class="ot">&lt;-</span> <span class="fu">feols</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>) <span class="sc">|</span> Bula, <span class="at">data =</span> etb18_k9)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>fe_mod1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>OLS estimation, Dep. Var.: mass
-Observations: 58 
-Fixed-effects: species: 31
-Standard-errors: Clustered (species) 
-       Estimate Std. Error t value  Pr(&gt;|t|)    
-height 0.974876   0.044291 22.0105 &lt; 2.2e-16 ***
+<pre><code>OLS estimation, Dep. Var.: F518_SUF
+Observations: 16,543 
+Fixed-effects: Bula: 16
+Standard-errors: Clustered (Bula) 
+               Estimate Std. Error  t value   Pr(&gt;|t|)    
+zpalter      113.921974  14.227962  8.00691 8.5199e-07 ***
+I(zpalter^2)  -0.989909   0.154147 -6.42187 1.1494e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-RMSE: 9.69063     Adj. R2: 0.99282 
-                Within R2: 0.662493</code></pre>
+RMSE: 3,509.1     Adj. R2: 0.014221
+                Within R2: 0.008179</code></pre>
 </div>
 </div>
-<p><code>{fixest}</code> clustert automatisch die Standardfehler entlang der FE-Variable (hier also <code>species</code>). Wenn wir das mal nicuth möchten, können wir mit der <code>se</code>-Option <code>= "standard"</code> ungeclusterte SE anfordern:</p>
+<p><code>{fixest}</code> clustert automatisch die Standardfehler entlang der FE-Variable (hier also <code>Bula</code>). Wenn wir das mal nicuth möchten, können wir mit der <code>se</code>-Option <code>= "standard"</code> ungeclusterte SE anfordern:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fe_mod1, <span class="at">se =</span> <span class="st">'standard'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fe_mod1, <span class="at">se =</span> <span class="st">'standard'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>OLS estimation, Dep. Var.: mass
-Observations: 58 
-Fixed-effects: species: 31
+<pre><code>OLS estimation, Dep. Var.: F518_SUF
+Observations: 16,543 
+Fixed-effects: Bula: 16
 Standard-errors: IID 
-       Estimate Std. Error t value   Pr(&gt;|t|)    
-height 0.974876   0.136463  7.1439 1.3797e-07 ***
+               Estimate Std. Error  t value   Pr(&gt;|t|)    
+zpalter      113.921974  17.517746  6.50323 8.0867e-11 ***
+I(zpalter^2)  -0.989909   0.193688 -5.11085 3.2429e-07 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-RMSE: 9.69063     Adj. R2: 0.99282 
-                Within R2: 0.662493</code></pre>
+RMSE: 3,509.1     Adj. R2: 0.014221
+                Within R2: 0.008179</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fe_mod1, <span class="at">cluster =</span> <span class="sc">~</span>species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fe_mod1, <span class="at">cluster =</span> <span class="sc">~</span>Bula)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>OLS estimation, Dep. Var.: mass
-Observations: 58 
-Fixed-effects: species: 31
-Standard-errors: Clustered (species) 
-       Estimate Std. Error t value  Pr(&gt;|t|)    
-height 0.974876   0.044291 22.0105 &lt; 2.2e-16 ***
+<pre><code>OLS estimation, Dep. Var.: F518_SUF
+Observations: 16,543 
+Fixed-effects: Bula: 16
+Standard-errors: Clustered (Bula) 
+               Estimate Std. Error  t value   Pr(&gt;|t|)    
+zpalter      113.921974  14.227962  8.00691 8.5199e-07 ***
+I(zpalter^2)  -0.989909   0.154147 -6.42187 1.1494e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-RMSE: 9.69063     Adj. R2: 0.99282 
-                Within R2: 0.662493</code></pre>
+RMSE: 3,509.1     Adj. R2: 0.014221
+                Within R2: 0.008179</code></pre>
 </div>
 </div>
 <p><code>{modelsummary}</code> zeigt die geclusterten SE:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fe_mod1),<span class="at">gof_omit =</span> <span class="st">"R|IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fe_mod1),<span class="at">gof_omit =</span> <span class="st">"R|IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Model 1 </th>
+   <th style="text-align:center;"> &nbsp;(1) </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> height </td>
-   <td style="text-align:center;"> 0.975 </td>
+   <td style="text-align:left;"> zpalter </td>
+   <td style="text-align:center;"> 113.922 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:center;"> (14.228) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> I(zpalter^2) </td>
+   <td style="text-align:center;"> -0.990 </td>
   </tr>
   <tr>
    <td style="text-align:left;box-shadow: 0px 1px">  </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> (0.044) </td>
+   <td style="text-align:center;box-shadow: 0px 1px"> (0.154) </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Num.Obs. </td>
-   <td style="text-align:center;"> 58 </td>
+   <td style="text-align:center;"> 16543 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Std.Errors </td>
-   <td style="text-align:center;"> by: species </td>
+   <td style="text-align:center;"> by: Bula </td>
   </tr>
 </tbody>
 </table>
@@ -976,51 +1001,65 @@ RMSE: 9.69063     Adj. R2: 0.99282
 </div>
 </div>
 </section>
-<section id="mehrebenenmodelle-mit-lme4" class="level2" data-number="9.8">
-<h2 data-number="9.8" class="anchored" data-anchor-id="mehrebenenmodelle-mit-lme4"><span class="header-section-number">9.8</span> Mehrebenenmodelle mit <code>{lme4}</code></h2>
-<p>Mit <code>lmer()</code> können wir ein Random Intercept Modell berechnen, indem wir mit <code>( 1 | species)</code> angeben, dass für <code>species</code> jeweils ine eigenes Random Intercept berechnet werden soll:</p>
+<section id="mlvl" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="mlvl"><span class="header-section-number">9.7</span> Mehrebenenmodelle mit <code>{lme4}</code></h2>
+<p>Mit <code>lmer()</code> können wir ein Random Intercept Modell berechnen, indem wir mit <code>( 1 | Bula)</code> angeben, dass für <code>Bula</code> jeweils ein eigenes Random Intercept berechnet werden soll:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>ml_m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(mass <span class="sc">~</span> height <span class="sc">+</span> ( <span class="dv">1</span> <span class="sc">|</span> species), <span class="at">data=</span>starwars)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(ml_m3),<span class="at">gof_omit =</span> <span class="st">"R|IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Paket 'lme4' wurde unter R Version 4.2.2 erstellt</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>ml_m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(F518_SUF <span class="sc">~</span> zpalter <span class="sc">+</span> <span class="fu">I</span>(zpalter<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> ( <span class="dv">1</span> <span class="sc">|</span> Bula), <span class="at">data=</span>etb18_k9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Some predictor variables are on very different scales: consider
+rescaling</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(ml_m3),<span class="at">gof_omit =</span> <span class="st">"R|IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;">   </th>
-   <th style="text-align:center;"> Model 1 </th>
+   <th style="text-align:center;"> &nbsp;(1) </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:center;"> −52.698 </td>
+   <td style="text-align:center;"> 387.675 </td>
   </tr>
   <tr>
    <td style="text-align:left;">  </td>
-   <td style="text-align:center;"> (47.579) </td>
+   <td style="text-align:center;"> (392.748) </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> height </td>
-   <td style="text-align:center;"> 0.969 </td>
+   <td style="text-align:left;"> zpalter </td>
+   <td style="text-align:center;"> 113.680 </td>
   </tr>
   <tr>
    <td style="text-align:left;">  </td>
-   <td style="text-align:center;"> (0.135) </td>
+   <td style="text-align:center;"> (17.516) </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> SD (Intercept species) </td>
-   <td style="text-align:center;"> 231.270 </td>
+   <td style="text-align:left;"> I(zpalter^2) </td>
+   <td style="text-align:center;"> -0.988 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:center;"> (0.194) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SD (Intercept Bula) </td>
+   <td style="text-align:center;"> 365.875 </td>
   </tr>
   <tr>
    <td style="text-align:left;box-shadow: 0px 1px"> SD (Observations) </td>
-   <td style="text-align:center;box-shadow: 0px 1px"> 14.472 </td>
+   <td style="text-align:center;box-shadow: 0px 1px"> 3511.032 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Num.Obs. </td>
-   <td style="text-align:center;"> 58 </td>
+   <td style="text-align:center;"> 16543 </td>
   </tr>
 </tbody>
 </table>
@@ -1035,6 +1074,123 @@ RMSE: 9.69063     Adj. R2: 0.99282
 <!-- Siehe auch die Diskussion [hier](https://github.com/sgaure/lfe/issues/1#issuecomment-530643808)  -->
 <!-- [Detaillierte vignette](https://lrberge.github.io/fixest/articles/standard_errors.html) `{fixest}` wie SEs aus anderen Programmen repliziert werden können. -->
 <!-- [Detailliertes Paper](http://sandwich.r-forge.r-project.org/articles/jss_2020.html) von den Autoren von `{sandwich}` zu diesem Thema.  -->
+</section>
+<section id="anhang-predictions-mit-marginaleffects-und-manuelle-darstellung" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="anhang-predictions-mit-marginaleffects-und-manuelle-darstellung"><span class="header-section-number">9.8</span> Anhang: Predictions mit <code>marginaleffects</code> und “manuelle” Darstellung</h2>
+<p>Wir hatten im Kapitel <a href="#interaktionen">Interaktionen</a> folgendes Modell geschätzt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ var1 * g_fct, data = dat1)
+
+Residuals:
+      1       2       3       4       5       6       7       8 
+-1.5000  2.6145 -0.8827  4.5000 -7.3687 -1.5000  5.6369 -1.5000 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)    -3.1117     4.7702  -0.652   0.5498  
+var1            2.4972     0.8211   3.041   0.0384 *
+g_fctmen        5.9451     8.4973   0.700   0.5227  
+var1:g_fctmen  -2.1639     1.5331  -1.411   0.2310  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.493 on 4 degrees of freedom
+Multiple R-squared:  0.7244,    Adjusted R-squared:  0.5177 
+F-statistic: 3.504 on 3 and 4 DF,  p-value: 0.1286</code></pre>
+</div>
+</div>
+<p>Mit <code>predictions()</code> aus <code>{marginaleffects}</code> können wir basierend auf unserem Modell vorhergesagte Werte für bestimmte Werte berechnen. Dazu geben wir die die gewünschten mit einem <code>expand.grid()</code> an.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Kombinationen aller Werte erstellen</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">expand.grid</span>(<span class="at">var1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">g_fct =</span>  <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   var1 g_fct
+1     1 women
+2     2 women
+3     3 women
+4     4 women
+5     5 women
+6     1   men
+7     2   men
+8     3   men
+9     4   men
+10    5   men</code></pre>
+</div>
+</div>
+<p>Diese Werte geben wir dann in <code>predictions()</code> als <code>newdata =</code> an:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(m5, </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">expand.grid</span>(<span class="at">var1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">g_fct =</span>  <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>)) )</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>                 </span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">data.frame</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  rowid   estimate std.error  statistic      p.value  conf.low conf.high var1
+1     1 -0.6145251  4.126052 -0.1489378 0.8816027065 -8.701438  7.472388    1
+2     2  1.8826816  3.555532  0.5295076 0.5964533448 -5.086034  8.851397    2
+3     3  4.3798883  3.099641  1.4130307 0.1576466975 -1.695297 10.455074    3
+4     4  6.8770950  2.814641  2.4433298 0.0145524331  1.360501 12.393689    4
+5     5  9.3743017  2.754104  3.4037579 0.0006646564  3.976358 14.772245    5
+6     6  3.1666667  5.861938  0.5402082 0.5890534765 -8.322520 14.655853    1
+  g_fct var2
+1 women    2
+2 women    2
+3 women    2
+4 women    2
+5 women    2
+6   men    2</code></pre>
+</div>
+</div>
+<p>Für den <code>ggplot()</code> verwenden wir dann <code>geom_line()</code> zusammen mit</p>
+<ul>
+<li><code>geom_errorbar()</code> für eine Darstellung mit Konfidenzintervallen als Error Bars</li>
+<li>mit <code>geom_ribbon()</code> erhalten wir die Konfidenzintervalle als Konfidenzbänder (hier müssen wir mit <code>alpha =</code> die Deckkraft der etwas heruntersetzen und die Farbe mit <code>fill=</code> angeben um den Bereich einzufärben).</li>
+</ul>
+<div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span> <span class="fu">data.frame</span>(p),</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> var1, </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span>  estimate, </span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">ymin =</span> conf.low,<span class="at">ymax =</span> conf.high,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> g_fct)) <span class="sc">+</span> </span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">width =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"lightskyblue3"</span>),<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vorhergesagte Werte für var2"</span>,</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Gender"</span>,</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Werte für var1"</span>,</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vorhergesagte Werte für var1"</span>) <span class="sc">+</span></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span> <span class="fu">data.frame</span>(p),</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> var1, </span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span>  estimate, </span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">ymin =</span> conf.low,<span class="at">ymax =</span> conf.high,</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> g_fct, <span class="at">fill =</span> g_fct)) <span class="sc">+</span> </span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> .<span class="dv">1</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"lightskyblue3"</span>),<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"lightskyblue3"</span>),<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"women"</span>,<span class="st">"men"</span>),<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Frauen"</span>,<span class="st">"Männer"</span>)) <span class="sc">+</span></span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vorhergesagte Werte für var2"</span>,</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Gender"</span>, <span class="at">fill =</span> <span class="st">"Gender"</span>,</span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Werte für var1"</span>,</span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vorhergesagte Werte für var1"</span>) <span class="sc">+</span></span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="09_reg2_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="3500"></p>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="09_reg2_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid" width="3500"></p>
+</div>
+</div>
+</div>
+</div>
 
 
 </section>

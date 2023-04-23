@@ -96,11 +96,11 @@ Den Korrelationskoeffizienten können wir in R mit `cor.test()` berechnen:
 
 `F231`: `r str_wrap(attributes(etb18_kap7$F231)$label)`?
 ```{r cor1}
-cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson", use = "pairwise.complete.obs")
+cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
 ```
 ```{r}
 #| echo: false
-c1 <- cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson", use = "pairwise.complete.obs")
+c1 <- cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
 ```
 
 Es handelt sich mit `r sprintf("%.4f",c1$estimate)` also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit `r sprintf("%.5f",c1$p.value)` liegt der p-Wert deutlich unter 0,05.
@@ -178,11 +178,11 @@ data.frame(corr_df)
 <!-- ```{r} -->
 <!-- ttest_m <-  -->
 <!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==1], -->
-<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson", use = "pairwise.complete.obs") -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson") -->
 
 <!-- ttest_w <-  -->
 <!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==2], -->
-<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson", use = "pairwise.complete.obs") -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson") -->
 
 <!-- test_df2 <- bind_rows(tidy(ttest_m), -->
 <!--                       tidy(ttest_w),  -->
@@ -233,13 +233,13 @@ Für den Spearman-Rangkorrelationskoeffizienten können wir `method = "spearman"
 #| warning: false 
 #| eval: false
 cor.test(etb18_kap7$m1202,etb18_kap7$F600_12,method = "spearman")
-cor.test(etb18_kap7$m1202,etb18_kap7$F600_12,method = "spearman", use = "pairwise.complete.obs")
+cor.test(etb18_kap7$m1202,etb18_kap7$F600_12,method = "spearman")
 ```
 
 Ein weiteres Zusammenhangsmaß für ordinale Variablen sind Konkordanzmaße wie Kendall's $\tau$, mit der Option `method = "kendall"`:
 ```{r s07_6}
 #| eval: false
-cor.test(etb18_kap7$m1202,etb18_kap7$F600_12, method = "kendall", use = "pairwise.complete.obs")
+cor.test(etb18_kap7$m1202,etb18_kap7$F600_12, method = "kendall")
 ```
 Hier wird Kendall's $\tau_b$ ausgegeben - [siehe Anhang für Kendall's $\tau_a$](#corss)
 
@@ -271,7 +271,7 @@ Gewichte sind ein häufig verwendetes Gegenmittel.
 Die einfachste Variante für eine Gewichtung ist die Option  `wt=` in `count()`:
 ```{r}
 etb18_kap7 %>% 
-  count(S1,m1202,wt = gew2018_hr17)
+  count(S1,m1202,wt = gew2018)
 ```
 
 Für umfangreichere Anwendungen stehen in R stehen die Pakete [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) und das darauf aufbauende [`{srvyr}`](https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html) zur Verfügung.
@@ -299,7 +299,12 @@ etb18_kap7_weighted <- svydesign(id      = ~intnr,
 svymean(~zpalter, etb18_kap7_weighted, na.rm = TRUE)
 mean(etb18_kap7$zpalter, na.rm = TRUE)
 ```
-Für Tabellen gibt es in `{survey}` auch eine Funktion: `svytable(~S1+m1202,etb18_kap7_weighted)`
+Für Tabellen gibt es in `{survey}` auch eine Funktion: 
+```{r}
+svytable(~S1+m1202,etb18_kap7_weighted)
+xtabs(~S1+m1202,etb18_kap7)
+```
+
 
 Für [Regressionsmodelle](#reg) gibt es bspw. `survey::svyglm()`
 
@@ -316,10 +321,13 @@ Für [Regressionsmodelle](#reg) gibt es bspw. `survey::svyglm()`
 etb18_ue7 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
                          n_max = 1000,
                          col_select = c("intnr","S1","az","F518_SUF","m1202","F411_01","gew2018")) %>% 
-  mutate(across(matches("m1202|F411_01"), ~ifelse(.x > 4|.x<0,NA,.x))) # missings in m1202 mit NA überschreiben
+  mutate(across(matches("m1202|F411_01"), ~ifelse(.x > 4|.x<0,NA,.x)),
+         F518_SUF = ifelse(F518_SUF>99990,NA,F518_SUF)) # missings in m1202 mit NA überschreiben
 ```
 
-Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (`az`) zwischen Männern und Frauen besteht (`S1`). Beide Variablen haben keine Missings - Sie können direkt los legen
+Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (`az`) zwischen Männern und Frauen besteht (`S1`). Beide Variablen haben keine Missings - Sie können direkt los legen.
+
+Sehen Sie sich die Informationen an, welche `t.test()` erstellt: legen Sie das Ergebnis des Tests als Objekt ab (`test1 <- ...`) und sehen Sie sich die Informationen unter `test1$` an (drücken Sie die `↹` Taste).
 
 Berechnen Sie das Cohen's d für diesen Zusammenhang.
 
@@ -329,12 +337,7 @@ Berechnen Sie das Cohen's d für diesen Zusammenhang.
 
 + Untersuchen Sie die Korrelation zwischen der Wochenarbeitszeit (`az`) und dem Einkommen (`F518_SUF`) der Befragten.
 
-+ Denken Sie daran, die Missings in `F518_SUF` auszuschließen, `az` hat keine Missings.
-
-```{r}
-#| eval: false
-etb18_kap7$F518_SUF[etb18_kap7$F518_SUF>99990] <- NA
-```
++ Die Missings in `F518_SUF` sind mit dem Befehl oben schon ausgeschlossen, `az` hat keine Missings.
 
 + Berechnen Sie die Rangkorrelation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck `F411_01` und der Ausbildungsvariable `m1202`.
 ```{r}
@@ -404,15 +407,7 @@ haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>%
 ### Übung 3 {#weight}
 
 + Legen Sie die Gewichtung auf Basis von `gew2018` an.
-+ Berechnen Sie den Mittelwert für den Bruttoverdienst `F518_SUF` 
-+ Schließen Sie die Missings in `F518_SUF` aus:
-```{r}
-#| eval: false
-etb18_kap7$F518_SUF[etb18_kap7$F518_SUF>99990] <- NA
-```
-
-
-Sie können mit `max(etb18_kap7$F518_SUF,na.rm = T)` überprüfen ob das Maximum bei `r max(etb18_kap7$F518_SUF[etb18_kap7$F518_SUF<99990],na.rm = T)` liegt)
++ Berechnen Sie den Mittelwert für den Bruttoverdienst `F518_SUF` mit und ohne Gewichtung.
 
 
 

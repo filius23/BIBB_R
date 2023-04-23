@@ -118,7 +118,7 @@ library(marginaleffects)
 ```
 
 ```{r ame1}
-avg_slopes(m2, by = TRUE)
+avg_slopes(m2)
 ```
     
 ```{r ameInline,echo=F }
@@ -130,6 +130,29 @@ mx <- avg_slopes(m2, by = TRUE) %>% data.frame() %>% pull(estimate)
 Mit einem um 100 Euro (`inc100` ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um `r sprintf("%2.5f",abs(mx))` (`r sprintf("%2.5f",abs(mx*100))` Prozentpunkte) geringere Wahrscheinlichkeit einher, mehr als die Hälfte der Arbeitszeit im Freien zu arbeiten.
 
 :::
+
+## Predctions 
+
+Alternativ können die Ergebnisse aus log. Regressionen auch als vorhergesagte Werte dargestellt werden.
+Vorhergesagte Werte können wir mit `predictions()` aus `{marginaleffects}` erstellen:
+```{r}
+predictions(m2, 
+            newdata = data.frame(inc100  = 1:5), # einzusetzende Werte
+            type = "response" # vorhergesagte Wkt als Einheit (statt logits)
+            )
+```
+
+Das können wir in einem `ggplot()` grafisch darstellen:
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+predictions(m2, newdata = data.frame(inc100  = 1:70), type = "response") %>% # vorhergesagte Werte
+  data.frame() %>% 
+  ggplot(aes(y = estimate , x = inc100)) + 
+  geom_errorbar(aes(ymin = conf.low, ymax= conf.high), color = "slateblue",width = .1) + # konfidenzintervalle
+  geom_point(color = "slateblue") + # punktschätzer
+  theme_minimal()
+```
 
 
 ## [Übung 1](#ame1)
@@ -144,9 +167,8 @@ Mit `feglm()` lassen sich auch logistische FE-Modelle schätzen:
 library(fixest)
 m_etb18 <-
   m_etb18 %>%
-  mutate(m1202_fct = factor(m1202,levels = c(-1,1:4),
-                            labels = names(attributes(m1202)$labels) %>%
-                              substr(.,1,5) %>% str_squish()),
+  mutate(m1202_fct = factor(m1202,levels = 1:4,
+                            labels = c("Ohne","duale","Aufst","FH/Uni")),
          m1202_fct = fct_relevel(m1202_fct,"Ohne"))
 
 feglm(outside ~ m1202_fct + zpalter |Bula, data = m_etb18, family = binomial)

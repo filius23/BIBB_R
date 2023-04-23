@@ -84,6 +84,7 @@ Wir können uns die einzelnen Werte mit `View(m1)` ansehen:
 listviewer::jsonedit(m1, mode="view") 
 ```
 
+Bspw. finden sich unter `fitted.values` die vorhergesagten Werte für jeden Fall.
 
 ## Regressionsmodelle visualisieren
 
@@ -94,7 +95,7 @@ Unser Modell mit `var1` und `var2` können wir so darstellen:
 library(ggplot2)
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
-  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  
+  geom_smooth(method = "lm")  
 ```
 
 Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensatz ist der schnell gefunden. In größeren Datensätzen hilft uns `geom_text()`:
@@ -106,7 +107,7 @@ Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensa
 #| message: false
 ggplot(dat1, aes(x = var1, y = var2)) + 
   geom_point(size = 2) + 
-  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  +
+  geom_smooth(method = "lm")  +
   geom_text(data = . %>% filter(var2 > 20), aes(y = var2+3, label = id), color = "sienna1")
 ```
 

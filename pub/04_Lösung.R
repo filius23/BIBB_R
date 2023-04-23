@@ -142,14 +142,5 @@ etb18_small %>%
 ## auf balkendiagramm drehen --> ?
 etb18_small %>% 
   count(gkpol,nt) %>%
-  ggplot(data = ., aes(y = gkpol, x = n, fill = factor(nt))) +
-  geom_col(position = position_dodge()) +
-  scale_y_continuous(breaks = 1:7,
-                     labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
-                                "50k bis <100k", "100k bis <500k", "500k und mehr")) +
-  scale_fill_manual(values = c("slateblue4","orangered3"),
-                    breaks = c(0,1),
-                    labels = c("ja","nein"))  +
-  labs(fill = "Nebentätigkeit",
-       x = "Wohnortgröße",
-       y = "Häufigkeit")
+  ggplot(data = ., aes(y = gkpol, x = n)) +
+  geom_col(orientation  = "y")  ## orientation
