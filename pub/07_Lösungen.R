@@ -32,8 +32,6 @@ t.test(etb18_ue7$az ~ etb18_ue7$az,paired = TRUE) # mach hier keinen SInn
 # Übung 2 ---------
 
 ## Korrelation az & F518_SUF ----
-etb18_ue7$F518_SUF[etb18_ue7$F518_SUF>99990] <- NA
-
 summary(etb18_ue7$F518_SUF)
 summary(etb18_ue7$az)
 
@@ -41,22 +39,23 @@ cor.test(etb18_ue7$F518_SUF,etb18_ue7$az,
          method = "pearson")
 
 ## Rangkorrelation starker Termin- oder Leistungsdruck F411_01 und der Ausbildungsvariable m1202 -------
-cor.test(etb18_ue7$m1202,etb18_ue7$F411_01,
-         method = "spearman")
+cor.test(etb18_ue7$m1202,etb18_ue7$F411_01,method = "spearman")
 
-effectsize::cramers_v(etb18_ue7$m1202,etb18_ue7$F411_01)
+library(effectsize)
+cramers_v(etb18_ue7$m1202,etb18_ue7$F411_01)
 
 # Übung 3 ----------
-
 library(survey)
-etb18_ue7$F518_SUF[etb18_ue7$F518_SUF>99990] <- NA
+etb18_ue7_weighted <- svydesign(id      = ~intnr,   # id angeben 
+                                weights = ~gew2018, # gewichtungsvariable
+                                data    = etb18_ue7)#aus welchem Datensatz kommt das ganze?
 
-etb18_ue7_weighted <- svydesign(id      = ~intnr,
-                            weights = ~gew2018,
-                            data    = etb18_ue7)
+View(etb18_ue7_weighted)
 
-svymean(~F518_SUF, etb18_ue7_weighted, na.rm = TRUE)
+svymean(~F518_SUF, design = etb18_ue7_weighted, na.rm = TRUE)
+
 mean(etb18_ue7$F518_SUF, na.rm = TRUE) # zum Vergleich
+mean(etb18_ue7_weighted$variables$F518_SUF, na.rm = TRUE) # zum Vergleich
 
 
 # Bonus: Kreuztabelle mit Gewichtung

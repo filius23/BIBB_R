@@ -51,8 +51,9 @@ t.test(zpalter ~ m1202, data = etb18_kap7 %>% filter(m1202 %in% c(3,4) ) )
 attributes(etb18_kap7$F231)$label
 etb18_kap7$F231[etb18_kap7$F231>990] <- NA
 
-cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
-cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
+cor.test(etb18_kap7$zpalter , etb18_kap7$F231, method = "pearson")
+
+cor.test(etb18_kap7$zpalter , etb18_kap7$F231, method = "pearson")
 c1 <- cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
 
 c1$method
@@ -91,7 +92,10 @@ etb18_kap7 %>% filter(!is.na(F204)) %>% count(F204,S1)
 attributes(etb18_kap7$F204)$label
 
 ## Chi² ------------
+
 xtabs(~ F204 + S1, data = etb18_kap7)
+
+
 tab1 <- xtabs(~ F204 + S1, data = etb18_kap7)
 chisq.test(tab1)
 
@@ -102,15 +106,8 @@ xtabs(~ F204 + S1, data = etb18_kap7) %>%  chisq.test(.)
 effectsize::cramers_v(etb18_kap7$F204,etb18_kap7$S1)
 
 # Tests als objekte ------
-ttest1 <- t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "two.sided")
-ttest1$statistic # t-Wert
-ttest1$p.value # p-Wert
-
-library(broom)
-tidy(ttest1)
-
 corr1 <- cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
-tidy(corr1)
+View(corr1)
 
 # Übung ------
 
@@ -140,7 +137,8 @@ svymean(~zpalter, etb18_weighted, na.rm = TRUE)
 mean(etb18_kap7$zpalter, na.rm = TRUE)
 
 
-
 # Häufigkeitstabelle
 svytable(~S1+m1202,etb18_weighted) # syntax wie xtabs()
 xtabs(~S1+m1202,etb18_kap7)
+
+?survey::svytable()

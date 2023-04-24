@@ -294,6 +294,7 @@ Mit `{broom}` können wir auch einen `data.frame` aus den Regressionsergebnissen
 
 Verwenden Sie folgenden Subdatensatz der ETB2018:
 ```{r, echo = T, eval=FALSE}
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
 etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
 ```
 
