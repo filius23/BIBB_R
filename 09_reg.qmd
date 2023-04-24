@@ -308,7 +308,6 @@ etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
 
 + Erstellen Sie ein `lm()`-Modell `mod2`, welches nur auf den Beobachtungen mit einem Monatseinkommen unter 20.000 EUR beruht.
 + Erstellen Sie eine Regressionstabelle, welche diese neue Modell `mod2` neben das Modell `mod1` aus Übung 1 stellt.
-+ Erstellen Sie auch eine grafische Gegenüberstellung der beiden Modelle.
 
 
 ### Übung 3: kat. UVs {#reg3}
@@ -350,13 +349,11 @@ etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","du
 
 
 
+### Übung 4: mehrere UVs & Koeffizientenplot {#reg4}
 
++ Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit zusätzlich die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden.
++ Erstellen Sie auch eine grafische Gegenüberstellung der beiden Modelle mit und ohne das Ausbildungsniveau.
 
-
-<!-- ### Übung 4: mehrere UVs {#reg4} -->
-
-<!-- + Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit auch die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden. -->
-<!-- + Erstellen Sie eine Übersichtstabellen mit allen Modellen aus den Übungen 1 und 4. -->
 
 
 <!-- ### Übung 5: Interaktionen {#reg5} -->

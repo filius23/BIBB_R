@@ -5,21 +5,26 @@
 library(tidyverse)
 
 # Verwenden Sie folgenden Subdatensatz der ETB2018:
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")  
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", 
+                         col_select = c("intnr","zpalter","az","F518_SUF","m1202","S1"))  
 etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
 
 # Übung 1 -----
 # Erstellen Sie ein Objekt mod1 mit einem linearen Regressionsmodell (lm) 
 # mit F518_SUF (Monatsbrutto in EUR) als abhängiger und az (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe hier)
-lm(F518_SUF ~ az, etb_reg1)
-m2 <- lm(F518_SUF ~ az, etb_reg1)
+
+lm(F518_SUF ~ az, data = etb_reg1)
+
+m2 <- lm(F518_SUF ~ az, data = etb_reg1)
 summary(m2)
 
 # Betrachten Sie Ergebnisse mod1 - was können Sie zum Zusammenhang zwischen F518_SUF und az erkennen?
 
-# Visualisieren Sie Ihr Regressionsmodell mit {ggplot2}.
+# Visualisieren Sie die Regressionsgerade mit {ggplot2}.
 ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
   geom_point()
+
+
 ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
   geom_point() +
   geom_smooth(method = "lm")
@@ -35,10 +40,21 @@ ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
 # label verschieben
 ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
   geom_point() +
-  geom_smooth(method = "lm",formula = "y~x") + 
+  geom_smooth(method = "lm") + 
   geom_text(data = . %>% filter(F518_SUF > 20000),
             aes(label = intnr, x = az -8),
             color = "orange")
+
+etb_reg1 %>% filter(F518_SUF > 20000) %>% select(intnr, F518_SUF, az, zpalter, S1)
+
+# labels für alle Beobachtungen 
+ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
+  geom_point() +
+  geom_smooth(method = "lm") + 
+  geom_text(aes(label = intnr, x = az - 3),
+            color = "orange")
+
+
 
 # Übung 2 ----
 # ausgangsmodell
@@ -65,7 +81,7 @@ modelsummary(list("Modell mit allen"=m2,
              stars = T,gof_omit = "IC|RM|Log")
 
 
-
+## Bonus: grafische Darstellung
 ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
   geom_point() +
   geom_smooth(method = "lm",formula = "y~x") + 
@@ -92,28 +108,14 @@ summary(m4.2)
 modelsummary(list("m4"=m4,"m4.2"=m4.2),output = "markdown")
 
 ## mehre UVs -----
+
 etb_reg1$m1202_fct <-  relevel(etb_reg1$m1202_fct,ref = "ohne")
 m5 <- lm(F518_SUF ~ m1202_fct + az,data = etb_reg1)
 summary(m5)
 modelsummary(list("m4"=m4,"m5"=m5),output = "markdown")
 
-# Kontrollvariablen als Objekt einfügen ------
-controls <- "zpalter + az + I(zpalter^2)"
-m6 <- lm(F518_SUF ~ m1202_fct,data = etb_reg1)
-
-## entscheidend: paste() 
-m8 <- lm(paste("F518_SUF ~ m1202_fct"),data = etb_reg1)
-m7 <- lm(paste("F518_SUF ~ m1202_fct +", controls),data = etb_reg1)
-summary(m7)
-
-
-
 modelplot(list(m4,m5))
-
 modelplot(list(m4,m5),coef_map = c("m1202_fctAufstieg"="Aufstiegsfortbildung"))
- 
-
-
 
 modelplot(list(m4,m5)) +
   geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
