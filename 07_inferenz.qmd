@@ -253,7 +253,8 @@ chisq.test(tab1)
 
 Für Cramér's $v$ können wir wieder auf `{effectsize}` zurückgreifen:
 ```{r}
-effectsize::cramers_v(etb18_kap7$F204,etb18_kap7$S1)
+library(effectsize)
+cramers_v(etb18_kap7$F204,etb18_kap7$S1)
 ```
 
 [Weitere Maße](#corrs)
