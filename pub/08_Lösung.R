@@ -73,7 +73,7 @@ library(modelsummary)
 modelsummary(list("Modell mit allen"=m2,
                   "Modell u20k ver1"=m3a,
                   "Modell u20k ver2"=m3b),
-             stars = T,gof_omit = "IC|RM|Log",output = "markdown")
+             stars = T,gof_omit = "IC|RM|Log")
 
 modelsummary(list("Modell mit allen"=m2,
                   "Modell u20k ver1"=m3a,
@@ -84,7 +84,7 @@ modelsummary(list("Modell mit allen"=m2,
 ## Bonus: grafische Darstellung
 ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
   geom_point() +
-  geom_smooth(method = "lm",formula = "y~x") + 
+  geom_smooth(method = "lm") + 
   geom_smooth(data= . %>% filter(F518_SUF < 20000),
               method = "lm", color = "orange", fill = "coral")
 
@@ -92,7 +92,11 @@ ggplot(data = etb_reg1,aes(x= az, y = F518_SUF)) +
 
 ## kategoriale unabhängige Variable ------
 etb_reg1$m1202_fct <-  
-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","dual","Aufstieg","FH/Uni"))
+  factor(etb_reg1$m1202,
+         levels = 1:4, 
+         labels = c("ohne","dual","Aufstieg","FH/Uni"))
+
+# etb_reg1$m1202_fct <-   as.factor(etb_reg1$m1202)
 
 m4 <- lm(F518_SUF ~ m1202_fct,data = etb_reg1)
 summary(m4)
@@ -107,24 +111,36 @@ summary(m4.2)
 # Modellsummary
 modelsummary(list("m4"=m4,"m4.2"=m4.2),output = "markdown")
 
-## mehre UVs -----
+# Übung 4 mehre UVs -----
 
 etb_reg1$m1202_fct <-  relevel(etb_reg1$m1202_fct,ref = "ohne")
 m5 <- lm(F518_SUF ~ m1202_fct + az,data = etb_reg1)
 summary(m5)
+
+# Regressionstabelle
 modelsummary(list("m4"=m4,"m5"=m5),output = "markdown")
 
-modelplot(list(m4,m5))
-modelplot(list(m4,m5),coef_map = c("m1202_fctAufstieg"="Aufstiegsfortbildung"))
+modelplot(list("m4"=m4,"m5"=m5))
+modelplot(list("m4"=m4,"m5"=m5),
+          coef_map = c(
+            "m1202_fctdual" = "Dual / Schulisch",
+            "m1202_fctAufstieg"="Aufstiegsfortbildung",
+            "m1202_fctFH/Uni" =  "FH / Uni",
+            "az" = "Arbeitszeit"))
 
-modelplot(list(m4,m5)) +
+modelplot(list("m4"=m4,"m5"=m5),
+          coef_map = c(
+            "m1202_fctdual" = "Dual / Schulisch",
+            "m1202_fctAufstieg"="Aufstiegsfortbildung",
+            "m1202_fctFH/Uni" =  "FH / Uni",
+            "az" = "Arbeitszeit")) +
   geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
-  scale_color_manual(values = c("orange","navy")) +
-  theme_grey(base_size = 15,base_family = "mono") 
+  scale_color_manual(values = c("coral","slateblue")) 
 
 
 
 ## individuell mit tidy()
+library(broom)
 tidy(m5, conf.int = TRUE) %>% 
   mutate(term = str_replace(term, "m1202_fct", "Education: "))
 
@@ -132,9 +148,9 @@ tidy(m5, conf.int = TRUE) %>%
 tidy(m5, conf.int = TRUE) %>% 
   mutate(term = str_replace(term, "m1202_fct", "Education: ")) %>% 
   ggplot(aes(y = term, x = estimate)) +
-  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "navy") +
-  geom_errorbarh(aes(xmin = conf.low, xmax  = conf.high), height = .1) + 
-  geom_point(color = "navy", shape = 18,size = 8) +
-  theme_minimal(base_size = 16)
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "coral2") +
+  geom_errorbarh(aes(xmin = conf.low, xmax  = conf.high), height = .1, color = "orange") + 
+  geom_point(color = "slateblue", shape = 18,size = 3) +
+  theme_classic(base_size = 16)
 
 

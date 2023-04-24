@@ -66,29 +66,22 @@ summary(m2a)
 
 m2b <- lm(var2~ var1, data = dat1 %>% filter(var2<20))
 summary(m2b)
-
-# ...übrigens: wir können auch in `geom_smooth()` filtern:
-ggplot(dat1, aes(x = var1, y = var2)) + 
-     geom_point(size = 2)+  
-  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  + 
-  geom_smooth(data = . %>% filter(var2<20),
-              method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  
-
-ggplot(dat1, aes(x = var1, y = var2)) + 
-  geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  + 
-  geom_smooth(data = . %>% filter(var2<20),
-              method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  +
-  geom_point(size = 2) 
+summary(m1)
 
 # Regressionstabellen --------
 ## install.packages("modelsummary")
 
 library(modelsummary)
+
 modelsummary(list(m1,m2a,m2b))
+
+
+
 modelsummary(list(m1,m2a,m2b),output = "markdown")
 
 # Namen mit = angeben, AIC usw ausblenden
 modelsummary(list("m1"=m1,"m2a"=m2a,"m2b"=m2b),stars = T,gof_omit = "IC|RM|Log")
+
 modelsummary(list("m1"=m1,"m2a"=m2a,"m2b"=m2b),
              stars = T,gof_omit = "IC|RM|Log",output = "markdown")
 
@@ -98,7 +91,7 @@ dat1
 m3 <- lm(var2~educ, dat1) # funktioniert nicht richtig
 summary(m3)
 
-m3 <- lm(var2~factor(educ), dat1)
+m3 <- lm(var2 ~ as.factor(educ), dat1)
 summary(m3)
 
 dat1$ed_fct <- factor(dat1$educ, 
@@ -106,6 +99,7 @@ dat1$ed_fct <- factor(dat1$educ,
                       labels = c("basic","medium","high"))
 dat1
 levels(dat1$ed_fct)
+
 m3 <- lm(var2 ~ ed_fct, dat1)
 summary(m3)
 
@@ -119,6 +113,9 @@ summary(m3b)
 m4 <- lm(var2 ~ ed_fct  + var1, dat1)
 summary(m4)
 modelsummary(m4)
+
+# latex export:
+# write(modelsummary(m4,output = "latex"),file = "./results/table.tex")
 # Übung
 
 # Koeffizientenplots ------------
@@ -141,7 +138,20 @@ modelplot(list("Modell 1"=m1,
                        "ed_fcthigh"  = "Höhere Bildung",
                        "ed_fctbasic" = "Grundlegende\nBildung")) + # \n fügt einen Zeilenumbruch ein
   geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
-  scale_color_manual(values = c("orange","navy")) +
+  scale_color_manual(values = c("orange","navy")) 
+
+modelplot(list("Modell 1"=m1,
+               "Modell 4"=m4),
+          coef_map = c("var1" = "Name für var1",
+                       "ed_fcthigh"  = "Höhere Bildung",
+                       "ed_fctbasic" = "Grundlegende\nBildung")) + # \n fügt einen Zeilenumbruch ein
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
+  scale_color_manual(values = c("orange","navy"),
+                     breaks = c("Modell 1", "Modell 4"),
+                     labels = c("Te1","YbC sadsa")) +
+  labs(title = "TEST TEST TITLE")
+
+
   theme_grey(base_size = 15,base_family = "mono") 
 
 # Übung

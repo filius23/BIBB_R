@@ -361,7 +361,9 @@ read_docx("pfad/zur/Vorlage/DIN_A4_Vorlage.docx") %>%
    body_add_flextable(., value = met_ft ) %>% # flextable met_ft einfügen
    body_add_par(.,"") %>% # leeren Absatz einfügen
    body_add_flextable(., value = kat_ft ) %>% # flextable cat_ft einfügen
-   print(target = "./results/Descriptives_final.docx")
+   body_add_par(.,"") %>% # leeren Absatz einfügen
+   body_add_flextable(., value = regtab2 ) %>% # flextable regtab2 einfügen
+   print(target = "./results/Tables.docx")
 ```
 ```{r}
 #| include: false
@@ -405,6 +407,74 @@ etb_ue14 <-
 #| eval: false
 m1 <- lm(az ~ m1202 , etb_ue14)
 m2 <- lm(az ~ m1202 + zpalter, etb_ue14)
+```
+
+## Latex
+
+[`{kableExtra}`](https://haozhu233.github.io/kableExtra/) ist mein Favorit für Tabellen in  [pdf](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf) Outputs.
+
+### Verteilungstabellen für metrische Variablen 
+```{r}
+#| warning: false
+library(kableExtra)
+
+met_kbl <- 
+  etb18_kap14 %>% 
+  select(az,F518_SUF) %>% 
+  pivot_longer(cols = everything(), names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(Min  = min(value,na.rm = T),
+            Mean = mean(value,na.rm = T),
+            Max  = mean(value,na.rm = T)) %>% 
+  kbl(., booktabs = T, format = 'latex') %>% #  ab hier spezifisch für latex
+  kable_styling(latex_options = "striped")
+
+write(met_kbl,file = "./results/desc1.tex")
+```
+
+### Häufigkeitsauszählungen 
+```{r}
+kat_kbl <- 
+  etb18_kap14 %>%  
+    select(S1,m1202) %>% 
+    mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen")),
+           m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% 
+    pivot_longer(everything(),names_to = "variable") %>% 
+    count(variable,value)  %>% 
+  kbl(., booktabs = T, format = 'latex') %>%  # ab hier latex-syntax
+  kable_styling(latex_options = "striped", stripe_index = c(1,2))
+
+write(kat_kbl,file = "./results/crosstab1.tex")
+```
+
+### Regressionstabelle mit `{modelsummary}`
+```{r}
+#| warning: false
+#| message: false
+  m1 <- lm(F518_SUF ~ az + S1, data = etb18_kap14_reg_df)
+  m2 <- lm(F518_SUF ~ az + S1 + m1202, data = etb18_kap14_reg_df)
+  
+  ref_rows2 <- tribble(~term,    ~"Modell 1",  ~"Modell 2",
+                  "Männer",    'ref.',   'ref.',
+                  "keine Ausbildung",    '',   'ref.',
+                  )
+  attr(ref_rows2, 'position') <- c(5,8) # Zeile angeben 
+  
+  modelsummary(
+    list("Modell 1" = m1, "Modell 2" = m2),
+    gof_omit = "IC|Log|RMS",
+    coef_rename = c(
+      "(Intercept)" = "Intercept",
+      "S1Frauen" = "Frauen",
+      "m1202dual/schul." = "Duale/Schulische Ausbildung",
+      "m1202Aufst." = "Aufstiegsfortbildung",
+      "m1202FH/Uni" = "FH/Uni-Abschluss"
+    ),
+    add_rows = ref_rows2,
+    stars = T,
+    fmt = 2,
+    output = "./results/modelsummary.tex" ## Latex-Output
+  )
 ```
 
 
@@ -494,8 +564,6 @@ cross_tab <-
 #| eval: false
 save_as_docx("Kreuztabelle" = cross_tab, path = "./results/Kreuztabelle.docx")
 ```
-
-
 
 ### Layout-Tipps für Tabellen
 
