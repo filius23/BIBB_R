@@ -255,7 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#lm1" id="toc-lm1" class="nav-link active" data-scroll-target="#lm1"> <span class="header-section-number">8.1</span> Regressionsmodelle mit <code>lm()</code></a></li>
-  <li><a href="#regressionsmodelle-visualisieren" id="toc-regressionsmodelle-visualisieren" class="nav-link" data-scroll-target="#regressionsmodelle-visualisieren"> <span class="header-section-number">8.2</span> Regressionsmodelle visualisieren</a>
+  <li><a href="#regressionsgerade-und-daten-visualisieren" id="toc-regressionsgerade-und-daten-visualisieren" class="nav-link" data-scroll-target="#regressionsgerade-und-daten-visualisieren"> <span class="header-section-number">8.2</span> Regressionsgerade und Daten visualisieren</a>
   <ul class="collapse">
   <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"> <span class="header-section-number">8.2.1</span> <span>Übung</span></a></li>
   </ul></li>
@@ -400,15 +400,16 @@ var1         1.838966  0.7727028  2.3799139 0.05477457</code></pre>
 <p>Wir können uns die einzelnen Werte mit <code>View(m1)</code> ansehen:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-ee65dc651cc2d04dea5b" style="width:100%;height:10%;"></div>
-<script type="application/json" data-for="htmlwidget-ee65dc651cc2d04dea5b">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
+<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-5f53f18b594990debf85" style="width:100%;height:10%;"></div>
+<script type="application/json" data-for="htmlwidget-5f53f18b594990debf85">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Bspw. finden sich unter <code>fitted.values</code> die vorhergesagten Werte für jeden Fall.</p>
 </section>
-<section id="regressionsmodelle-visualisieren" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="regressionsmodelle-visualisieren"><span class="header-section-number">8.2</span> Regressionsmodelle visualisieren</h2>
-<p>Mit <code>geom_smooth(method = "lm")</code> können wir Regressionsgeraden auch in <code>{ggplot2}</code> darstellen: Unser Modell mit <code>var1</code> und <code>var2</code> können wir so darstellen:</p>
+<section id="regressionsgerade-und-daten-visualisieren" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="regressionsgerade-und-daten-visualisieren"><span class="header-section-number">8.2</span> Regressionsgerade und Daten visualisieren</h2>
+<p>Mit <code>geom_smooth(method = "lm")</code> können wir Regressionsgeraden auch in <code>{ggplot2}</code> darstellen:</p>
+<p>Unser Modell mit <code>var1</code> und <code>var2</code> können wir so darstellen:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span> </span>
@@ -919,12 +920,12 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="emgyseecbu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="jiomxsfccl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#emgyseecbu .gt_table {
+#jiomxsfccl .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -949,7 +950,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_heading {
+#jiomxsfccl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -961,12 +962,12 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_caption {
+#jiomxsfccl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#emgyseecbu .gt_title {
+#jiomxsfccl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -978,7 +979,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-width: 0;
 }
 
-#emgyseecbu .gt_subtitle {
+#jiomxsfccl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -990,13 +991,13 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-top-width: 0;
 }
 
-#emgyseecbu .gt_bottom_border {
+#jiomxsfccl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_col_headings {
+#jiomxsfccl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1011,7 +1012,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_col_heading {
+#jiomxsfccl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1031,7 +1032,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   overflow-x: hidden;
 }
 
-#emgyseecbu .gt_column_spanner_outer {
+#jiomxsfccl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1043,15 +1044,15 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 4px;
 }
 
-#emgyseecbu .gt_column_spanner_outer:first-child {
+#jiomxsfccl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#emgyseecbu .gt_column_spanner_outer:last-child {
+#jiomxsfccl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#emgyseecbu .gt_column_spanner {
+#jiomxsfccl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1063,7 +1064,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   width: 100%;
 }
 
-#emgyseecbu .gt_group_heading {
+#jiomxsfccl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1089,7 +1090,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   text-align: left;
 }
 
-#emgyseecbu .gt_empty_group_heading {
+#jiomxsfccl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1104,15 +1105,15 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   vertical-align: middle;
 }
 
-#emgyseecbu .gt_from_md > :first-child {
+#jiomxsfccl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#emgyseecbu .gt_from_md > :last-child {
+#jiomxsfccl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#emgyseecbu .gt_row {
+#jiomxsfccl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1131,7 +1132,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   overflow-x: hidden;
 }
 
-#emgyseecbu .gt_stub {
+#jiomxsfccl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1144,7 +1145,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#emgyseecbu .gt_stub_row_group {
+#jiomxsfccl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1158,11 +1159,11 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   vertical-align: top;
 }
 
-#emgyseecbu .gt_row_group_first td {
+#jiomxsfccl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#emgyseecbu .gt_summary_row {
+#jiomxsfccl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1172,16 +1173,16 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#emgyseecbu .gt_first_summary_row {
+#jiomxsfccl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_first_summary_row.thick {
+#jiomxsfccl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#emgyseecbu .gt_last_summary_row {
+#jiomxsfccl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1191,7 +1192,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_grand_summary_row {
+#jiomxsfccl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1201,7 +1202,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#emgyseecbu .gt_first_grand_summary_row {
+#jiomxsfccl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1211,11 +1212,11 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_striped {
+#jiomxsfccl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#emgyseecbu .gt_table_body {
+#jiomxsfccl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1224,7 +1225,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_footnotes {
+#jiomxsfccl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1238,7 +1239,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_footnote {
+#jiomxsfccl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1247,7 +1248,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#emgyseecbu .gt_sourcenotes {
+#jiomxsfccl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1261,7 +1262,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#emgyseecbu .gt_sourcenote {
+#jiomxsfccl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1269,64 +1270,64 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#emgyseecbu .gt_left {
+#jiomxsfccl .gt_left {
   text-align: left;
 }
 
-#emgyseecbu .gt_center {
+#jiomxsfccl .gt_center {
   text-align: center;
 }
 
-#emgyseecbu .gt_right {
+#jiomxsfccl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#emgyseecbu .gt_font_normal {
+#jiomxsfccl .gt_font_normal {
   font-weight: normal;
 }
 
-#emgyseecbu .gt_font_bold {
+#jiomxsfccl .gt_font_bold {
   font-weight: bold;
 }
 
-#emgyseecbu .gt_font_italic {
+#jiomxsfccl .gt_font_italic {
   font-style: italic;
 }
 
-#emgyseecbu .gt_super {
+#jiomxsfccl .gt_super {
   font-size: 65%;
 }
 
-#emgyseecbu .gt_footnote_marks {
+#jiomxsfccl .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#emgyseecbu .gt_asterisk {
+#jiomxsfccl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#emgyseecbu .gt_indent_1 {
+#jiomxsfccl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#emgyseecbu .gt_indent_2 {
+#jiomxsfccl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#emgyseecbu .gt_indent_3 {
+#jiomxsfccl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#emgyseecbu .gt_indent_4 {
+#jiomxsfccl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#emgyseecbu .gt_indent_5 {
+#jiomxsfccl .gt_indent_5 {
   text-indent: 25px;
 }
 </style>

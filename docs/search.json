@@ -894,5 +894,12 @@
     "title": "Links & Weiterführendes",
     "section": "Weiteres",
     "text": "Weiteres\n{easystats} bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem easystats-Universum unter anderem {performance} und {effectsize} kennengelernt.\nEreigniszeitmodelle / Event History Modellung / Survival Analysis"
+  },
+  {
+    "objectID": "09_reg.html#regressionsgerade-und-daten-visualisieren",
+    "href": "09_reg.html#regressionsgerade-und-daten-visualisieren",
+    "title": "8  Regressionsmodelle",
+    "section": "8.2 Regressionsgerade und Daten visualisieren",
+    "text": "8.2 Regressionsgerade und Daten visualisieren\nMit geom_smooth(method = \"lm\") können wir Regressionsgeraden auch in {ggplot2} darstellen:\nUnser Modell mit var1 und var2 können wir so darstellen:\n\nlibrary(ggplot2)\nggplot(dat1, aes(x = var1, y = var2)) + \n  geom_point(size = 2) + \n  geom_smooth(method = \"lm\")  \n\n\n\n\n\n\n\n\nHier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensatz ist der schnell gefunden. In größeren Datensätzen hilft uns geom_text():\n\nggplot(dat1, aes(x = var1, y = var2)) + \n  geom_point(size = 2) + \n  geom_smooth(method = \"lm\")  +\n  geom_text(data = . %>% filter(var2 > 20), aes(y = var2+3, label = id), color = \"sienna1\")\n\n\n\n\n\n\n\n\nWir können nämlich einzelne geom_ auch nur für ein Subset angeben - dazu vergeben wir data = neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl ggplot()) und setzen darin einen filter(). Außerdem verschieben wir mit var2+3 das Label etwas über den Punkt.\n\n8.2.1 Übung"
   }
 ]

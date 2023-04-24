@@ -86,9 +86,10 @@ listviewer::jsonedit(m1, mode="view")
 
 Bspw. finden sich unter `fitted.values` die vorhergesagten Werte für jeden Fall.
 
-## Regressionsmodelle visualisieren
+## Regressionsgerade und Daten visualisieren
 
 Mit `geom_smooth(method = "lm")` können wir Regressionsgeraden auch in `{ggplot2}` darstellen:
+
 Unser Modell mit `var1` und `var2` können wir so darstellen:
 
 ```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
