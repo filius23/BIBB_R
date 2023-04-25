@@ -269,7 +269,7 @@ Berechnen Sie das Modell `"az ~ m1202_fct + zpalter + I(zpalter^2)"` getrennt f√
 
 [Zur√ºck nach oben](#ue12_02)
 
-
+## [Mehr zu `map()`](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html)
 
 ##  Anhang 
 

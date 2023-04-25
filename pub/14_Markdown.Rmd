@@ -36,3 +36,5 @@ etbx %>% count(m1202) %>% flextable()
 
 
 
++ Aufzählung 1
++ Aufzählung 2

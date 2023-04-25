@@ -59,7 +59,7 @@ Allerdings erfordert Quarto eine separate Installation, [mehr Infos](https://qua
 
 Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen: 
 
-[R for Data Science](r4ds.had.co.nz/) *das* Standardwerk für Datenanalysen mit `{tidyverse}` - sehr intuitive Einführung, Fokus auf Data Science
+[R for Data Science](https://r4ds.had.co.nz/) **das** Standardwerk für Datenanalysen mit `{tidyverse}` - sehr intuitive Einführung, Fokus auf Data Science
 
 [Problemorientiere Einführungen in spezifische Anwendungen "do more with R"](https://www.infoworld.com/article/3411819/do-more-with-r-video-tutorials.html)
 
