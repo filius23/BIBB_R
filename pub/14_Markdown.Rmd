@@ -1,0 +1,38 @@
+---
+title: "Mein erstes RMarkdown-Dokument"
+author: "Mein Name"
+date: "2022-09-11"
+output: word_document
+---
+
+```{r setup, warning=FALSE, message=FALSE, echo = FALSE}
+library(tidyverse)
+library(flextable)
+## Achtung! Pfade relativ zum Speicherort, nicht Projekt
+etbx <-  haven::read_dta("../data/BIBBBAuA_2018_suf1.0.dta", 
+                         n_max = 2000,
+                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+  
+# Überschrift 1
+
+## Unterüberschrift 2
+
+Dies ist ein R Markdown-Dokument. 
+Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. 
+Text kann **fett** und *kursiv* **geschrieben werden.**
+
+Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.
+Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. 
+Ein R-Code-Baustein ("chunk") sieht so aus:
+
+```{r namen_für_den_chunk summary}
+# hier kommt der R Code hin 
+etbx %>% count(m1202) %>% flextable()
+```
+
+
+

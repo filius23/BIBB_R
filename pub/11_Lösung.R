@@ -18,7 +18,9 @@ alo <- readRDS(file = "./data/alo_bula1.Rdata")
 alo
 
 ## Lösung --------------
+
 etb_ue11 %>% left_join(alo,by = c("Bula"="ags"))
+
 etb_ue11 %>% inner_join(alo,by = c("Bula"="ags"))
 
 ## wie finden wir die Fälle, die nicht gemergt werden?
@@ -26,9 +28,6 @@ table(etb_ue11$Bula %in% alo$ags)
 etb_ue11 %>% filter(!(Bula %in% alo$ags))
 
 etb_ue11 %>% anti_join(alo,by = c("Bula"="ags"))
-
-# etb_ue11$Bula[etb_ue11$Bula %in% alo$ags == FALSE]
-
 
 # Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten?
 alo_j <- readRDS(file = "./data/alo_bula1_jahr.Rdata")
@@ -43,8 +42,9 @@ alo_wide <- readRDS(file = "./data/alo_bula2.Rdata")
 alo_wide
 
 ## Bringen Sie `alo_wide` in das long shape ---------
-alo_wide %>% pivot_longer(cols = matches("alo"),names_to = "year",values_to = "alq")
 alo_wide %>% pivot_longer(cols = 3:4,names_to = "year",values_to = "alq")
+
+alo_wide %>% pivot_longer(cols = matches("alo"),names_to = "year",values_to = "alq")
 alo_wide %>% pivot_longer(cols = starts_with("alo"),names_to = "year",values_to = "alq")
 alo_wide %>% pivot_longer(cols = contains("alo"),names_to = "year",values_to = "alq")
 # ?select_helpers

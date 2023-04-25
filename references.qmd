@@ -72,7 +72,7 @@ Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum se
 
 [Stata 2 R](https://stata2r.github.io/) richtet sich alle Anwender\*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des `{tidyverse}` das Paket `{data.table}` für die Datenaufbereitung gezeigt. `{data.table}` ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das `{tidyverse}`. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, `{data.table}` auszuprobieren.
 
-## Beispiele
+## Beispiel für vollständiges Paper geschrieben mit RMarkdown
 
 [Paper zu einem Beispieldatensatz, komplett in R Markdown geschrieben](https://allisonhorst.github.io/penguins_paper_distill/rjarticle/penguins.html)  
 
