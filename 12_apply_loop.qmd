@@ -99,20 +99,19 @@ Der zweite Fall ist das gleiche Modell auf verschiedene Datensätze anzuwenden -
 > *"Habt ihr das auch mal getrennt für Ost/West gerechnet?"*
 
 
-...dafür hilft uns `split()` - damit können wir den Datensatz entlang einer Variable splitten:
+...dafür hilft uns `nest(.by =)` - damit können wir den Datensatz entlang einer Variable splitten und zusammenfassen:
 ```{r}
-#| eval: false
-etb_k12 %>%
-    mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
-    split(.$east)
+etb_k12_ow <- 
+  etb_k12 %>%
+      mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
+      nest(.by=east)
+
+etb_k12_ow
 ```
+In der Spalte `data` sind jetzt also die Datensätze für Ost und West enthalten:
 ```{r}
-#| echo: false
-etb_k12 %>%
-    mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
-    split(.$east) %>% 
-    map(.,~ .x %>% slice(1:3) %>% # select(1:4,east) %>% 
-          data.frame(.))
+head(etb_k12_ow$data[[1]],n=3)
+head(etb_k12_ow$data[[2]],n=3)
 ```
 
 Auf den so gesplitteten Datensatz können wir mit `map()` ein `lm()`-Modell anwenden:
@@ -120,17 +119,16 @@ Auf den so gesplitteten Datensatz können wir mit `map()` ein `lm()`-Modell anwe
 mod_ow <- 
   etb_k12 %>%
     mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
-    split(.$east) %>% 
-    map(.,function(data) {
-      lm("F518_SUF ~ az + m1202_fct + zpalter + S1_fct",data = data)
-      }) # ad-hoc function --> siehe tip
+    nest(.by = east) %>% 
+    mutate(model = map(data, function(data) {
+      lm("F518_SUF ~ az + m1202_fct + zpalter + S1_fct", data = data) # ad-hoc function --> siehe tip)
+    })) 
 ```
 
 ::: {.callout-tip collapse="true"} 
 # adhoc `function` 
 
-Wir müssen nicht notwendigerweise erst eine Funktion definieren, um sie dann anzuwenden.
-Wir können die Funktion auch im gleichen Zug wie `map()` definieren:
+Wir können die Funktion auch im gleichen Zug wie `map()` definieren, indem wir einfach mit `{}` die `function()` anhängen:
 
 ```{r}
 #| eval: false
@@ -141,9 +139,16 @@ map(input, function(x) {
 
 :::
 
+Das Ergebnis ist ein `data.frame`/`tibble`, welcher in der Spalte `model` die `lm`-Objekte enthält:
+```{r}
+mod_ow
+mod_ow$model[1]
+```
+
+
 
 ```{r}
-modelsummary::modelplot(mod_ow,coef_omit = "Intercept") +
+modelsummary::modelplot(mod_ow$model,coef_omit = "Intercept") +
   geom_vline(aes(xintercept = 0), linetype = 2, alpha = .5) +
   scale_color_manual(values = c("orange","navy")) 
   
@@ -151,7 +156,7 @@ modelsummary::modelplot(mod_ow,coef_omit = "Intercept") +
 
 
 ```{r}
-modelsummary(mod_ow,stars = T,gof_omit = "IC|RM|Log",output = "flextable")
+modelsummary(mod_ow$model,stars = T,gof_omit = "IC|RM|Log",output = "flextable")
 ```
 
 ### [Übung](#ue12_02) {#manydata}
